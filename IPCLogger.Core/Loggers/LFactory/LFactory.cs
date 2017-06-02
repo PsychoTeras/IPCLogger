@@ -1,0 +1,393 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using IPCLogger.Core.Common;
+using IPCLogger.Core.Loggers.Base;
+
+namespace IPCLogger.Core.Loggers.LFactory
+{
+    public sealed class LFactory : BaseLogger<LFactorySettings>
+    {
+
+#region Private static fields
+
+        private static readonly List<Type> AvailableLoggers;
+
+#endregion
+
+#region Private fields
+
+        private object _syncObj;
+        private BaseLoggerInt[] _loggers;
+
+        private string _configurationFile;
+        private FileSystemWatcher _configurationFileWatcher;
+
+        private volatile bool _initialized;
+
+#endregion
+
+#region Static properties
+
+        public static LFactory Instance { get; private set; }
+
+#endregion
+
+#region Ctor
+
+        static LFactory()
+        {
+            Instance = new LFactory();
+            AvailableLoggers = GetAvailableLoggers();
+        }
+
+        private LFactory()
+        {
+            _syncObj = new object();
+            PreInitialize = OnceInitializedCheck;
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+        }
+
+#endregion
+
+#region Static methods
+
+        private static List<Type> GetAvailableLoggers()
+        {
+            List<Type> types = new List<Type>();
+            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.
+                GetAssemblies().
+                Where(a => !a.FullName.StartsWith("System."));
+            foreach (Assembly assembly in assemblies)
+            {
+                try
+                {
+                    types.AddRange(assembly.
+                        GetTypes().
+                        Where(t => Helpers.IsAssignableTo(t, typeof(BaseLogger<>))));
+                }
+                catch { }
+            }
+            return types;
+        }
+
+#endregion
+
+#region ILogger
+
+        private void OnceInitializedCheck()
+        {
+            if (!_initialized)
+            {
+                Initialize();
+            }
+            PreInitialize = null;
+        }
+
+        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
+            string text, bool writeLine)
+        {
+            if (!_initialized) return;
+
+            if (Settings.ShouldLock)
+            {
+                lock (_syncObj)
+                {
+                    if (!_initialized) return;
+
+                    foreach (BaseLoggerInt logger in _loggers)
+                    {
+                        if (logger.CheckApplicableEvent(eventName))
+                        {
+                            logger.Write(callerType, eventType, eventName, text, writeLine);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (BaseLoggerInt logger in _loggers)
+                {
+                    if (logger.CheckApplicableEvent(eventName))
+                    {
+                        logger.Write(callerType, eventType, eventName, text, writeLine);
+                    }
+                }
+            }
+        }
+
+        public override void Initialize()
+        {
+            Initialize(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+        }
+
+        private void SetupAutoReloadWatcher(string configurationFile)
+        {
+            if (Settings.AutoReload)
+            {
+                string cfgPath = Path.GetDirectoryName(configurationFile);
+                string cfgFile = Path.GetFileName(configurationFile);
+                _configurationFileWatcher = new FileSystemWatcher(cfgPath, cfgFile);
+                _configurationFileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+                _configurationFileWatcher.Changed += ConfigurationFileChanged;
+                _configurationFileWatcher.EnableRaisingEvents = true;
+            }
+        }
+
+        public void Initialize(string configurationFile)
+        {
+            lock (_syncObj)
+            {
+                Deinitialize();
+
+                try
+                {
+                    Settings.Setup(_configurationFile = configurationFile);
+                    Patterns.Setup(_configurationFile);
+
+                    if (Settings.Enabled)
+                    {
+                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
+                        InstantiateLoggers(declaredLoggers);
+                        foreach (BaseLoggerInt logger in _loggers)
+                        {
+                            logger.Initialize();
+                        }
+                    }
+                    _initialized = true;
+
+                    SetupAutoReloadWatcher(configurationFile);
+                }
+                catch (Exception ex)
+                {
+                    CatchLoggerException("Failed to initialize LFactory", ex);
+                }
+            }
+        }
+
+        public override void Deinitialize()
+        {
+            DeinitializeInt(false);
+        }
+
+        private void DeinitializeInt(bool keepWatcher)
+        {
+            lock (_syncObj)
+            {
+                if (!_initialized) return;
+                
+                foreach (BaseLoggerInt logger in _loggers)
+                {
+                    logger.Deinitialize();
+                    logger.Dispose();
+                }
+                _loggers = null;
+
+                if (!keepWatcher && _configurationFileWatcher != null)
+                {
+                    _configurationFileWatcher.EnableRaisingEvents = false;
+                    _configurationFileWatcher.Dispose();
+                    _configurationFileWatcher = null;
+                }
+
+                _initialized = false;
+            }
+        }
+
+        public override bool Suspend()
+        {
+            lock (_syncObj)
+            {
+                if (_initialized)
+                {
+                    foreach (BaseLoggerInt logger in _loggers)
+                    {
+                        logger.Suspend();
+                    }
+                }
+                return _initialized;
+            }
+        }
+
+        public override bool Resume()
+        {
+            lock (_syncObj)
+            {
+                if (_initialized)
+                {
+                    foreach (BaseLoggerInt logger in _loggers)
+                    {
+                        logger.Resume();
+                    }
+                }
+                return _initialized;
+            }
+        }
+
+        public override void Flush()
+        {
+            lock (_syncObj)
+            {
+                if (_initialized)
+                {
+                    foreach (BaseLoggerInt logger in _loggers)
+                    {
+                        logger.Flush();
+                    }
+                }
+            }
+        }
+
+#endregion
+
+#region Class methods
+
+        private void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
+        {
+            lock (_syncObj)
+            {
+                _configurationFileWatcher.EnableRaisingEvents = false;
+                Thread.Sleep(10);
+
+                try
+                {
+                    Settings.Setup(_configurationFile);
+                    Patterns.Setup(_configurationFile);
+                    Settings.AutoReload = true;
+
+                    if (Settings.Enabled)
+                    {
+                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(_configurationFile);
+                        IEnumerable<BaseLoggerInt> intLoggers = _loggers ?? new BaseLoggerInt[0];
+
+                        IEnumerable<BaseLoggerInt> toRemove = intLoggers.
+                            Where(l => !declaredLoggers.Exists(dl => dl.UniqueId == l.UniqueId));
+                        foreach (BaseLoggerInt logger in toRemove)
+                        {
+                            logger.Deinitialize();
+                            logger.Dispose();
+                        }
+
+                        List<BaseLoggerInt> loggers = new List<BaseLoggerInt>();
+                        List<BaseLoggerInt> newLoggers = new List<BaseLoggerInt>();
+                        if (declaredLoggers.Any())
+                        {
+                            Dictionary<string, BaseLoggerInt> existings = intLoggers.
+                                Where(l => !toRemove.Contains(l)).
+                                ToDictionary(l => l.UniqueId, l => l);
+                            foreach (DeclaredLogger declaredLogger in declaredLoggers)
+                            {
+                                BaseLoggerInt logger;
+                                if (existings.TryGetValue(declaredLogger.UniqueId, out logger))
+                                {
+                                    if (SetupInstantiatedLogger(declaredLogger, logger))
+                                    {
+                                        loggers.Add(logger);
+                                    }
+                                }
+                                else
+                                {
+                                    logger = InstantiateLoggerByDeclared(declaredLogger);
+                                    if (logger != null && SetupInstantiatedLogger(declaredLogger, logger))
+                                    {
+                                        loggers.Add(logger);
+                                        newLoggers.Add(logger);
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (BaseLoggerInt logger in newLoggers)
+                        {
+                            logger.Initialize();
+                        }
+
+                        _loggers = loggers.ToArray();
+                        _initialized = true;
+                    }
+                    else
+                    {
+                        DeinitializeInt(true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CatchLoggerException("Unable to autoreload LFactory", ex);
+                }
+
+                if (_configurationFileWatcher != null)
+                {
+                    _configurationFileWatcher.EnableRaisingEvents = true;
+                }
+            }
+        }
+
+        private void InstantiateLoggers(List<DeclaredLogger> declaredLoggers)
+        {
+            List<BaseLoggerInt> loggers = new List<BaseLoggerInt>();
+            foreach (DeclaredLogger declaredLogger in declaredLoggers)
+            {
+                BaseLoggerInt logger = InstantiateLoggerByDeclared(declaredLogger);
+                if (logger != null && SetupInstantiatedLogger(declaredLogger, logger))
+                {
+                    loggers.Add(logger);
+                }
+            }
+            _loggers = loggers.ToArray();
+        }
+
+        private bool SetupInstantiatedLogger(DeclaredLogger declaredLogger, BaseLoggerInt logger)
+        {
+            try
+            {
+                logger.Setup(declaredLogger.CfgNode);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Failed to setup logger '{0}'", logger);
+                CatchLoggerException(msg, ex);
+            }
+            return false;
+        }
+
+        private BaseLoggerInt InstantiateLoggerByDeclared(DeclaredLogger declaredLogger)
+        {
+            Type loggerType = AvailableLoggers.FirstOrDefault
+                (
+                    t => t.Name == declaredLogger.TypeName &&
+                         (string.IsNullOrEmpty(declaredLogger.Namespace) ||
+                          (t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, 
+                           StringComparison.InvariantCultureIgnoreCase)))
+                );
+
+            BaseLoggerInt logger = loggerType != null
+                ? Activator.CreateInstance(loggerType) as BaseLoggerInt 
+                : null;
+            if (logger != null)
+            {
+                logger.SetPatternsFactory(Patterns);
+                logger.SetUniqueId(declaredLogger.UniqueId);
+                return logger;
+            }
+            
+            string msg = string.Format("Logger '{0}{1}' is not available",
+                !string.IsNullOrEmpty(declaredLogger.Namespace)
+                    ? declaredLogger.Namespace + "."
+                    : string.Empty, declaredLogger.TypeName);
+            CatchLoggerException(msg, null);
+            return null;
+        }
+
+        private void OnProcessExit(object sender, EventArgs e)
+        {
+            Deinitialize();
+        }
+
+#endregion
+
+    }
+}

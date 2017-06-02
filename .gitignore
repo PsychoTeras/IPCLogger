@@ -10,7 +10,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+IPCLogger.StackInfo
+IPCLogger.TestService
+
 # Build results
+_bin
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

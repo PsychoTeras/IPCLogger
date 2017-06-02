@@ -1,0 +1,55 @@
+﻿        private static Dictionary<Type, Dictionary<int, string>> _eventNames =
+            new Dictionary<Type, Dictionary<int, string>>();
+		private static Dictionary<Type, TypeCode> _typeCodes = new Dictionary<Type, TypeCode>();
+
+        public static string GetEventName(Enum eventType)
+        {
+            if (eventType == null) return string.Empty;
+
+            TypeCode typeCode;
+            Type type = eventType.GetType();
+            if (!_typeCodes.TryGetValue(type, out typeCode))
+            {
+                lock (_typeCodes)
+                {
+                    _typeCodes.Add(type, typeCode = eventType.GetTypeCode());
+                }
+            }
+
+            int key;
+            switch (typeCode)
+            {
+                case TypeCode.Byte:
+                    key = (byte)(object)eventType; break;
+                case TypeCode.SByte:
+                    key = (sbyte)(object)eventType; break;
+                case TypeCode.Int16:
+                    key = (short)(object)eventType; break;
+                case TypeCode.UInt16:
+                    key = (ushort)(object)eventType; break;
+                default:
+                    key = (int)(object)eventType; break;
+            }
+
+            string eventName;
+            Dictionary<int, string> typeDict;
+            if (!_eventNames.TryGetValue(type, out typeDict))
+            {
+                lock (_eventNames)
+                {
+                    typeDict = new Dictionary<int, string> { { key, eventName = eventType.ToString() } };
+                    _eventNames.Add(type, typeDict);
+                }
+            }
+            else
+            {
+                if (!typeDict.TryGetValue(key, out eventName))
+                {
+                    lock (typeDict)
+                    {
+                        typeDict.Add(key, eventName = eventType.ToString());
+                    }
+                }
+            }
+            return eventName;
+        }

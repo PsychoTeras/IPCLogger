@@ -1,0 +1,88 @@
+﻿            var p = (int*)((int)&iMemMark0 + IntPtr.Size);
+
+            TypedReference tr2 = __makeref(ts);
+            IntPtr ptr = *(IntPtr*)(&tr2);
+            RuntimeTypeHandle rth = TypedReference.TargetTypeToken(tr2);
+
+            TypedReference trWork = new TypedReference();
+            int* piTrWork = (int*)&trWork;
+            piTrWork[0] = (int)&iMemMark0 + IntPtr.Size; //Value*
+            piTrWork[1] = **(int**)((int)&iMemMark0 + IntPtr.Size); //RuntimeType*
+
+            Type trWorkType = TypedReference.GetTargetType(trWork);
+            string trWorkObject = __refvalue(trWork, string);
+
+
+			//            StackTrace stack = new StackTrace(0);
+//            StackFrame frame = stack.GetFrame(0);
+//            MethodBase method = frame.GetMethod();
+//            ParameterInfo[] pars = method.GetParameters();
+
+//            int[] intArr = new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+
+//            int pi4 = iMemMark0 - pMemMarkPar;
+//            int p_par_sub_var = (int)&iMemMark0 - (int)&iMemMarkVar;
+
+
+            //StackTrace stack = new StackTrace(0);
+            //StackFrame frame = stack.GetFrame(0);
+            //MethodBase method = frame.GetMethod();
+            //ParameterInfo[] pars = method.GetParameters();
+
+            //MethodBody mb = method.GetMethodBody();
+            //IList<LocalVariableInfo> vars = mb.LocalVariables;
+
+
+			using System;
+using System.Diagnostics;
+using System.Reflection;
+
+//return_param Method 1(var params): params
+//
+//If return_param is VOID, on the stack will be placed 0x00000000, 
+//otherwise net_var_cell_addr:sizeof(int) for ref-type or value:sizeof(return_param) for val-type
+using System.Runtime.InteropServices;
+
+namespace IPCLogger.StackInfo
+{
+    // ReSharper disable once InconsistentNaming
+    unsafe class Program
+    {
+        private const int METHOD_START_SIZE = 16;
+        private const int STACK_ENLARGMENT_SIZE = 16;
+
+        static void DoX(int iMainVar/*,
+            int iMemMark1 = int.MaxValue,
+            int iMemMark2 = int.MaxValue,
+            int iMemMark3 = int.MaxValue,   
+            int iMemMark4 = int.MaxValue,
+            int iMemMark5 = int.MaxValue,
+            int iMemMark6 = int.MaxValue,
+            int iMemMark7 = int.MaxValue,
+            int iMemMark8 = int.MaxValue*/)
+        {
+            int pMemMarkPar = (int)&iMainVar;
+            int pMemMarkVar = (int)&pMemMarkPar;
+            int pMemMarkDbg = 8;
+        }
+
+        private static void DoY(int yValue1, int yValue2)
+        {
+            int iMemMark1 = 1;
+            int iMemMark2 = 2;
+            DoX((int)&iMemMark2);
+        }
+
+        static void Main(string[] args)
+        {
+            DoY(5, 6);
+        }
+    }
+}
+
+
+
+            MethodBase method = new StackFrame(1, true).GetMethod();
+            ParameterInfo[] mParams = method.GetParameters();
+            MethodBody methodBody = method.GetMethodBody();
+            IList<LocalVariableInfo> mVars = methodBody.LocalVariables;

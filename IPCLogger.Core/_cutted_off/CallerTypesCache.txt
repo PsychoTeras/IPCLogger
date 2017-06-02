@@ -1,0 +1,21 @@
+﻿        private static Dictionary<long, Type> _cachedTypes = new Dictionary<long, Type>();
+
+        public new static Type GetCallerType()
+        {
+            int stackMark;
+            long stackAddr = Is64BitPtr ? (long)(&stackMark) : (int)(&stackMark);
+
+            Type type;
+            if (!_cachedTypes.TryGetValue(stackAddr, out type))
+            {
+                lock (_cachedTypes)
+                {
+                    if (!_cachedTypes.TryGetValue(stackAddr, out type))
+                    {
+                        MethodBase method = new StackTrace(2).GetFrame(0).GetMethod();
+                        _cachedTypes.Add(stackAddr, type = method.DeclaringType);
+                    }
+                }
+            }
+            return type;
+        }
