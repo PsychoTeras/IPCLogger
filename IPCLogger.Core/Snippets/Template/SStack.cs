@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using IPCLogger.Core.Common;
+using IPCLogger.Core.Common.StackInfo;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets.Base;
 
@@ -51,7 +52,7 @@ namespace IPCLogger.Core.Snippets.Template
             return stack.GetFrame(firstFrame);
         }
 
-        private string GetStackInfo(ref string @params)
+        private string GetStackInfo(string @params)
         {
             StringBuilder result = new StringBuilder();
 
@@ -75,8 +76,7 @@ namespace IPCLogger.Core.Snippets.Template
                 else
                 {
                     string assemblyName = Path.GetFileName(declaringType.Assembly.Location);
-                    result.AppendFormat(" > [{0}] {1}.{2}{3}", assemblyName, declaringType.FullName,
-                        method.Name, !detailed ? Constants.NewLine : "(");
+                    result.AppendFormat(" > [{0}] {1}.{2}{3}", assemblyName, declaringType.FullName, method.Name, !detailed ? Constants.NewLine : "(");
                     if (detailed)
                     {
                         ParameterInfo[] paramaters = method.GetParameters();
@@ -96,11 +96,30 @@ namespace IPCLogger.Core.Snippets.Template
                                 parameterType = parameterType.Remove(parameterType.Length - 1);
                             }
 
-                            result.AppendFormat("{0}{1}{2} {3}", j > 0 ? ", " : string.Empty, prefix, 
-                                parameterType, parameter.Name);
+                            result.AppendFormat("{0}{1}{2} {3}", j > 0 ? ", " : string.Empty, prefix, parameterType, parameter.Name);
                         }
-                        result.AppendFormat(") Line {0}{1}", frame.GetFileLineNumber(),
-                            i < minStackLevel - 1 ? Constants.NewLine : string.Empty);
+                        result.AppendFormat(") Line {0}{1}", frame.GetFileLineNumber(), i < minStackLevel - 1 ? Constants.NewLine : string.Empty);
+
+                        if (!StackInfo.Is64Bit && frame.GetFileLineNumber() != 0)
+                        {
+                            MethodVarsInfo mvi = StackInfo.RetreiveMethodVarsInfo(i, method);
+                            if (mvi.MethodParams.Count > 0)
+                            {
+                                result.AppendLine("   Parameters:");
+                                foreach (MethodVar param in mvi.MethodParams)
+                                {
+                                    result.AppendFormat("    - {0}{1}", param, Environment.NewLine);
+                                }
+                            }
+                            if (mvi.MethodVars.Count > 0)
+                            {
+                                result.AppendLine("   Variables:");
+                                foreach (MethodVar param in mvi.MethodVars)
+                                {
+                                    result.AppendFormat("    - {0}{1}", param, Environment.NewLine);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -121,7 +140,7 @@ namespace IPCLogger.Core.Snippets.Template
                     stackFrame = FindCallerStackFrame(true);
                     return stackFrame.GetFileName();
                 case "stack":
-                    return GetStackInfo(ref @params);
+                    return GetStackInfo(@params);
             }
             return null;
         }

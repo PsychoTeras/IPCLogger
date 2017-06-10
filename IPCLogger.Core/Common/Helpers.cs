@@ -36,8 +36,8 @@ namespace IPCLogger.Core.Common
 
         public static int FindCallerStackLevel(StackTrace stack)
         {
-            int frame;
-            for (frame = stack.FrameCount - 5; frame >= 0; frame--)
+            int frame, cnt = stack.FrameCount - 1;
+            for (frame = cnt; frame >= 0; frame--)
             {
                 Type t = stack.GetFrame(frame).GetMethod().DeclaringType;
                 if (t != null && t.IsAssignableFrom(typeof(BaseLogger<>)))

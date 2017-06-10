@@ -49,6 +49,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -59,16 +60,28 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Assemblies\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>Assemblies\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assemblies\EmbeddedAsmsLoader.cs" />
     <Compile Include="Caches\CallerTypesCache.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Caches\EventNamesCache.cs" />
     <Compile Include="Common\LogEvent.cs" />
+    <Compile Include="Common\StackInfo\MethodVar.cs" />
+    <Compile Include="Common\StackInfo\MethodVarsInfo.cs" />
+    <Compile Include="Common\StackInfo\StackInfo.cs" />
     <Compile Include="Loggers\Base\BaseLogger.cs" />
     <Compile Include="Loggers\Base\BaseSettings.cs" />
     <Compile Include="Common\Helpers.cs" />
@@ -127,6 +140,8 @@
     <Compile Include="Storages\TLSObject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assemblies\Mono.Cecil.dll" />
+    <EmbeddedResource Include="Assemblies\Mono.Cecil.Pdb.dll" />
     <Content Include="_cutted_off\CallerTypesCache.txt" />
     <Content Include="_cutted_off\EventNamesCache.txt" />
     <Content Include="_cutted_off\tmp.txt" />
