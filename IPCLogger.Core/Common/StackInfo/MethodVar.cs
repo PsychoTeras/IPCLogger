@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Mono.Cecil;
 
@@ -22,10 +23,22 @@ namespace IPCLogger.Core.Common.StackInfo
             return Type.GetType(typeName);
         }
 
-        private static MethodVar ReadFromStackByRef(string varName, ref void* stackPtr,
-            TypeReference typeRef)
+        private static MethodVar ReadFromStackByRef(string varName, ref void* stackPtr, TypeReference typeRef, bool isOut)
         {
             TypedReference reference = new TypedReference();
+
+            if (typeRef.IsByReference && !isOut)
+            {
+                stackPtr = (byte*) stackPtr - IntPtr.Size;
+            }
+
+            bool isEnum = false;
+            switch (typeRef.FullName)
+            {
+                case "System.Enum":
+                    isEnum = true;
+                    break;
+            }
 
             bool objIsNotNull;
             if (StackInfo.Is64Bit)
@@ -45,8 +58,18 @@ namespace IPCLogger.Core.Common.StackInfo
             else
             {
                 int* pReference = (int*)&reference;
-                pReference[0] = (int)stackPtr; //Value* - pointer, that contains address of
-                //the .NET class instance in the .NET Objects Table
+
+                if (!isEnum)
+                {
+                    pReference[0] = (int) stackPtr; //Value* - pointer, that contains address of
+                    //the .NET class instance in the .NET Objects Table
+                }
+                else
+                {
+                    pReference[0] = (int) stackPtr; //Value* - pointer, that contains address of
+                    //the .NET class instance in the .NET Objects Table
+                }
+
                 int* iObjAddr = *(int**)(int)stackPtr;
                 objIsNotNull = iObjAddr != null;
                 if (objIsNotNull)
@@ -54,6 +77,21 @@ namespace IPCLogger.Core.Common.StackInfo
                     pReference[1] = *iObjAddr; //**(int**) (int) stackPtr
                     //RuntimeType* - pointer, that contais reference on the RuntimeType of the object.
                     //First 4 bytes (int) of Value
+                }
+
+                if (isEnum)
+                {
+                    int ixx = 0;
+
+                    pReference[1] = *&ixx; //**(int**) (int) stackPtr
+
+                    //RuntimeTypeHandle x = System.Type.GetTypeHandle(LogEvent.Info);
+                    var x = LogEvent.Info;
+                    TypedReference typedReference = __makeref(x);
+                    int* pTReference = (int*)&typedReference;
+                    //Type type = __reftype(reference);
+                    //var ss = __refvalue(reference, LogEvent);
+                    var xxx = objIsNotNull ? TypedReference.ToObject(reference) : null;
                 }
             }
 
@@ -67,8 +105,7 @@ namespace IPCLogger.Core.Common.StackInfo
             };
         }
 
-        private static MethodVar ReadFromStackByVal(string varName, ref void* stackPtr,
-            TypeReference typeRef)
+        private static MethodVar ReadFromStackByVal(string varName, ref void* stackPtr, TypeReference typeRef)
         {
             Type paramType = GetParamType(typeRef);
 
@@ -99,12 +136,11 @@ namespace IPCLogger.Core.Common.StackInfo
             };
         }
 
-        public static MethodVar ReadFromStack(string varName, ref void* stackPtr,
-            TypeReference typeRef)
+        public static MethodVar ReadFromStack(string varName, ref void* stackPtr, TypeReference typeRef, bool isOut)
         {
             return typeRef.IsValueType
                 ? ReadFromStackByVal(varName, ref stackPtr, typeRef)
-                : ReadFromStackByRef(varName, ref stackPtr, typeRef);
+                : ReadFromStackByRef(varName, ref stackPtr, typeRef, isOut);
         }
 
         public static void Skip(ref void* stackPtr, TypeReference typeRef)

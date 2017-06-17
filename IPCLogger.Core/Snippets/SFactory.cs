@@ -71,8 +71,7 @@ namespace IPCLogger.Core.Snippets
                         }
                         else
                         {
-                            string msg = string.Format("Duplicate custom-body snippet, type '{0}'",
-                                snippetType);
+                            string msg = string.Format("Duplicate custom-body snippet, type '{0}'", snippetType);
                             throw new Exception(msg);
                         }
                     }
@@ -91,8 +90,7 @@ namespace IPCLogger.Core.Snippets
                             }
                             else
                             {
-                                string msg = string.Format("Duplicate snippet, name '{0}', type '{1}'",
-                                    name, snippetType);
+                                string msg = string.Format("Duplicate snippet, name '{0}', type '{1}'", name, snippetType);
                                 throw new Exception(msg);
                             }
                         }
@@ -119,8 +117,7 @@ namespace IPCLogger.Core.Snippets
             {
                 snippetNames.AppendFormat("{0}{1}", snippetNames.Length > 0 ? "|" : string.Empty, snippet);
             }
-            regexPattern.AppendFormat(@"({{(?<T>[{0}])(?<N>{1})(:(?<P>((?!}}).)*))*}})", 
-                                      typeMarks, snippetNames);
+            regexPattern.AppendFormat(@"({{(?<T>[{0}])(?<N>{1})(:(?<P>((?!}}).)*))*}})", typeMarks, snippetNames);
 
             //Create regexp for custom-body snippets
             typeMarks = new StringBuilder();
@@ -135,8 +132,8 @@ namespace IPCLogger.Core.Snippets
             _regexParseString = new Regex(regexPattern.ToString(), regexOpt);
         }
 
-        private static string ProcessToCache(Type callerType, Enum eventType, string text, 
-            string pattern, PFactory pFactory, SnippetsCache record)
+        private static string ProcessToCache(Type callerType, Enum eventType, string text,  string pattern, 
+            PFactory pFactory, SnippetsCache record)
         {
             if (string.IsNullOrEmpty(pattern))
             {
@@ -219,8 +216,7 @@ namespace IPCLogger.Core.Snippets
                     if (!SnippetsCache.TryGetValue(patternId, out record))
                     {
                         record = new SnippetsCache();
-                        string result = ProcessToCache(callerType, eventType, text, pattern, 
-                            pFactory, record);
+                        string result = ProcessToCache(callerType, eventType, text, pattern, pFactory, record);
                         SnippetsCache.Add(patternId, record);
                         return result;
                     }
@@ -243,14 +239,12 @@ namespace IPCLogger.Core.Snippets
             return Process(null, null, null, pattern, -1, null);
         }
 
-        public static string Process(Type callerType, Enum eventType, string text, 
-            string pattern, PFactory pFactory)
+        public static string Process(Type callerType, Enum eventType, string text, string pattern, PFactory pFactory)
         {
             return Process(callerType, eventType, text, pattern, -1, pFactory);
         }
 
-        internal static string Process(Type callerType, Enum eventType, string text, 
-            Pattern pattern, PFactory pFactory)
+        internal static string Process(Type callerType, Enum eventType, string text, Pattern pattern, PFactory pFactory)
         {
             return Process(callerType, eventType, text, pattern.Content, pattern.Id, pFactory);
         }

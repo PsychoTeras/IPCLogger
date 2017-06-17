@@ -50,7 +50,7 @@ namespace IPCLogger.Core.Common.StackInfo
             result.MethodParams = new List<MethodVar>(mParams.Length);
             foreach (ParameterDefinition var in mParams)
             {
-                MethodVar mv = MethodVar.ReadFromStack(var.Name, ref stackPtr, var.ParameterType);
+                MethodVar mv = MethodVar.ReadFromStack(var.Name, ref stackPtr, var.ParameterType, var.IsOut);
                 result.MethodParams.Add(mv);
             }
 
@@ -60,7 +60,7 @@ namespace IPCLogger.Core.Common.StackInfo
             {
                 if (var.Name != string.Empty)
                 {
-                    MethodVar mv = MethodVar.ReadFromStack(var.Name, ref stackPtr, var.VariableType);
+                    MethodVar mv = MethodVar.ReadFromStack(var.Name, ref stackPtr, var.VariableType, false);
                     result.MethodVars.Add(mv);
                 }
             }
