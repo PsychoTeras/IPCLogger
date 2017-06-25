@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using IPCLogger.Core.Common;
-using IPCLogger.Core.Common.StackInfo;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets.Base;
 
@@ -99,27 +98,6 @@ namespace IPCLogger.Core.Snippets.Template
                             result.AppendFormat("{0}{1}{2} {3}", j > 0 ? ", " : string.Empty, prefix, parameterType, parameter.Name);
                         }
                         result.AppendFormat(") Line {0}{1}", frame.GetFileLineNumber(), i < minStackLevel - 1 ? Constants.NewLine : string.Empty);
-
-                        if (!StackInfo.Is64Bit && frame.GetFileLineNumber() != 0)
-                        {
-                            MethodVarsInfo mvi = StackInfo.RetreiveMethodVarsInfo(i, method);
-                            if (mvi.MethodParams.Count > 0)
-                            {
-                                result.AppendLine("   Parameters:");
-                                foreach (MethodVar param in mvi.MethodParams)
-                                {
-                                    result.AppendFormat("    - {0}{1}", param, Environment.NewLine);
-                                }
-                            }
-                            if (mvi.MethodVars.Count > 0)
-                            {
-                                result.AppendLine("   Variables:");
-                                foreach (MethodVar param in mvi.MethodVars)
-                                {
-                                    result.AppendFormat("    - {0}{1}", param, Environment.NewLine);
-                                }
-                            }
-                        }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml;
-using IPCLogger.Core.Assemblies;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Patterns.Base;
@@ -42,15 +41,6 @@ namespace IPCLogger.Core.Loggers.Base
 
     public abstract class BaseLoggerInt : IBaseLogger
     {
-
-#region Ctor
-
-        static BaseLoggerInt()
-        {
-            EmbeddedAsmsLoader.Init();
-        }
-
-#endregion
 
 #region Events
 
