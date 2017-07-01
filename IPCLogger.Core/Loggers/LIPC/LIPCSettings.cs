@@ -14,7 +14,7 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #region Private fields
 
-        private ushort _cachedRecordsNum = CACHED_RECORDS_NUM;
+        private ushort _cachedRecordsNum;
 
 #endregion
 
@@ -33,7 +33,10 @@ namespace IPCLogger.Core.Loggers.LIPC
 #region Ctor
 
         public LIPCSettings(Type loggerType, Action onApplyChanges)
-            : base(loggerType, onApplyChanges) { }
+            : base(loggerType, onApplyChanges)
+        {
+            _cachedRecordsNum = CACHED_RECORDS_NUM;
+        }
 
 #endregion
 

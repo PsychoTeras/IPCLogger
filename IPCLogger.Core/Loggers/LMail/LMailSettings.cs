@@ -23,9 +23,6 @@ namespace IPCLogger.Core.Loggers.LMail
 
 #region Properties
 
-        [NonSetting]
-        public override int QueueSize { get; set; }
-
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }
         public string UserName { get; set; }

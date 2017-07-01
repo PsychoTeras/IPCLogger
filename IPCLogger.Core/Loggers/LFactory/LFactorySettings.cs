@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 
@@ -21,24 +22,28 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Properties
 
+        [NonSetting]
         public bool Enabled
         {
             get { return _enabled; }
             set { _enabled = value; }
         }
 
+        [NonSetting]
         public bool LightLock
         {
             get { return _lightLock; } 
             set { _lightLock = value; }
         }
 
+        [NonSetting]
         public bool AutoReload
         {
             get { return _autoReload; }
             set { _autoReload = value; }
         }
 
+        [NonSetting]
         internal bool ShouldLock
         {
             get { return !_lightLock || _autoReload; }

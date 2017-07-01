@@ -8,22 +8,22 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Constants
 
-        private const int QUEUE_SIZE = 32;
+        private const int BUFFER_SIZE = 32;
 
 #endregion
 
 #region Private fields
 
-        private int _queueSize;
+        private int _bufferSize;
 
 #endregion
 
 #region Properties
 
-        public int QueueSize
+        public int BufferSize
         {
-            get { return _queueSize; }
-            set { _queueSize = value*1024; }
+            get { return _bufferSize; }
+            set { _bufferSize = value*1024; }
         }
         public string LogDir { get; set; }
         public string LogFile { get; set; }
@@ -36,7 +36,7 @@ namespace IPCLogger.Core.Loggers.LFile
         public LFileSettings(Type loggerType, Action onApplyChanges)
             : base(loggerType, onApplyChanges)
         {
-            QueueSize = QUEUE_SIZE;
+            BufferSize = BUFFER_SIZE;
         }
 
 #endregion

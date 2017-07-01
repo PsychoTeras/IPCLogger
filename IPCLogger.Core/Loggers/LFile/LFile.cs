@@ -102,10 +102,10 @@ namespace IPCLogger.Core.Loggers.LFile
                     File.Delete(logPath);
                 }
 
-                if (Settings.QueueSize > 0)
+                if (Settings.BufferSize > 0)
                 {
                     _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write, 
-                        FileShare.Read, Settings.QueueSize);
+                        FileShare.Read, Settings.BufferSize);
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace IPCLogger.Core.Loggers.LFile
                 }
                 _logWriter = new StreamWriter(_fileStream)
                 {
-                    AutoFlush = Settings.QueueSize == 0
+                    AutoFlush = Settings.BufferSize == 0
                 };
             }
         }

@@ -13,6 +13,8 @@ namespace IPCLogger.Core.Loggers.LConsole
 #region Constants
 
         private const string HIGHLIGHT_NODE_NAME = "Highlight";
+        private const string FORECOLOR_NODE_NAME = "ForeColor";
+        private const string BACKCOLOR_NODE_NAME = "BackColor";
 
 #endregion
 
@@ -91,8 +93,8 @@ namespace IPCLogger.Core.Loggers.LConsole
                     string @event = s.Trim();
                     if (string.IsNullOrEmpty(@event)) continue;
 
-                    ReadAndSetColor(highlightNode, "ForeColor", @event, ref DefConsoleForeColor, ConsoleForeColors);
-                    ReadAndSetColor(highlightNode, "BackColor", @event, ref DefConsoleBackColor, ConsoleBackColors);
+                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref DefConsoleForeColor, ConsoleForeColors);
+                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref DefConsoleBackColor, ConsoleBackColors);
                 }
             }
         }
