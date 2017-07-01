@@ -78,7 +78,7 @@ namespace IPCLogger.Core.Loggers.Base
                 Where
                 (
                     p => p.CanRead && p.CanWrite && 
-                        p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
+                         p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
                 ).ToDictionary(p => p.Name, p => p);
         }
 
@@ -175,12 +175,11 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
-            return string.Format("{0}/{1}{2}", ROOT_LOGGERS_CFG_PATH, _loggerType.Name,
-                !string.IsNullOrEmpty(loggerName) ? string.Format("[@name='{0}']", loggerName) : string.Empty);
+            loggerName = !string.IsNullOrEmpty(loggerName) ? string.Format("[@name='{0}']", loggerName) : string.Empty;
+            return string.Format("{0}/{1}{2}", ROOT_LOGGERS_CFG_PATH, _loggerType.Name, loggerName);
         }
 
-        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, 
-            out HashSet<string> set)
+        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
         {
             set = null;
             XmlAttribute aAllowEvents = cfgNode.Attributes[attributeName];
@@ -228,8 +227,7 @@ namespace IPCLogger.Core.Loggers.Base
             return GetSettingsDictionary(cfgNode, null);
         }
 
-        protected virtual Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode, 
-            ICollection<string> excludes)
+        protected virtual Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode, ICollection<string> excludes)
         {
             Dictionary<string, string> settingsDict = new Dictionary<string, string>();
             IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);

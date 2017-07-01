@@ -12,7 +12,7 @@ namespace IPCLogger.Core.Loggers.LFile
 #region Private fields
 
         private string _logFileName;
-        private BufferedStream _fileStream;
+        private Stream _fileStream;
         private StreamWriter _logWriter;
 
         private DateTime _currentDay;
@@ -74,7 +74,7 @@ namespace IPCLogger.Core.Loggers.LFile
         private void PrepareLogFileStream(bool unsuspend)
         {
             int ticks = Environment.TickCount;
-            int currentTimeMark = ticks - (ticks % 1000);
+            int currentTimeMark = ticks - ticks%1000;
             if (currentTimeMark != _lastDateMark)
             {
                 _lastDate = DateTime.Now;
@@ -102,10 +102,20 @@ namespace IPCLogger.Core.Loggers.LFile
                     File.Delete(logPath);
                 }
 
-                FileStream fileStream = File.Open(_logFileName = logPath, FileMode.Append, 
-                    FileAccess.Write, FileShare.Read);
-                _fileStream = new BufferedStream(fileStream, Settings.QueueSize);
-                _logWriter = new StreamWriter(_fileStream);
+                if (Settings.QueueSize > 0)
+                {
+                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write, 
+                        FileShare.Read, Settings.QueueSize);
+                }
+                else
+                {
+                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write,
+                        FileShare.Read);
+                }
+                _logWriter = new StreamWriter(_fileStream)
+                {
+                    AutoFlush = Settings.QueueSize == 0
+                };
             }
         }
 
