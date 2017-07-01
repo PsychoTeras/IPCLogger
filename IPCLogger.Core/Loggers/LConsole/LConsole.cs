@@ -1,5 +1,6 @@
 ﻿using System;
 using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Core.Snippets;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {
@@ -19,6 +20,8 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
             if (!_initialized) return;
 
+            bool isColorsSet = SetColors(eventName);
+
             if (writeLine)
             {
                 Console.WriteLine(text);
@@ -27,6 +30,11 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 Console.Write(text);
             }
+
+            if (isColorsSet)
+            {
+                Console.ResetColor();
+            }
         }
 
         public override void Initialize()
@@ -34,6 +42,10 @@ namespace IPCLogger.Core.Loggers.LConsole
             try
             {
                 _initialized = Console.WindowHeight > 0;
+                if (!string.IsNullOrEmpty(Settings.Title))
+                {
+                    Console.Title = SFactory.Process(Settings.Title, Patterns);
+                }
             }
             catch
             {
@@ -46,6 +58,33 @@ namespace IPCLogger.Core.Loggers.LConsole
 #endregion
 
 #region Class methods
+
+        private bool SetColors(string eventName)
+        {
+            ConsoleColor color;
+            bool isSet = false;
+            if (Settings.ConsoleForeColors != null && eventName != null && Settings.ConsoleForeColors.TryGetValue(eventName, out color))
+            {
+                Console.ForegroundColor = color;
+                isSet = true;
+            }
+            else if (Settings.DefConsoleForeColor.HasValue)
+            {
+                Console.ForegroundColor = Settings.DefConsoleForeColor.Value;
+                isSet = true;
+            }
+            if (Settings.ConsoleBackColors != null && eventName != null && Settings.ConsoleBackColors.TryGetValue(eventName, out color))
+            {
+                Console.BackgroundColor = color;
+                isSet = true;
+            }
+            else if (Settings.DefConsoleBackColor.HasValue)
+            {
+                Console.BackgroundColor = Settings.DefConsoleBackColor.Value;
+                isSet = true;
+            }
+            return isSet;
+        }
 
         public int Read()
         {

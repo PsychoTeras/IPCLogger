@@ -1,19 +1,18 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace IPCLogger.Core.Common
 {
     internal sealed class HRTimer
     {
-        private Int64 _start;
+        private long _start;
         private double _result;
-        private readonly Int64 _frequency;
+        private readonly long _frequency;
 
         [DllImport("kernel32.dll")]
-        private static extern int QueryPerformanceCounter(ref Int64 count);
+        private static extern int QueryPerformanceCounter(ref long count);
 
         [DllImport("kernel32.dll")]
-        private static extern int QueryPerformanceFrequency(ref Int64 frequency);
+        private static extern int QueryPerformanceFrequency(ref long frequency);
 
         public HRTimer()
         {
@@ -41,9 +40,9 @@ namespace IPCLogger.Core.Common
 
         public double StopWatch()
         {
-            Int64 stop = 0;
+            long stop = 0;
             QueryPerformanceCounter(ref stop);
-            _result = ((double)(stop - _start))/_frequency * 1000;
+            _result = (double)(stop - _start)/_frequency * 1000;
             return _result;
         }
     }

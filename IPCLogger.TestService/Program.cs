@@ -21,7 +21,7 @@ namespace IPCLogger.TestService
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                                         //Do we use WriteLogIPC or WriteLog4Net
 
-        private static readonly int _recordsCount = 100000;                                                     //Number of iterations
+        private static readonly int _recordsCount = 3000;                                                     //Number of iterations
         private static readonly int _threadsCount = Environment.ProcessorCount / Environment.ProcessorCount;    //Number of parallel operations
 
         //-------------------------------------------------------------------------------------------------------------------------
@@ -59,6 +59,7 @@ namespace IPCLogger.TestService
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
+                    //LFactory.Instance.Write(LogEvent.Fatal, _sGuid);
                 }
             }
 

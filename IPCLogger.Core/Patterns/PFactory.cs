@@ -18,7 +18,6 @@ namespace IPCLogger.Core.Patterns
         private const string ROOT_PATTERNS_CFG_PATH   = Constants.ROOT_LOGGER_CFG_PATH + "/Patterns/Pattern";
         private const string PATTERN_CONTENT_CFG_PATH = "./Content";
 
-        internal static readonly string ApplicableForAllMark = "*";
 
 #endregion
 
@@ -157,7 +156,7 @@ get_generic_pattern:
             if (_isGenericPatternAvailable && !triedGetGenericPattern)
             {
                 triedGetGenericPattern = true;
-                curPatternName = ApplicableForAllMark;
+                curPatternName = Constants.ApplicableForAllMark;
                 goto get_generic_pattern;
             }
 
@@ -218,7 +217,7 @@ get_generic_pattern:
                 string events = aEvents != null ? aEvents.Value : null;
                 if (string.IsNullOrEmpty(events))
                 {
-                    events = ApplicableForAllMark;
+                    events = Constants.ApplicableForAllMark;
                     _isGenericPatternAvailable = true;
                 }
 
@@ -263,21 +262,21 @@ get_generic_pattern:
                         Split(new[] { Constants.Splitter }, StringSplitOptions.RemoveEmptyEntries).
                         Distinct().
                         ToArray()
-                    : new[] {ApplicableForAllMark};
+                    : new[] { Constants.ApplicableForAllMark };
 
                 foreach (string classMask in applicableFor)
                 {
-                    if (classMask == ApplicableForAllMark &&
+                    if (ReferenceEquals(classMask, Constants.ApplicableForAllMark) &&
                         !compiledUntypedPatterns.ContainsKey(rawPattern.Event))
                     {
                         compiledUntypedPatterns.Add(rawPattern.Event, new Pattern(content));
                         continue;
                     }
                     
-                    if (classMask != ApplicableForAllMark &&
+                    if (!ReferenceEquals(classMask, Constants.ApplicableForAllMark) &&
                         !rawPattern.Strong.ContainsKey(classMask))
                     {
-                        if (classMask.Contains(ApplicableForAllMark))
+                        if (classMask.Contains(Constants.ApplicableForAllMark))
                         {
                             string regexClassMask = Regex.Escape(classMask).Replace(@"\*", ".*?");
                             Regex regexMask = new Regex(regexClassMask, RegexOptions.Compiled);
@@ -324,8 +323,8 @@ get_generic_pattern:
             int maskAIdx = 0, maskBIdx = 0;
             do
             {
-                maskAIdx = a.IndexOf(PFactory.ApplicableForAllMark, maskAIdx + 1);
-                maskBIdx = b.IndexOf(PFactory.ApplicableForAllMark, maskBIdx + 1);
+                maskAIdx = a.IndexOf(Constants.ApplicableForAllMark, maskAIdx + 1);
+                maskBIdx = b.IndexOf(Constants.ApplicableForAllMark, maskBIdx + 1);
                 if (maskAIdx != maskBIdx)
                 {
                     return PosOrMax(maskBIdx).CompareTo(PosOrMax(maskAIdx));
