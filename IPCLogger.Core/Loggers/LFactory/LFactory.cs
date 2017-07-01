@@ -78,15 +78,6 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region ILogger
 
-        private void OnceInitializedCheck()
-        {
-            if (!_initialized)
-            {
-                Initialize();
-            }
-            PreInitialize = null;
-        }
-
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine)
         {
@@ -124,77 +115,9 @@ namespace IPCLogger.Core.Loggers.LFactory
             Initialize(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
         }
 
-        private void SetupAutoReloadWatcher(string configurationFile)
-        {
-            if (Settings.AutoReload)
-            {
-                string cfgPath = Path.GetDirectoryName(configurationFile);
-                string cfgFile = Path.GetFileName(configurationFile);
-                _configurationFileWatcher = new FileSystemWatcher(cfgPath, cfgFile);
-                _configurationFileWatcher.NotifyFilter = NotifyFilters.LastWrite;
-                _configurationFileWatcher.Changed += ConfigurationFileChanged;
-                _configurationFileWatcher.EnableRaisingEvents = true;
-            }
-        }
-
-        public void Initialize(string configurationFile)
-        {
-            lock (_syncObj)
-            {
-                Deinitialize();
-
-                try
-                {
-                    Settings.Setup(_configurationFile = configurationFile);
-                    Patterns.Setup(_configurationFile);
-
-                    if (Settings.Enabled)
-                    {
-                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
-                        InstantiateLoggers(declaredLoggers);
-                        foreach (BaseLoggerInt logger in _loggers)
-                        {
-                            logger.Initialize();
-                        }
-                    }
-                    _initialized = true;
-
-                    SetupAutoReloadWatcher(configurationFile);
-                }
-                catch (Exception ex)
-                {
-                    CatchLoggerException("Failed to initialize LFactory", ex);
-                }
-            }
-        }
-
         public override void Deinitialize()
         {
             DeinitializeInt(false);
-        }
-
-        private void DeinitializeInt(bool keepWatcher)
-        {
-            lock (_syncObj)
-            {
-                if (!_initialized) return;
-                
-                foreach (BaseLoggerInt logger in _loggers)
-                {
-                    logger.Deinitialize();
-                    logger.Dispose();
-                }
-                _loggers = null;
-
-                if (!keepWatcher && _configurationFileWatcher != null)
-                {
-                    _configurationFileWatcher.EnableRaisingEvents = false;
-                    _configurationFileWatcher.Dispose();
-                    _configurationFileWatcher = null;
-                }
-
-                _initialized = false;
-            }
         }
 
         public override bool Suspend()
@@ -244,6 +167,83 @@ namespace IPCLogger.Core.Loggers.LFactory
 #endregion
 
 #region Class methods
+
+        public void Initialize(string configurationFile)
+        {
+            lock (_syncObj)
+            {
+                Deinitialize();
+
+                try
+                {
+                    Settings.Setup(_configurationFile = configurationFile);
+                    Patterns.Setup(_configurationFile);
+
+                    if (Settings.Enabled)
+                    {
+                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
+                        InstantiateLoggers(declaredLoggers);
+                        foreach (BaseLoggerInt logger in _loggers)
+                        {
+                            logger.Initialize();
+                        }
+                    }
+                    _initialized = true;
+
+                    SetupAutoReloadWatcher(configurationFile);
+                }
+                catch (Exception ex)
+                {
+                    CatchLoggerException("Failed to initialize LFactory", ex);
+                }
+            }
+        }
+
+        private void OnceInitializedCheck()
+        {
+            if (!_initialized)
+            {
+                Initialize();
+            }
+            PreInitialize = null;
+        }
+
+        private void SetupAutoReloadWatcher(string configurationFile)
+        {
+            if (Settings.AutoReload)
+            {
+                string cfgPath = Path.GetDirectoryName(configurationFile);
+                string cfgFile = Path.GetFileName(configurationFile);
+                _configurationFileWatcher = new FileSystemWatcher(cfgPath, cfgFile);
+                _configurationFileWatcher.NotifyFilter = NotifyFilters.LastWrite;
+                _configurationFileWatcher.Changed += ConfigurationFileChanged;
+                _configurationFileWatcher.EnableRaisingEvents = true;
+            }
+        }
+
+        private void DeinitializeInt(bool keepWatcher)
+        {
+            lock (_syncObj)
+            {
+                if (!_initialized) return;
+
+                foreach (BaseLoggerInt logger in _loggers)
+                {
+                    logger.Deinitialize();
+                    logger.Dispose();
+                }
+                _loggers = null;
+
+                if (!keepWatcher && _configurationFileWatcher != null)
+                {
+                    _configurationFileWatcher.EnableRaisingEvents = false;
+                    _configurationFileWatcher.Dispose();
+                    _configurationFileWatcher = null;
+                }
+
+                _initialized = false;
+            }
+        }
 
         private void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
         {

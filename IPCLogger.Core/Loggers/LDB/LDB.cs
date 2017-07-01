@@ -27,17 +27,7 @@ namespace IPCLogger.Core.Loggers.LDB
 
 #endregion
 
-#region Class methods
-
-        private void InitializeDataTableStructure()
-        {
-            _dataTable = new DataTable(Settings.TableName);
-            foreach (ColumnInfo columnInfo in Settings.TableSchema.Values)
-            {
-                _dataTable.Columns.Add(columnInfo.Name, columnInfo.Type);
-            }
-            _rows = new List<DataRow>(Settings.QueueSize);
-        }
+#region ILogger
 
         protected override void InitializeQueue()
         {
@@ -85,6 +75,20 @@ namespace IPCLogger.Core.Loggers.LDB
                 _dal.WriteLog(_dataTable.TableName, _rows.ToArray());
                 _rows.Clear();
             }
+        }
+
+#endregion
+
+#region Class methods
+
+        private void InitializeDataTableStructure()
+        {
+            _dataTable = new DataTable(Settings.TableName);
+            foreach (ColumnInfo columnInfo in Settings.TableSchema.Values)
+            {
+                _dataTable.Columns.Add(columnInfo.Name, columnInfo.Type);
+            }
+            _rows = new List<DataRow>(Settings.QueueSize);
         }
 
 #endregion

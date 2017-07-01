@@ -8,7 +8,7 @@ namespace IPCLogger.Core.Loggers.LDebug
     public sealed class LDebug : BaseLogger<LDebugSettings>
     {
 
-#region Protected context methods
+#region ILogger
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine)
@@ -38,10 +38,6 @@ namespace IPCLogger.Core.Loggers.LDebug
                 if (Settings.ImmediateFlush) Debug.Flush();
             }
         }
-
-#endregion
-
-#region ILogger
 
         public override void Initialize() { }
 
