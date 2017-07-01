@@ -32,8 +32,7 @@ SELECT
     ,c.is_identity
     ,c.is_nullable
 FROM [{0}].sys.columns c (NOLOCK)
-WHERE object_id = OBJECT_ID('[{0}].dbo.[{1}]') AND
-      c.is_computed = 0
+WHERE object_id = OBJECT_ID('[{0}].dbo.[{1}]') AND c.is_computed = 0
 ", connection.Database, tableName);
                 using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                 {
@@ -47,7 +46,7 @@ WHERE object_id = OBJECT_ID('[{0}].dbo.[{1}]') AND
                                 Name = (string) reader["name"],
                                 TypeId = (byte) reader["system_type_id"],
                                 IsIdentity = (bool) reader["is_identity"],
-                                IsNullable = (bool) reader["is_nullable"],
+                                IsNullable = (bool) reader["is_nullable"]
                             };
                             result.Add(info);
                         }
@@ -57,15 +56,15 @@ WHERE object_id = OBJECT_ID('[{0}].dbo.[{1}]') AND
             }
         }
 
-        public void WriteLog(DataTable dataTable)
+        public void WriteLog(string tableName, DataRow[] rows)
         {
             using (SqlConnection connection = OpenConnection())
             {
-                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock, null))
                 {
-                    bulkCopy.DestinationTableName = dataTable.TableName;
-                    bulkCopy.BatchSize = dataTable.Rows.Count;
-                    bulkCopy.WriteToServer(dataTable);
+                    bulkCopy.DestinationTableName = tableName;
+                    bulkCopy.BatchSize = rows.Length;
+                    bulkCopy.WriteToServer(rows);
                 }
             }
         }

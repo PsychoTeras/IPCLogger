@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LDB.DAL;
@@ -13,6 +14,7 @@ namespace IPCLogger.Core.Loggers.LDB
 
         private LoggerDAL _dal;
         private DataTable _dataTable;
+        private List<DataRow> _rows;
 
 #endregion
 
@@ -30,11 +32,11 @@ namespace IPCLogger.Core.Loggers.LDB
         private void InitializeDataTableStructure()
         {
             _dataTable = new DataTable(Settings.TableName);
-            _dataTable.RemotingFormat = SerializationFormat.Binary;
             foreach (ColumnInfo columnInfo in Settings.TableSchema.Values)
             {
                 _dataTable.Columns.Add(columnInfo.Name, columnInfo.Type);
             }
+            _rows = new List<DataRow>(Settings.QueueSize);
         }
 
         protected override void InitializeQueue()
@@ -73,15 +75,15 @@ namespace IPCLogger.Core.Loggers.LDB
                 }
                 row[columnName] = value;
             }
-            _dataTable.Rows.Add(row);
+            _rows.Add(row);
         }
 
         protected override void FlushQueue()
         {
-            if (_dataTable.Rows.Count > 0)
+            if (_rows.Count > 0)
             {
-                _dal.WriteLog(_dataTable);
-                _dataTable.Rows.Clear();
+                _dal.WriteLog(_dataTable.TableName, _rows.ToArray());
+                _rows.Clear();
             }
         }
 

@@ -17,36 +17,50 @@ namespace IPCLogger.Core.Loggers.LDB.DAL
             {
                 if (_type == null) switch (TypeId)
                 {
-                    case 40:
-                    case 61:
-                        _type = typeof(DateTime);
-                        break;
-                    case 48:
-                        _type = typeof(byte);
-                        break;
-                    case 52:
-                        _type = typeof(short);
-                        break;
-                    case 56:
-                        _type = typeof(int);
-                        break;
-                    case 59:
-                    case 62:
-                        _type = typeof(double);
-                        break;
-                    case 104:
-                        _type = typeof(bool);
-                        break;
-                    case 106:
-                        _type = typeof(decimal);
-                        break;
+                    case 35:
+                    case 99:
                     case 167:
+                    case 175:
                     case 231:
-                        _type = typeof(string);
-                        break;
+                    case 239:
+                    case 241:
+                        return _type = typeof(string);
+                    case 36:
+                        return _type = typeof(Guid);
+                    case 40:
+                    case 42:
+                    case 58:
+                    case 61:
+                        return _type = typeof(DateTime);
+                    case 41:
+                        return _type = typeof(TimeSpan);
+                    case 43:
+                        return _type = typeof(DateTimeOffset);
+                    case 48:
+                        return _type = typeof(byte);
+                    case 52:
+                        return _type = typeof(short);
+                    case 56:
+                        return _type = typeof(int);
+                    case 59:
+                        return _type = typeof(float);
+                    case 60:
+                    case 106:
+                    case 108:
+                        return _type = typeof(decimal);
+                    case 62:
+                        return _type = typeof(double);
+                    case 104:
+                        return _type = typeof(bool);
+                    case 127:
+                        return _type = typeof(long);
+                    case 34:
+                    case 165:
+                    case 173:
+                    case 189:
+                        return _type = typeof(byte[]);
                     default:
-                        _type = null;
-                        break;
+                        return _type = null;
                 }
                 return _type;
             }
