@@ -14,8 +14,8 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Constants
 
-        private const bool DEF_DETAILED = false;
         private const ushort DEF_STACK_LEVEL = ushort.MaxValue;
+        private const bool DEF_STACK_DETAILED = false;
 
 #endregion
 
@@ -57,7 +57,7 @@ namespace IPCLogger.Core.Snippets.Template
 
             SnippetParams sParams = SnippetParams.Parse(@params);
             int level = sParams.GetValue("level", DEF_STACK_LEVEL);
-            bool detailed = sParams.HasValue("detailed", DEF_DETAILED);
+            bool detailed = sParams.HasValue("detailed", DEF_STACK_DETAILED);
 
             StackTrace stack = new StackTrace(detailed);
             int firstFrame = Helpers.FindCallerStackLevel(stack);

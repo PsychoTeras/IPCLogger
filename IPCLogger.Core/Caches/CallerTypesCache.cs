@@ -16,7 +16,7 @@ namespace IPCLogger.Core.Caches
         public static Type GetCallerType()
         {
             int stackMark;
-            long stackAddr = Is64BitPtr ? (long)(&stackMark) : (int)(&stackMark);
+            long stackAddr = Is64BitPtr ? (long)&stackMark : (int)&stackMark;
 
             Type type = null;
             Dictionary<long, Type> typeDict;
@@ -27,7 +27,7 @@ namespace IPCLogger.Core.Caches
                 {
                     if (!CachedTypes.TryGetValue(currentThread, out typeDict))
                     {
-                        MethodBase method = new StackTrace(2).GetFrame(0).GetMethod();
+                        MethodBase method = new StackTrace(3).GetFrame(0).GetMethod();
                         typeDict = new Dictionary<long, Type> {{stackAddr, type = method.DeclaringType}};
                         CachedTypes.Add(currentThread, typeDict);
                     }
@@ -41,7 +41,7 @@ namespace IPCLogger.Core.Caches
                     {
                         if (!typeDict.TryGetValue(stackAddr, out type))
                         {
-                            MethodBase method = new StackTrace(2).GetFrame(0).GetMethod();
+                            MethodBase method = new StackTrace(3).GetFrame(0).GetMethod();
                             typeDict.Add(stackAddr, type = method.DeclaringType);
                         }
                     }

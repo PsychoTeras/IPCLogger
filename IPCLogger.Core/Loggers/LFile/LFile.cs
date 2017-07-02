@@ -89,9 +89,12 @@ namespace IPCLogger.Core.Loggers.LFile
                     _currentDay = _lastDate;
                 }
 
-                DestroyLogFileStream();
+                if (_fileStream == null)
+                {
+                    Directory.CreateDirectory(Settings.LogDir);
+                }
 
-                Directory.CreateDirectory(Settings.LogDir);
+                DestroyLogFileStream();
 
                 string logFile = SFactory.Process(Settings.LogFile, Patterns);
                 string logPath = Path.Combine(Settings.LogDir, logFile);
@@ -112,6 +115,7 @@ namespace IPCLogger.Core.Loggers.LFile
                     _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write,
                         FileShare.Read);
                 }
+
                 _logWriter = new StreamWriter(_fileStream)
                 {
                     AutoFlush = Settings.BufferSize == 0

@@ -20,17 +20,17 @@ namespace IPCLogger.TestService
     {
         //--------------------------------------------Configure test environment here//--------------------------------------------
 
-        private static readonly WaitCallback _workMethod = WriteLogIPC;                                         //Do we use WriteLogIPC or WriteLog4Net
-
-        private static readonly int _recordsCount = 5000;                                                     //Number of iterations
-        private static readonly int _threadsCount = Environment.ProcessorCount / Environment.ProcessorCount;    //Number of parallel operations
+        private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net
+        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations
+        private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
-        private static HRTimer _timer;
         static WaitHandle[] _tEvents;
+        private static HRTimer _timer;
         private static Guid _guid = Guid.NewGuid();
         private static string _sGuid = _guid.ToString();
+        private static readonly int _threadsCount = _parallelOperations;
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
 
         internal static void WriteLog4Net(object obj)
@@ -54,13 +54,13 @@ namespace IPCLogger.TestService
                 tlsObj["_nvarchar"] = _sGuid;
                 tlsObj["_uniqueidentifier"] = _guid;
 
+                //ApplicableForTester.WriteMessage();
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
                 _timer = HRTimer.CreateAndStart();
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
-                    //LFactory.Instance.Write(LogEvent.Fatal, _sGuid);
                 }
             }
 
