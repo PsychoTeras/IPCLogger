@@ -11,7 +11,7 @@ namespace IPCLogger.Core.Loggers.LDebug
 #region ILogger
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+            string text, bool writeLine, bool immediateFlush)
         {
             if (Settings.Trace)
             {
@@ -23,7 +23,7 @@ namespace IPCLogger.Core.Loggers.LDebug
                 {
                     Trace.Write(text, EventNamesCache.GetEventName(eventType));
                 }
-                if (Settings.ImmediateFlush) Trace.Flush();
+                if (immediateFlush || Settings.ImmediateFlush) Trace.Flush();
             }
             else
             {
@@ -35,7 +35,7 @@ namespace IPCLogger.Core.Loggers.LDebug
                 {
                     Debug.Write(text, EventNamesCache.GetEventName(eventType));
                 }
-                if (Settings.ImmediateFlush) Debug.Flush();
+                if (immediateFlush || Settings.ImmediateFlush) Debug.Flush();
             }
         }
 

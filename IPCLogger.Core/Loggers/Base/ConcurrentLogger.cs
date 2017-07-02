@@ -40,13 +40,17 @@ namespace IPCLogger.Core.Loggers.Base
             string text, bool writeLine);
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+            string text, bool writeLine, bool immediateFlush)
         {
             lock (_lockObj)
             {
                 if (_initialized)
                 {
                     WriteConcurrent(callerType, eventType, eventName, text, writeLine);
+                    if (immediateFlush)
+                    {
+                        Flush();
+                    }
                 }
             }
         }

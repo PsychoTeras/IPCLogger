@@ -9,14 +9,23 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual int DefQueueSize { get { return 100; } }
         protected virtual int DefMaxQueueAge { get { return 3; } }
-        public virtual int PeriodicFlushInterval { get { return 1000; } }
+
+#endregion
+
+#region Private fields
+
+        private int _maxQueueAge;
 
 #endregion
 
 #region Properties
 
+        public int MaxQueueAge
+        {
+            get { return _maxQueueAge; }
+            set { _maxQueueAge = value*1000; }
+        }
         public virtual int QueueSize { get; set; }
-        public virtual int MaxQueueAge { get; set; }
 
 #endregion
 

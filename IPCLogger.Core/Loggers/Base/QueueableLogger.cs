@@ -9,8 +9,6 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Private fields
 
-        private DateTime _lastFlushed;
-
         private object _lockObj;
         private object _lockFlush;
 
@@ -66,10 +64,9 @@ namespace IPCLogger.Core.Loggers.Base
                 {
                     InitializeQueue();
 
-                    _lastFlushed = DateTime.UtcNow;
                     _reSusped = new ManualResetEvent(true);
 
-                    if (Settings.QueueSize > 0)
+                    if (Settings.MaxQueueAge > 0)
                     {
                         _evStopPeriodicFlush = new ManualResetEvent(false);
                         _threadPeriodicFlush = new Thread(DoPeriodicFlush);
@@ -126,7 +123,7 @@ namespace IPCLogger.Core.Loggers.Base
             string text, bool writeLine);
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+            string text, bool writeLine, bool immediateFlush)
         {
             lock (_lockObj)
             {
@@ -134,7 +131,7 @@ namespace IPCLogger.Core.Loggers.Base
 
                 WriteQueue(callerType, eventType, eventName, text, writeLine);
 
-                if (ShouldFlushQueue)
+                if (immediateFlush || ShouldFlushQueue)
                 {
                     Flush();
                 }
@@ -152,7 +149,6 @@ namespace IPCLogger.Core.Loggers.Base
                 try
                 {
                     FlushQueue();
-                    _lastFlushed = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -221,18 +217,14 @@ namespace IPCLogger.Core.Loggers.Base
         {
             while (Thread.CurrentThread.IsAlive)
             {
-                TimeSpan queueAge = DateTime.UtcNow - _lastFlushed;
-                if (queueAge.TotalSeconds >= Settings.MaxQueueAge &&
-                    _reSusped.WaitOne() && Thread.CurrentThread.IsAlive)
+                if (_evStopPeriodicFlush.WaitOne(Settings.MaxQueueAge)) return;
+
+                if (_reSusped.WaitOne() && Thread.CurrentThread.IsAlive)
                 {
                     lock (_lockObj)
                     {
                         Flush();
                     }
-                }
-                if (_evStopPeriodicFlush.WaitOne(Settings.PeriodicFlushInterval))
-                {
-                    return;
                 }
             }
         }

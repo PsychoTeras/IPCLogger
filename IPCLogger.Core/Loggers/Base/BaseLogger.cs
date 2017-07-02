@@ -65,8 +65,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Class methods
 
-        protected internal abstract void Write(Type callerType, Enum eventType, 
-            string eventName, string text, bool writeLine);
+        protected internal abstract void Write(Type callerType, Enum eventType, string eventName, 
+            string text, bool writeLine, bool immediateFlush);
 
         internal void SetPatternsFactory(PFactory pFactory)
         {
@@ -181,13 +181,14 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void InitSettings()
         {
-            Settings = (TSettings) Activator.CreateInstance(typeof (TSettings), GetType(),
-                new Action(OnSetupSettings));
+            Settings = (TSettings) Activator.CreateInstance(typeof (TSettings), GetType(), new Action(OnSetupSettings));
         }
 
         private bool ProcessText(Type callerType, Enum eventType, int eventTypeId, ref string text,
-            out string eventName)
+            out string eventName, out bool immediateFlush)
         {
+            immediateFlush = false;
+
             if (Patterns != null && eventType != null)
             {
                 eventName = EventNamesCache.GetEventName(eventType, eventTypeId);
@@ -199,6 +200,7 @@ namespace IPCLogger.Core.Loggers.Base
                 Pattern pattern = Patterns.Get(callerType, eventName);
                 if (pattern != null)
                 {
+                    immediateFlush = pattern.ImmediateFlush;
                     text = SFactory.Process(callerType, eventType, text, pattern, Patterns);
                 }
             }
@@ -206,6 +208,7 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 eventName = null;
             }
+
             return true;
         }
 
@@ -213,16 +216,16 @@ namespace IPCLogger.Core.Loggers.Base
         {
             try
             {
-                if (PreInitialize != null) PreInitialize();
-                Write(null, null, null, text, writeLine);
+                PreInitialize?.Invoke();
+
+                Write(null, null, null, text, writeLine, false);
             }
             catch (Exception ex)
             {
                 string msgText = !writeLine || text != null
                     ? string.Format(", text '{0}'", text)
                     : null;
-                string msg = string.Format("Write{0} failed for {1}{2}",
-                    writeLine ? "Line" : null, this, msgText);
+                string msg = string.Format("Write{0} failed for {1}{2}", writeLine ? "Line" : null, this, msgText);
                 CatchLoggerException(msg, ex);
             }
         }
@@ -231,13 +234,15 @@ namespace IPCLogger.Core.Loggers.Base
         {
             try
             {
-                if (PreInitialize != null) PreInitialize();
+                PreInitialize?.Invoke();
+
                 int eventTypeId = eventType != null ? (int) (object) eventType : 0;
                 Type callerType = CallerTypesCache.GetCallerType();
                 string eventName;
-                if (ProcessText(callerType, eventType, eventTypeId, ref text, out eventName))
+                bool immediateFlush;
+                if (ProcessText(callerType, eventType, eventTypeId, ref text, out eventName, out immediateFlush))
                 {
-                    Write(callerType, eventType, eventName, text, writeLine);
+                    Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
                 }
             }
             catch (Exception ex)
@@ -255,6 +260,7 @@ namespace IPCLogger.Core.Loggers.Base
         private void WriteException(Enum eventType, Exception ex, string text, bool writeLine)
         {
             if (ex == null) return;
+
             using (LSObject lsObj = LS.Push())
             {
                 lsObj.Exception = ex;

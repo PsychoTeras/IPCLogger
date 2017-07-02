@@ -8,6 +8,7 @@ using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
 using IPCLogger.Core.Storages;
+using IPCLogger.TestService.Common;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -21,7 +22,7 @@ namespace IPCLogger.TestService
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                                         //Do we use WriteLogIPC or WriteLog4Net
 
-        private static readonly int _recordsCount = 3000;                                                     //Number of iterations
+        private static readonly int _recordsCount = 5000;                                                     //Number of iterations
         private static readonly int _threadsCount = Environment.ProcessorCount / Environment.ProcessorCount;    //Number of parallel operations
 
         //-------------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace IPCLogger.TestService
+namespace IPCLogger.TestService.Common
 {
     public class HRTimer
     {

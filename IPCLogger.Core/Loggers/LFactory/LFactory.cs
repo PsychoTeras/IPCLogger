@@ -79,7 +79,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 #region ILogger
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+            string text, bool writeLine, bool immediateFlush)
         {
             if (!_initialized) return;
 
@@ -93,7 +93,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                     {
                         if (logger.CheckApplicableEvent(eventName))
                         {
-                            logger.Write(callerType, eventType, eventName, text, writeLine);
+                            logger.Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
                         }
                     }
                 }
@@ -104,7 +104,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 {
                     if (logger.CheckApplicableEvent(eventName))
                     {
-                        logger.Write(callerType, eventType, eventName, text, writeLine);
+                        logger.Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
                     }
                 }
             }
@@ -360,8 +360,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 (
                     t => t.Name == declaredLogger.TypeName &&
                          (string.IsNullOrEmpty(declaredLogger.Namespace) ||
-                          (t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, 
-                           StringComparison.InvariantCultureIgnoreCase)))
+                          (t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, StringComparison.InvariantCultureIgnoreCase)))
                 );
 
             BaseLoggerInt logger = loggerType != null

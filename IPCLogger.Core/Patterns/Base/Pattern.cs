@@ -8,11 +8,13 @@ namespace IPCLogger.Core.Patterns.Base
 
         public int Id;
         public string Content;
+        public bool ImmediateFlush;
 
-        public Pattern(string content)
+        public Pattern(string content, bool immediateFlush)
         {
             Id = Interlocked.Increment(ref _idCounter);
             Content = content;
+            ImmediateFlush = immediateFlush;
         }
 
         public void Changed()

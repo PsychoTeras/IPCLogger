@@ -20,7 +20,7 @@ namespace IPCLogger.Core.Loggers.LSysDebug
 
         [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+            string text, bool writeLine, bool immediateFlush)
         {
             if (writeLine) text += Constants.NewLine;
             OutputDebugString(text);

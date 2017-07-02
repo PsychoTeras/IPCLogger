@@ -203,12 +203,11 @@ get_generic_pattern:
 
             foreach (XmlNode patternNode in patternNodes)
             {
-                XmlNodeList contentNodes = patternNode.SelectNodes(PATTERN_CONTENT_CFG_PATH);
-                XmlNode[] orderedNodes = contentNodes.
+                IEnumerable<XmlNode> contentNodes = patternNode.
+                    SelectNodes(PATTERN_CONTENT_CFG_PATH).
                     Cast<XmlNode>().
-                    Where(n => !string.IsNullOrEmpty(n.InnerText)).
-                    ToArray();
-                if (!orderedNodes.Any())
+                    Where(n => !string.IsNullOrEmpty(n.InnerText));
+                if (!contentNodes.Any())
                 {
                     continue;
                 }
@@ -221,6 +220,9 @@ get_generic_pattern:
                     _isGenericPatternAvailable = true;
                 }
 
+                XmlAttribute aImmediateFlush = patternNode.Attributes["immediate-flush"];
+                bool immediateFlush = aImmediateFlush != null && bool.TryParse(aImmediateFlush.Value, out immediateFlush) && immediateFlush;
+
                 foreach (string s in events.Split(Constants.Splitter))
                 {
                     string @event = s.Trim();
@@ -231,7 +233,7 @@ get_generic_pattern:
                         ? new RawPatterns(@event)
                         : tmpRawPatterns[@event];
 
-                    SetupContent(rawPattern, orderedNodes, tmpCompiledUntypedPatterns);
+                    SetupContent(rawPattern, contentNodes, tmpCompiledUntypedPatterns, immediateFlush);
                     if (newPattern && !rawPattern.Empty)
                     {
                         tmpRawPatterns.Add(@event, rawPattern);
@@ -246,10 +248,10 @@ get_generic_pattern:
             _missingPatterns = new HashSet<string>();
         }
 
-        private void SetupContent(RawPatterns rawPattern, XmlNode[] orderedNodes,
-            Dictionary<string, Pattern> compiledUntypedPatterns)
+        private void SetupContent(RawPatterns rawPattern, IEnumerable<XmlNode> contentNodes,
+            Dictionary<string, Pattern> compiledUntypedPatterns, bool immediateFlush)
         {
-            foreach (XmlNode contentNode in orderedNodes)
+            foreach (XmlNode contentNode in contentNodes)
             {
                 string content = contentNode.InnerText.Trim().
                     Replace("\\r\\n", "\r\n").
@@ -257,19 +259,18 @@ get_generic_pattern:
                     Replace("\\n", "\n");
 
                 XmlAttribute aApplicableFor = contentNode.Attributes["applicable-for"];
-                string[] applicableFor = aApplicableFor != null
+                IEnumerable<string> applicableFor = aApplicableFor != null
                     ? aApplicableFor.Value.
-                        Split(new[] { Constants.Splitter }, StringSplitOptions.RemoveEmptyEntries).
-                        Distinct().
-                        ToArray()
-                    : new[] { Constants.ApplicableForAllMark };
+                        Split(new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries).
+                        Distinct()
+                    : new[] {Constants.ApplicableForAllMark};
 
                 foreach (string classMask in applicableFor)
                 {
                     if (ReferenceEquals(classMask, Constants.ApplicableForAllMark) &&
                         !compiledUntypedPatterns.ContainsKey(rawPattern.Event))
                     {
-                        compiledUntypedPatterns.Add(rawPattern.Event, new Pattern(content));
+                        compiledUntypedPatterns.Add(rawPattern.Event, new Pattern(content, immediateFlush));
                         continue;
                     }
                     
@@ -280,11 +281,11 @@ get_generic_pattern:
                         {
                             string regexClassMask = Regex.Escape(classMask).Replace(@"\*", ".*?");
                             Regex regexMask = new Regex(regexClassMask, RegexOptions.Compiled);
-                            rawPattern.Masked.Add(regexMask, new Pattern(content));
+                            rawPattern.Masked.Add(regexMask, new Pattern(content, immediateFlush));
                         }
                         else
                         {
-                            rawPattern.Strong.Add(classMask, new Pattern(content));
+                            rawPattern.Strong.Add(classMask, new Pattern(content, immediateFlush));
                         }
                         continue;
                     }

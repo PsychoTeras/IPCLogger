@@ -88,10 +88,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public void ApplyChanges()
         {
-            if (_onApplyChanges != null)
-            {
-                _onApplyChanges();
-            }
+            _onApplyChanges?.Invoke();
         }
 
         public virtual void Setup()
@@ -187,11 +184,11 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 string[] allowedEvents = aAllowEvents.InnerText.Split
                     (
-                        new[] { Constants.Splitter }, StringSplitOptions.RemoveEmptyEntries
+                        new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries
                     );
                 set = new HashSet<string>
                     (
-                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty)
+                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty).Distinct()
                     );
                 if (set.Count == 0)
                 {

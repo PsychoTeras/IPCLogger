@@ -127,10 +127,7 @@ namespace IPCLogger.Core.Loggers.LIPC
                         OrderBy(ev => ev.Id);
                     foreach (LogRecord record in newEvents)
                     {
-                        if (_onEvent != null)
-                        {
-                            _onEvent(record);
-                        }
+                        _onEvent?.Invoke(record);
                         _processedEventsList.Add(record.Id);
                     }
 
