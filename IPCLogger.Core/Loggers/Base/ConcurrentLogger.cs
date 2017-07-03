@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.Base
 {
@@ -8,16 +10,25 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Private fields
 
-        private object _lockObj;
-        private volatile bool _initialized;
+        private LightLock _lockObj;
+        private bool _shouldLock;
+        private Thread _onSetupSettingsThread;
+
+#endregion
+
+#region Protected fields
+
+        protected bool Initialized { get; private set; }
 
 #endregion
 
 #region Ctor
 
-        protected ConcurrentLogger()
+        protected ConcurrentLogger(bool threadSafetyIsGuaranteed) 
+            : base(threadSafetyIsGuaranteed)
         {
-            _lockObj = new object();
+            _lockObj = new LightLock();
+            _shouldLock = !threadSafetyIsGuaranteed;
         }
 
 #endregion
@@ -26,73 +37,108 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected override void OnSetupSettings()
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
-                if (_initialized)
-                {
-                    Deinitialize();
-                    Initialize();
-                }
+                if (!Initialized) return;
+                _onSetupSettingsThread = Thread.CurrentThread;
+                Deinitialize();
+                Initialize();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("OnSetupSettings failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _onSetupSettingsThread = null;
+                _lockObj.Set(_shouldLock);
             }
         }
 
         protected abstract void WriteConcurrent(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine);
 
-        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
+        protected internal override void Write(Type callerType, Enum eventType, string eventName,
             string text, bool writeLine, bool immediateFlush)
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
-                if (_initialized)
-                {
-                    WriteConcurrent(callerType, eventType, eventName, text, writeLine);
-                    if (immediateFlush)
-                    {
-                        Flush();
-                    }
-                }
+                if (!Initialized) return;
+                WriteConcurrent(callerType, eventType, eventName, text, writeLine);
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Write failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
+            }
+
+            if (immediateFlush)
+            {
+                Flush();
             }
         }
 
-        protected abstract void InitializeConcurrent();
+        protected abstract bool InitializeConcurrent();
 
         public override void Initialize()
         {
-            lock (_lockObj)
+            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
             {
-                if (_initialized) return;
-
-                try
+                _lockObj.WaitOne();
+            }
+            try
+            {
+                if (!Initialized)
                 {
-                    InitializeConcurrent();
-                    _initialized = true;
+                    Initialized = InitializeConcurrent();
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Initialize failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
                 {
-                    string msg = string.Format("Initialize failed for {0}", this);
-                    CatchLoggerException(msg, ex);
+                    _lockObj.Set();
                 }
             }
         }
 
-        protected abstract void DeinitializeConcurrent();
+        protected abstract bool DeinitializeConcurrent();
 
         public override void Deinitialize()
         {
-            lock (_lockObj)
+            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
             {
-                if (!_initialized) return;
-                
-                try
+                _lockObj.WaitOne(_shouldLock);
+            }
+            try
+            {
+                if (Initialized)
                 {
-                    DeinitializeConcurrent();
-                    _initialized = false;
+                    Initialized = !DeinitializeConcurrent();
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Deinitialize failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
                 {
-                    string msg = string.Format("Deinitialize failed for {0}", this);
-                    CatchLoggerException(msg, ex);
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }
@@ -101,17 +147,20 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Flush()
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
-                try
-                {
-                    FlushConcurrent();
-                }
-                catch (Exception ex)
-                {
-                    string msg = string.Format("Flush failed for {0}", this);
-                    CatchLoggerException(msg, ex);
-                }
+                if (!Initialized) return;
+                FlushConcurrent();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Flush failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
             }
         }
 

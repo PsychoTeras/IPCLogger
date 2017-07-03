@@ -8,6 +8,15 @@ namespace IPCLogger.Core.Loggers.LDebug
     public sealed class LDebug : BaseLogger<LDebugSettings>
     {
 
+#region Ctor
+
+        public LDebug(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 

@@ -31,8 +31,7 @@ namespace IPCLogger.Core.Patterns.Base
             Strong = new Dictionary<string, Pattern>();
         }
 
-        public RawPatterns(string @event)
-            : this()
+        public RawPatterns(string @event) : this()
         {
             Event = @event;
         }

@@ -18,7 +18,11 @@ namespace IPCLogger.Core.Loggers.Base
         private ManualResetEvent _reSusped;
         private volatile bool _suspended;
 
-        private volatile bool _initialized;
+#endregion
+
+#region Protected fields
+
+        protected bool Initialized { get; private set; }
 
 #endregion
 
@@ -30,7 +34,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Ctor
 
-        protected QueueableLogger()
+        protected QueueableLogger(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
         {
             _lockObj = new object();
             _lockFlush = new object();
@@ -44,7 +49,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             lock (_lockObj)
             {
-                if (_initialized)
+                if (Initialized)
                 {
                     Deinitialize();
                     Initialize();
@@ -52,29 +57,29 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        protected abstract void InitializeQueue();
+        protected abstract bool InitializeQueue();
 
         public override void Initialize()
         {
             lock (_lockObj)
             {
-                if (_initialized) return;
+                if (Initialized) return;
 
                 try
                 {
-                    InitializeQueue();
-
-                    _reSusped = new ManualResetEvent(true);
-
-                    if (Settings.MaxQueueAge > 0)
+                    Initialized = InitializeQueue();
+                    if (Initialized)
                     {
-                        _evStopPeriodicFlush = new ManualResetEvent(false);
-                        _threadPeriodicFlush = new Thread(DoPeriodicFlush);
-                        _threadPeriodicFlush.IsBackground = true;
-                        _threadPeriodicFlush.Start();
-                    }
+                        _reSusped = new ManualResetEvent(true);
 
-                    _initialized = true;
+                        if (Settings.MaxQueueAge > 0)
+                        {
+                            _evStopPeriodicFlush = new ManualResetEvent(false);
+                            _threadPeriodicFlush = new Thread(DoPeriodicFlush);
+                            _threadPeriodicFlush.IsBackground = true;
+                            _threadPeriodicFlush.Start();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -84,13 +89,13 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        protected abstract void DeinitializeQueue();
+        protected abstract bool DeinitializeQueue();
 
         public override void Deinitialize()
         {
             lock (_lockObj)
             {
-                if (!_initialized) return;
+                if (!Initialized) return;
 
                 try
                 {
@@ -102,14 +107,12 @@ namespace IPCLogger.Core.Loggers.Base
                         _threadPeriodicFlush = null;
                     }
 
-                    if (_initialized)
+                    if (Initialized)
                     {
                         Flush();
                     }
 
-                    DeinitializeQueue();
-
-                    _initialized = false;
+                    Initialized = !DeinitializeQueue();
                 }
                 catch (Exception ex)
                 {
@@ -127,7 +130,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             lock (_lockObj)
             {
-                if (!_initialized) return;
+                if (!Initialized) return;
 
                 WriteQueue(callerType, eventType, eventName, text, writeLine);
 
@@ -144,7 +147,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             lock (_lockFlush)
             {
-                if (!_initialized) return;
+                if (!Initialized) return;
 
                 try
                 {
@@ -164,7 +167,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             lock (_lockObj)
             {
-                if (!_initialized || _suspended) return false;
+                if (!Initialized || _suspended) return false;
                 
                 try
                 {
@@ -190,7 +193,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             lock (_lockObj)
             {
-                if (!_initialized || !_suspended) return false;
+                if (!Initialized || !_suspended) return false;
                 try
                 {
                     if (ResumeQueue())

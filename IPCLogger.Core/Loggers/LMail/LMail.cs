@@ -32,17 +32,29 @@ namespace IPCLogger.Core.Loggers.LMail
 
 #endregion
 
+#region Ctor
+
+        public LMail(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
-        protected override void InitializeQueue()
+        protected override bool InitializeQueue()
         {
             _pendingMails = new List<MailData>();
             _mailsForDeleting = new HashSet<MailData>();
-
             ConfigureSmtpClient();
+            return true;
         }
 
-        protected override void DeinitializeQueue() { }
+        protected override bool DeinitializeQueue()
+        {
+            return true;
+        }
 
         protected override void WriteQueue(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine)

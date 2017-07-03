@@ -21,14 +21,14 @@ namespace IPCLogger.TestService
         //--------------------------------------------Configure test environment here//--------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net
-        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations
+        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
         private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
         static WaitHandle[] _tEvents;
         private static HRTimer _timer;
-        private static Guid _guid = Guid.NewGuid();
+        private static Guid _guid = new Guid();
         private static string _sGuid = _guid.ToString();
         private static readonly int _threadsCount = _parallelOperations;
         private static ILog _logger = LogManager.GetLogger(typeof(Program));

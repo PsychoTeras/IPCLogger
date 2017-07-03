@@ -16,6 +16,15 @@ namespace IPCLogger.Core.Loggers.LSysDebug
 
 #endregion
 
+#region Ctor
+
+        public LSysDebug(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
         [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]

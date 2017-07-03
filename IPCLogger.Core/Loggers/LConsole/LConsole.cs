@@ -4,22 +4,23 @@ using IPCLogger.Core.Snippets;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {
-    public sealed class LConsole : BaseLogger<LConsoleSettings>
+    public sealed class LConsole : SimpleLogger<LConsoleSettings>
     {
 
-#region Private fields
+#region Ctor
 
-        private volatile bool _initialized;
+        public LConsole(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
 
 #endregion
 
 #region ILogger
 
-        protected internal override void Write(Type callerType, Enum eventType, string eventName,
-            string text, bool writeLine, bool immediateFlush)
+        protected override void WriteSimple(Type callerType, Enum eventType, string eventName,
+            string text, bool writeLine)
         {
-            if (!_initialized) return;
-
             bool isColorsSet = SetColors(eventName);
 
             if (writeLine)
@@ -37,23 +38,28 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
         }
 
-        public override void Initialize()
+        protected override bool InitializeSimple()
         {
             try
             {
-                _initialized = Console.WindowHeight > 0;
+                if (Console.WindowHeight <= 0) return false;
+
                 if (!string.IsNullOrEmpty(Settings.Title))
                 {
                     Console.Title = SFactory.Process(Settings.Title, Patterns);
                 }
+                return true;
             }
             catch
             {
-                _initialized = false;
+                return false;
             }
         }
 
-        public override void Deinitialize() { }
+        protected override bool DeinitializeSimple()
+        {
+            return true;
+        }
 
 #endregion
 
@@ -88,17 +94,17 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         public int Read()
         {
-            return _initialized ? Console.Read() : -1;
+            return Initialized ? Console.Read() : -1;
         }
 
         public string ReadLine()
         {
-            return _initialized ? Console.ReadLine() : null;
+            return Initialized ? Console.ReadLine() : null;
         }
 
         public ConsoleKeyInfo ReadKey()
         {
-            return _initialized ? Console.ReadKey() : default(ConsoleKeyInfo);
+            return Initialized ? Console.ReadKey() : default(ConsoleKeyInfo);
         }
 
 #endregion

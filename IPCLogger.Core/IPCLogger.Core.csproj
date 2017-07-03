@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IPCLogger.Core</RootNamespace>
     <AssemblyName>IPCLogger.Core</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,6 +70,7 @@
     <Compile Include="Caches\CallerTypesCache.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Caches\EventNamesCache.cs" />
+    <Compile Include="Common\LightLock.cs" />
     <Compile Include="Common\LogEvent.cs" />
     <Compile Include="Loggers\Base\BaseLogger.cs" />
     <Compile Include="Loggers\Base\BaseSettings.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Attributes\NonSettingAttribute.cs" />
     <Compile Include="Loggers\Base\QueueableLogger.cs" />
     <Compile Include="Loggers\Base\QueueableSettings.cs" />
+    <Compile Include="Loggers\Base\SimpleLogger.cs" />
     <Compile Include="Loggers\LConsole\LConsoleSettings.cs" />
     <Compile Include="Loggers\LDB\DAL\LoggerDAL.cs" />
     <Compile Include="Loggers\LDB\DAL\ColumnInfo.cs" />

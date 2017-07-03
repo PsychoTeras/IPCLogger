@@ -17,6 +17,15 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #endregion
 
+#region Ctor
+
+        public LIPC(bool threadSafetyIsGuaranteed) 
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
         protected override void WriteConcurrent(Type callerType, Enum eventType, string eventName,
@@ -27,7 +36,7 @@ namespace IPCLogger.Core.Loggers.LIPC
             _ipcEventRecords.Add(_eventItem);
         }
 
-        protected override void InitializeConcurrent()
+        protected override bool InitializeConcurrent()
         {
             _eventItem = new LogRecord();
 
@@ -43,12 +52,15 @@ namespace IPCLogger.Core.Loggers.LIPC
             }
             string name = string.Format(@"Global\LIPC~{0}", mmfName);
             _ipcEventRecords = MapRingBuffer<LogRecord>.Host(name, Settings.CachedRecordsNum);
+
+            return true;
         }
 
-        protected override void DeinitializeConcurrent()
+        protected override bool DeinitializeConcurrent()
         {
             _ipcEventRecords.Dispose();
             _ipcEventRecords = null;
+            return true;
         }
 
 #endregion

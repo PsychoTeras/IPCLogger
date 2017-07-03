@@ -14,11 +14,9 @@ namespace IPCLogger.TestService
             InitializeComponent();
         }
 
-        public CommonService(OnServiceStart serviceStart)
-            : this(serviceStart, null) { }
+        public CommonService(OnServiceStart serviceStart) : this(serviceStart, null) { }
 
-        public CommonService(OnServiceStart serviceStart, Action serviceStop)
-            : this()
+        public CommonService(OnServiceStart serviceStart, Action serviceStop) : this()
         {
             _serviceStart = serviceStart;
             _serviceStop = serviceStop;
@@ -26,18 +24,12 @@ namespace IPCLogger.TestService
 
         protected override void OnStart(string[] args)
         {
-            if (_serviceStart != null)
-            {
-                _serviceStart(args);
-            }
+            _serviceStart?.Invoke(args);
         }
 
         protected override void OnStop()
         {
-            if (_serviceStop != null)
-            {
-                _serviceStop();
-            }
+            _serviceStop?.Invoke();
         }
     }
 }

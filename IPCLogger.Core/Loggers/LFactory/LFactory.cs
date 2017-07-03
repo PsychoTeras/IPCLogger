@@ -20,7 +20,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Private fields
 
-        private object _syncObj;
+        private LightLock _syncObj;
         private BaseLoggerInt[] _loggers;
 
         private string _configurationFile;
@@ -40,13 +40,14 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         static LFactory()
         {
-            Instance = new LFactory();
+            Instance = new LFactory(false);
             AvailableLoggers = GetAvailableLoggers();
         }
 
-        private LFactory()
+        private LFactory(bool threadSafetyIsGuaranteed) 
+            : base(threadSafetyIsGuaranteed)
         {
-            _syncObj = new object();
+            _syncObj = new LightLock();
             PreInitialize = OnceInitializedCheck;
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         }
@@ -78,28 +79,16 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region ILogger
 
-        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
+        protected internal override void Write(Type callerType, Enum eventType, string eventName,
             string text, bool writeLine, bool immediateFlush)
         {
             if (!_initialized) return;
 
-            if (Settings.ShouldLock)
+            _syncObj.WaitOne(Settings.ShouldLock);
+            try
             {
-                lock (_syncObj)
-                {
-                    if (!_initialized) return;
+                if (!_initialized) return;
 
-                    foreach (BaseLoggerInt logger in _loggers)
-                    {
-                        if (logger.CheckApplicableEvent(eventName))
-                        {
-                            logger.Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
-                        }
-                    }
-                }
-            }
-            else
-            {
                 foreach (BaseLoggerInt logger in _loggers)
                 {
                     if (logger.CheckApplicableEvent(eventName))
@@ -107,6 +96,10 @@ namespace IPCLogger.Core.Loggers.LFactory
                         logger.Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
                     }
                 }
+            }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -122,7 +115,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override bool Suspend()
         {
-            lock (_syncObj)
+            _syncObj.WaitOne(Settings.ShouldLock);
+            try
             {
                 if (_initialized)
                 {
@@ -131,13 +125,18 @@ namespace IPCLogger.Core.Loggers.LFactory
                         logger.Suspend();
                     }
                 }
-                return _initialized;
             }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
+            }
+            return _initialized;
         }
 
         public override bool Resume()
         {
-            lock (_syncObj)
+            _syncObj.WaitOne(Settings.ShouldLock);
+            try
             {
                 if (_initialized)
                 {
@@ -146,21 +145,29 @@ namespace IPCLogger.Core.Loggers.LFactory
                         logger.Resume();
                     }
                 }
-                return _initialized;
             }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
+            }
+            return _initialized;
         }
 
         public override void Flush()
         {
-            lock (_syncObj)
+            _syncObj.WaitOne(Settings.ShouldLock);
+            try
             {
-                if (_initialized)
+                if (!_initialized) return;
+
+                foreach (BaseLoggerInt logger in _loggers)
                 {
-                    foreach (BaseLoggerInt logger in _loggers)
-                    {
-                        logger.Flush();
-                    }
+                    logger.Flush();
                 }
+            }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -168,34 +175,38 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Class methods
 
-        public void Initialize(string configurationFile)
+        public bool Initialize(string configurationFile)
         {
-            lock (_syncObj)
+            _syncObj.WaitOne(Settings.ShouldLock);
+            try
             {
-                Deinitialize();
+                if (_initialized) return false;
 
-                try
+                Settings.Setup(_configurationFile = configurationFile);
+                Patterns.Setup(_configurationFile);
+
+                if (Settings.Enabled)
                 {
-                    Settings.Setup(_configurationFile = configurationFile);
-                    Patterns.Setup(_configurationFile);
-
-                    if (Settings.Enabled)
+                    List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
+                    InstantiateLoggers(declaredLoggers);
+                    foreach (BaseLoggerInt logger in _loggers)
                     {
-                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
-                        InstantiateLoggers(declaredLoggers);
-                        foreach (BaseLoggerInt logger in _loggers)
-                        {
-                            logger.Initialize();
-                        }
+                        logger.Initialize();
                     }
-                    _initialized = true;
+                }
+                _initialized = true;
 
-                    SetupAutoReloadWatcher(configurationFile);
-                }
-                catch (Exception ex)
-                {
-                    CatchLoggerException("Failed to initialize LFactory", ex);
-                }
+                SetupAutoReloadWatcher(configurationFile);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CatchLoggerException("Failed to initialize LFactory", ex);
+                return false;
+            }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -221,9 +232,13 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
         }
 
-        private void DeinitializeInt(bool keepWatcher)
+        private void DeinitializeInt(bool configurationFileChanged)
         {
-            lock (_syncObj)
+            if (!configurationFileChanged)
+            {
+                _syncObj.WaitOne(Settings.ShouldLock);
+            }
+            try
             {
                 if (!_initialized) return;
 
@@ -234,7 +249,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 }
                 _loggers = null;
 
-                if (!keepWatcher && _configurationFileWatcher != null)
+                if (!configurationFileChanged && _configurationFileWatcher != null)
                 {
                     _configurationFileWatcher.EnableRaisingEvents = false;
                     _configurationFileWatcher.Dispose();
@@ -243,85 +258,95 @@ namespace IPCLogger.Core.Loggers.LFactory
 
                 _initialized = false;
             }
+            finally
+            {
+                if (!configurationFileChanged)
+                {
+                    _syncObj.Set(Settings.ShouldLock);
+                }
+            }
         }
 
         private void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
         {
-            lock (_syncObj)
+            _syncObj.WaitOne(Settings.ShouldLock);
+
+            try
             {
                 _configurationFileWatcher.EnableRaisingEvents = false;
                 Thread.Sleep(10);
 
-                try
+                Settings.Setup(_configurationFile);
+                Patterns.Setup(_configurationFile);
+                Settings.AutoReload = true;
+
+                if (Settings.Enabled)
                 {
-                    Settings.Setup(_configurationFile);
-                    Patterns.Setup(_configurationFile);
-                    Settings.AutoReload = true;
+                    List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(_configurationFile);
+                    IEnumerable<BaseLoggerInt> intLoggers = _loggers ?? new BaseLoggerInt[0];
 
-                    if (Settings.Enabled)
+                    IEnumerable<BaseLoggerInt> toRemove = intLoggers.
+                        Where(l => !declaredLoggers.Exists(dl => dl.UniqueId == l.UniqueId));
+                    foreach (BaseLoggerInt logger in toRemove)
                     {
-                        List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(_configurationFile);
-                        IEnumerable<BaseLoggerInt> intLoggers = _loggers ?? new BaseLoggerInt[0];
+                        logger.Deinitialize();
+                        logger.Dispose();
+                    }
 
-                        IEnumerable<BaseLoggerInt> toRemove = intLoggers.
-                            Where(l => !declaredLoggers.Exists(dl => dl.UniqueId == l.UniqueId));
-                        foreach (BaseLoggerInt logger in toRemove)
+                    List<BaseLoggerInt> loggers = new List<BaseLoggerInt>();
+                    List<BaseLoggerInt> newLoggers = new List<BaseLoggerInt>();
+                    if (declaredLoggers.Any())
+                    {
+                        Dictionary<string, BaseLoggerInt> existings = intLoggers.
+                            Where(l => !toRemove.Contains(l)).
+                            ToDictionary(l => l.UniqueId, l => l);
+                        foreach (DeclaredLogger declaredLogger in declaredLoggers)
                         {
-                            logger.Deinitialize();
-                            logger.Dispose();
-                        }
-
-                        List<BaseLoggerInt> loggers = new List<BaseLoggerInt>();
-                        List<BaseLoggerInt> newLoggers = new List<BaseLoggerInt>();
-                        if (declaredLoggers.Any())
-                        {
-                            Dictionary<string, BaseLoggerInt> existings = intLoggers.
-                                Where(l => !toRemove.Contains(l)).
-                                ToDictionary(l => l.UniqueId, l => l);
-                            foreach (DeclaredLogger declaredLogger in declaredLoggers)
+                            BaseLoggerInt logger;
+                            if (existings.TryGetValue(declaredLogger.UniqueId, out logger))
                             {
-                                BaseLoggerInt logger;
-                                if (existings.TryGetValue(declaredLogger.UniqueId, out logger))
+                                if (SetupInstantiatedLogger(declaredLogger, logger))
                                 {
-                                    if (SetupInstantiatedLogger(declaredLogger, logger))
-                                    {
-                                        loggers.Add(logger);
-                                    }
+                                    loggers.Add(logger);
                                 }
-                                else
+                            }
+                            else
+                            {
+                                logger = InstantiateLoggerByDeclared(declaredLogger);
+                                if (logger != null && SetupInstantiatedLogger(declaredLogger, logger))
                                 {
-                                    logger = InstantiateLoggerByDeclared(declaredLogger);
-                                    if (logger != null && SetupInstantiatedLogger(declaredLogger, logger))
-                                    {
-                                        loggers.Add(logger);
-                                        newLoggers.Add(logger);
-                                    }
+                                    loggers.Add(logger);
+                                    newLoggers.Add(logger);
                                 }
                             }
                         }
-
-                        foreach (BaseLoggerInt logger in newLoggers)
-                        {
-                            logger.Initialize();
-                        }
-
-                        _loggers = loggers.ToArray();
-                        _initialized = true;
                     }
-                    else
+
+                    foreach (BaseLoggerInt logger in newLoggers)
                     {
-                        DeinitializeInt(true);
+                        logger.Initialize();
                     }
+
+                    _loggers = loggers.ToArray();
+                    _initialized = true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    CatchLoggerException("Unable to autoreload LFactory", ex);
+                    DeinitializeInt(true);
                 }
 
                 if (_configurationFileWatcher != null)
                 {
                     _configurationFileWatcher.EnableRaisingEvents = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                CatchLoggerException("Unable to autoreload LFactory", ex);
+            }
+            finally
+            {
+                _syncObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -364,7 +389,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 );
 
             BaseLoggerInt logger = loggerType != null
-                ? Activator.CreateInstance(loggerType) as BaseLoggerInt 
+                ? Activator.CreateInstance(loggerType, new object[] {true}) as BaseLoggerInt
                 : null;
             if (logger != null)
             {

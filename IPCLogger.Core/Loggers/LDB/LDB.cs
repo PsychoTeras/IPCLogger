@@ -27,22 +27,34 @@ namespace IPCLogger.Core.Loggers.LDB
 
 #endregion
 
+#region Ctor
+
+        public LDB(bool threadSafetyIsGuaranteed)
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
-        protected override void InitializeQueue()
+        protected override bool InitializeQueue()
         {
             _dal = new LoggerDAL(Settings.ConnectionString);
             Settings.InitializeTableSchema(_dal);
             InitializeDataTableStructure();
+            return true;
         }
 
-        protected override void DeinitializeQueue()
+        protected override bool DeinitializeQueue()
         {
             if (_dataTable != null)
             {
                 _dataTable.Dispose();
                 _dataTable = null;
+                return true;
             }
+            return false;
         }
 
         protected override void WriteQueue(Type callerType, Enum eventType, string eventName, 

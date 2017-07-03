@@ -21,6 +21,15 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #endregion
 
+#region Ctor
+
+        public LFile(bool threadSafetyIsGuaranteed) 
+            : base(threadSafetyIsGuaranteed)
+        {
+        }
+
+#endregion
+
 #region ILogger
 
         protected override void WriteConcurrent(Type callerType, Enum eventType, string eventName, 
@@ -31,16 +40,18 @@ namespace IPCLogger.Core.Loggers.LFile
             _logWriter.Write(text);
         }
 
-        protected override void InitializeConcurrent()
+        protected override bool InitializeConcurrent()
         {
             _currentDay = DateTime.Now;
             PrepareLogFileStream(false);
+            return true;
         }
 
-        protected override void DeinitializeConcurrent()
+        protected override bool DeinitializeConcurrent()
         {
             Flush();
             DestroyLogFileStream();
+            return true;
         }
 
         protected override void FlushConcurrent()
@@ -98,8 +109,8 @@ namespace IPCLogger.Core.Loggers.LFile
 
                 string logFile = SFactory.Process(Settings.LogFile, Patterns);
                 string logPath = Path.Combine(Settings.LogDir, logFile);
-                if ((nextDay && !logPath.Equals(_logFileName, StringComparison.InvariantCultureIgnoreCase) || 
-                    (!nextDay && !unsuspend && Settings.RecreateFile)) && 
+                if ((nextDay && !logPath.Equals(_logFileName, StringComparison.InvariantCultureIgnoreCase) ||
+                     (!nextDay && !unsuspend && Settings.RecreateFile)) &&
                     File.Exists(logPath))
                 {
                     File.Delete(logPath);
@@ -107,13 +118,13 @@ namespace IPCLogger.Core.Loggers.LFile
 
                 if (Settings.BufferSize > 0)
                 {
-                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write, 
-                        FileShare.Read, Settings.BufferSize);
+                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append,
+                        FileAccess.Write, FileShare.Read, Settings.BufferSize);
                 }
                 else
                 {
-                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append, FileAccess.Write,
-                        FileShare.Read);
+                    _fileStream = new FileStream(_logFileName = logPath, FileMode.Append,
+                        FileAccess.Write, FileShare.Read);
                 }
 
                 _logWriter = new StreamWriter(_fileStream)
