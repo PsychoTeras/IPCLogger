@@ -91,7 +91,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
             {
-                _lockObj.WaitOne();
+                _lockObj.WaitOne(_shouldLock);
             }
             try
             {
@@ -109,7 +109,7 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
                 {
-                    _lockObj.Set();
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }

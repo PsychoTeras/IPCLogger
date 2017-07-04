@@ -22,7 +22,7 @@ namespace IPCLogger.Core.Loggers.LDB
 
         protected override bool ShouldFlushQueue
         {
-            get { return _dataTable.Rows.Count >= Settings.QueueSize; }
+            get { return _rows.Count >= Settings.QueueSize; }
         }
 
 #endregion

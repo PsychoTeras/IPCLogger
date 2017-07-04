@@ -144,7 +144,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Ctor
 
-        protected BaseLogger(bool threadSafetyIsGuaranteed) : this(false, threadSafetyIsGuaranteed) { }
+        protected BaseLogger(bool threadSafetyIsGuaranteed) 
+            : this(false, threadSafetyIsGuaranteed) { }
 
         private BaseLogger(bool newInstance, bool threadSafetyIsGuaranteed)
         {

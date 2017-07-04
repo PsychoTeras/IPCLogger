@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.Base
 {
@@ -9,8 +10,10 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Private fields
 
-        private object _lockObj;
-        private object _lockFlush;
+        private LightLock _lockObj;
+        private bool _shouldLock;
+        private Thread _onSetupSettingsThread;
+        private Thread _onFlushThread;
 
         private Thread _threadPeriodicFlush;
         private ManualResetEvent _evStopPeriodicFlush;
@@ -37,8 +40,8 @@ namespace IPCLogger.Core.Loggers.Base
         protected QueueableLogger(bool threadSafetyIsGuaranteed)
             : base(threadSafetyIsGuaranteed)
         {
-            _lockObj = new object();
-            _lockFlush = new object();
+            _lockObj = new LightLock();
+            _shouldLock = !threadSafetyIsGuaranteed;
         }
 
 #endregion
@@ -47,13 +50,23 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected override void OnSetupSettings()
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
-                if (Initialized)
-                {
-                    Deinitialize();
-                    Initialize();
-                }
+                if (!Initialized) return;
+                _onSetupSettingsThread = Thread.CurrentThread;
+                Deinitialize();
+                Initialize();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("OnSetupSettings failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _onSetupSettingsThread = null;
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -61,30 +74,39 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Initialize()
         {
-            lock (_lockObj)
+            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
+            {
+                _lockObj.WaitOne(_shouldLock);
+            }
+            try
             {
                 if (Initialized) return;
 
-                try
+                Initialized = InitializeQueue();
+                if (Initialized)
                 {
-                    Initialized = InitializeQueue();
-                    if (Initialized)
-                    {
-                        _reSusped = new ManualResetEvent(true);
+                    _reSusped = new ManualResetEvent(true);
 
-                        if (Settings.MaxQueueAge > 0)
-                        {
-                            _evStopPeriodicFlush = new ManualResetEvent(false);
-                            _threadPeriodicFlush = new Thread(DoPeriodicFlush);
-                            _threadPeriodicFlush.IsBackground = true;
-                            _threadPeriodicFlush.Start();
-                        }
+                    _shouldLock |= Settings.MaxQueueAge > 0;
+                    if (Settings.MaxQueueAge > 0)
+                    {
+                        _evStopPeriodicFlush = new ManualResetEvent(false);
+                        _threadPeriodicFlush = new Thread(DoPeriodicFlush);
+                        _threadPeriodicFlush.IsBackground = true;
+                        _threadPeriodicFlush.Start();
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Initialize failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
                 {
-                    string msg = string.Format("Initialize failed for {0}", this);
-                    CatchLoggerException(msg, ex);
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }
@@ -93,31 +115,41 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Deinitialize()
         {
-            lock (_lockObj)
+            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
+            {
+                _lockObj.WaitOne(_shouldLock);
+            }
+            try
             {
                 if (!Initialized) return;
 
-                try
+                if (_threadPeriodicFlush != null)
                 {
-                    if (_threadPeriodicFlush != null)
-                    {
-                        _reSusped.Set();
-                        _evStopPeriodicFlush.Set();
-                        _threadPeriodicFlush.Join();
-                        _threadPeriodicFlush = null;
-                    }
-
-                    if (Initialized)
-                    {
-                        Flush();
-                    }
-
-                    Initialized = !DeinitializeQueue();
+                    _reSusped.Set();
+                    _evStopPeriodicFlush.Set();
+                    _threadPeriodicFlush.Join();
+                    _threadPeriodicFlush = null;
                 }
-                catch (Exception ex)
+
+                if (Initialized)
                 {
-                    string msg = string.Format("Deinitialize failed for {0}", this);
-                    CatchLoggerException(msg, ex);
+                    _onFlushThread = Thread.CurrentThread;
+                    Flush();
+                }
+
+                Initialized = !DeinitializeQueue();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Deinitialize failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _onFlushThread = null;
+                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
+                {
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }
@@ -128,16 +160,25 @@ namespace IPCLogger.Core.Loggers.Base
         protected internal override void Write(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine, bool immediateFlush)
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
                 if (!Initialized) return;
-
                 WriteQueue(callerType, eventType, eventName, text, writeLine);
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Write failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
+            }
 
-                if (immediateFlush || ShouldFlushQueue)
-                {
-                    Flush();
-                }
+            if (immediateFlush || ShouldFlushQueue)
+            {
+                Flush();
             }
         }
 
@@ -145,18 +186,25 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Flush()
         {
-            lock (_lockFlush)
+            if (_onFlushThread == null || _onFlushThread != Thread.CurrentThread)
+            {
+                _lockObj.WaitOne(_shouldLock);
+            }
+            try
             {
                 if (!Initialized) return;
-
-                try
+                FlushQueue();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Flush failed for {0}", this);
+                CatchLoggerException(msg, ex);
+            }
+            finally
+            {
+                if (_onFlushThread == null || _onFlushThread != Thread.CurrentThread)
                 {
-                    FlushQueue();
-                }
-                catch (Exception ex)
-                {
-                    string msg = string.Format("Flush failed for {0}", this);
-                    CatchLoggerException(msg, ex);
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }
@@ -165,25 +213,27 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override bool Suspend()
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
                 if (!Initialized || _suspended) return false;
-                
-                try
+
+                _suspended = SuspendQueue();
+                if (_suspended)
                 {
-                    _suspended = SuspendQueue();
-                    if (_suspended)
-                    {
-                        _reSusped.Reset();
-                    }
-                    return _suspended;
+                    _reSusped.Reset();
                 }
-                catch (Exception ex)
-                {
-                    string msg = string.Format("Suspend failed for {0}", this);
-                    CatchLoggerException(msg, ex);
-                }
+                return _suspended;
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Suspend failed for {0}", this);
+                CatchLoggerException(msg, ex);
                 return false;
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -191,24 +241,27 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override bool Resume()
         {
-            lock (_lockObj)
+            _lockObj.WaitOne(_shouldLock);
+            try
             {
                 if (!Initialized || !_suspended) return false;
-                try
+
+                _suspended = !ResumeQueue();
+                if (!_suspended)
                 {
-                    if (ResumeQueue())
-                    {
-                        _suspended = false;
-                        _reSusped.Set();
-                        return true;
-                    }
+                    _reSusped.Set();
                 }
-                catch (Exception ex)
-                {
-                    string msg = string.Format("Resume failed for {0}", this);
-                    CatchLoggerException(msg, ex);
-                }
+                return !_suspended;
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Resume failed for {0}", this);
+                CatchLoggerException(msg, ex);
                 return false;
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -224,10 +277,7 @@ namespace IPCLogger.Core.Loggers.Base
 
                 if (_reSusped.WaitOne() && Thread.CurrentThread.IsAlive)
                 {
-                    lock (_lockObj)
-                    {
-                        Flush();
-                    }
+                    Flush();
                 }
             }
         }

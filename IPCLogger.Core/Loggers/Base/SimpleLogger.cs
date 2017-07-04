@@ -38,13 +38,19 @@ namespace IPCLogger.Core.Loggers.Base
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
             string text, bool writeLine, bool immediateFlush)
         {
-            if (Initialized)
+            try
             {
+                if (!Initialized) return;
                 WriteSimple(callerType, eventType, eventName, text, writeLine);
                 if (immediateFlush)
                 {
                     Flush();
                 }
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Write failed for {0}", this);
+                CatchLoggerException(msg, ex);
             }
         }
 
