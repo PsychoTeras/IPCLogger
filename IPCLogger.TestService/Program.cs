@@ -18,7 +18,7 @@ namespace IPCLogger.TestService
 {
     static class Program
     {
-        //--------------------------------------------Configure test environment here//--------------------------------------------
+        //--------------------------------------------Configure test environment here----------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net
         private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
@@ -30,7 +30,6 @@ namespace IPCLogger.TestService
         private static HRTimer _timer;
         private static Guid _guid = new Guid();
         private static string _sGuid = _guid.ToString();
-        private static readonly int _threadsCount = _parallelOperations;
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
 
         internal static void WriteLog4Net(object obj)
@@ -91,13 +90,13 @@ namespace IPCLogger.TestService
                 XmlConfigurator.Configure(new FileInfo(@"IPCLogger.TestService.exe.config"));
             }
 
-            _tEvents = new WaitHandle[_threadsCount];
-            for (int i = 0; i < _threadsCount; i++)
+            _tEvents = new WaitHandle[_parallelOperations];
+            for (int i = 0; i < _parallelOperations; i++)
             {
                 _tEvents[i] = new ManualResetEvent(false);
             }
 
-            for (int i = 0; i < _threadsCount; i++)
+            for (int i = 0; i < _parallelOperations; i++)
             {
                 ThreadPool.QueueUserWorkItem(_workMethod, _tEvents[i]);
             }

@@ -20,7 +20,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Private fields
 
-        private LightLock _syncObj;
+        private LightLock _lockObj;
         private BaseLoggerInt[] _loggers;
 
         private string _configurationFile;
@@ -47,7 +47,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         private LFactory(bool threadSafetyIsGuaranteed) 
             : base(threadSafetyIsGuaranteed)
         {
-            _syncObj = new LightLock();
+            _lockObj = new LightLock();
             PreInitialize = OnceInitializedCheck;
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         }
@@ -84,7 +84,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             if (!_initialized) return;
 
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (!_initialized) return;
@@ -99,7 +99,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -115,7 +115,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override bool Suspend()
         {
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (_initialized)
@@ -128,14 +128,14 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
             return _initialized;
         }
 
         public override bool Resume()
         {
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (_initialized)
@@ -148,14 +148,14 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
             return _initialized;
         }
 
         public override void Flush()
         {
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (!_initialized) return;
@@ -167,7 +167,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -177,7 +177,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public bool Initialize(string configurationFile)
         {
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (_initialized) return false;
@@ -206,7 +206,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
         }
 
@@ -236,7 +236,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             if (!configurationFileChanged)
             {
-                _syncObj.WaitOne(Settings.ShouldLock);
+                _lockObj.WaitOne(Settings.ShouldLock);
             }
             try
             {
@@ -262,14 +262,14 @@ namespace IPCLogger.Core.Loggers.LFactory
             {
                 if (!configurationFileChanged)
                 {
-                    _syncObj.Set(Settings.ShouldLock);
+                    _lockObj.Set(Settings.ShouldLock);
                 }
             }
         }
 
         private void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
         {
-            _syncObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(Settings.ShouldLock);
 
             try
             {
@@ -346,7 +346,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _syncObj.Set(Settings.ShouldLock);
+                _lockObj.Set(Settings.ShouldLock);
             }
         }
 

@@ -12,8 +12,6 @@ namespace IPCLogger.Core.Loggers.Base
 
         private LightLock _lockObj;
         private bool _shouldLock;
-        private Thread _onSetupSettingsThread;
-        private Thread _onFlushThread;
 
         private Thread _threadPeriodicFlush;
         private ManualResetEvent _evStopPeriodicFlush;
@@ -54,7 +52,6 @@ namespace IPCLogger.Core.Loggers.Base
             try
             {
                 if (!Initialized) return;
-                _onSetupSettingsThread = Thread.CurrentThread;
                 Deinitialize();
                 Initialize();
             }
@@ -65,7 +62,6 @@ namespace IPCLogger.Core.Loggers.Base
             }
             finally
             {
-                _onSetupSettingsThread = null;
                 _lockObj.Set(_shouldLock);
             }
         }
@@ -74,10 +70,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Initialize()
         {
-            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
-            {
-                _lockObj.WaitOne(_shouldLock);
-            }
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (Initialized) return;
@@ -104,10 +97,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             finally
             {
-                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
-                {
-                    _lockObj.Set(_shouldLock);
-                }
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -115,10 +105,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Deinitialize()
         {
-            if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
-            {
-                _lockObj.WaitOne(_shouldLock);
-            }
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (!Initialized) return;
@@ -133,7 +120,6 @@ namespace IPCLogger.Core.Loggers.Base
 
                 if (Initialized)
                 {
-                    _onFlushThread = Thread.CurrentThread;
                     Flush();
                 }
 
@@ -146,11 +132,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             finally
             {
-                _onFlushThread = null;
-                if (_onSetupSettingsThread == null || _onSetupSettingsThread != Thread.CurrentThread)
-                {
-                    _lockObj.Set(_shouldLock);
-                }
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -186,10 +168,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Flush()
         {
-            if (_onFlushThread == null || _onFlushThread != Thread.CurrentThread)
-            {
-                _lockObj.WaitOne(_shouldLock);
-            }
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (!Initialized) return;
@@ -202,10 +181,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             finally
             {
-                if (_onFlushThread == null || _onFlushThread != Thread.CurrentThread)
-                {
-                    _lockObj.Set(_shouldLock);
-                }
+                _lockObj.Set(_shouldLock);
             }
         }
 

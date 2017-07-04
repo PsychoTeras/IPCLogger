@@ -15,7 +15,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 #region Private fields
 
         private bool _enabled;
-        private bool _lightLock;
+        private bool _noLock;
         private bool _autoReload;
 
 #endregion
@@ -30,10 +30,10 @@ namespace IPCLogger.Core.Loggers.LFactory
         }
 
         [NonSetting]
-        public bool LightLock
+        public bool NoLock
         {
-            get { return _lightLock; } 
-            set { _lightLock = value; }
+            get { return _noLock; } 
+            set { _noLock = value; }
         }
 
         [NonSetting]
@@ -46,7 +46,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         [NonSetting]
         internal bool ShouldLock
         {
-            get { return !_lightLock || _autoReload; }
+            get { return !_noLock || _autoReload; }
         }
 
 #endregion
@@ -109,8 +109,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
         {
-            XmlAttribute aLightLock = cfgNode.Attributes["light-lock"];
-            _lightLock = aLightLock != null && bool.TryParse(aLightLock.Value, out _lightLock) && _lightLock;
+            XmlAttribute aNoLock = cfgNode.Attributes["no-lock"];
+            _noLock = aNoLock != null && bool.TryParse(aNoLock.Value, out _noLock) && _noLock;
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             _enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out _enabled) || _enabled;
             XmlAttribute aAutoReload = cfgNode.Attributes["auto-reload"];
