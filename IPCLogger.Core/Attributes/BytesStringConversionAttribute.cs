@@ -1,9 +1,8 @@
-﻿using System;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Attributes
 {
-    public class BytesConversionAttribute : CustomConversionAttribute
+    public sealed class BytesStringConversionAttribute : CustomConversionAttribute
     {
         public override object ConvertValue(string sValue)
         {

@@ -11,8 +11,11 @@ namespace IPCLogger.Core.Common
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
 
-        private static readonly Regex _regexBytesString = new Regex(@"^\s*(?<SIZE>\d+)+[ ]*(?<UNIT>\w+)*", 
+        private static readonly Regex _regexBytesString = new Regex(@"^\s*(?<SIZE>\d+)+[ ]*(?<UNIT>[a-z]+)*", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+        private static readonly Regex _regexTimeString = new Regex(@"(?<COUNT>\d+)+[ ]*(?<UNIT>[a-z]+)+",
+            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
 
         public static bool ByteArrayEquals(byte[] b1, byte[] b2)
         {
@@ -93,12 +96,72 @@ namespace IPCLogger.Core.Common
                         multiplier = 1073741824;
                         break;
                     default:
-                        string msg = string.Format("Value unit '{0}' is invalid. Use B, KB, MB, GB instead", sUnit);
+                        string msg = string.Format("Unit '{0}' is invalid. Use B, KB, MB, GB instead", sUnit);
                         throw new Exception(msg);
                 }
             }
 
             return size*multiplier;
+        }
+
+        public static TimeSpan TimeStringToTimeSpan(string sTime)
+        {
+            if (sTime == string.Empty)
+            {
+                string msg = "Time string cannot be empty";
+                throw new Exception(msg);
+            }
+
+            MatchCollection matches = _regexTimeString.Matches(sTime);
+            if (matches.Count == 0)
+            {
+                string msg = "Time string is invalid";
+                throw new Exception(msg);
+            }
+
+            int days = 0, hours = 0, minutes = 0, seconds = 0;
+            foreach (Match match in matches)
+            {
+                int count;
+                string sCount = match.Groups["COUNT"].Value;
+                if (!int.TryParse(sCount, out count))
+                {
+                    string msg = string.Format("Value '{0}' is invalid", sCount);
+                    throw new Exception(msg);
+                }
+
+                string sUnit = match.Groups["UNIT"].Value;
+                switch (sUnit)
+                {
+                    case "y":
+                        days += count*365;
+                        break;
+                    case "M":
+                        days += count*31;
+                        break;
+                    case "w":
+                        days += count*7;
+                        break;
+                    case "d":
+                        days += count;
+                        break;
+                    case "h":
+                        hours += count;
+                        break;
+                    case "m":
+                        minutes += count;
+                        break;
+                    case "s":
+                        seconds += count;
+                        break;
+                    default:
+                        string msg = string.Format(@"Unit '{0}' is invalid.
+Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s (=seconds) instead", sUnit);
+                        throw new Exception(msg);
+                }
+            }
+
+            return new TimeSpan(days, hours, minutes, seconds);
         }
     }
 }

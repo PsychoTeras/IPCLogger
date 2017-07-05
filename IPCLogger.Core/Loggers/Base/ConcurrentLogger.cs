@@ -12,6 +12,8 @@ namespace IPCLogger.Core.Loggers.Base
         private LightLock _lockObj;
         private bool _shouldLock;
 
+        private volatile bool _suspended;
+
 #endregion
 
 #region Protected fields
@@ -148,7 +150,51 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-#endregion
+        protected virtual bool SuspendConcurrent() { return true; }
+
+        public override bool Suspend()
+        {
+            _lockObj.WaitOne(_shouldLock);
+            try
+            {
+                if (!Initialized || _suspended) return false;
+                return _suspended = SuspendConcurrent();
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Suspend failed for {0}", this);
+                CatchLoggerException(msg, ex);
+                return false;
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
+            }
+        }
+
+        protected virtual bool ResumeConcurrent() { return true; }
+
+        public override bool Resume()
+        {
+            _lockObj.WaitOne(_shouldLock);
+            try
+            {
+                if (!Initialized || !_suspended) return false;
+                return !(_suspended = !ResumeConcurrent());
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("Resume failed for {0}", this);
+                CatchLoggerException(msg, ex);
+                return false;
+            }
+            finally
+            {
+                _lockObj.Set(_shouldLock);
+            }
+        }
+
+        #endregion
 
     }
 }

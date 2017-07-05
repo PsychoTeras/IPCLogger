@@ -140,6 +140,8 @@ namespace IPCLogger.Core.Loggers.Base
 
             RecalculateHash(cfgNode);
 
+            FinalizeSetup();
+
             ApplyChanges();
         }
 
@@ -312,6 +314,8 @@ namespace IPCLogger.Core.Loggers.Base
         {
             SettingsHash = CalculateHash(cfgNode);
         }
+
+        public virtual void FinalizeSetup() { }
 
         internal virtual void SetupIfHasBeenChanged(XmlNode cfgNode)
         {

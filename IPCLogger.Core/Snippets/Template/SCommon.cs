@@ -22,12 +22,10 @@ namespace IPCLogger.Core.Snippets.Template
 #region Static fields
 
         private static volatile int _lastDateMark;
-        private static readonly Dictionary<string, string> DateStrings = 
-            new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> DateStrings = new Dictionary<string, string>();
 
         private static volatile int _lastUTCMark;
-        private static readonly Dictionary<string, string> DateUTCStrings = 
-            new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> DateUTCStrings = new Dictionary<string, string>();
 
         private static readonly string UserName = WindowsIdentity.GetCurrent().Name;
 
@@ -102,7 +100,7 @@ namespace IPCLogger.Core.Snippets.Template
                 {
                     string cachedDate;
                     int ticks = Environment.TickCount;
-                    int currentTimeUTCMark = TimeMarkMod == 0 ? ticks : ticks - (ticks % TimeMarkMod);
+                    int currentTimeUTCMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
                     if (currentTimeUTCMark != _lastUTCMark || !DateUTCStrings.TryGetValue(@params, out cachedDate))
                     {
                         lock (DateUTCStrings)

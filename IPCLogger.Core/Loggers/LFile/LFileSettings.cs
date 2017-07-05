@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Loggers.Base;
 
@@ -9,13 +10,13 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Constants
 
-        private const int BUFFER_SIZE = 32768;
+        private const int BUFFER_SIZE = 32*1024;
 
 #endregion
 
 #region Properties
 
-        [BytesConversion]
+        [BytesStringConversion]
         public int BufferSize { get; set; }
 
         public string LogDir { get; set; }
@@ -23,6 +24,21 @@ namespace IPCLogger.Core.Loggers.LFile
         public string LogFile { get; set; }
 
         public bool RecreateFile { get; set; }
+
+        [BytesStringConversion]
+        public int MaxFileSize { get; set; }
+
+        [TimeStringConversion]
+        public TimeSpan MaxFileAge { get; set; }
+
+        [NonSetting]
+        internal bool RollByFileAge { get; private set; }
+
+        [NonSetting]
+        internal string LogFileName { get; private set; }
+
+        [NonSetting]
+        internal string LogFileExt { get; private set; }
 
 #endregion
 
@@ -32,6 +48,17 @@ namespace IPCLogger.Core.Loggers.LFile
             : base(loggerType, onApplyChanges)
         {
             BufferSize = BUFFER_SIZE;
+        }
+
+#endregion
+
+#region Class methods
+
+        public override void FinalizeSetup()
+        {
+            RollByFileAge = MaxFileAge.Ticks > 0;
+            LogFileName = Path.GetFileNameWithoutExtension(LogFile);
+            LogFileExt = Path.GetExtension(LogFile);
         }
 
 #endregion
