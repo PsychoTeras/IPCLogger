@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\BytesConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttribute.cs" />
     <Compile Include="Caches\CallerTypesCache.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Caches\EventNamesCache.cs" />

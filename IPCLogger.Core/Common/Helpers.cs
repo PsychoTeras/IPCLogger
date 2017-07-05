@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Common
@@ -9,6 +10,9 @@ namespace IPCLogger.Core.Common
     {
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
+
+        private static readonly Regex _regexBytesString = new Regex(@"^\s*(?<SIZE>\d+)+[ ]*(?<UNIT>\w+)*", 
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
         public static bool ByteArrayEquals(byte[] b1, byte[] b2)
         {
@@ -46,6 +50,55 @@ namespace IPCLogger.Core.Common
                 }
             }
             return frame + 1;
+        }
+
+        public static int BytesStringToSize(string sBytes)
+        {
+            if (sBytes == string.Empty)
+            {
+                string msg = "Value cannot be empty";
+                throw new Exception(msg);
+            }
+
+            Match match = _regexBytesString.Match(sBytes);
+            string sSize = match.Groups["SIZE"].Value;
+            if (sSize == string.Empty)
+            {
+                string msg = "Value is not defined";
+                throw new Exception(msg);
+            }
+
+            int size;
+            if (!int.TryParse(sSize, out size))
+            {
+                string msg = string.Format("Value '{0}' is invalid", sSize);
+                throw new Exception(msg);
+            }
+
+            int multiplier = 1;
+            string sUnit = match.Groups["UNIT"].Value.ToLower();
+            if (sUnit != string.Empty)
+            {
+                switch (sUnit)
+                {
+                    case "b":
+                        break;
+                    case "kb":
+                        multiplier = 1024;
+                        break;
+                    case "mb":
+                        multiplier = 1048576;
+                        break;
+                    case "gb":
+                        multiplier = 1073741824;
+                        break;
+                    default:
+                        string msg = string.Format("Value unit '{0}' is invalid. Use B, KB, MB, GB instead", sUnit);
+                        throw new Exception(msg);
+                }
+            }
+
+            return size*multiplier;
         }
     }
 }

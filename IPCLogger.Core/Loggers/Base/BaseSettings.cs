@@ -28,7 +28,7 @@ namespace IPCLogger.Core.Loggers.Base
         private Action _onApplyChanges;
         private Type _loggerType;
 
-        private Dictionary<string, PropertyInfo> _properties;
+        private Dictionary<string, KeyValuePair<PropertyInfo, object>> _properties;
 
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
@@ -73,13 +73,15 @@ namespace IPCLogger.Core.Loggers.Base
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
             _properties = GetType().GetProperties(
-                BindingFlags.GetProperty | BindingFlags.Public | 
-                BindingFlags.Instance | BindingFlags.FlattenHierarchy).
+                BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy).
                 Where
                 (
-                    p => p.CanRead && p.CanWrite && 
-                         p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
-                ).ToDictionary(p => p.Name, p => p);
+                    p => p.CanRead && p.CanWrite && p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
+                ).ToDictionary
+                (
+                    p => p.Name, 
+                    p => new KeyValuePair<PropertyInfo, object>(p, p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault())
+                );
         }
 
 #endregion
@@ -255,21 +257,34 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, string> setting in settingsDict)
             {
-                Type propertyType = _properties[setting.Key].PropertyType;
+                KeyValuePair<PropertyInfo, object> item = _properties[setting.Key];
+                Type propertyType = item.Key.PropertyType;
                 try
                 {
-                    object value = Convert.ChangeType(setting.Value.Trim(), propertyType, 
-                                                      CultureInfo.InvariantCulture);
+                    object value;
+                    if (item.Value != null)
+                    {
+                        CustomConversionAttribute cc = (CustomConversionAttribute) item.Value;
+                        value = cc.ConvertValue(setting.Value.Trim());
+                    }
+                    else
+                    {
+                        value = Convert.ChangeType(setting.Value.Trim(), propertyType, CultureInfo.InvariantCulture);
+                    }
                     if (value == null)
                     {
                         throw new Exception();
                     }
                     valuesDict.Add(setting.Key, value);
                 }
-                catch
+                catch (Exception ex)
                 {
                     string msg = string.Format("Invalid setting value '{0}' for setting '{1}' type '{2}'",
                         setting.Value, setting.Key, propertyType.Name);
+                    if (!string.IsNullOrEmpty(ex.Message))
+                    {
+                        msg += string.Format("{0}{1}", Constants.NewLine, ex.Message);
+                    }
                     throw new Exception(msg);
                 }
             }
@@ -280,7 +295,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = _properties[value.Key];
+                PropertyInfo property = _properties[value.Key].Key;
                 property.SetValue(this, value.Value, null);
             }
         }
