@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
@@ -114,42 +113,9 @@ namespace IPCLogger.TestService
                 FlushLog4NetBuffers();
             }
         }
-
-        [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private extern static bool PathFileExists(string path);
-
-
+        
         static void Main(string[] param)
         {
-            //Random rnd = new Random(DateTime.Now.Millisecond);
-            //HRTimer t = new HRTimer();
-            //t.StartWatch();
-            //int y = 0;
-            //DateTime dt;
-            //for (int i = 1; i <= 2000; i++)
-            //{
-            //    string s = string.Format(@"Logs\IPCLogger_{0}.log", i);
-            //    //if (new FileInfo(s).Exists)
-            //    //if (File.Exists(s))
-            //    if (PathFileExists(s))
-            //    {
-            //        dt = File.GetCreationTimeUtc(s);
-            //    }
-            //    //try
-            //    //{
-            //    //    File.OpenRead(s).Dispose();
-            //    //}
-            //    //catch
-            //    //{
-            //    //    y++;
-            //    //}
-            //}
-
-            //Console.WriteLine(t.StopWatch());
-            //Console.ReadKey();
-            //Process.GetCurrentProcess().Kill();
-            //return;
-
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
             if (ServiceHelper.IsBeingRunAsService())

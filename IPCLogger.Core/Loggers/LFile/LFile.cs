@@ -118,7 +118,7 @@ namespace IPCLogger.Core.Loggers.LFile
                 int currentTimeMark = ticks - ticks%1000;
                 if (currentTimeMark != _lastTimeMark)
                 {
-                    rollByFileAge = _logRollingDateTime.Value <= DateTime.UtcNow;
+                    rollByFileAge = DateTime.UtcNow >= _logRollingDateTime.Value;
                     _lastTimeMark = currentTimeMark;
                 }
             }

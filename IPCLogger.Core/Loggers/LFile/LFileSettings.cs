@@ -43,9 +43,6 @@ namespace IPCLogger.Core.Loggers.LFile
         [NonSetting]
         internal string LogFileExt { get; private set; }
 
-        [NonSetting]
-        internal bool RollingIsEnabled { get; private set; }
-
 #endregion
 
 #region Ctor
@@ -66,7 +63,6 @@ namespace IPCLogger.Core.Loggers.LFile
             RollByFileAge = MaxFileAge.Ticks > 0;
             LogFileName = Path.GetFileNameWithoutExtension(LogFile);
             LogFileExt = Path.GetExtension(LogFile);
-            RollingIsEnabled = RollByFileAge || RollByFileSize;
         }
 
 #endregion
