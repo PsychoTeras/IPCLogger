@@ -32,6 +32,9 @@ namespace IPCLogger.Core.Loggers.LFile
         public TimeSpan MaxFileAge { get; set; }
 
         [NonSetting]
+        internal bool RollByFileSize { get; private set; }
+
+        [NonSetting]
         internal bool RollByFileAge { get; private set; }
 
         [NonSetting]
@@ -39,6 +42,9 @@ namespace IPCLogger.Core.Loggers.LFile
 
         [NonSetting]
         internal string LogFileExt { get; private set; }
+
+        [NonSetting]
+        internal bool RollingIsEnabled { get; private set; }
 
 #endregion
 
@@ -56,9 +62,11 @@ namespace IPCLogger.Core.Loggers.LFile
 
         public override void FinalizeSetup()
         {
+            RollByFileSize = MaxFileSize > 0;
             RollByFileAge = MaxFileAge.Ticks > 0;
             LogFileName = Path.GetFileNameWithoutExtension(LogFile);
             LogFileExt = Path.GetExtension(LogFile);
+            RollingIsEnabled = RollByFileAge || RollByFileSize;
         }
 
 #endregion

@@ -8,6 +8,9 @@ namespace IPCLogger.Core.Common
 {
     internal static class Helpers
     {
+        [DllImport("shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool PathFileExists(string path);
+
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
 
@@ -72,7 +75,7 @@ namespace IPCLogger.Core.Common
             }
 
             int size;
-            if (!int.TryParse(sSize, out size))
+            if (!Int32.TryParse(sSize, out size))
             {
                 string msg = string.Format("Value '{0}' is invalid", sSize);
                 throw new Exception(msg);
@@ -124,7 +127,7 @@ namespace IPCLogger.Core.Common
             {
                 int count;
                 string sCount = match.Groups["COUNT"].Value;
-                if (!int.TryParse(sCount, out count))
+                if (!Int32.TryParse(sCount, out count))
                 {
                     string msg = string.Format("Value '{0}' is invalid", sCount);
                     throw new Exception(msg);

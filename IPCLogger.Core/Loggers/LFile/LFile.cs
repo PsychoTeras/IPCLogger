@@ -11,9 +11,9 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Private fields
 
+        private string _fileName;
         private Stream _fileStream;
         private long _fileStreamSize;
-        private long _fileStreamSizeBeforeSuspend;
         private StreamWriter _logWriter;
 
         private int _lastTimeMark;
@@ -48,6 +48,7 @@ namespace IPCLogger.Core.Loggers.LFile
         {
             _logCurrentIdx = 0;
             _fileStreamSize = 0;
+            _fileName = null;
             _logGenericPath = null;
             _logRollingDateTime = null;
             PrepareLogFileStream(false);
@@ -57,7 +58,7 @@ namespace IPCLogger.Core.Loggers.LFile
         protected override bool DeinitializeConcurrent()
         {
             Flush();
-            DestroyLogFileStream();
+            DestroyLogFileStream(false);
             return true;
         }
 
@@ -68,16 +69,14 @@ namespace IPCLogger.Core.Loggers.LFile
 
         protected override bool SuspendConcurrent()
         {
-            long l = _fileStreamSize;
-            DeinitializeConcurrent();
-            _fileStreamSizeBeforeSuspend = l;
+            Flush();
+            DestroyLogFileStream(true);
             return true;
         }
 
         protected override bool ResumeConcurrent()
         {
             PrepareLogFileStream(true);
-            _fileStreamSizeBeforeSuspend = 0;
             return true;
         }
 
@@ -85,7 +84,7 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Class methods
         
-        private void DestroyLogFileStream()
+        private void DestroyLogFileStream(bool suspend)
         {
             if (_fileStream != null)
             {
@@ -100,7 +99,11 @@ namespace IPCLogger.Core.Loggers.LFile
                 {
                     _logWriter = null;
                     _fileStream = null;
-                    _fileStreamSizeBeforeSuspend = _fileStreamSize = 0;
+                    if (!suspend)
+                    {
+                        _fileName = null;
+                        _fileStreamSize = 0;
+                    }
                 }
             }
         }
@@ -121,9 +124,7 @@ namespace IPCLogger.Core.Loggers.LFile
             }
 
             //Roll By The File Size check
-            bool rollByFileSize = Settings.MaxFileSize > 0 &&
-                (_fileStreamSize >= Settings.MaxFileSize ||
-                (unsuspend && _fileStreamSizeBeforeSuspend >= Settings.MaxFileSize));
+            bool rollByFileSize = Settings.RollByFileSize && _fileStreamSize >= Settings.MaxFileSize;
 
             bool shouldRollTheLog = rollByFileAge || rollByFileSize;
 
@@ -148,49 +149,57 @@ namespace IPCLogger.Core.Loggers.LFile
                     }
                 }
 
-                DestroyLogFileStream();
+                DestroyLogFileStream(false);
 
-                //Get log file path and save the data for the Roll By The File Age check
                 string logPath;
-                do
+                if (unsuspend && !shouldRollTheLog)
                 {
-                    string logFile = _logCurrentIdx == 0
-                        ? Settings.LogFile
-                        : string.Format("{0}_{1}{2}", Settings.LogFileName, _logCurrentIdx, Settings.LogFileExt);
-                    logPath = Path.Combine(Settings.LogDir, logFile);
-                    logPath = Environment.ExpandEnvironmentVariables(logPath);
-                    logPath = SFactory.Process(logPath, Patterns);
-
-                    FileInfo fi = shouldRollTheLog || !Settings.RecreateFile
-                        ? new FileInfo(logPath)
-                        : null;
-                    bool logFileExists = fi != null && fi.Exists;
-                    if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)
+                    logPath = _fileName;
+                    if (Settings.RollByFileAge && !Helpers.PathFileExists(logPath))
                     {
-                        _logCurrentIdx++;
-                        logPath = null;
-                        continue;
+                        _logRollingDateTime = DateTime.UtcNow.Add(Settings.MaxFileAge);
                     }
-
-                    if (Settings.RollByFileAge)
+                }
+                else
+                {
+                    //Get log file path and save the data for the Roll By The File Age check
+                    do
                     {
-                        DateTime logCurrentDateTime = logFileExists
-                            ? fi.CreationTimeUtc
-                            : DateTime.UtcNow;
+                        string logFile = _logCurrentIdx == 0
+                            ? Settings.LogFile
+                            : string.Format("{0}_{1}{2}", Settings.LogFileName, _logCurrentIdx, Settings.LogFileExt);
+                        logPath = Path.Combine(Settings.LogDir, logFile);
+                        logPath = Environment.ExpandEnvironmentVariables(logPath);
+                        logPath = SFactory.Process(logPath, Patterns);
 
-                        //Role if !Settings.RecreateFile and file is obsolote by creation date
-                        if (logFileExists && DateTime.UtcNow.Subtract(logCurrentDateTime) >= Settings.MaxFileAge)
+                        bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) && Helpers.PathFileExists(logPath);
+                        if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)
                         {
-                            shouldRollTheLog = true;
                             _logCurrentIdx++;
                             logPath = null;
                             continue;
                         }
 
-                        _logRollingDateTime = logCurrentDateTime.Add(Settings.MaxFileAge);
-                    }
+                        if (Settings.RollByFileAge)
+                        {
+                            DateTime logCurrentDateTime = logFileExists
+                                ? File.GetCreationTimeUtc(logPath)
+                                : DateTime.UtcNow;
 
-                } while (logPath == null);
+                            //Role if !Settings.RecreateFile and file is obsolote by creation date
+                            if (logFileExists && DateTime.UtcNow.Subtract(logCurrentDateTime) >= Settings.MaxFileAge)
+                            {
+                                shouldRollTheLog = true;
+                                _logCurrentIdx++;
+                                logPath = null;
+                                continue;
+                            }
+
+                            _logRollingDateTime = logCurrentDateTime.Add(Settings.MaxFileAge);
+                        }
+
+                    } while (logPath == null);
+                }
 
                 Directory.CreateDirectory(Path.GetDirectoryName(logPath));
 
@@ -205,8 +214,8 @@ namespace IPCLogger.Core.Loggers.LFile
                 }
 
                 _fileStream = Settings.BufferSize > 0
-                    ? new FileStream(logPath, fileMode, FileAccess.Write, FileShare.Read, Settings.BufferSize)
-                    : new FileStream(logPath, fileMode, FileAccess.Write, FileShare.Read);
+                    ? new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read, Settings.BufferSize)
+                    : new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read);
 
                 _fileStreamSize = fileMode == FileMode.Append ? _fileStream.Length : 0;
 
