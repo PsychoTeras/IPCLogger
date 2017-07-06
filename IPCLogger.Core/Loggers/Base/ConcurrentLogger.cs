@@ -64,7 +64,7 @@ namespace IPCLogger.Core.Loggers.Base
             _lockObj.WaitOne(_shouldLock);
             try
             {
-                if (!Initialized) return;
+                if (!Initialized || _suspended) return;
                 WriteConcurrent(callerType, eventType, eventName, text, writeLine);
             }
             catch (Exception ex)
@@ -116,6 +116,10 @@ namespace IPCLogger.Core.Loggers.Base
                 if (Initialized)
                 {
                     Initialized = !DeinitializeConcurrent();
+                    if (!Initialized)
+                    {
+                        _suspended = false;
+                    }
                 }
             }
             catch (Exception ex)

@@ -121,9 +121,14 @@ namespace IPCLogger.Core.Loggers.Base
                 if (Initialized)
                 {
                     Flush();
-                }
 
-                Initialized = !DeinitializeQueue();
+                    Initialized = !DeinitializeQueue();
+
+                    if (!Initialized)
+                    {
+                        _suspended = false;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -145,7 +150,7 @@ namespace IPCLogger.Core.Loggers.Base
             _lockObj.WaitOne(_shouldLock);
             try
             {
-                if (!Initialized) return;
+                if (!Initialized || _suspended) return;
                 WriteQueue(callerType, eventType, eventName, text, writeLine);
             }
             catch (Exception ex)

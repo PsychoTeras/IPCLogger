@@ -27,6 +27,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         private FileSystemWatcher _configurationFileWatcher;
 
         private volatile bool _initialized;
+        private volatile bool _suspended;
 
 #endregion
 
@@ -82,7 +83,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
             string text, bool writeLine, bool immediateFlush)
         {
-            if (!_initialized) return;
+            if (!_initialized || _suspended) return;
 
             _lockObj.WaitOne(Settings.ShouldLock);
             try
@@ -118,19 +119,20 @@ namespace IPCLogger.Core.Loggers.LFactory
             _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
-                if (_initialized)
+                if (_initialized && !_suspended)
                 {
                     foreach (BaseLoggerInt logger in _loggers)
                     {
                         logger.Suspend();
                     }
+                    _suspended = true;
                 }
             }
             finally
             {
                 _lockObj.Set(Settings.ShouldLock);
             }
-            return _initialized;
+            return _suspended;
         }
 
         public override bool Resume()
@@ -138,19 +140,20 @@ namespace IPCLogger.Core.Loggers.LFactory
             _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
-                if (_initialized)
+                if (_initialized && _suspended)
                 {
                     foreach (BaseLoggerInt logger in _loggers)
                     {
                         logger.Resume();
                     }
+                    _suspended = false;
                 }
             }
             finally
             {
                 _lockObj.Set(Settings.ShouldLock);
             }
-            return _initialized;
+            return !_suspended;
         }
 
         public override void Flush()
@@ -256,6 +259,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                     _configurationFileWatcher = null;
                 }
 
+                _suspended = false;
                 _initialized = false;
             }
             finally

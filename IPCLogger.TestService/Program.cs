@@ -59,7 +59,7 @@ namespace IPCLogger.TestService
                 _timer = HRTimer.CreateAndStart();
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
-                    //Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
                 }
             }
@@ -101,6 +101,11 @@ namespace IPCLogger.TestService
             {
                 ThreadPool.QueueUserWorkItem(_workMethod, _tEvents[i]);
             }
+
+            Console.ReadKey();
+            LFactory.Instance.Suspend();
+            Console.ReadKey();
+            LFactory.Instance.Resume();
 
             WaitHandle.WaitAll(_tEvents);
 
