@@ -1,0 +1,27 @@
+﻿                    const string idxPlaceMark = "?*";
+
+                    string logFile = Settings.LogFileName + idxPlaceMark + Settings.LogFileExt;
+                    string logRawPath = Path.Combine(Settings.LogDir, logFile);
+                    logRawPath = Environment.ExpandEnvironmentVariables(logRawPath);
+                    logRawPath = SFactory.Process(logRawPath, Patterns);
+
+                    int logRawPathLen = logRawPath.Length;
+                    int mStart = logRawPath.IndexOf(idxPlaceMark);
+                    int mEnd = mStart + idxPlaceMark.Length;
+                    int mLength = logRawPathLen - mEnd;
+
+                    string logRawPathStart = logRawPath.Substring(0, mStart);
+                    string logRawPathEnd = logRawPath.Substring(mEnd, mLength);
+
+                    StringBuilder sbLogPath = new StringBuilder(logRawPathLen + 7);
+
+                    //Get log file path and save the data for the Roll By The File Age check
+                    do
+                    {
+                        sbLogPath.Length = 0;
+                        sbLogPath.Append(logRawPathStart);
+                        if (_logCurrentIdx != 0)
+                        {
+                            sbLogPath.Append("_").Append(_logCurrentIdx);
+                        }
+                        logPath = sbLogPath.Append(logRawPathEnd).ToString();

@@ -162,15 +162,17 @@ namespace IPCLogger.Core.Loggers.LFile
                 }
                 else
                 {
+                    const string idxPlaceMark = "?*";
+
+                    string logFile = Settings.LogFileName + idxPlaceMark + Settings.LogFileExt;
+                    string logRawPath = Path.Combine(Settings.LogDir, logFile);
+                    logRawPath = Environment.ExpandEnvironmentVariables(logRawPath);
+                    logRawPath = SFactory.Process(logRawPath, Patterns);
+
                     //Get log file path and save the data for the Roll By The File Age check
                     do
                     {
-                        string logFile = _logCurrentIdx == 0
-                            ? Settings.LogFile
-                            : string.Format("{0}_{1}{2}", Settings.LogFileName, _logCurrentIdx, Settings.LogFileExt);
-                        logPath = Path.Combine(Settings.LogDir, logFile);
-                        logPath = Environment.ExpandEnvironmentVariables(logPath);
-                        logPath = SFactory.Process(logPath, Patterns);
+                        logPath = logRawPath.Replace(idxPlaceMark, _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
 
                         bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) && Helpers.PathFileExists(logPath);
                         if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)

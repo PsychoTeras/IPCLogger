@@ -136,6 +136,7 @@
   <ItemGroup>
     <Content Include="_cutted_off\CallerTypesCache.txt" />
     <Content Include="_cutted_off\EventNamesCache.txt" />
+    <Content Include="_cutted_off\LFile-OptimizedFNGen.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
