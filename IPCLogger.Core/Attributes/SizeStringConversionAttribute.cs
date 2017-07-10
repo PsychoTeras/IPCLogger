@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Attributes
 {
-    public sealed class BytesStringConversionAttribute : CustomConversionAttribute
+    public sealed class SizeStringConversionAttribute : CustomConversionAttribute
     {
         public override object ConvertValue(string sValue)
         {

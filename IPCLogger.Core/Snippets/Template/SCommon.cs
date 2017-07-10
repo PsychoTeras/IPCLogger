@@ -23,9 +23,12 @@ namespace IPCLogger.Core.Snippets.Template
 
         private static volatile int _lastDateMark;
         private static readonly Dictionary<string, string> DateStrings = new Dictionary<string, string>();
+        private static readonly LightLock _lockDateStrings = new LightLock();
+
 
         private static volatile int _lastUTCMark;
         private static readonly Dictionary<string, string> DateUTCStrings = new Dictionary<string, string>();
+        private static readonly LightLock _lockDateUTCStrings = new LightLock();
 
         private static readonly string UserName = WindowsIdentity.GetCurrent().Name;
 
@@ -77,22 +80,23 @@ namespace IPCLogger.Core.Snippets.Template
                 {
                     string cachedDate;
                     int ticks = Environment.TickCount;
-                    int currentTimeMark = TimeMarkMod == 0 ? ticks : ticks - (ticks % TimeMarkMod);
+                    int currentTimeMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
                     if (currentTimeMark != _lastDateMark || !DateStrings.TryGetValue(@params, out cachedDate))
                     {
-                        lock (DateStrings)
+                        _lockDateStrings.WaitOne();
+
+                        cachedDate = DateTime.Now.ToString(@params);
+                        if (!DateStrings.ContainsKey(@params))
                         {
-                            cachedDate = DateTime.Now.ToString(@params);
-                            if (!DateStrings.ContainsKey(@params))
-                            {
-                                DateStrings.Add(@params, cachedDate);
-                            }
-                            else
-                            {
-                                DateStrings[@params] = cachedDate;
-                            }
-                            _lastDateMark = currentTimeMark;
+                            DateStrings.Add(@params, cachedDate);
                         }
+                        else
+                        {
+                            DateStrings[@params] = cachedDate;
+                        }
+                        _lastDateMark = currentTimeMark;
+
+                        _lockDateStrings.Set();
                     }
                     return cachedDate;
                 }
@@ -103,19 +107,20 @@ namespace IPCLogger.Core.Snippets.Template
                     int currentTimeUTCMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
                     if (currentTimeUTCMark != _lastUTCMark || !DateUTCStrings.TryGetValue(@params, out cachedDate))
                     {
-                        lock (DateUTCStrings)
+                            _lockDateUTCStrings.WaitOne();
+
+                        cachedDate = DateTime.UtcNow.ToString(@params);
+                        if (currentTimeUTCMark == _lastUTCMark)
                         {
-                            cachedDate = DateTime.UtcNow.ToString(@params);
-                            if (currentTimeUTCMark == _lastUTCMark)
-                            {
-                                DateUTCStrings.Add(@params, cachedDate);
-                            }
-                            else
-                            {
-                                DateUTCStrings[@params] = cachedDate;
-                            }
-                            _lastUTCMark = currentTimeUTCMark;
+                            DateUTCStrings.Add(@params, cachedDate);
                         }
+                        else
+                        {
+                            DateUTCStrings[@params] = cachedDate;
+                        }
+                        _lastUTCMark = currentTimeUTCMark;
+
+                        _lockDateUTCStrings.Set();
                     }
                     return cachedDate;
                 }

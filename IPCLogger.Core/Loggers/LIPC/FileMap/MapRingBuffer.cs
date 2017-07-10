@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {
@@ -25,7 +26,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         private int _headerSize;
         private MapRingBufferHeader* _header;
 
-        private object _lockObject;
+        private LightLock _lockObj;
 
         private Thread _threadInit;
         private volatile bool _initialized;
@@ -50,7 +51,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         MapRingBuffer(string name, int maxCount, bool viewMode)
         {
-            _lockObject = new object();
+            _lockObj = new LightLock();
 
             _headerSize = Marshal.SizeOf(typeof (MapRingBufferHeader));
 
@@ -182,36 +183,39 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public void Add(TValue value)
         {
-            lock (_lockObject)
+            _lockObj.WaitOne();
+
+            _header->Updating = true;
+            _stream.FlushHeader();
+
+            if (++_header->CurrentIndex == _header->MaxCount)
             {
-                _header->Updating = true;
-                _stream.FlushHeader();
-
-                if (++_header->CurrentIndex == _header->MaxCount)
-                {
-                    _header->CurrentIndex = 0;
-                }
-
-                WriteTValue(value, _header->CurrentIndex);
-
-                if (_header->Count < _header->MaxCount)
-                {
-                    _header->Count++;
-                }
-                _header->Updating = false;
-                _stream.Flush();
+                _header->CurrentIndex = 0;
             }
+
+            WriteTValue(value, _header->CurrentIndex);
+
+            if (_header->Count < _header->MaxCount)
+            {
+                _header->Count++;
+            }
+            _header->Updating = false;
+            _stream.Flush();
+
+            _lockObj.Set();
         }
 
         public IEnumerator<TValue> GetEnumerator()
         {
-            lock (_lockObject)
-            {
-                while (Header.Updating)
-                {
-                    Thread.Sleep(0);
-                }
+            _lockObj.WaitOne();
 
+            while (Header.Updating)
+            {
+                Thread.Sleep(0);
+            }
+
+            try
+            {
                 int max = Header.Count, cur = Header.CurrentIndex;
                 for (int i = cur; i > -(max - cur); i--)
                 {
@@ -227,6 +231,10 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
                         break;
                     }
                 }
+            }
+            finally
+            {
+                _lockObj.Set();
             }
         }
 

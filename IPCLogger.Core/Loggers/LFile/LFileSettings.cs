@@ -12,11 +12,13 @@ namespace IPCLogger.Core.Loggers.LFile
 
         private const int BUFFER_SIZE = 32*1024;
 
+        internal static readonly string IdxPlaceMark = "?*";
+
 #endregion
 
 #region Properties
 
-        [BytesStringConversion]
+        [SizeStringConversion]
         public int BufferSize { get; set; }
 
         public string LogDir { get; set; }
@@ -25,11 +27,13 @@ namespace IPCLogger.Core.Loggers.LFile
 
         public bool RecreateFile { get; set; }
 
-        [BytesStringConversion]
+        [SizeStringConversion]
         public int MaxFileSize { get; set; }
 
         [TimeStringConversion]
         public TimeSpan MaxFileAge { get; set; }
+
+        public bool DynamicFilePath { get; set; }
 
         [NonSetting]
         internal bool RollByFileSize { get; private set; }
@@ -38,10 +42,7 @@ namespace IPCLogger.Core.Loggers.LFile
         internal bool RollByFileAge { get; private set; }
 
         [NonSetting]
-        internal string LogFileName { get; private set; }
-
-        [NonSetting]
-        internal string LogFileExt { get; private set; }
+        internal string ExpandedLogFilePathWithMark { get; private set; }
 
 #endregion
 
@@ -61,8 +62,10 @@ namespace IPCLogger.Core.Loggers.LFile
         {
             RollByFileSize = MaxFileSize > 0;
             RollByFileAge = MaxFileAge.Ticks > 0;
-            LogFileName = Path.GetFileNameWithoutExtension(LogFile);
-            LogFileExt = Path.GetExtension(LogFile);
+            ExpandedLogFilePathWithMark = string.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(LogFile),
+                IdxPlaceMark, Path.GetExtension(LogFile));
+            ExpandedLogFilePathWithMark = Path.Combine(LogDir, ExpandedLogFilePathWithMark);
+            ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
         }
 
 #endregion

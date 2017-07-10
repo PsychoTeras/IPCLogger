@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Storages
 {
@@ -8,9 +9,8 @@ namespace IPCLogger.Core.Storages
 
 #region Private fields
 
-        private static readonly object LockObj = new object();
-        private static readonly Dictionary<int, LSObject> ThreadStorage = 
-            new Dictionary<int, LSObject>();
+        private static readonly Dictionary<int, LSObject> _threadStorage = new Dictionary<int, LSObject>();
+        private static readonly LightLock _lockObj = new LightLock();
 
 #endregion
 
@@ -18,39 +18,38 @@ namespace IPCLogger.Core.Storages
 
         public static LSObject Push()
         {
-            lock (LockObj)
+            _lockObj.WaitOne();
+            LSObject lsObj;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            if (!_threadStorage.TryGetValue(threadId, out lsObj))
             {
-                LSObject lsObj;
-                int threadId = Thread.CurrentThread.ManagedThreadId;
-                if (!ThreadStorage.TryGetValue(threadId, out lsObj))
-                {
-                    lsObj = new LSObject();
-                    ThreadStorage.Add(threadId, lsObj);
-                }
-                return lsObj;
+                lsObj = new LSObject();
+                _threadStorage.Add(threadId, lsObj);
             }
+            _lockObj.Set();
+            return lsObj;
         }
 
         public static LSObject Peek()
         {
-            lock (LockObj)
-            {
-                LSObject lsObj;
-                int threadId = Thread.CurrentThread.ManagedThreadId;
-                return ThreadStorage.TryGetValue(threadId, out lsObj) ? lsObj : null;
-            }
+            _lockObj.WaitOne();
+            LSObject lsObj;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            LSObject val = _threadStorage.TryGetValue(threadId, out lsObj) ? lsObj : null;
+            _lockObj.Set();
+            return val;
         }
 
         public static void Pop()
         {
-            lock (LockObj)
+            _lockObj.WaitOne();
+
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            if (_threadStorage.ContainsKey(threadId))
             {
-                int threadId = Thread.CurrentThread.ManagedThreadId;
-                if (ThreadStorage.ContainsKey(threadId))
-                {
-                    ThreadStorage.Remove(threadId);
-                }
+                _threadStorage.Remove(threadId);
             }
+            _lockObj.Set();
         }
 
 #endregion

@@ -17,10 +17,13 @@ namespace IPCLogger.Core.Loggers.LFile
         private StreamWriter _logWriter;
 
         private int _lastTimeMark;
+        private DateTime _lastFilePathCheckTime;
+        private int _lastFilePathCheckHour;
 
         private int _logCurrentIdx;
         private DateTime? _logRollingDateTime;
         private string _logGenericPath;
+        private bool _logGenericPathIsConstant;
 
 #endregion
 
@@ -51,6 +54,8 @@ namespace IPCLogger.Core.Loggers.LFile
             _fileName = null;
             _logGenericPath = null;
             _logRollingDateTime = null;
+            _lastFilePathCheckTime = DateTime.Now;
+            _lastFilePathCheckHour = _lastFilePathCheckTime.Hour;
             PrepareLogFileStream(false);
             return true;
         }
@@ -110,15 +115,33 @@ namespace IPCLogger.Core.Loggers.LFile
 
         private void PrepareLogFileStream(bool unsuspend)
         {
-            //Roll By The File Age check
-            bool rollByFileAge = false;
-            if (Settings.RollByFileAge && _logRollingDateTime.HasValue)
+            //Roll By The File Age check / Roll By The File Path check
+            bool rollByFileAge = false, rollByFilePath = false;
+            if ((Settings.RollByFileAge && _logRollingDateTime.HasValue) || Settings.DynamicFilePath)
             {
                 int ticks = Environment.TickCount;
-                int currentTimeMark = ticks - ticks%1000;
+                int currentTimeMark = ticks - ticks%1000; //Each 1 second
                 if (currentTimeMark != _lastTimeMark)
                 {
-                    rollByFileAge = DateTime.UtcNow >= _logRollingDateTime.Value;
+                    //Check RollByFileAge
+                    if (Settings.RollByFileAge && _logRollingDateTime.HasValue)
+                    {
+                        rollByFileAge = DateTime.UtcNow >= _logRollingDateTime.Value;
+                    }
+
+                    //Check DynamicFilePath
+                    if (Settings.DynamicFilePath)
+                    {
+                        DateTime localNow = DateTime.Now;
+                        int localHour = localNow.Hour;
+                        rollByFilePath = localHour != _lastFilePathCheckHour;
+                        if (rollByFilePath)
+                        {
+                            _lastFilePathCheckTime = localNow;
+                            _lastFilePathCheckHour = localHour;
+                        }
+                    }
+
                     _lastTimeMark = currentTimeMark;
                 }
             }
@@ -126,18 +149,36 @@ namespace IPCLogger.Core.Loggers.LFile
             //Roll By The File Size check
             bool rollByFileSize = Settings.RollByFileSize && _fileStreamSize >= Settings.MaxFileSize;
 
-            bool shouldRollTheLog = rollByFileAge || rollByFileSize;
+            //Show we do rolling the log at all
+            bool shouldRollTheLog = rollByFileAge || rollByFileSize || rollByFilePath;
 
             if (_fileStream == null || shouldRollTheLog)
             {
-                //If the log path has been changed then reset current postfix (_logCurrentIdx)
-                //otherwise just increment postfix to supply rolling
-                if (shouldRollTheLog || _logGenericPath == null)
+                string logGenericPath;
+                if (_fileStream == null && !unsuspend)
                 {
-                    string logGenericPath = Path.Combine(Settings.LogDir, Settings.LogFile);
-                    logGenericPath = SFactory.Process(logGenericPath, Patterns);
+                    logGenericPath = SFactory.Process(Settings.ExpandedLogFilePathWithMark, Patterns);
 
-                    bool logPathHasBeenChanged = _logGenericPath == null || logGenericPath != _logGenericPath;
+                    //Is the file path is not dynamic turn off the appropriate processing snippet
+                    if (Settings.ExpandedLogFilePathWithMark == logGenericPath)
+                    {
+                        Settings.DynamicFilePath = false;
+                        _logGenericPathIsConstant = true;
+                    }
+
+                    _logGenericPath = logGenericPath;
+                }
+
+                logGenericPath = _logGenericPathIsConstant
+                    ? _logGenericPath
+                    : SFactory.Process(Settings.ExpandedLogFilePathWithMark, Patterns);
+
+                //If the log path has been changed then reset current postfix (_logCurrentIdx) and store the generic path value
+                //otherwise just increment postfix to supply rolling
+                bool logPathHasBeenChanged = false;
+                if (shouldRollTheLog)
+                {
+                    logPathHasBeenChanged = !_logGenericPathIsConstant && logGenericPath != _logGenericPath;
                     if (logPathHasBeenChanged)
                     {
                         _logCurrentIdx = 0;
@@ -147,6 +188,12 @@ namespace IPCLogger.Core.Loggers.LFile
                     {
                         _logCurrentIdx++;
                     }
+                }
+
+                //Exit if the log path has not been changed
+                if (rollByFilePath && !rollByFileAge && !rollByFileSize && !logPathHasBeenChanged)
+                {
+                    return;
                 }
 
                 DestroyLogFileStream(false);
@@ -162,17 +209,10 @@ namespace IPCLogger.Core.Loggers.LFile
                 }
                 else
                 {
-                    const string idxPlaceMark = "?*";
-
-                    string logFile = Settings.LogFileName + idxPlaceMark + Settings.LogFileExt;
-                    string logRawPath = Path.Combine(Settings.LogDir, logFile);
-                    logRawPath = Environment.ExpandEnvironmentVariables(logRawPath);
-                    logRawPath = SFactory.Process(logRawPath, Patterns);
-
                     //Get log file path and save the data for the Roll By The File Age check
                     do
                     {
-                        logPath = logRawPath.Replace(idxPlaceMark, _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
+                        logPath = logGenericPath.Replace(LFileSettings.IdxPlaceMark, _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
 
                         bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) && Helpers.PathFileExists(logPath);
                         if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)

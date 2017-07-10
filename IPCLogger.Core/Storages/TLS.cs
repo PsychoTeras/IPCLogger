@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Storages
 {
@@ -14,8 +15,8 @@ namespace IPCLogger.Core.Storages
 
 #region Private fields
 
-        private static readonly object LockObj = new object();
-        private static readonly Dictionary<int, TLSObject> ThreadStorage = new Dictionary<int, TLSObject>();
+        private static readonly Dictionary<int, TLSObject> _threadStorage = new Dictionary<int, TLSObject>();
+        private static readonly LightLock _lockObj = new LightLock();
 
         private static int _currentThreadId;
 
@@ -54,55 +55,52 @@ namespace IPCLogger.Core.Storages
 
         public static void Push(TLSObject tlsObj)
         {
-            lock (LockObj)
+            _lockObj.WaitOne();
+            int threadId = CurrentThreadId;
+            if (_threadStorage[threadId] != null)
             {
-                int threadId = CurrentThreadId;
-                if (ThreadStorage[threadId] != null)
-                {
-                    ThreadStorage[threadId] = tlsObj;
-                }
-                else
-                {
-                    ThreadStorage.Add(threadId, tlsObj);
-                }
+                _threadStorage[threadId] = tlsObj;
             }
+            else
+            {
+                _threadStorage.Add(threadId, tlsObj);
+            }
+            _lockObj.Set();
         }
 
         public static TLSObject Push()
         {
-            lock (LockObj)
+            _lockObj.WaitOne();
+            TLSObject tlsObj;
+            int threadId = CurrentThreadId;
+            if (!_threadStorage.TryGetValue(threadId, out tlsObj))
             {
-                TLSObject tlsObj;
-                int threadId = CurrentThreadId;
-                if (!ThreadStorage.TryGetValue(threadId, out tlsObj))
-                {
-                    tlsObj = new TLSObject();
-                    ThreadStorage.Add(threadId, tlsObj);
-                }
-                return tlsObj;
+                tlsObj = new TLSObject();
+                _threadStorage.Add(threadId, tlsObj);
             }
+            _lockObj.Set();
+            return tlsObj;
         }
 
         public static TLSObject Peek()
         {
-            lock (LockObj)
-            {
-                TLSObject tlsObj;
-                int threadId = CurrentThreadId;
-                return ThreadStorage.TryGetValue(threadId, out tlsObj) ? tlsObj : null;
-            }
+            _lockObj.WaitOne();
+            TLSObject tlsObj;
+            int threadId = CurrentThreadId;
+            TLSObject val = _threadStorage.TryGetValue(threadId, out tlsObj) ? tlsObj : null;
+            _lockObj.Set();
+            return val;
         }
 
         public static void Pop()
         {
-            lock (LockObj)
+            _lockObj.WaitOne();
+            int threadId = CurrentThreadId;
+            if (_threadStorage.ContainsKey(threadId))
             {
-                int threadId = CurrentThreadId;
-                if (ThreadStorage.ContainsKey(threadId))
-                {
-                    ThreadStorage.Remove(threadId);
-                }
+                _threadStorage.Remove(threadId);
             }
+            _lockObj.Set();
         }
 
         public static object Get(string key)
