@@ -253,10 +253,7 @@ get_generic_pattern:
         {
             foreach (XmlNode contentNode in contentNodes)
             {
-                string content = contentNode.InnerText.Trim().
-                    Replace("\\r\\n", "\r\n").
-                    Replace("\\r", "\r").
-                    Replace("\\n", "\n");
+                string content = contentNode.InnerText.Trim();
 
                 XmlAttribute aApplicableFor = contentNode.Attributes["applicable-for"];
                 IEnumerable<string> applicableFor = aApplicableFor != null

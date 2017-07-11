@@ -46,7 +46,5 @@ namespace IPCLogger.Core.Caches
             }
             return eventName;
         }
-
-        public static void Setup() { }
     }
 }

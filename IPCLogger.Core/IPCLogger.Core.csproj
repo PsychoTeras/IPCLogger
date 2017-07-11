@@ -118,9 +118,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Snippets\Base\BaseSnippet.cs" />
     <Compile Include="Snippets\Base\SnippetParams.cs" />
-    <Compile Include="Snippets\Code\SException.cs" />
-    <Compile Include="Snippets\Code\SProcess.cs" />
-    <Compile Include="Snippets\Code\SThread.cs" />
+    <Compile Include="Snippets\Template\SException.cs" />
     <Compile Include="Common\HRTimer.cs" />
     <Compile Include="Snippets\SnippetsCache.cs" />
     <Compile Include="Snippets\Snippet\SSnippet.cs" />
@@ -138,6 +136,9 @@
     <Content Include="_cutted_off\CallerTypesCache.txt" />
     <Content Include="_cutted_off\EventNamesCache.txt" />
     <Content Include="_cutted_off\LFile-OptimizedFNGen.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Snippets\Code\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

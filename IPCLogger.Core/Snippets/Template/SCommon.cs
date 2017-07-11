@@ -22,15 +22,16 @@ namespace IPCLogger.Core.Snippets.Template
 #region Static fields
 
         private static volatile int _lastDateMark;
-        private static readonly Dictionary<string, string> DateStrings = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> _dateStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateStrings = new LightLock();
 
 
         private static volatile int _lastUTCMark;
-        private static readonly Dictionary<string, string> DateUTCStrings = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> _dateUTCStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateUTCStrings = new LightLock();
 
-        private static readonly string UserName = WindowsIdentity.GetCurrent().Name;
+        private static readonly string _userName = WindowsIdentity.GetCurrent().Name;
+        private static readonly Process _process = System.Diagnostics.Process.GetCurrentProcess();
 
 #endregion
 
@@ -53,6 +54,7 @@ namespace IPCLogger.Core.Snippets.Template
                     ,"thread"
                     ,"event"
                     ,"guid"
+                    ,"process"
                 };
             }
         }
@@ -81,21 +83,19 @@ namespace IPCLogger.Core.Snippets.Template
                     string cachedDate;
                     int ticks = Environment.TickCount;
                     int currentTimeMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
-                    if (currentTimeMark != _lastDateMark || !DateStrings.TryGetValue(@params, out cachedDate))
+                    if (currentTimeMark != _lastDateMark || !_dateStrings.TryGetValue(@params, out cachedDate))
                     {
                         _lockDateStrings.WaitOne();
-
                         cachedDate = DateTime.Now.ToString(@params);
-                        if (!DateStrings.ContainsKey(@params))
+                        if (!_dateStrings.ContainsKey(@params))
                         {
-                            DateStrings.Add(@params, cachedDate);
+                            _dateStrings.Add(@params, cachedDate);
                         }
                         else
                         {
-                            DateStrings[@params] = cachedDate;
+                            _dateStrings[@params] = cachedDate;
                         }
                         _lastDateMark = currentTimeMark;
-
                         _lockDateStrings.Set();
                     }
                     return cachedDate;
@@ -105,21 +105,19 @@ namespace IPCLogger.Core.Snippets.Template
                     string cachedDate;
                     int ticks = Environment.TickCount;
                     int currentTimeUTCMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
-                    if (currentTimeUTCMark != _lastUTCMark || !DateUTCStrings.TryGetValue(@params, out cachedDate))
+                    if (currentTimeUTCMark != _lastUTCMark || !_dateUTCStrings.TryGetValue(@params, out cachedDate))
                     {
-                            _lockDateUTCStrings.WaitOne();
-
+                        _lockDateUTCStrings.WaitOne();
                         cachedDate = DateTime.UtcNow.ToString(@params);
                         if (currentTimeUTCMark == _lastUTCMark)
                         {
-                            DateUTCStrings.Add(@params, cachedDate);
+                            _dateUTCStrings.Add(@params, cachedDate);
                         }
                         else
                         {
-                            DateUTCStrings[@params] = cachedDate;
+                            _dateUTCStrings[@params] = cachedDate;
                         }
                         _lastUTCMark = currentTimeUTCMark;
-
                         _lockDateUTCStrings.Set();
                     }
                     return cachedDate;
@@ -130,12 +128,30 @@ namespace IPCLogger.Core.Snippets.Template
                     Process process = System.Diagnostics.Process.GetCurrentProcess();
                     return (DateTime.Now - process.StartTime).Milliseconds.ToString(@params);
                 case "username":
-                    return UserName;
+                    return _userName;
                 case "appdomain":
                     return AppDomain.CurrentDomain.FriendlyName;
                 case "thread":
                     Thread thread = Thread.CurrentThread;
-                    return string.Format("{0} [{1}]", thread.Name, thread.ManagedThreadId);
+                    switch (@params)
+                    {
+                        case "name":
+                            return thread.Name;
+                        case "id":
+                            return thread.ManagedThreadId.ToString();
+                        default:
+                            return string.Format("{0} [{1}]", thread.Name, thread.ManagedThreadId);
+                    }
+                case "process":
+                    switch (@params)
+                    {
+                        case "name":
+                            return _process.ProcessName;
+                        case "id":
+                            return _process.Id.ToString();
+                        default:
+                            return string.Format("{0} [{1}]", _process.ProcessName, _process.Id);
+                    }
                 case "event":
                     if (eventType == null) return null;
                     switch (@params)

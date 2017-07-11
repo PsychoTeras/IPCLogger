@@ -49,7 +49,5 @@ namespace IPCLogger.Core.Caches
             }
             return type;
         }
-
-        public static void Setup() { }
     }
 }

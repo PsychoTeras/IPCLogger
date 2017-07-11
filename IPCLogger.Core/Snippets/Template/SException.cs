@@ -3,7 +3,7 @@ using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets.Base;
 using IPCLogger.Core.Storages;
 
-namespace IPCLogger.Core.Snippets.Code
+namespace IPCLogger.Core.Snippets.Template
 {
     internal sealed class SException : BaseSnippet
     {
@@ -16,9 +16,7 @@ namespace IPCLogger.Core.Snippets.Code
             {
                 return new[]
                 {
-                     "exception"
-                    ,"exception.Message"
-                    ,"exception.StackTrace"
+                    "exception"
                 };
             }
         }
@@ -27,7 +25,7 @@ namespace IPCLogger.Core.Snippets.Code
 
 #region Ctor
 
-        public SException() : base(SnippetType.Code) { }
+        public SException() : base(SnippetType.Snippet) { }
 
 #endregion
 
@@ -39,16 +37,14 @@ namespace IPCLogger.Core.Snippets.Code
             LSObject lsObj = LS.Peek();
             if (lsObj == null || lsObj.Exception == null) return null;
 
-            switch (snippetName)
+            switch (@params)
             {
-                case "exception":
-                    return lsObj.Exception.ToString();
-                case "exception.Message":
+                case "message":
                     return lsObj.Exception.Message;
-                case "exception.StackTrace":
+                case "stack":
                     return lsObj.Exception.StackTrace;
                 default:
-                    return null;
+                    return lsObj.Exception.ToString();
             }
         }
 
