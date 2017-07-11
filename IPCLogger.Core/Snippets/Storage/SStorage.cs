@@ -15,6 +15,7 @@ namespace IPCLogger.Core.Snippets.Storage
 #region Private fields
 
         private static readonly string CollItemPrefix = "\t";
+        private static readonly string DefValue = "<NULL>";
 
 #endregion
 
@@ -43,28 +44,21 @@ namespace IPCLogger.Core.Snippets.Storage
                 sb.Append(prefix);
             }
 
-            if (val == null)
-            {
-                if (defValue != null)
-                {
-                    sb.Append(defValue);
-                }
-                return;
-            }
-
             ICollection iColl = unfold ? val as ICollection : null;
             if (detailed)
             {
-                string name = TypeNamesCache.GetTypeName(val.GetType());
+                Type type = val != null ? val.GetType() : null;
+                string name = TypeNamesCache.GetTypeName(type);
                 if (iColl == null)
                 {
-                    sb.AppendFormat("[{0}] {1}", name, val);
+                    sb.AppendFormat("[{0}] {1}", name, val ?? defValue);
                 }
                 else
                 {
                     if (prefix == null)
                     {
-                        sb.AppendFormat("{0}{1}", Constants.NewLine, prefix = CollItemPrefix);
+                        prefix = CollItemPrefix;
+                        sb.AppendFormat("{0}{1}", Constants.NewLine, prefix);
                     }
                     sb.AppendFormat("[{0}, size {1}] >", name, iColl.Count);
                 }
@@ -73,7 +67,7 @@ namespace IPCLogger.Core.Snippets.Storage
             {
                 if (iColl == null)
                 {
-                    sb.Append(val);
+                    sb.Append(val ?? defValue);
                 }
                 else
                 {
@@ -101,6 +95,7 @@ namespace IPCLogger.Core.Snippets.Storage
             SnippetParams sParams = SnippetParams.Parse(@params);
             bool unfold = sParams.HasValue("unfold");
             bool detailed = sParams.HasValue("detailed");
+            string defValue = detailed ? DefValue : null;
 
             if (snippetName == Constants.ApplicableForAllMark)
             {
@@ -110,14 +105,14 @@ namespace IPCLogger.Core.Snippets.Storage
                 foreach (object key in val.Keys)
                 {
                     sb.AppendFormat("{0}: ", key);
-                    ObjectToString(val[key], sb, unfold, detailed, null, "<NULL>");
+                    ObjectToString(val[key], sb, unfold, detailed, null, defValue);
                     sb.Append(Constants.NewLine);
                 }
             }
             else
             {
                 object val = TLS.Get(snippetName);
-                ObjectToString(val, sb, unfold, detailed, null, null);
+                ObjectToString(val, sb, unfold, detailed, null, defValue);
             }
             return sb.Length == 0 ? null : sb.ToString();
         }

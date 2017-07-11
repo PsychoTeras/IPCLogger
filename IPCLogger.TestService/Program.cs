@@ -56,8 +56,8 @@ namespace IPCLogger.TestService
                 tlsObj["_array"] = new[]
                 {
                     new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("1", "2")},
-                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("3", "4")},
-                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("5", "6")}
+                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>(null, "4")},
+                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("5", null)}
                 };
 
                 //ApplicableForTester.WriteMessage();
