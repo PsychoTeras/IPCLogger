@@ -71,6 +71,7 @@
     <Compile Include="Attributes\CustomConversionAttribute.cs" />
     <Compile Include="Attributes\TimeStringConversionAttribute.cs" />
     <Compile Include="Caches\CallerTypesCache.cs" />
+    <Compile Include="Caches\TypeNamesCache.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Caches\EventNamesCache.cs" />
     <Compile Include="Common\LightLock.cs" />

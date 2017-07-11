@@ -47,8 +47,9 @@ namespace IPCLogger.Core.Snippets.Code
                     return lsObj.Exception.Message;
                 case "exception.StackTrace":
                     return lsObj.Exception.StackTrace;
+                default:
+                    return null;
             }
-            return null;
         }
 
 #endregion

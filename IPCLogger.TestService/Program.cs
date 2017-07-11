@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
@@ -21,8 +22,8 @@ namespace IPCLogger.TestService
         //--------------------------------------------Configure test environment here----------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
+        private static readonly int _parallelOperations = 1;   //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly int _recordsCount = 1 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ namespace IPCLogger.TestService
                 tlsObj["_int"] = 0xACDC;
                 tlsObj["_nvarchar"] = _sGuid;
                 tlsObj["_uniqueidentifier"] = _guid;
+                tlsObj["_array"] = new[]
+                {
+                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("1", "2")},
+                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("3", "4")},
+                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("5", "6")}
+                };
 
                 //ApplicableForTester.WriteMessage();
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write

@@ -113,6 +113,7 @@ namespace IPCLogger.Core.Snippets
                 namesList.AddRange(dict.Value.Select(s => Regex.Escape(s.Key)));
             }
             namesList.Sort();
+
             foreach (string snippet in namesList)
             {
                 snippetNames.AppendFormat("{0}{1}", snippetNames.Length > 0 ? "|" : string.Empty, snippet);
@@ -125,7 +126,7 @@ namespace IPCLogger.Core.Snippets
             {
                 typeMarks.Append(BaseSnippet.SnippetMarks[dict.Key]);
             }
-            regexPattern.AppendFormat(@"|({{(?<T>[{0}])(?<N>((?!}}).)*)}})", typeMarks);
+            regexPattern.AppendFormat(@"|({{(?<T>[{0}])(?<N>.*?)(:(?<P>((?!}}).)*))*}})", typeMarks);
 
             //Compile regex
             RegexOptions regexOpt = RegexOptions.ExplicitCapture;
