@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Common;
@@ -36,6 +38,41 @@ namespace IPCLogger.Core.Snippets.Storage
 
 #region Class methods
 
+        private bool InvokeValueAsDelegate(Type type, ref string name, ref object val)
+        {
+            if (type.BaseType == typeof (MulticastDelegate))
+            {
+                MulticastDelegate d = (MulticastDelegate) val;
+                try
+                {
+                    val = d.DynamicInvoke();
+                    if (val != null)
+                    {
+                        name = TypeNamesCache.GetTypeName(val.GetType());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    val = string.Format("{0} invocation error: {1}", d.Method.Name, ex);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private bool InvokeValueAsMemberExpression(Type type, ref string name, ref object val)
+        {
+            MemberExpression me = val as MemberExpression;
+            if (me != null)
+            {
+                name = TypeNamesCache.GetTypeName(((FieldInfo)me.Member).FieldType);
+                ConstantExpression ce = (ConstantExpression) me.Expression;
+                val = ((FieldInfo) me.Member).GetValue(ce.Value);
+                return true;
+            }
+            return false;
+        }
+
         private void ObjectToString(object val, StringBuilder sb, bool unfold, bool detailed, 
             string prefix, string defValue)
         {
@@ -44,11 +81,15 @@ namespace IPCLogger.Core.Snippets.Storage
                 sb.Append(prefix);
             }
 
+            string name = null;
+            Type type = val != null ? val.GetType() : null;
             ICollection iColl = unfold ? val as ICollection : null;
             if (detailed)
             {
-                Type type = val != null ? val.GetType() : null;
-                string name = TypeNamesCache.GetTypeName(type);
+                if (type == null || (!InvokeValueAsDelegate(type, ref name, ref val) && !InvokeValueAsMemberExpression(type, ref name, ref val)))
+                {
+                    name = TypeNamesCache.GetTypeName(type);
+                }
                 if (iColl == null)
                 {
                     sb.AppendFormat("[{0}] {1}", name, val ?? defValue);
@@ -67,6 +108,10 @@ namespace IPCLogger.Core.Snippets.Storage
             {
                 if (iColl == null)
                 {
+                    if (!InvokeValueAsDelegate(type, ref name, ref val))
+                    {
+                        InvokeValueAsMemberExpression(type, ref name, ref val);
+                    }
                     sb.Append(val ?? defValue);
                 }
                 else

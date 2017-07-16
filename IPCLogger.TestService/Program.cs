@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.ServiceProcess;
@@ -23,7 +22,7 @@ namespace IPCLogger.TestService
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net?
         private static readonly int _parallelOperations = 1;   //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int _recordsCount = 1 / _parallelOperations;       //Number of iterations
+        private static readonly int _recordsCount = 50000 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -32,6 +31,8 @@ namespace IPCLogger.TestService
         private static Guid _guid = new Guid();
         private static string _sGuid = _guid.ToString();
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
+
+        private static string PSGUID {  get { return _sGuid; } }
 
         internal static void WriteLog4Net(object obj)
         {
@@ -46,19 +47,25 @@ namespace IPCLogger.TestService
             ((ManualResetEvent) obj).Set();
         }
 
+        internal static int GetInt()
+        {
+            return -1;
+        }
+
         internal static void WriteLogIPC(object obj)
         {
+            string val = "123";
             using (TLSObject tlsObj = TLS.Push())
             {
-                tlsObj["_int"] = 0xACDC;
-                tlsObj["_nvarchar"] = _sGuid;
-                tlsObj["_uniqueidentifier"] = _guid;
-                tlsObj["_array"] = new[]
-                {
-                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("1", "2")},
-                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>(null, "4")},
-                    new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("5", null)}
-                };
+                //tlsObj["_int"] = 0xACDC;
+                //tlsObj["_nvarchar"] = _sGuid;
+                //tlsObj["_uniqueidentifier"] = _guid;
+                //tlsObj["_array"] = new[]
+                //{
+                //    new List<KeyValuePair<int, string>> {new KeyValuePair<int, string>(1, "2")},
+                //    new List<KeyValuePair<int, string>> {new KeyValuePair<int, string>(3, "4")}
+                //};
+                //tlsObj["_func"] = new Func<int>(GetInt);
 
                 //ApplicableForTester.WriteMessage();
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
@@ -67,6 +74,7 @@ namespace IPCLogger.TestService
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
                     //Thread.Sleep(1000);
+                    tlsObj.SetClosure(() => GetInt());
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
                 }
             }
@@ -120,7 +128,7 @@ namespace IPCLogger.TestService
                 FlushLog4NetBuffers();
             }
         }
-        
+
         static void Main(string[] param)
         {
             //_timer = HRTimer.CreateAndStart();
