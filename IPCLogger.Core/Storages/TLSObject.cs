@@ -9,6 +9,13 @@ namespace IPCLogger.Core.Storages
     public sealed class TLSObject : Hashtable, IDisposable
     {
 
+#region Private fields
+
+        private static readonly DictionaryCache<object, Delegate> _cacheClosureMembers =
+            new DictionaryCache<object, Delegate>();
+
+#endregion
+
 #region Ctor
 
         internal TLSObject() { }
@@ -117,7 +124,12 @@ namespace IPCLogger.Core.Storages
                 case ExpressionType.Constant:
                 {
                     ConstantExpression ce = (ConstantExpression) memberExpression.Body;
-                    string name = key ?? ce.Value.ToString();
+                    bool isKeyEmpty = string.IsNullOrEmpty(key);
+                    if (ce.Value == null && isKeyEmpty)
+                    {
+                        return;
+                    }
+                    string name = isKeyEmpty ? ce.Value.ToString() : key;
                     this[name] = name;
                     break;
                 }
@@ -125,7 +137,7 @@ namespace IPCLogger.Core.Storages
                 {
                     MemberExpression body = (MemberExpression) memberExpression.Body;
                     string name = key ?? body.Member.Name;
-                    this[name] = TLSClosureMembers.GetTLSClosureMember(body.Member, () =>
+                    this[name] = _cacheClosureMembers.Get(body.Member, () =>
                     {
                         Type bodyType = body.Type;
                         Type delegateType = typeof (Func<>).MakeGenericType(bodyType);
@@ -137,7 +149,7 @@ namespace IPCLogger.Core.Storages
                 {
                     MethodCallExpression body = (MethodCallExpression) memberExpression.Body;
                     string name = key ?? body.Method.Name;
-                    this[name] = TLSClosureMembers.GetTLSClosureMember(body.Method, () =>
+                    this[name] = _cacheClosureMembers.Get(body.Method, () =>
                     {
                         Type bodyType = body.Type;
                         Type delegateType = typeof (Func<>).MakeGenericType(bodyType);

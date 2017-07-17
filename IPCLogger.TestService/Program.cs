@@ -7,7 +7,6 @@ using System.Threading;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
-using IPCLogger.Core.Snippets.Base;
 using IPCLogger.Core.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
@@ -22,8 +21,8 @@ namespace IPCLogger.TestService
         //--------------------------------------------Configure test environment here----------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int _parallelOperations = 1;   //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int _recordsCount = 50000 / _parallelOperations;       //Number of iterations
+        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +32,7 @@ namespace IPCLogger.TestService
         private static string _sGuid = _guid.ToString();
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
 
-        private static string PSGUID
+        internal static string PSGUID
         {
             get { return _sGuid; } 
             set { _sGuid = value; }
@@ -59,7 +58,7 @@ namespace IPCLogger.TestService
 
         internal static void WriteLogIPC(object obj)
         {
-            string val = "123";
+            const string val = null;
             using (TLSObject tlsObj = TLS.Push())
             {
                 //tlsObj["_int"] = 0xACDC;
@@ -72,21 +71,18 @@ namespace IPCLogger.TestService
                 //};
                 //tlsObj["_func"] = new Func<int>(GetInt);
 
-                //ApplicableForTester.WriteMessage();
-
                 AAA a = new AAA();
                 a.sss = new SSS();
+                tlsObj.SetClosure(() => val);
 
-                //tlsObj.SetClosure(() => a.sss.GetString());
-                tlsObj.SetClosure(() => PSGUID);
-                PSGUID = null;
+                //ApplicableForTester.WriteMessage();
 
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
                 _timer = HRTimer.CreateAndStart();
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
                 }
             }
@@ -198,7 +194,7 @@ namespace IPCLogger.TestService
 
         public string GetString()
         {
-            return s.ToLower();
+            return s;
         }
     }
 }

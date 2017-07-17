@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Common;
@@ -15,6 +16,8 @@ namespace IPCLogger.Core.Snippets.Storage
 #region Private fields
 
         private static readonly string CollItemPrefix = "\t";
+        private static readonly DictionaryCache<string, KeyValuePair<bool, bool>> _cacheParams = 
+            new DictionaryCache<string, KeyValuePair<bool, bool>>();
 
 #endregion
 
@@ -118,9 +121,14 @@ namespace IPCLogger.Core.Snippets.Storage
             if (snippetName == string.Empty) return null;
 
             StringBuilder sb = new StringBuilder();
-            SnippetParams sParams = SnippetParams.Parse(@params);
-            bool unfold = sParams.HasValue("unfold");
-            bool detailed = sParams.HasValue("detailed");
+
+            KeyValuePair<bool, bool> opts = _cacheParams.Get(@params, () =>
+            {
+                SnippetParams sParams = SnippetParams.Parse(@params);
+                return new KeyValuePair<bool, bool>(sParams.HasValue("unfold"), sParams.HasValue("detailed"));
+            });
+            bool unfold = opts.Key;
+            bool detailed = opts.Value;
             string defValue = detailed ? DefNullValueString : null;
 
             if (snippetName == Constants.ApplicableForAllMark)

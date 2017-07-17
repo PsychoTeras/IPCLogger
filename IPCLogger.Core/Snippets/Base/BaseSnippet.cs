@@ -21,7 +21,7 @@ namespace IPCLogger.Core.Snippets.Base
         internal static readonly Dictionary<char, SnippetType> SnippetTypes =
             new Dictionary<char, SnippetType>(SnippetMarks.Count);
 
-        public static string DefNullValueString = "<NULL>";
+        internal static readonly string DefNullValueString = "<NULL>";
 
 #endregion
 
