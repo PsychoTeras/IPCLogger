@@ -27,6 +27,8 @@ namespace IPCLogger.Core.Snippets.Base
 
         protected char Mark { get; private set; }
 
+        public static string DefNullValueString = "<NULL>";
+
 #endregion
 
 #region Properties

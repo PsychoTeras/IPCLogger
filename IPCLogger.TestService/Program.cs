@@ -7,6 +7,7 @@ using System.Threading;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
+using IPCLogger.Core.Snippets.Base;
 using IPCLogger.Core.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
@@ -75,12 +76,10 @@ namespace IPCLogger.TestService
 
                 AAA a = new AAA();
                 a.sss = new SSS();
-                a.sss.s = "12";
 
-                tlsObj.SetClosure(() => a.sss.GetString().ToLower());
-
-                a.sss.s = null;
-                //PSGUID = null;
+                //tlsObj.SetClosure(() => a.sss.GetString());
+                tlsObj.SetClosure(() => PSGUID);
+                PSGUID = null;
 
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
@@ -199,7 +198,7 @@ namespace IPCLogger.TestService
 
         public string GetString()
         {
-            return s;
+            return s.ToLower();
         }
     }
 }

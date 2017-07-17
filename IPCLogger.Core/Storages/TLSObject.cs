@@ -50,29 +50,27 @@ namespace IPCLogger.Core.Storages
                 {
                     //Static fields don't require an instance
                     FieldInfo field = memberExpr.Member as FieldInfo;
-                    if (field != null)
+                    if (field != null && field.IsStatic)
                     {
-                        if (field.IsStatic)
+                        return true;
+                    }
+
+                    //Static properties don't require an instance
+                    PropertyInfo property = memberExpr.Member as PropertyInfo;
+                    if (property != null)
+                    {
+                        MethodInfo getter = property.GetGetMethod();
+                        if (getter != null && getter.IsStatic)
                         {
                             return true;
                         }
                     }
-                    else
-                    {
-                        //Static properties don't require an instance
-                        PropertyInfo property = memberExpr.Member as PropertyInfo;
-                        if (property != null)
-                        {
-                            MethodInfo getter = property.GetGetMethod();
-                            if (getter != null && getter.IsStatic)
-                            {
-                                return true;
-                            }
-                        }
-                    }
 
                     obj = memberExpr.Expression;
-                    memberName = ((MemberExpression)obj).Member.Name;
+                    if (obj is MemberExpression)
+                    {
+                        memberName = ((MemberExpression) obj).Member.Name;
+                    }
                 }
                 else
                 {
@@ -86,7 +84,8 @@ namespace IPCLogger.Core.Storages
                     if (obj is MethodCallExpression)
                     {
                         memberName = ((MethodCallExpression) obj).Method.Name;
-                    } else if (obj is MemberExpression)
+                    }
+                    else if (obj is MemberExpression)
                     {
                         memberName = ((MemberExpression) obj).Member.Name;
                     }

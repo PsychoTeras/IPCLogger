@@ -15,7 +15,6 @@ namespace IPCLogger.Core.Snippets.Storage
 #region Private fields
 
         private static readonly string CollItemPrefix = "\t";
-        private static readonly string DefValue = "<NULL>";
 
 #endregion
 
@@ -122,7 +121,7 @@ namespace IPCLogger.Core.Snippets.Storage
             SnippetParams sParams = SnippetParams.Parse(@params);
             bool unfold = sParams.HasValue("unfold");
             bool detailed = sParams.HasValue("detailed");
-            string defValue = detailed ? DefValue : null;
+            string defValue = detailed ? DefNullValueString : null;
 
             if (snippetName == Constants.ApplicableForAllMark)
             {
