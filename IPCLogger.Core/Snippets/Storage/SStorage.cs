@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Common;
@@ -60,19 +58,6 @@ namespace IPCLogger.Core.Snippets.Storage
             return false;
         }
 
-        private bool InvokeValueAsMemberExpression(Type type, ref string name, ref object val)
-        {
-            MemberExpression me = val as MemberExpression;
-            if (me != null)
-            {
-                name = TypeNamesCache.GetTypeName(((FieldInfo)me.Member).FieldType);
-                ConstantExpression ce = (ConstantExpression) me.Expression;
-                val = ((FieldInfo) me.Member).GetValue(ce.Value);
-                return true;
-            }
-            return false;
-        }
-
         private void ObjectToString(object val, StringBuilder sb, bool unfold, bool detailed, 
             string prefix, string defValue)
         {
@@ -86,7 +71,7 @@ namespace IPCLogger.Core.Snippets.Storage
             ICollection iColl = unfold ? val as ICollection : null;
             if (detailed)
             {
-                if (type == null || (!InvokeValueAsDelegate(type, ref name, ref val) && !InvokeValueAsMemberExpression(type, ref name, ref val)))
+                if (type == null || !InvokeValueAsDelegate(type, ref name, ref val))
                 {
                     name = TypeNamesCache.GetTypeName(type);
                 }
@@ -108,10 +93,7 @@ namespace IPCLogger.Core.Snippets.Storage
             {
                 if (iColl == null)
                 {
-                    if (!InvokeValueAsDelegate(type, ref name, ref val))
-                    {
-                        InvokeValueAsMemberExpression(type, ref name, ref val);
-                    }
+                    InvokeValueAsDelegate(type, ref name, ref val);
                     sb.Append(val ?? defValue);
                 }
                 else

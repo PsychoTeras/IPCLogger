@@ -32,7 +32,11 @@ namespace IPCLogger.TestService
         private static string _sGuid = _guid.ToString();
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
 
-        private static string PSGUID {  get { return _sGuid; } }
+        private static string PSGUID
+        {
+            get { return _sGuid; } 
+            set { _sGuid = value; }
+        }
 
         internal static void WriteLog4Net(object obj)
         {
@@ -68,13 +72,22 @@ namespace IPCLogger.TestService
                 //tlsObj["_func"] = new Func<int>(GetInt);
 
                 //ApplicableForTester.WriteMessage();
+
+                AAA a = new AAA();
+                a.sss = new SSS();
+                a.sss.s = "12";
+
+                tlsObj.SetClosure(() => a.sss.GetString().ToLower());
+
+                a.sss.s = null;
+                //PSGUID = null;
+
                 LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
                 _timer = HRTimer.CreateAndStart();
                 for (int i = 0; i < _recordsCount - 1; i++)
                 {
-                    //Thread.Sleep(1000);
-                    tlsObj.SetClosure(() => GetInt());
+                    Thread.Sleep(1000);
                     LFactory.Instance.Write(LogEvent.Info, _sGuid);
                 }
             }
@@ -172,6 +185,21 @@ namespace IPCLogger.TestService
             } while ((ex = ex.InnerException) != null);
             sb.AppendLine(stackTrace);
             Console.WriteLine(sb.ToString());
+        }
+    }
+
+    struct AAA
+    {
+        public SSS sss;
+    }
+
+    class SSS
+    {
+        public string s;
+
+        public string GetString()
+        {
+            return s;
         }
     }
 }
