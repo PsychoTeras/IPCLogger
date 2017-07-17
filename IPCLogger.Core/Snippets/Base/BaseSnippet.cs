@@ -21,13 +21,14 @@ namespace IPCLogger.Core.Snippets.Base
         internal static readonly Dictionary<char, SnippetType> SnippetTypes =
             new Dictionary<char, SnippetType>(SnippetMarks.Count);
 
+        public static string DefNullValueString = "<NULL>";
+
 #endregion
 
 #region Protected fields
 
         protected char Mark { get; private set; }
 
-        public static string DefNullValueString = "<NULL>";
 
 #endregion
 
