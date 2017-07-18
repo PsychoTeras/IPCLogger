@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Caches
 {
     internal static unsafe class CallerTypesCache
     {
+        private static int _callerStackLevel = -1;
         private static readonly bool Is64BitPtr = IntPtr.Size == 8;
 
         private static readonly Dictionary<int, Dictionary<long, Type>> CachedTypes =
@@ -27,7 +29,12 @@ namespace IPCLogger.Core.Caches
                 {
                     if (!CachedTypes.TryGetValue(currentThread, out typeDict))
                     {
-                        MethodBase method = new StackTrace(3).GetFrame(0).GetMethod();
+                        StackTrace stackTrace = new StackTrace();
+                        if (_callerStackLevel == -1)
+                        {
+                            _callerStackLevel = Helpers.FindCallerStackLevel(stackTrace);
+                        }
+                        MethodBase method = stackTrace.GetFrame(_callerStackLevel).GetMethod();
                         typeDict = new Dictionary<long, Type> {{stackAddr, type = method.DeclaringType}};
                         CachedTypes.Add(currentThread, typeDict);
                     }
@@ -41,7 +48,12 @@ namespace IPCLogger.Core.Caches
                     {
                         if (!typeDict.TryGetValue(stackAddr, out type))
                         {
-                            MethodBase method = new StackTrace(3).GetFrame(0).GetMethod();
+                            StackTrace stackTrace = new StackTrace();
+                            if (_callerStackLevel == -1)
+                            {
+                                _callerStackLevel = Helpers.FindCallerStackLevel(stackTrace);
+                            }
+                            MethodBase method = stackTrace.GetFrame(_callerStackLevel).GetMethod();
                             typeDict.Add(stackAddr, type = method.DeclaringType);
                         }
                     }

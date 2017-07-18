@@ -138,9 +138,7 @@
     <Content Include="_cutted_off\EventNamesCache.txt" />
     <Content Include="_cutted_off\LFile-OptimizedFNGen.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Snippets\Code\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

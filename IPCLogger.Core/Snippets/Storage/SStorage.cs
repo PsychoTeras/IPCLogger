@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Common;
@@ -45,7 +47,17 @@ namespace IPCLogger.Core.Snippets.Storage
                 MulticastDelegate d = (MulticastDelegate) val;
                 try
                 {
-                    val = d.DynamicInvoke();
+                    Closure closure = (Closure) d.Target;
+                    if (closure.Constants.Length == 1)
+                    {
+                        object oVal = closure.Constants[0];
+                        val = oVal.GetType().GetFields().First().GetValue(oVal);
+                    }
+                    else
+                    {
+                        val = d.DynamicInvoke();
+                    }
+
                     if (val != null)
                     {
                         name = TypeNamesCache.GetTypeName(val.GetType());
@@ -136,11 +148,16 @@ namespace IPCLogger.Core.Snippets.Storage
                 Hashtable val = TLS.Peek();
                 if (val == null || val.Count == 0) return null;
 
+                int idx = 0;
+                int cnt = val.Keys.Count;
                 foreach (object key in val.Keys)
                 {
                     sb.AppendFormat("{0}: ", key);
                     ObjectToString(val[key], sb, unfold, detailed, null, defValue);
-                    sb.Append(Constants.NewLine);
+                    if (++idx < cnt)
+                    {
+                        sb.Append(Constants.NewLine);
+                    }
                 }
             }
             else

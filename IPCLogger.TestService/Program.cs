@@ -58,7 +58,6 @@ namespace IPCLogger.TestService
 
         internal static void WriteLogIPC(object obj)
         {
-            const string val = null;
             using (TLSObject tlsObj = TLS.Push())
             {
                 //tlsObj["_int"] = 0xACDC;
@@ -71,9 +70,10 @@ namespace IPCLogger.TestService
                 //};
                 //tlsObj["_func"] = new Func<int>(GetInt);
 
-                AAA a = new AAA();
-                a.sss = new SSS();
-                tlsObj.SetClosure(() => val);
+                //string val = "123123";
+                //AAA a = new AAA();
+                //a.sss = new SSS();
+                //tlsObj.SetClosure(() => _guid);
 
                 //ApplicableForTester.WriteMessage();
 
@@ -139,12 +139,24 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            //_timer = HRTimer.CreateAndStart();
+            LFactory.Instance.Write(LogEvent.Debug, (string)null);
 
-            //Console.WriteLine(_timer.StopWatch());
-            //Console.ReadKey();
-            //Process.GetCurrentProcess().Kill();
-            //return;
+            _timer = HRTimer.CreateAndStart();
+
+            string value = "data";
+            using (TLSObject tlsObj = TLS.Push())
+            {
+                tlsObj.SetClosure(() => value);
+                for (int i = 0; i < _recordsCount - 1; i++)
+                {
+                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+                }
+            }
+
+            Console.WriteLine(_timer.StopWatch());
+            Console.ReadKey();
+            Process.GetCurrentProcess().Kill();
+            return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
