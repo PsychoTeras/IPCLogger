@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using IPCLogger.Core.Caches;
@@ -51,7 +50,7 @@ namespace IPCLogger.Core.Snippets.Storage
                     if (closure.Constants.Length == 1)
                     {
                         object oVal = closure.Constants[0];
-                        val = oVal.GetType().GetFields().First().GetValue(oVal);
+                        val = oVal.GetType().GetFields()[0].GetValue(oVal);
                     }
                     else
                     {

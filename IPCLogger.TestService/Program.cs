@@ -8,6 +8,7 @@ using System.Threading;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
+using IPCLogger.Core.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
 using log4net.Appender;
@@ -21,7 +22,7 @@ namespace IPCLogger.TestService
         //--------------------------------------------Configure test environment here----------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int _parallelOperations = 1;   //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
         private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
@@ -155,24 +156,24 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            //LFactory.Instance.Write(LogEvent.Debug, (string)null);
+            LFactory.Instance.Write(LogEvent.Debug, (string)null);
 
-            //_timer = HRTimer.CreateAndStart();
+            string value = "data";
+            using (TLSObject tlsObj = TLS.Push())
+            {
+                tlsObj.SetClosure(() => value);
 
-            //string value = "data";
-            //using (TLSObject tlsObj = TLS.Push())
-            //{
-            //    tlsObj.SetClosure(() => value);
-            //    for (int i = 0; i < _recordsCount - 1; i++)
-            //    {
-            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-            //    }
-            //}
+                _timer = HRTimer.CreateAndStart();
+                for (int i = 0; i < _recordsCount - 1; i++)
+                {
+                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+                }
+            }
 
-            //Console.WriteLine(_timer.StopWatch());
-            //Console.ReadKey();
-            //Process.GetCurrentProcess().Kill();
-            //return;
+            Console.WriteLine(_timer.StopWatch());
+            Console.ReadKey();
+            Process.GetCurrentProcess().Kill();
+            return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
