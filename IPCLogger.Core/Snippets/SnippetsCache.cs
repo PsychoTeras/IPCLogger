@@ -33,8 +33,7 @@ namespace IPCLogger.Core.Snippets
                 }
                 if (record.Snippet != null)
                 {
-                    string value = record.Snippet.Process(callerType, eventType, record.Name, 
-                        text, record.Params, pFactory);
+                    string value = record.Snippet.Process(callerType, eventType, record.Name, text, record.Params, pFactory);
                     if (!string.IsNullOrEmpty(value))
                     {
                         result.Append(value);
