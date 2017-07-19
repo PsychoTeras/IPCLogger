@@ -58,7 +58,7 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Class methods
 
-        public override void FinalizeSetup()
+        protected override void FinalizeSetup()
         {
             RollByFileSize = MaxFileSize > 0;
             RollByFileAge = MaxFileAge.Ticks > 0;

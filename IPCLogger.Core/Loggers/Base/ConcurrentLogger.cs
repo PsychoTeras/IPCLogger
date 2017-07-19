@@ -19,6 +19,7 @@ namespace IPCLogger.Core.Loggers.Base
 #region Protected fields
 
         protected bool Initialized { get; private set; }
+        protected bool InSetupSettings { get; private set; }
 
 #endregion
 
@@ -38,6 +39,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected override void OnSetupSettings()
         {
             _lockObj.WaitOne(_shouldLock);
+            InSetupSettings = true;
             try
             {
                 if (!Initialized) return;
@@ -51,6 +53,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             finally
             {
+                InSetupSettings = false;
                 _lockObj.Set(_shouldLock);
             }
         }

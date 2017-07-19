@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Snippets;
@@ -10,6 +11,8 @@ namespace IPCLogger.Core.Loggers.LFile
     {
 
 #region Private fields
+
+        private static readonly Encoding _utf8 = new UTF8Encoding(false);
 
         private string _fileName;
         private Stream _fileStream;
@@ -212,9 +215,11 @@ namespace IPCLogger.Core.Loggers.LFile
                     //Get log file path and save the data for the Roll By The File Age check
                     do
                     {
-                        logPath = logGenericPath.Replace(LFileSettings.IdxPlaceMark, _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
+                        logPath = logGenericPath.Replace(LFileSettings.IdxPlaceMark,
+                            _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
 
-                        bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) && Helpers.PathFileExists(logPath);
+                        bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) &&
+                                             Helpers.PathFileExists(logPath);
                         if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)
                         {
                             _logCurrentIdx++;
@@ -255,16 +260,15 @@ namespace IPCLogger.Core.Loggers.LFile
                     fileMode = FileMode.Append;
                 }
 
-                _fileStream = Settings.BufferSize > 0
-                    ? new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read, Settings.BufferSize)
-                    : new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read);
+                _fileStream = Settings.BufferSize <= 0
+                    ? new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read)
+                    : new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read, Settings.BufferSize);
 
                 _fileStreamSize = fileMode == FileMode.Append ? _fileStream.Length : 0;
 
-                _logWriter = new StreamWriter(_fileStream)
-                {
-                    AutoFlush = Settings.BufferSize == 0
-                };
+                _logWriter = Settings.BufferSize <= 0
+                    ? new StreamWriter(_fileStream, _utf8) {AutoFlush = true}
+                    : new StreamWriter(_fileStream, _utf8, Settings.BufferSize);
             }
         }
 

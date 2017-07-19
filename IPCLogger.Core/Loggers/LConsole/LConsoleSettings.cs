@@ -39,6 +39,12 @@ namespace IPCLogger.Core.Loggers.LConsole
         public LConsoleSettings(Type loggerType, Action onApplyChanges)
             : base(loggerType, onApplyChanges) { }
 
+        protected override void BeginSetup()
+        {
+            DefConsoleForeColor = null;
+            DefConsoleBackColor = null;
+        }
+
         private void ReadAndSetColor(XmlNode highlightNode, string colorType, string @event,
             ref ConsoleColor? defConsoleColor, Dictionary<string, ConsoleColor> consoleColors)
         {

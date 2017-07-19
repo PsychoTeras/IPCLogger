@@ -128,51 +128,30 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Setup(XmlNode cfgNode)
         {
-            ApplyCommonSettings(cfgNode);
-
-            Dictionary<string, string> settingsDict = GetSettingsDictionary(cfgNode);
-
-            Dictionary<string, object> valuesDict = GetSettingsValues(settingsDict);
-
-            VerifySettingsValues(valuesDict);
-
-            ApplySettingsValues(valuesDict);
-
-            RecalculateHash(cfgNode);
-
-            FinalizeSetup();
-
-            ApplyChanges();
-        }
-
-        public void AllowAllEvents()
-        {
-            CheckApplicableEvent = DefCheckApplicableEvent;
-        }
-
-        public void AllowOrDenyEvents(ICollection<string> allowEvents, 
-            ICollection<string> denyEvents)
-        {
-            _allowEvents = allowEvents != null && allowEvents.Count > 0
-                ? new HashSet<string>(allowEvents)
-                : null;
-            if (_allowEvents != null)
+            byte[] newHash = CalculateHash(cfgNode);
+            if (newHash != null && !Helpers.ByteArrayEquals(newHash, SettingsHash)) //Setup if changed
             {
-                CheckApplicableEvent = s => _allowEvents.Contains(s);
-                return;
-            }
+                BeginSetup();
 
-            _denyEvents = denyEvents != null && denyEvents.Count > 0
-                ? new HashSet<string>(denyEvents)
-                : null;
-            if (_denyEvents != null)
-            {
-                CheckApplicableEvent = s => !_denyEvents.Contains(s);
-                return;
-            }
+                ApplyCommonSettings(cfgNode);
 
-            CheckApplicableEvent = DefCheckApplicableEvent;
+                Dictionary<string, string> settingsDict = GetSettingsDictionary(cfgNode);
+
+                Dictionary<string, object> valuesDict = GetSettingsValues(settingsDict);
+
+                VerifySettingsValues(valuesDict);
+
+                ApplySettingsValues(valuesDict);
+
+                RecalculateHash(cfgNode);
+
+                FinalizeSetup();
+
+                ApplyChanges();
+            }
         }
+
+        protected virtual void BeginSetup() { }
 
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
@@ -315,16 +294,7 @@ namespace IPCLogger.Core.Loggers.Base
             SettingsHash = CalculateHash(cfgNode);
         }
 
-        public virtual void FinalizeSetup() { }
-
-        internal virtual void SetupIfHasBeenChanged(XmlNode cfgNode)
-        {
-            byte[] newHash = CalculateHash(cfgNode);
-            if (newHash != null && !Helpers.ByteArrayEquals(newHash, SettingsHash))
-            {
-                Setup(cfgNode);
-            }
-        }
+        protected virtual void FinalizeSetup() { }
 
 #endregion
 

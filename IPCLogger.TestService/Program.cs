@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
-using IPCLogger.Core.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
 using log4net.Appender;
@@ -32,11 +32,47 @@ namespace IPCLogger.TestService
         private static string _sGuid = _guid.ToString();
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
 
-        internal static string PSGUID
+        //-------------------------------------------------------------------------------------------------------------------------
+
+        enum CtrlType
         {
-            get { return _sGuid; } 
-            set { _sGuid = value; }
+            CTRL_C_EVENT = 0,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6
         }
+
+        [DllImport("kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+
+        private delegate bool EventHandler(CtrlType sig);
+        private static EventHandler _handler;
+
+        private static bool ConsoleCloseHandler(CtrlType sig)
+        {
+            switch (sig)
+            {
+                case CtrlType.CTRL_C_EVENT:
+                case CtrlType.CTRL_LOGOFF_EVENT:
+                case CtrlType.CTRL_SHUTDOWN_EVENT:
+                case CtrlType.CTRL_CLOSE_EVENT:
+                {
+                    if (_workMethod == null) return false;
+                    if (_workMethod == WriteLogIPC)
+                    {
+                        LFactory.Instance.Flush();
+                    }
+                    else
+                    {
+                        FlushLog4NetBuffers();
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //-------------------------------------------------------------------------------------------------------------------------
 
         internal static void WriteLog4Net(object obj)
         {
@@ -58,36 +94,16 @@ namespace IPCLogger.TestService
 
         internal static void WriteLogIPC(object obj)
         {
-            using (TLSObject tlsObj = TLS.Push())
+            LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
+
+            _timer = HRTimer.CreateAndStart();
+            for (int i = 0; i < _recordsCount - 1; i++)
             {
-                //tlsObj["_int"] = 0xACDC;
-                //tlsObj["_nvarchar"] = _sGuid;
-                //tlsObj["_uniqueidentifier"] = _guid;
-                //tlsObj["_array"] = new[]
-                //{
-                //    new List<KeyValuePair<int, string>> {new KeyValuePair<int, string>(1, "2")},
-                //    new List<KeyValuePair<int, string>> {new KeyValuePair<int, string>(3, "4")}
-                //};
-                //tlsObj["_func"] = new Func<int>(GetInt);
-
-                //string val = "123123";
-                //AAA a = new AAA();
-                //a.sss = new SSS();
-                //tlsObj.SetClosure(() => _guid);
-
-                //ApplicableForTester.WriteMessage();
-
-                LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
-
-                _timer = HRTimer.CreateAndStart();
-                for (int i = 0; i < _recordsCount - 1; i++)
-                {
-                    //Thread.Sleep(1000);
-                    LFactory.Instance.Write(LogEvent.Info, _sGuid);
-                }
+                Thread.Sleep(1000);
+                LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
 
-            ((ManualResetEvent)obj).Set();
+            ((ManualResetEvent) obj).Set();
         }
 
         private static void FlushLog4NetBuffers()
@@ -139,24 +155,24 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            LFactory.Instance.Write(LogEvent.Debug, (string)null);
+            //LFactory.Instance.Write(LogEvent.Debug, (string)null);
 
-            _timer = HRTimer.CreateAndStart();
+            //_timer = HRTimer.CreateAndStart();
 
-            string value = "data";
-            using (TLSObject tlsObj = TLS.Push())
-            {
-                tlsObj.SetClosure(() => value);
-                for (int i = 0; i < _recordsCount - 1; i++)
-                {
-                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-                }
-            }
+            //string value = "data";
+            //using (TLSObject tlsObj = TLS.Push())
+            //{
+            //    tlsObj.SetClosure(() => value);
+            //    for (int i = 0; i < _recordsCount - 1; i++)
+            //    {
+            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+            //    }
+            //}
 
-            Console.WriteLine(_timer.StopWatch());
-            Console.ReadKey();
-            Process.GetCurrentProcess().Kill();
-            return;
+            //Console.WriteLine(_timer.StopWatch());
+            //Console.ReadKey();
+            //Process.GetCurrentProcess().Kill();
+            //return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
@@ -170,6 +186,8 @@ namespace IPCLogger.TestService
             }
             else
             {
+                _handler += ConsoleCloseHandler;
+                SetConsoleCtrlHandler(_handler, true);
                 Echo(param);
                 Console.WriteLine(_timer.StopWatch());
                 Console.ReadKey();
@@ -192,21 +210,6 @@ namespace IPCLogger.TestService
             } while ((ex = ex.InnerException) != null);
             sb.AppendLine(stackTrace);
             Console.WriteLine(sb.ToString());
-        }
-    }
-
-    struct AAA
-    {
-        public SSS sss;
-    }
-
-    class SSS
-    {
-        public string s;
-
-        public string GetString()
-        {
-            return s;
         }
     }
 }
