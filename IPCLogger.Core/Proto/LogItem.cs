@@ -44,9 +44,9 @@ namespace IPCLogger.Core.Proto
             get
             {
                 return
-                    sizeof(int) +
-                    sizeof(int) +
-                    sizeof(int) + (!string.IsNullOrEmpty(Message) ? Message.Length : 0);
+                    sizeof (int) +
+                    sizeof (int) +
+                    sizeof (int) + (!string.IsNullOrEmpty(Message) ? Message.Length*sizeof (char) : 0);
             }
         }
 

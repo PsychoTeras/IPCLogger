@@ -33,7 +33,7 @@ namespace IPCLogger.Core.Loggers.LIPC
         {
             if (writeLine) text += Constants.NewLine;
             _eventItem.Setup(eventType != null ? (int)(object)eventType : 0, text);
-            _ipcEventRecords.Write(_eventItem);
+            _ipcEventRecords.Write(ref _eventItem);
         }
 
         protected override bool InitializeConcurrent()

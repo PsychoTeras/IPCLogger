@@ -10,7 +10,6 @@ namespace IPCLogger.Core.Caches
     internal static unsafe class CallerTypesCache
     {
         private static int _callerStackLevel = -1;
-        private static readonly bool Is64BitPtr = IntPtr.Size == 8;
 
         private static readonly Dictionary<int, Dictionary<long, Type>> CachedTypes =
             new Dictionary<int, Dictionary<long, Type>>();
@@ -18,7 +17,7 @@ namespace IPCLogger.Core.Caches
         public static Type GetCallerType()
         {
             int stackMark;
-            long stackAddr = Is64BitPtr ? (long)&stackMark : (int)&stackMark;
+            long stackAddr = Constants.Is64Bit ? (long)&stackMark : (int)&stackMark;
 
             Type type = null;
             Dictionary<long, Type> typeDict;

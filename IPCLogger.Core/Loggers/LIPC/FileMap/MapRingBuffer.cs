@@ -14,7 +14,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Constants
 
-        private const int DEF_ITEM_SIZE = 512;
+        private const int DEF_ITEM_SIZE = 256;
 
 #endregion
 
@@ -152,11 +152,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
                 _header = (MapRingBufferHeader*) _stream.GetElemPtr(0);
 
-                if (_viewMode)
-                {
-                    _map.Size = size;
-                }
-
                 _initialized = true;
             }
             catch
@@ -179,7 +174,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             Marshal.FreeHGlobal(memPtr);
         }
 
-        private void WriteItem(TItem item, int prewItemPosition)
+        private void WriteItem(ref TItem item, int prewItemPosition)
         {
             int itemSize = 0;
             item.Serialize(_itemBuffer, ref itemSize);
@@ -191,7 +186,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             _header->CurrentItemSize = itemSize;
         }
 
-        public void Write(TItem item)
+        public void Write(ref TItem item)
         {
             _lockObj.WaitOne();
 
@@ -207,7 +202,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             }
 
             PrepareItemBuffer(item.SizeOf + sizeof(int));
-            WriteItem(item, currentItemPosition);
+            WriteItem(ref item, currentItemPosition);
 
             if (_header->Count < _header->MaxCount)
             {
@@ -221,9 +216,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             _lockObj.Set();
         }
 
-        private TItem Read(ref int pos)
+        private TItem Read(ref TItem item, ref int pos)
         {
-            TItem item = new TItem();
             byte* p = (byte*) _stream.GetElemPtr(_headerSize);
             item.Deserialize(p, ref pos);
 
@@ -248,7 +242,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
                 int pos = Header.CurrentItemPosition;
                 for (int i = 0; i < Header.Count; i++)
                 {
-                    TItem item = Read(ref pos);
+                    TItem item = new TItem();
+                    Read(ref item, ref pos);
                     yield return item;
                 }
             }

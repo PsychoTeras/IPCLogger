@@ -45,7 +45,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             if (!IsViewMapped)
             {
                 _headerSize = Marshal.SizeOf(typeof(MapRingBufferHeader));
-                _viewBasePtr = Win32.MapViewOfFile(_mmf.Handle, _access, 0, 0, _mmf.Size);
+                _viewBasePtr = Win32.MapViewOfFile(_mmf.Handle, _access, 0, 0, 0);
                 if (_viewBasePtr == IntPtr.Zero)
                 {
                     throw new Win32Exception();
@@ -65,7 +65,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public void Flush()
         {
-            Win32.FlushViewOfFile(_viewBasePtr, _mmf.Size);
+            Win32.FlushViewOfFile(_viewBasePtr, 0);
         }
 
         public void FlushFromBeginning(int count)

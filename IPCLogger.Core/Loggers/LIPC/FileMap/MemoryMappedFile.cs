@@ -21,10 +21,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Properties
 
-        public int Size;
-        
-        public bool Is64Bit { get; }
-
         public IntPtr Handle { get; private set; }
 
         public bool IsOpen
@@ -34,21 +30,12 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #endregion
 
-#region Ctor
-
-        private MemoryMappedFile()
-        {
-            Is64Bit = IntPtr.Size == 8;
-        }
-
-#endregion
-
 #region Static methods
 
         public static MemoryMappedFile Create(string name, long size, MapProtection protection)
         {
             MemoryMappedFile map = new MemoryMappedFile();
-            if (!map.Is64Bit && size > uint.MaxValue)
+            if (!Constants.Is64Bit && size > uint.MaxValue)
             {
                 throw new ConstraintException("32bit systems support max size of ~4gb");
             }
@@ -66,17 +53,14 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             }
 
             map._protection = protection;
-            map.Size = (int) size;
 
             return map;
         }
 
         public static MemoryMappedFile Open(string name, MapAccess access)
         {
-            MemoryMappedFile map = new MemoryMappedFile
-                                       {
-                                           Handle = Win32.OpenFileMapping(access, false, name)
-                                       };
+            MemoryMappedFile map = new MemoryMappedFile();
+            map.Handle = Win32.OpenFileMapping(access, false, name);
             return map.Handle == IntPtr.Zero ? null : map;
         }
 
@@ -97,6 +81,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         {
             if (IsOpen)
             {
+                Win32.FlushFileBuffers(Handle);
                 Win32.CloseHandle(Handle);
             }
 

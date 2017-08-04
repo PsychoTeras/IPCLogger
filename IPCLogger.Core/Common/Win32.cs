@@ -58,6 +58,9 @@ namespace IPCLogger.Core.Common
         public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
 
         [DllImport("kernel32", SetLastError = true)]
+        public static extern bool FlushFileBuffers(IntPtr hFile);
+
+        [DllImport("kernel32", SetLastError = true)]
         public static extern bool CloseHandle(IntPtr handle);
 
         public static void* HeapAlloc(int size, bool zeroMem = true)
