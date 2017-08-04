@@ -5,19 +5,19 @@ namespace IPCLogger.Core.Caches
 {
     public class DictionaryCache<TKey, TValue>
     {
-        private readonly Dictionary<TKey, TValue> Dict = new Dictionary<TKey, TValue>();
+        private readonly Dictionary<TKey, TValue> _dict = new Dictionary<TKey, TValue>();
 
         public TValue Get(TKey key, Func<TValue> onBuild)
         {
             TValue func;
-            if (!Dict.TryGetValue(key, out func))
+            if (!_dict.TryGetValue(key, out func))
             {
-                lock (Dict)
+                lock (_dict)
                 {
-                    if (!Dict.TryGetValue(key, out func))
+                    if (!_dict.TryGetValue(key, out func))
                     {
                         func = onBuild();
-                        Dict.Add(key, func);
+                        _dict.Add(key, func);
                     }
                 }
             }

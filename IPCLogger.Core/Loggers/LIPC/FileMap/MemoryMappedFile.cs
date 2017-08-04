@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {
@@ -22,13 +23,13 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public int Size;
         
-        public bool Is64Bit { get; private set; }
+        public bool Is64Bit { get; }
 
         public IntPtr Handle { get; private set; }
 
         public bool IsOpen
         {
-            get { return (Handle != IntPtr.Zero); }
+            get { return Handle != IntPtr.Zero; }
         }
 
 #endregion
@@ -52,7 +53,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
                 throw new ConstraintException("32bit systems support max size of ~4gb");
             }
 
-            using (SECURITY_ATTRIBUTES sa = SECURITY_ATTRIBUTES.GetNullDacl())
+            using (SecurityAttributes sa = SecurityAttributes.GetNullDacl())
             {
                 map.Handle = Win32.CreateFileMapping(InvalidHandleValue, sa,
                     protection, (int) ((size >> 32) & 0xFFFFFFFF), (int) (size & 0xFFFFFFFF),

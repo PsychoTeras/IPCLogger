@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {
@@ -67,14 +68,14 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             Win32.FlushViewOfFile(_viewBasePtr, _mmf.Size);
         }
 
+        public void FlushFromBeginning(int count)
+        {
+            Win32.FlushViewOfFile(_viewBasePtr, count);
+        }
+
         public void FlushHeader()
         {
             Win32.FlushViewOfFile(_viewBasePtr, _headerSize);
-        }
-
-        public void FlushItem(int position, int count)
-        {
-            Win32.FlushViewOfFile((void*)(_viewBaseAddr + _headerSize + position), count);
         }
 
         public void* GetElemPtr(int position)
@@ -84,7 +85,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public void Write(void* buffer, int position, int count)
         {
-            Win32.Move((void*)(_viewBaseAddr + position), buffer, count);
+            Win32.Copy((void*)(_viewBaseAddr + position), buffer, count);
         }
 
         public void Dispose()
@@ -97,6 +98,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         }
 
 #endregion
+
     }
 
 }

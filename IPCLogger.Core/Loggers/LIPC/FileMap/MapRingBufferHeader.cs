@@ -11,6 +11,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         public int Count;
         public int MaxCount;
         public int CurrentIndex;
+        public int CurrentItemPosition;
+        public int CurrentItemSize;
         public bool Updating;
 
 #endregion
@@ -22,6 +24,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             Count = 0;
             MaxCount = maxCount;
             CurrentIndex = -1;
+            CurrentItemPosition = 0;
+            CurrentItemSize = 0;
             Updating = false;
         }
 

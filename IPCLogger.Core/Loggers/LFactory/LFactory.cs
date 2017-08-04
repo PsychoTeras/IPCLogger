@@ -33,7 +33,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Static properties
 
-        public static LFactory Instance { get; private set; }
+        public static LFactory Instance { get; }
 
 #endregion
 
@@ -41,12 +41,11 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         static LFactory()
         {
-            Instance = new LFactory(false);
+            Instance = new LFactory();
             AvailableLoggers = GetAvailableLoggers();
         }
 
-        private LFactory(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        private LFactory() : base(true)
         {
             _lockObj = new LightLock();
             PreInitialize = OnceInitializedCheck;

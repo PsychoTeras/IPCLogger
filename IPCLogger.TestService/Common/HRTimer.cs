@@ -2,7 +2,7 @@
 
 namespace IPCLogger.TestService.Common
 {
-    public class HRTimer
+    class HRTimer
     {
         private long _start;
         private double _result;

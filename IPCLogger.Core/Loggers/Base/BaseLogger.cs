@@ -139,18 +139,17 @@ namespace IPCLogger.Core.Loggers.Base
 #region Properties
 
         public TSettings Settings { get; private set; }
+        public bool ThreadSafetyIsGuaranteed { get; }
 
 #endregion
 
 #region Ctor
 
-        protected BaseLogger(bool threadSafetyIsGuaranteed) 
-            : this(false, threadSafetyIsGuaranteed) { }
-
-        private BaseLogger(bool newInstance, bool threadSafetyIsGuaranteed)
+        protected BaseLogger(bool threadSafetyIsGuaranteed)
         {
             InitSettings();
-            SetPatternsFactory(newInstance ? PFactory.CreateNewInstance() : PFactory.Instance);
+            SetPatternsFactory(PFactory.Instance);
+            ThreadSafetyIsGuaranteed = threadSafetyIsGuaranteed;
         }
 
 #endregion
@@ -272,11 +271,6 @@ namespace IPCLogger.Core.Loggers.Base
 #endregion
 
 #region Public methods
-
-        public IBaseLogger CreateNewInstance(bool threadSafetyIsGuaranteed)
-        {
-            return Activator.CreateInstance(GetType(), true, threadSafetyIsGuaranteed) as IBaseLogger;
-        }
 
         public override void Write(string text)
         {

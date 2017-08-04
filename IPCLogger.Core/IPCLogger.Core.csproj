@@ -94,13 +94,14 @@
     <Compile Include="Loggers\LDebug\LDebugSettings.cs" />
     <Compile Include="Loggers\LFactory\LFactorySettings.cs" />
     <Compile Include="Loggers\LFile\LFileSettings.cs" />
-    <Compile Include="Proto\LogRecord.cs" />
+    <Compile Include="Proto\ISerializable.cs" />
+    <Compile Include="Proto\LogItem.cs" />
     <Compile Include="Loggers\LFile\LFile.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MapRingBuffer.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MapRingBufferHeader.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MapViewStream.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MemoryMappedFile.cs" />
-    <Compile Include="Loggers\LIPC\FileMap\Win32.cs" />
+    <Compile Include="Common\Win32.cs" />
     <Compile Include="Loggers\LFactory\LFactory.cs" />
     <Compile Include="Loggers\LConsole\LConsole.cs" />
     <Compile Include="Loggers\LIPC\LIPC.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Patterns\Base\RawPatterns.cs" />
     <Compile Include="Patterns\PFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proto\Serializer.cs" />
     <Compile Include="Snippets\Base\BaseSnippet.cs" />
     <Compile Include="Snippets\Base\SnippetParams.cs" />
     <Compile Include="Snippets\Template\SException.cs" />

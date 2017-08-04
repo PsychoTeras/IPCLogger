@@ -12,7 +12,7 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Private fields
 
-        private static readonly Encoding _utf8 = new UTF8Encoding(false);
+        private static readonly Encoding Utf8 = new UTF8Encoding(false);
 
         private string _fileName;
         private Stream _fileStream;
@@ -267,8 +267,8 @@ namespace IPCLogger.Core.Loggers.LFile
                 _fileStreamSize = fileMode == FileMode.Append ? _fileStream.Length : 0;
 
                 _logWriter = Settings.BufferSize <= 0
-                    ? new StreamWriter(_fileStream, _utf8) {AutoFlush = true}
-                    : new StreamWriter(_fileStream, _utf8, Settings.BufferSize);
+                    ? new StreamWriter(_fileStream, Utf8) {AutoFlush = true}
+                    : new StreamWriter(_fileStream, Utf8, Settings.BufferSize);
             }
         }
 

@@ -4,12 +4,19 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using IPCLogger.Core.Common;
+using IPCLogger.Core.Proto;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {
-    internal unsafe class MapRingBuffer<TValue> : IEnumerable<TValue>, IDisposable
-        where TValue : struct
+    internal unsafe class MapRingBuffer<TItem> : IEnumerable<TItem>, IDisposable
+        where TItem : struct, ISerializable
     {
+
+#region Constants
+
+        private const int DEF_ITEM_SIZE = 512;
+
+#endregion
 
 #region Private fields
 
@@ -18,13 +25,13 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         private MemoryMappedFile _map;
         private MapViewStream _stream;
 
-        private int _dataSize;
         private int _maxCount;
-        private IntPtr _memPtr;
-        private void* _pMemPtr;
 
-        private int _headerSize;
         private MapRingBufferHeader* _header;
+        private int _headerSize;
+        
+        private byte* _itemBuffer;
+        private int _itemBufferSize;
 
         private LightLock _lockObj;
 
@@ -55,10 +62,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
             _headerSize = Marshal.SizeOf(typeof (MapRingBufferHeader));
 
-            _dataSize = Marshal.SizeOf(typeof (TValue));
-            _memPtr = Marshal.AllocHGlobal(_dataSize);
-            _pMemPtr = _memPtr.ToPointer();
-
             _name = name;
             _maxCount = maxCount;
             _viewMode = viewMode;
@@ -70,19 +73,30 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Static methods
 
-        public static MapRingBuffer<TValue> Host(string name, int maxCount)
+        public static MapRingBuffer<TItem> Host(string name, int maxCount)
         {
-            return new MapRingBuffer<TValue>(name, maxCount, false);
+            return new MapRingBuffer<TItem>(name, maxCount, false);
         }
 
-        public static MapRingBuffer<TValue> View(string name)
+        public static MapRingBuffer<TItem> View(string name)
         {
-            return new MapRingBuffer<TValue>(name, 0, true);
+            return new MapRingBuffer<TItem>(name, 0, true);
         }
 
 #endregion
 
 #region Class methods
+
+        private void PrepareItemBuffer(int itemSize)
+        {
+            if (_itemBufferSize < itemSize)
+            {
+                _itemBuffer = (byte*) (_itemBufferSize != 0
+                    ? Win32.HeapReAlloc(_itemBuffer, itemSize, false)
+                    : Win32.HeapAlloc(itemSize, false));
+                _itemBufferSize = itemSize;
+            }
+        }
 
         private void Reinitialize()
         {
@@ -99,10 +113,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             {
                 do
                 {
-                    if (_threadInit != null)
-                    {
-                        _threadInit.Join();
-                    }
+                    _threadInit?.Join();
                     if (!_initialized)
                     {
                         Thread.Sleep(1);
@@ -115,7 +126,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         {
             try
             {
-                int size = _dataSize*_maxCount;
+                int size = DEF_ITEM_SIZE * _maxCount;
                 while (Thread.CurrentThread.IsAlive && _map == null)
                 {
                     _map = _viewMode
@@ -143,7 +154,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
                 if (_viewMode)
                 {
-                    _map.Size = _dataSize*_header->MaxCount;
+                    _map.Size = size;
                 }
 
                 _initialized = true;
@@ -162,74 +173,83 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         {
             MapRingBufferHeader header = new MapRingBufferHeader(_maxCount);
             IntPtr memPtr = Marshal.AllocHGlobal(_headerSize);
-            Marshal.StructureToPtr(header, memPtr, true);
+            Marshal.StructureToPtr(header, memPtr, false);
             _stream.Write(memPtr.ToPointer(), 0, _headerSize);
             Marshal.DestroyStructure(memPtr, typeof(MapRingBufferHeader));
             Marshal.FreeHGlobal(memPtr);
         }
 
-        private void WriteTValue(TValue value, int index)
+        private void WriteItem(TItem item, int prewItemPosition)
         {
-            Marshal.StructureToPtr(value, _memPtr, true);
-            int position = _headerSize + index * _dataSize;
-            _stream.Write(_pMemPtr, position, _dataSize);
+            int itemSize = 0;
+            item.Serialize(_itemBuffer, ref itemSize);
+            Serializer.Write(_itemBuffer, prewItemPosition, ref itemSize);
+
+            _header->CurrentItemPosition += _header->CurrentItemSize;
+            int position = _headerSize + _header->CurrentItemPosition;
+            _stream.Write(_itemBuffer, position, itemSize);
+            _header->CurrentItemSize = itemSize;
         }
 
-        private TValue? Read(int index)
-        {
-            void* value = _stream.GetElemPtr(_headerSize + (index*_dataSize));
-            return (TValue) Marshal.PtrToStructure(new IntPtr(value), typeof (TValue));
-        }
-
-        public void Add(TValue value)
+        public void Write(TItem item)
         {
             _lockObj.WaitOne();
 
             _header->Updating = true;
             _stream.FlushHeader();
 
+            int currentItemPosition = _header->CurrentItemPosition;
             if (++_header->CurrentIndex == _header->MaxCount)
             {
                 _header->CurrentIndex = 0;
+                _header->CurrentItemPosition = 0;
+                _header->CurrentItemSize = 0;
             }
 
-            WriteTValue(value, _header->CurrentIndex);
+            PrepareItemBuffer(item.SizeOf + sizeof(int));
+            WriteItem(item, currentItemPosition);
 
             if (_header->Count < _header->MaxCount)
             {
                 _header->Count++;
             }
             _header->Updating = false;
-            _stream.Flush();
+
+            int flushSize = _headerSize + _header->CurrentItemPosition + _header->CurrentItemSize;
+            _stream.FlushFromBeginning(flushSize);
 
             _lockObj.Set();
         }
 
-        public IEnumerator<TValue> GetEnumerator()
+        private TItem Read(ref int pos)
+        {
+            TItem item = new TItem();
+            byte* p = (byte*) _stream.GetElemPtr(_headerSize);
+            item.Deserialize(p, ref pos);
+
+            int prewItemPosition;
+            Serializer.Read(p, out prewItemPosition, ref pos);
+            pos = prewItemPosition;
+
+            return item;
+        }
+
+        public IEnumerator<TItem> GetEnumerator()
         {
             _lockObj.WaitOne();
 
             while (Header.Updating)
             {
-                Thread.Sleep(0);
+                Thread.Sleep(1);
             }
 
             try
             {
-                int max = Header.Count, cur = Header.CurrentIndex;
-                for (int i = cur; i > -(max - cur); i--)
+                int pos = Header.CurrentItemPosition;
+                for (int i = 0; i < Header.Count; i++)
                 {
-                    int idx = i >= 0 ? i : max + i;
-                    TValue? value = Read(idx);
-                    if (value.HasValue)
-                    {
-                        yield return value.Value;
-                    }
-                    else
-                    {
-                        Reinitialize();
-                        break;
-                    }
+                    TItem item = Read(ref pos);
+                    yield return item;
                 }
             }
             finally
@@ -267,11 +287,9 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
                 _map = null;
             }
 
-            if (_memPtr != IntPtr.Zero)
+            if (_itemBufferSize != 0)
             {
-                Marshal.DestroyStructure(_memPtr, typeof (TValue));
-                Marshal.FreeHGlobal(_memPtr);
-                _memPtr = IntPtr.Zero;
+                Win32.HeapFree(_itemBuffer);
             }
 
             _initialized = false;

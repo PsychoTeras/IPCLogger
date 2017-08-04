@@ -67,7 +67,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ApplicableForTester.cs" />
     <Compile Include="Common\HRTimer.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

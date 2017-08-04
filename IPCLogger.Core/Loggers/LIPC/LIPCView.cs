@@ -13,7 +13,7 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #region Deletates
 
-        public delegate void OnEvent(LogRecord ev);
+        public delegate void OnEvent(LogItem ev);
 
 #endregion
 
@@ -28,7 +28,7 @@ namespace IPCLogger.Core.Loggers.LIPC
         private ushort _queryIntervalMsec = QUERY_INTERVAL_MSEC;
 
         private Timer _poolTimer;
-        private MapRingBuffer<LogRecord> _ipcEventRecords;
+        private MapRingBuffer<LogItem> _ipcEventRecords;
         private HashSet<long> _processedEventsList;
 
         private OnEvent _onEvent;
@@ -93,7 +93,7 @@ namespace IPCLogger.Core.Loggers.LIPC
 
             _processedEventsList = new HashSet<long>();
             string hostName = string.Format(@"Global\LIPC~{0}", customName);
-            _ipcEventRecords = MapRingBuffer<LogRecord>.View(hostName);
+            _ipcEventRecords = MapRingBuffer<LogItem>.View(hostName);
 
             RecreatePoolTimer();
         }
@@ -118,14 +118,14 @@ namespace IPCLogger.Core.Loggers.LIPC
             {
                 lock (_processedEventsList)
                 {
-                    LogRecord[] allEvents = _ipcEventRecords.ToArray();
+                    LogItem[] allEvents = _ipcEventRecords.ToArray();
 
-                    IEnumerable<LogRecord> newEvents = allEvents.Where
+                    IEnumerable<LogItem> newEvents = allEvents.Where
                         (
                             ev => !_processedEventsList.Contains(ev.Id)
                         ).
                         OrderBy(ev => ev.Id);
-                    foreach (LogRecord record in newEvents)
+                    foreach (LogItem record in newEvents)
                     {
                         _onEvent?.Invoke(record);
                         _processedEventsList.Add(record.Id);

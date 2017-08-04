@@ -1,6 +1,5 @@
 using System;
 using System.Net.Mail;
-using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LMail

@@ -12,8 +12,8 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #region Private fields
 
-        private LogRecord _eventItem;
-        private MapRingBuffer<LogRecord> _ipcEventRecords;
+        private LogItem _eventItem;
+        private MapRingBuffer<LogItem> _ipcEventRecords;
 
 #endregion
 
@@ -32,13 +32,13 @@ namespace IPCLogger.Core.Loggers.LIPC
             string text, bool writeLine)
         {
             if (writeLine) text += Constants.NewLine;
-            _eventItem.Setup(eventType != null ? (int) (object) eventType : 0, text);
-            _ipcEventRecords.Add(_eventItem);
+            _eventItem.Setup(eventType != null ? (int)(object)eventType : 0, text);
+            _ipcEventRecords.Write(_eventItem);
         }
 
         protected override bool InitializeConcurrent()
         {
-            _eventItem = new LogRecord();
+            _eventItem = new LogItem();
 
             string mmfName;
             if (!string.IsNullOrEmpty(Settings.CustomName))
@@ -51,7 +51,7 @@ namespace IPCLogger.Core.Loggers.LIPC
                 mmfName = string.Format(@"{0}_{1}", process.ProcessName, process.Id);
             }
             string name = string.Format(@"Global\LIPC~{0}", mmfName);
-            _ipcEventRecords = MapRingBuffer<LogRecord>.Host(name, Settings.CachedRecordsNum);
+            _ipcEventRecords = MapRingBuffer<LogItem>.Host(name, Settings.CachedRecordsNum);
 
             return true;
         }

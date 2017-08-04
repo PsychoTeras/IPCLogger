@@ -8,7 +8,6 @@ using System.Threading;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
-using IPCLogger.Core.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
 using log4net.Appender;
@@ -17,13 +16,13 @@ using log4net.Repository;
 
 namespace IPCLogger.TestService
 {
-    static class Program
+    internal static class Program
     {
         //--------------------------------------------Configure test environment here----------------------------------------------
 
-        private static readonly WaitCallback _workMethod = WriteLogIPC;                 //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int _parallelOperations = Environment.ProcessorCount;   //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int _recordsCount = 500000 / _parallelOperations;       //Number of iterations
+        private static readonly WaitCallback WorkMethod = WriteLogIPC;                  //Do we use WriteLogIPC or WriteLog4Net?
+        private static readonly int ParallelOperations = 1;    //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly int RecordsCount = 500000 / ParallelOperations;         //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -37,10 +36,10 @@ namespace IPCLogger.TestService
 
         enum CtrlType
         {
-            CTRL_C_EVENT = 0,
-            CTRL_CLOSE_EVENT = 2,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT = 6
+            CtrlCEvent = 0,
+            CtrlCloseEvent = 2,
+            CtrlLogoffEvent = 5,
+            CtrlShutdownEvent = 6
         }
 
         [DllImport("kernel32")]
@@ -53,13 +52,13 @@ namespace IPCLogger.TestService
         {
             switch (sig)
             {
-                case CtrlType.CTRL_C_EVENT:
-                case CtrlType.CTRL_LOGOFF_EVENT:
-                case CtrlType.CTRL_SHUTDOWN_EVENT:
-                case CtrlType.CTRL_CLOSE_EVENT:
+                case CtrlType.CtrlCEvent:
+                case CtrlType.CtrlLogoffEvent:
+                case CtrlType.CtrlShutdownEvent:
+                case CtrlType.CtrlCloseEvent:
                 {
-                    if (_workMethod == null) return false;
-                    if (_workMethod == WriteLogIPC)
+                    if (WorkMethod == null) return false;
+                    if (WorkMethod == WriteLogIPC)
                     {
                         LFactory.Instance.Flush();
                     }
@@ -80,7 +79,7 @@ namespace IPCLogger.TestService
             _logger.Info(_sGuid); //'Cold' write
 
             _timer = HRTimer.CreateAndStart();
-            for (int i = 0; i < _recordsCount - 1; i++)
+            for (int i = 0; i < RecordsCount - 1; i++)
             {
                 _logger.Info(_sGuid);
             }
@@ -98,9 +97,8 @@ namespace IPCLogger.TestService
             LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
             _timer = HRTimer.CreateAndStart();
-            for (int i = 0; i < _recordsCount - 1; i++)
+            for (int i = 0; i < RecordsCount - 1; i++)
             {
-                //Thread.Sleep(1000);
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
 
@@ -112,17 +110,13 @@ namespace IPCLogger.TestService
             ILoggerRepository rep = LogManager.GetRepository();
             foreach (IAppender appender in rep.GetAppenders())
             {
-                var buffered = appender as BufferingAppenderSkeleton;
-                if (buffered != null)
-                {
-                    buffered.Flush();
-                }
+                (appender as BufferingAppenderSkeleton)?.Flush();
             }
         }
 
         private static void Echo(string[] args)
         {
-            if (_workMethod == WriteLogIPC)
+            if (WorkMethod == WriteLogIPC)
             {
                 LFactory.Instance.Initialize();
             }
@@ -131,20 +125,20 @@ namespace IPCLogger.TestService
                 XmlConfigurator.Configure(new FileInfo(@"IPCLogger.TestService.exe.config"));
             }
 
-            _tEvents = new WaitHandle[_parallelOperations];
-            for (int i = 0; i < _parallelOperations; i++)
+            _tEvents = new WaitHandle[ParallelOperations];
+            for (int i = 0; i < ParallelOperations; i++)
             {
                 _tEvents[i] = new ManualResetEvent(false);
             }
 
-            for (int i = 0; i < _parallelOperations; i++)
+            for (int i = 0; i < ParallelOperations; i++)
             {
-                ThreadPool.QueueUserWorkItem(_workMethod, _tEvents[i]);
+                ThreadPool.QueueUserWorkItem(WorkMethod, _tEvents[i]);
             }
 
             WaitHandle.WaitAll(_tEvents);
 
-            if (_workMethod == WriteLogIPC)
+            if (WorkMethod == WriteLogIPC)
             {
                 LFactory.Instance.Flush();
             }
@@ -156,24 +150,24 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            LFactory.Instance.Write(LogEvent.Debug, (string)null);
+            //LFactory.Instance.Write(LogEvent.Debug, (string)null);
 
-            string value = "data";
-            using (TLSObject tlsObj = TLS.Push())
-            {
-                tlsObj.SetClosure(() => value);
+            //string value = "data";
+            //using (TLSObject tlsObj = TLS.Push())
+            //{
+            //    tlsObj.SetClosure(() => value);
 
-                _timer = HRTimer.CreateAndStart();
-                for (int i = 0; i < _recordsCount - 1; i++)
-                {
-                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-                }
-            }
+            //    _timer = HRTimer.CreateAndStart();
+            //    for (int i = 0; i < _recordsCount - 1; i++)
+            //    {
+            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+            //    }
+            //}
 
-            Console.WriteLine(_timer.StopWatch());
-            Console.ReadKey();
-            Process.GetCurrentProcess().Kill();
-            return;
+            //Console.WriteLine(_timer.StopWatch());
+            //Console.ReadKey();
+            //Process.GetCurrentProcess().Kill();
+            //return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";

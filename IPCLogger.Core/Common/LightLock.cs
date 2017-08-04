@@ -13,8 +13,6 @@ namespace IPCLogger.Core.Common
         private const int THREAD_VISIT_BOOK_INIT_SIZE = 16;
         private const float THREAD_VISIT_BOOK_GROW_F = 1.5f;
 
-        private static readonly int _procCount = Environment.ProcessorCount;
-
         private byte[] _threadVisitBook = new byte[THREAD_VISIT_BOOK_INIT_SIZE];
         private volatile int _threadVisitBookSize = THREAD_VISIT_BOOK_INIT_SIZE;
 
@@ -60,7 +58,7 @@ namespace IPCLogger.Core.Common
                     }
                     else
                     {
-                        Thread.SpinWait(_procCount);
+                        Thread.SpinWait(Constants.ProcessorsCount);
                     }
                 }
                 else if (loops%THREAD_SLEEP_0_MOD == 0)

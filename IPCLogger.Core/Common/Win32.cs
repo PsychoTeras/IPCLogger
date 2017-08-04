@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 
-namespace IPCLogger.Core.Loggers.LIPC.FileMap
+namespace IPCLogger.Core.Common
 {
     [Flags]
     internal enum MapProtection
@@ -31,12 +31,12 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
     internal static unsafe class Win32
     {
-        [DllImport("msvcrt.dll", EntryPoint = "memmove", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void* Move(void* dest, void* src, int count);
+        [DllImport("kernel32", EntryPoint = "CopyMemory")]
+        public static extern void* Copy(void* dest, void* src, int count);
 
         [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr CreateFileMapping(
-            IntPtr hFile, SECURITY_ATTRIBUTES lpAttributes, MapProtection flProtect,
+            IntPtr hFile, SecurityAttributes lpAttributes, MapProtection flProtect,
             int dwMaximumSizeLow, int dwMaximumSizeHigh, string lpName);
 
         [DllImport("kernel32", SetLastError = true)]
@@ -59,18 +59,33 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         [DllImport("kernel32", SetLastError = true)]
         public static extern bool CloseHandle(IntPtr handle);
+
+        public static void* HeapAlloc(int size, bool zeroMem = true)
+        {
+            return Marshal.AllocHGlobal(size).ToPointer();
+        }
+
+        public static void HeapFree(void* block)
+        {
+            Marshal.FreeHGlobal(new IntPtr(block));
+        }
+
+        public static void* HeapReAlloc(void* block, int size, bool zeroMem = true)
+        {
+            return Marshal.ReAllocHGlobal(new IntPtr(block), new IntPtr(size)).ToPointer();
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal class SECURITY_ATTRIBUTES : IDisposable
+    internal class SecurityAttributes : IDisposable
     {
         public int Length;
         public IntPtr SecurityDescriptor;
         public int InheritHandle;
 
-        public static SECURITY_ATTRIBUTES GetNullDacl()
+        public static SecurityAttributes GetNullDacl()
         {
-            SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+            SecurityAttributes sa = new SecurityAttributes();
             sa.Length = Marshal.SizeOf(sa);
             sa.InheritHandle = 1;
 
@@ -101,7 +116,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Properties
 
-        public int Win32ErrorCode { get; private set; }
+        public int Win32ErrorCode { get; }
 
         public override string Message
         {

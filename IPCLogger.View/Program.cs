@@ -112,7 +112,7 @@ namespace IPCLogger.View
             }
         }
 
-        private static void OnEvent(LogRecord ev)
+        private static void OnEvent(LogItem ev)
         {
             Console.Write(ev.Message);
         }
