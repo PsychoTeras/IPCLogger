@@ -99,6 +99,7 @@ namespace IPCLogger.TestService
             _timer = HRTimer.CreateAndStart();
             for (int i = 0; i < RecordsCount - 1; i++)
             {
+                Thread.Sleep(1);
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
 

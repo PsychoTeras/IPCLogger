@@ -1,58 +1,57 @@
 using System;
-using System.Data;
+using System.Runtime.InteropServices;
 using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {
-    internal class MemoryMappedFile : IDisposable
+    internal unsafe class MemoryMappedFile : IDisposable
     {
 
 #region Constants
 
-        private static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
+        private const int DEF_FILE_SIZE = 1024;
+        private const int MAX_FILE_SIZE = int.MaxValue/4;
 
 #endregion
 
 #region Private fields
 
-        private MapProtection _protection;
+        private IntPtr _handle;
+        private IntPtr _viewBasePtr;
+        private long _viewBaseAddr;
 
 #endregion
 
 #region Properties
 
-        public IntPtr Handle { get; private set; }
-
         public bool IsOpen
         {
-            get { return Handle != IntPtr.Zero; }
+            get { return _handle != IntPtr.Zero; }
         }
+
+        public int Size { get; private set; }
 
 #endregion
 
 #region Static methods
 
-        public static MemoryMappedFile Create(string name, long size, MapProtection protection)
+        public static MemoryMappedFile Create(string name, MapProtection protection)
         {
             MemoryMappedFile map = new MemoryMappedFile();
-            if (!Constants.Is64Bit && size > uint.MaxValue)
-            {
-                throw new ConstraintException("32bit systems support max size of ~4gb");
-            }
 
             using (SecurityAttributes sa = SecurityAttributes.GetNullDacl())
             {
-                map.Handle = Win32.CreateFileMapping(InvalidHandleValue, sa,
-                    protection, (int) ((size >> 32) & 0xFFFFFFFF), (int) (size & 0xFFFFFFFF),
-                    name);
+                protection |= MapProtection.SecReserve;
+                map._handle = Win32.CreateFileMapping(new IntPtr(-1), sa, protection, 0, MAX_FILE_SIZE, name);
             }
 
-            if (map.Handle == IntPtr.Zero)
+            if (map._handle == IntPtr.Zero)
             {
                 throw new Win32Exception();
             }
 
-            map._protection = protection;
+            bool isWriteable = (protection | MapProtection.PageReadWrite) == protection;
+            map.MapView(isWriteable ? MapAccess.FileMapWrite : MapAccess.FileMapRead);
 
             return map;
         }
@@ -60,32 +59,92 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         public static MemoryMappedFile Open(string name, MapAccess access)
         {
             MemoryMappedFile map = new MemoryMappedFile();
-            map.Handle = Win32.OpenFileMapping(access, false, name);
-            return map.Handle == IntPtr.Zero ? null : map;
+            map._handle = Win32.OpenFileMapping(access, false, name);
+            if (map._handle != IntPtr.Zero)
+            {
+                map.MapView(access);
+            }
+            return map._handle == IntPtr.Zero ? null : map;
         }
+
+#endregion
+
+#region Ctor
+
+        private MemoryMappedFile() { }
 
 #endregion
 
 #region Class methods
 
-        public MapViewStream MapAsStream()
+        private void MapView(MapAccess access)
         {
-            if (!IsOpen)
+            _viewBasePtr = Win32.MapViewOfFile(_handle, access, 0, 0, 0);
+            if (_viewBasePtr == IntPtr.Zero)
             {
-                throw new ObjectDisposedException("Already closed");
+                throw new Win32Exception();
             }
-            return new MapViewStream(this, _protection);
+            _viewBaseAddr = _viewBasePtr.ToInt64();
+        }
+
+        private void UnmapView()
+        {
+            if (IsOpen)
+            {
+                Win32.UnmapViewOfFile(_viewBasePtr);
+                _viewBasePtr = IntPtr.Zero;
+                _viewBaseAddr = Size = 0;
+            }
+        }
+
+        private void ReadFileSize()
+        {
+            MemoryBasicInformation info;
+            int mbiSize = Marshal.SizeOf(typeof(MemoryBasicInformation));
+            Win32.VirtualQuery(_viewBasePtr, out info, mbiSize);
+            Size = info.RegionSize.ToInt32();
+        }
+
+        private void Expand(int size)
+        {
+            _viewBasePtr = Win32.VirtualAlloc(_viewBasePtr, size, AllocationType.Commit, MemoryProtection.ReadWrite);
+            ReadFileSize();
+        }
+
+        public void Flush()
+        {
+            Win32.FlushViewOfFile(_viewBasePtr, 0);
+        }
+
+        public void FlushFromBeginning(int count)
+        {
+            Win32.FlushViewOfFile(_viewBasePtr, count);
+        }
+
+        public void* GetItemPtr(int position)
+        {
+            return (void*)(_viewBaseAddr + position);
+        }
+
+        public void Write(void* buffer, int position, int count)
+        {
+            if (position + count > Size)
+            {
+                Expand(Math.Max(Size, DEF_FILE_SIZE) *2);
+            }
+            Win32.Copy((void*)(_viewBaseAddr + position), buffer, count);
         }
 
         public void Dispose()
         {
             if (IsOpen)
             {
-                Win32.FlushFileBuffers(Handle);
-                Win32.CloseHandle(Handle);
+                Flush();
+                UnmapView();
+                Win32.CloseHandle(_handle);
             }
-
-            Handle = IntPtr.Zero;
+            _viewBaseAddr = Size = 0;
+            _viewBasePtr = _handle = IntPtr.Zero;
         }
 
 #endregion

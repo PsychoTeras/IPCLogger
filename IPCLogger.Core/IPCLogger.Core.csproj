@@ -99,7 +99,6 @@
     <Compile Include="Loggers\LFile\LFile.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MapRingBuffer.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MapRingBufferHeader.cs" />
-    <Compile Include="Loggers\LIPC\FileMap\MapViewStream.cs" />
     <Compile Include="Loggers\LIPC\FileMap\MemoryMappedFile.cs" />
     <Compile Include="Common\Win32.cs" />
     <Compile Include="Loggers\LFactory\LFactory.cs" />

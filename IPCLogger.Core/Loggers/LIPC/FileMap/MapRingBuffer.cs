@@ -12,18 +12,11 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         where TItem : struct, ISerializable
     {
 
-#region Constants
-
-        private const int DEF_ITEM_SIZE = 256;
-
-#endregion
-
 #region Private fields
 
         private string _name;
         private bool _viewMode;
         private MemoryMappedFile _map;
-        private MapViewStream _stream;
 
         private int _maxCount;
 
@@ -42,7 +35,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Properties
 
-        public MapRingBufferHeader Header
+        private MapRingBufferHeader Header
         {
             get { return _header != null ? *_header : default(MapRingBufferHeader); }
         }
@@ -87,17 +80,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
 #region Class methods
 
-        private void PrepareItemBuffer(int itemSize)
-        {
-            if (_itemBufferSize < itemSize)
-            {
-                _itemBuffer = (byte*) (_itemBufferSize != 0
-                    ? Win32.HeapReAlloc(_itemBuffer, itemSize, false)
-                    : Win32.HeapAlloc(itemSize, false));
-                _itemBufferSize = itemSize;
-            }
-        }
-
         private void Reinitialize()
         {
             if (_initialized)
@@ -126,12 +108,11 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         {
             try
             {
-                int size = DEF_ITEM_SIZE * _maxCount;
                 while (Thread.CurrentThread.IsAlive && _map == null)
                 {
                     _map = _viewMode
                         ? MemoryMappedFile.Open(_name, MapAccess.FileMapRead)
-                        : MemoryMappedFile.Create(_name, size, MapProtection.PageReadWrite);
+                        : MemoryMappedFile.Create(_name, MapProtection.PageReadWrite);
                     if (_map == null)
                     {
                         Thread.Sleep(1);
@@ -143,14 +124,12 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
                     return;
                 }
 
-                _stream = _map.MapAsStream();
-
                 if (!_viewMode)
                 {
                     WriteHeader();
                 }
 
-                _header = (MapRingBufferHeader*) _stream.GetElemPtr(0);
+                _header = (MapRingBufferHeader*) _map.GetItemPtr(0);
 
                 _initialized = true;
             }
@@ -169,7 +148,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             MapRingBufferHeader header = new MapRingBufferHeader(_maxCount);
             IntPtr memPtr = Marshal.AllocHGlobal(_headerSize);
             Marshal.StructureToPtr(header, memPtr, false);
-            _stream.Write(memPtr.ToPointer(), 0, _headerSize);
+            _map.Write(memPtr.ToPointer(), 0, _headerSize);
             Marshal.DestroyStructure(memPtr, typeof(MapRingBufferHeader));
             Marshal.FreeHGlobal(memPtr);
         }
@@ -182,8 +161,19 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
             _header->CurrentItemPosition += _header->CurrentItemSize;
             int position = _headerSize + _header->CurrentItemPosition;
-            _stream.Write(_itemBuffer, position, itemSize);
+            _map.Write(_itemBuffer, position, itemSize);
             _header->CurrentItemSize = itemSize;
+        }
+
+        private void PrepareItemBuffer(int itemSize)
+        {
+            if (_itemBufferSize < itemSize)
+            {
+                _itemBuffer = (byte*)(_itemBufferSize != 0
+                    ? Win32.HeapReAlloc(_itemBuffer, itemSize, false)
+                    : Win32.HeapAlloc(itemSize, false));
+                _itemBufferSize = itemSize;
+            }
         }
 
         public void Write(ref TItem item)
@@ -191,7 +181,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             _lockObj.WaitOne();
 
             _header->Updating = true;
-            _stream.FlushHeader();
+            _map.FlushFromBeginning(_headerSize);
 
             int currentItemPosition = _header->CurrentItemPosition;
             if (++_header->CurrentIndex == _header->MaxCount)
@@ -211,14 +201,14 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             _header->Updating = false;
 
             int flushSize = _headerSize + _header->CurrentItemPosition + _header->CurrentItemSize;
-            _stream.FlushFromBeginning(flushSize);
+            _map.FlushFromBeginning(flushSize);
 
             _lockObj.Set();
         }
 
         private TItem Read(ref TItem item, ref int pos)
         {
-            byte* p = (byte*) _stream.GetElemPtr(_headerSize);
+            byte* p = (byte*) _map.GetItemPtr(_headerSize);
             item.Deserialize(p, ref pos);
 
             int prewItemPosition;
@@ -258,6 +248,11 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             return GetEnumerator();
         }
 
+        public void Flush()
+        {
+            _map.Flush();
+        }
+
         public override string ToString()
         {
             return string.Format("Count {0}", Header.Count);
@@ -268,12 +263,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             if (_threadInit != null && Thread.CurrentThread != _threadInit)
             {
                 _threadInit.Abort();
-            }
-
-            if (_stream != null)
-            {
-                _stream.Dispose();
-                _stream = null;
             }
 
             if (_map != null)

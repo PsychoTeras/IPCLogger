@@ -36,6 +36,11 @@ namespace IPCLogger.Core.Loggers.LIPC
             _ipcEventRecords.Write(ref _eventItem);
         }
 
+        protected override void FlushConcurrent()
+        {
+            _ipcEventRecords.Flush();
+        }
+
         protected override bool InitializeConcurrent()
         {
             _eventItem = new LogItem();
