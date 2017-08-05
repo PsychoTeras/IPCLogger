@@ -8,7 +8,7 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #region Constants
 
-        private const ushort CACHED_RECORDS_NUM = 10;
+        private const ushort CACHED_RECORDS_NUM = 100;
 
 #endregion
 

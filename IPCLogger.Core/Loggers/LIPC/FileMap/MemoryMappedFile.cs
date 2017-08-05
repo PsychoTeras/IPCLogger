@@ -105,12 +105,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             Size = info.RegionSize.ToInt32();
         }
 
-        private void Expand(int size)
-        {
-            _viewBasePtr = Win32.VirtualAlloc(_viewBasePtr, size, AllocationType.Commit, MemoryProtection.ReadWrite);
-            ReadFileSize();
-        }
-
         public void Flush()
         {
             Win32.FlushViewOfFile(_viewBasePtr, 0);
@@ -124,6 +118,12 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         public void* GetItemPtr(int position)
         {
             return (void*)(_viewBaseAddr + position);
+        }
+
+        private void Expand(int size)
+        {
+            _viewBasePtr = Win32.VirtualAlloc(_viewBasePtr, size, AllocationType.Commit, MemoryProtection.ReadWrite);
+            ReadFileSize();
         }
 
         public void Write(void* buffer, int position, int count)

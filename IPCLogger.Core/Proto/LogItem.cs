@@ -20,6 +20,8 @@ namespace IPCLogger.Core.Proto
 
         public string Message;
 
+        public byte[] Data;
+
         public bool IsEmpty
         {
             get { return Id == 0; }
@@ -35,8 +37,18 @@ namespace IPCLogger.Core.Proto
             {
                 Id = Interlocked.Increment(ref _idShift);
             }
-            Message = message;
             Type = type;
+            Message = message;
+        }
+
+        public void Setup(int type, byte[] data)
+        {
+            unchecked
+            {
+                Id = Interlocked.Increment(ref _idShift);
+            }
+            Type = type;
+            Data = data;
         }
 
         public int SizeOf
@@ -46,7 +58,8 @@ namespace IPCLogger.Core.Proto
                 return
                     sizeof (int) +
                     sizeof (int) +
-                    sizeof (int) + (!string.IsNullOrEmpty(Message) ? Message.Length*sizeof (char) : 0);
+                    sizeof (int) + (!string.IsNullOrEmpty(Message) ? Message.Length*sizeof (char) : 0) +
+                    sizeof (int) + (Data != null ? Data.Length*sizeof (char) : 0);
             }
         }
 
@@ -55,6 +68,7 @@ namespace IPCLogger.Core.Proto
             Serializer.Write(bData, Id, ref pos);
             Serializer.Write(bData, Type, ref pos);
             Serializer.Write(bData, Message, ref pos);
+            Serializer.Write(bData, Data, ref pos);
         }
 
         public unsafe void Deserialize(byte* bData, ref int pos)
@@ -62,6 +76,7 @@ namespace IPCLogger.Core.Proto
             Serializer.Read(bData, out Id, ref pos);
             Serializer.Read(bData, out Type, ref pos);
             Serializer.Read(bData, out Message, ref pos);
+            Serializer.Read(bData, out Data, ref pos);
         }
 
 #endregion

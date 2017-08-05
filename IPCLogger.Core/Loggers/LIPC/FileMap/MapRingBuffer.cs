@@ -26,8 +26,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
         private byte* _itemBuffer;
         private int _itemBufferSize;
 
-        private LightLock _lockObj;
-
         private Thread _threadInit;
         private volatile bool _initialized;
 
@@ -51,8 +49,6 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         MapRingBuffer(string name, int maxCount, bool viewMode)
         {
-            _lockObj = new LightLock();
-
             _headerSize = Marshal.SizeOf(typeof (MapRingBufferHeader));
 
             _name = name;
@@ -178,10 +174,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public void Write(ref TItem item)
         {
-            _lockObj.WaitOne();
-
             _header->Updating = true;
-            _map.FlushFromBeginning(_headerSize);
+            //_map.FlushFromBeginning(_headerSize);
 
             int currentItemPosition = _header->CurrentItemPosition;
             if (++_header->CurrentIndex == _header->MaxCount)
@@ -200,10 +194,8 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
             }
             _header->Updating = false;
 
-            int flushSize = _headerSize + _header->CurrentItemPosition + _header->CurrentItemSize;
-            _map.FlushFromBeginning(flushSize);
-
-            _lockObj.Set();
+            //int flushSize = _headerSize + _header->CurrentItemPosition + _header->CurrentItemSize;
+            //_map.FlushFromBeginning(flushSize);
         }
 
         private TItem Read(ref TItem item, ref int pos)
@@ -220,26 +212,17 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public IEnumerator<TItem> GetEnumerator()
         {
-            _lockObj.WaitOne();
-
             while (Header.Updating)
             {
                 Thread.Sleep(1);
             }
 
-            try
+            int pos = Header.CurrentItemPosition;
+            for (int i = 0; i < Header.Count; i++)
             {
-                int pos = Header.CurrentItemPosition;
-                for (int i = 0; i < Header.Count; i++)
-                {
-                    TItem item = new TItem();
-                    Read(ref item, ref pos);
-                    yield return item;
-                }
-            }
-            finally
-            {
-                _lockObj.Set();
+                TItem item = new TItem();
+                Read(ref item, ref pos);
+                yield return item;
             }
         }
 
