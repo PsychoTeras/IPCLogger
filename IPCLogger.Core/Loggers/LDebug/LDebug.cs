@@ -32,7 +32,7 @@ namespace IPCLogger.Core.Loggers.LDebug
                 {
                     Trace.Write(text, EventNamesCache.GetEventName(eventType));
                 }
-                if (immediateFlush || Settings.ImmediateFlush) Trace.Flush();
+                if (immediateFlush) Trace.Flush();
             }
             else
             {
@@ -44,7 +44,7 @@ namespace IPCLogger.Core.Loggers.LDebug
                 {
                     Debug.Write(text, EventNamesCache.GetEventName(eventType));
                 }
-                if (immediateFlush || Settings.ImmediateFlush) Debug.Flush();
+                if (immediateFlush) Debug.Flush();
             }
         }
 

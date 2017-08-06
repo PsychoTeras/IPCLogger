@@ -92,6 +92,8 @@
     <Compile Include="Loggers\LDB\LDBSettings.cs" />
     <Compile Include="Loggers\LDebug\LDebug.cs" />
     <Compile Include="Loggers\LDebug\LDebugSettings.cs" />
+    <Compile Include="Loggers\LEventLog\LEventLog.cs" />
+    <Compile Include="Loggers\LEventLog\LEventLogSettings.cs" />
     <Compile Include="Loggers\LFactory\LFactorySettings.cs" />
     <Compile Include="Loggers\LFile\LFileSettings.cs" />
     <Compile Include="Proto\ISerializable.cs" />

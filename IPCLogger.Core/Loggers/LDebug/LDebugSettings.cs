@@ -9,7 +9,6 @@ namespace IPCLogger.Core.Loggers.LDebug
 #region Properties
 
         public bool Trace { get; set; }
-        public bool ImmediateFlush { get; set; }
 
 #endregion
 
@@ -19,7 +18,6 @@ namespace IPCLogger.Core.Loggers.LDebug
             : base(loggerType, onApplyChanges)
         {
             Trace = false;
-            ImmediateFlush = true;
         }
 
 #endregion

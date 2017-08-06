@@ -243,14 +243,31 @@ namespace IPCLogger.Core.Loggers.Base
                 try
                 {
                     object value;
+                    string sValue = setting.Value.Trim();
                     if (item.Value != null)
                     {
                         CustomConversionAttribute cc = (CustomConversionAttribute) item.Value;
-                        value = cc.ConvertValue(setting.Value.Trim());
+                        value = cc.ConvertValue(sValue);
                     }
                     else
                     {
-                        value = Convert.ChangeType(setting.Value.Trim(), propertyType, CultureInfo.InvariantCulture);
+                        if (propertyType.IsEnum)
+                        {
+                            try
+                            {
+                                value = Enum.Parse(propertyType, sValue);
+                            }
+                            catch
+                            {
+                                string names = string.Join(", ", Enum.GetNames(propertyType));
+                                string msg = string.Format("Possible values: {0}", names);
+                                throw new Exception(msg);
+                            }
+                        }
+                        else
+                        {
+                            value = Convert.ChangeType(sValue, propertyType, CultureInfo.InvariantCulture);
+                        }
                     }
                     if (value == null)
                     {
