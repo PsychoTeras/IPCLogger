@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LEventLog
@@ -11,15 +13,30 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
 #region Constants
 
+        private static readonly char ParamSplitter = ';';
+        private static readonly char ParamValSplitter = '=';
+
         private const string MACHINE_NAME = ".";
 
         private static readonly string SOURCE = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
 
         private const OverflowAction OVERFLOW_ACTION = OverflowAction.OverwriteOlder;
 
+        private const EventLogEntryType DEFAULT_LOG_ENTRY_TYPE = EventLogEntryType.Information;
+
         private const int OVERFLOW_ACTION_RETENTION_DAYS = 30;
 
         private const int MAX_LOG_SIZE = 512*1024;
+
+        private const string EVENT_ID = "0";
+
+        private const string CATEGORY = "0";
+
+#endregion
+
+#region Private fields
+
+        private Dictionary<string, EventLogEntryType> _logEntryTypeMatches;
 
 #endregion
 
@@ -31,9 +48,13 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
         public string Source { get; set; }
 
-        public short EventId { get; set; }
+        public string EventId { get; set; }
 
-        public int Category { get; set; }
+        public string Category { get; set; }
+
+        public EventLogEntryType DefaultLogEntryType { get; set; }
+
+        public string LogEntryTypeMatches { get; set; }
 
         [SizeStringConversion]
         public long MaxLogSize { get; set; }
@@ -51,9 +72,12 @@ namespace IPCLogger.Core.Loggers.LEventLog
         {
             MachineName = MACHINE_NAME;
             Source = LogName = SOURCE;
+            EventId = EVENT_ID;
+            Category = CATEGORY;
+            DefaultLogEntryType = DEFAULT_LOG_ENTRY_TYPE;
+            MaxLogSize = MAX_LOG_SIZE;
             OverflowAction = OVERFLOW_ACTION;
             OverwriteOlderRetentionDays = OVERFLOW_ACTION_RETENTION_DAYS;
-            MaxLogSize = MAX_LOG_SIZE;
         }
 
         protected override void FinalizeSetup()
@@ -65,6 +89,74 @@ namespace IPCLogger.Core.Loggers.LEventLog
                 MaxLogSize += 65536 - remainder;
             }
             MaxLogSize /= 1024;
+            EventId = EventId.Trim();
+            Category = Category.Trim();
+            SetLogEntryTypeMatches();
+        }
+
+        private void SetLogEntryTypeMatches()
+        {
+            _logEntryTypeMatches = new Dictionary<string, EventLogEntryType>
+            {
+                {LogEvent.Info.ToString(), EventLogEntryType.Information},
+                {LogEvent.Warn.ToString(), EventLogEntryType.Warning},
+                {LogEvent.Error.ToString(), EventLogEntryType.Error}
+            };
+
+            if (!string.IsNullOrEmpty(LogEntryTypeMatches))
+            {
+
+                string[] pairs = LogEntryTypeMatches.Split(new[] { ParamSplitter }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string paramVal in pairs)
+                {
+                    try
+                    {
+                        string[] kv = paramVal.Split(new[] { ParamValSplitter }, StringSplitOptions.RemoveEmptyEntries);
+                        if (kv.Length != 2)
+                        {
+                            string msg = "invalid pair";
+                            throw new Exception(msg);
+                        }
+
+                        string eventName = kv[0].Trim();
+                        if (_logEntryTypeMatches.ContainsKey(eventName))
+                        {
+                            string msg = string.Format("duplicated event name '{0}'", eventName);
+                            throw new Exception(msg);
+                        }
+
+                        string sEntryType = kv[1].Trim();
+                        EventLogEntryType entryType;
+                        if (!Enum.TryParse(sEntryType, out entryType))
+                        {
+                            string msg = string.Format("improper entry type '{0}'. Possible values: {1}", sEntryType,
+                                string.Join(", ", Enum.GetNames(typeof (EventLogEntryType))));
+                            throw new Exception(msg);
+                        }
+
+                        _logEntryTypeMatches.Add(eventName, entryType);
+                    }
+                    catch (Exception ex)
+                    {
+                        string msg = string.Format("Failed to parse LogEntryTypeMatches '{0}'", paramVal);
+                        if (!string.IsNullOrEmpty(ex.Message))
+                        {
+                            msg += string.Format(": {0}", ex.Message);
+                        }
+                        throw new Exception(msg);
+                    }
+                }
+            }
+        }
+
+        internal EventLogEntryType GetLogEntryType(string eventName)
+        {
+            EventLogEntryType entryType;
+            if (eventName == null || !_logEntryTypeMatches.TryGetValue(eventName, out entryType))
+            {
+                entryType = DefaultLogEntryType;
+            }
+            return entryType;
         }
 
 #endregion

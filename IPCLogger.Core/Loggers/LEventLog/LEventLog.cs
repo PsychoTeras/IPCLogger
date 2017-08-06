@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Core.Snippets;
 
 namespace IPCLogger.Core.Loggers.LEventLog
 {
@@ -10,6 +11,8 @@ namespace IPCLogger.Core.Loggers.LEventLog
 #region Private fields
 
         private EventLog _eventLog;
+        private int? _eventId;
+        private short? _category;
 
 #endregion
 
@@ -27,16 +30,53 @@ namespace IPCLogger.Core.Loggers.LEventLog
         protected override void WriteSimple(Type callerType, Enum eventType, string eventName, 
             string text, bool writeLine)
         {
-            _eventLog.WriteEntry(text);
+            int eventId;
+            if (_eventId.HasValue)
+            {
+                eventId = _eventId.Value;
+            }
+            else
+            {
+                string sEventId = SFactory.Process(Settings.EventId, Patterns);
+                if (!int.TryParse(sEventId, out eventId))
+                {
+                    _eventId = eventId = 0;
+                }
+            }
+
+            short category;
+            if (_category.HasValue)
+            {
+                category = _category.Value;
+            }
+            else
+            {
+                string sCategory = SFactory.Process(Settings.Category, Patterns);
+                if (!short.TryParse(sCategory, out category))
+                {
+                    _category = category = 0;
+                }
+            }
+
+            EventLogEntryType logType = Settings.GetLogEntryType(eventName);
+            _eventLog.WriteEntry(text, logType, eventId, category);
         }
 
         protected override bool InitializeSimple()
         {
-            if (!EventLog.Exists(Settings.LogName, Settings.MachineName))
+            string logName = SFactory.Process(Settings.LogName, Patterns);
+            string source = SFactory.Process(Settings.Source, Patterns);
+
+            if (!EventLog.Exists(logName, Settings.MachineName))
             {
-                EventLog.CreateEventSource(Settings.Source, Settings.LogName);
+                EventSourceCreationData data = new EventSourceCreationData(source, logName)
+                {
+                    MachineName = Settings.MachineName
+                };
+                EventLog.CreateEventSource(data);
             }
-            _eventLog = new EventLog(Settings.LogName, Settings.MachineName, Settings.Source);
+
+            _eventLog = new EventLog(logName, Settings.MachineName, source);
             if (_eventLog.OverflowAction != Settings.OverflowAction ||
                 _eventLog.MinimumRetentionDays != Settings.OverwriteOlderRetentionDays)
             {
@@ -46,11 +86,25 @@ namespace IPCLogger.Core.Loggers.LEventLog
             {
                 _eventLog.MaximumKilobytes = Settings.MaxLogSize;
             }
+
+            int eventId;
+            if (int.TryParse(Settings.EventId, out eventId))
+            {
+                _eventId = eventId;
+            }
+            short category;
+            if (short.TryParse(Settings.Category, out category))
+            {
+                _category = category;
+            }
+
             return true;
         }
 
         protected override bool DeinitializeSimple()
         {
+            _eventId = null;
+            _category = null;
             _eventLog.Dispose();
             return true;
         }

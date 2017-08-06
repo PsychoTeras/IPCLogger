@@ -281,7 +281,7 @@ namespace IPCLogger.Core.Loggers.Base
                         setting.Value, setting.Key, propertyType.Name);
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
-                        msg += string.Format("{0}{1}", Constants.NewLine, ex.Message);
+                        msg += string.Format(". {0}", ex.Message);
                     }
                     throw new Exception(msg);
                 }

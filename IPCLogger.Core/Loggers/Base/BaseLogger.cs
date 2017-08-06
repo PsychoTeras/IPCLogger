@@ -342,8 +342,8 @@ namespace IPCLogger.Core.Loggers.Base
         public override string ToString()
         {
             return !string.IsNullOrEmpty(Settings.Name)
-                ? string.Format("'{0}', name '{1}'", GetType().Name, Settings.Name)
-                : string.Format("'{0}'", GetType().Name);
+                ? string.Format("{0} [{1}]", GetType().Name, Settings.Name)
+                : string.Format("{0}", GetType().Name);
         }
 
 #endregion

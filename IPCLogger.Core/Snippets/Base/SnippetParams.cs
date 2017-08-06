@@ -5,8 +5,8 @@ namespace IPCLogger.Core.Snippets.Base
 {
     public sealed class SnippetParams : Dictionary<string, string>
     {
-        private static readonly char CharParamSplitter = ';';
-        private static readonly char CharParamValSplitter = '=';
+        private static readonly char ParamSplitter = ';';
+        private static readonly char ParamValSplitter = '=';
 
         public bool HasValue(string key, bool def = false)
         {
@@ -28,10 +28,10 @@ namespace IPCLogger.Core.Snippets.Base
             SnippetParams dictParams = new SnippetParams();
             if (@params.Length != 0)
             {
-                string[] paramsList = @params.Split(new[] {CharParamSplitter}, StringSplitOptions.RemoveEmptyEntries);
+                string[] paramsList = @params.Split(new[] {ParamSplitter}, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string paramVal in paramsList)
                 {
-                    string[] paramKv = paramVal.Split(CharParamValSplitter);
+                    string[] paramKv = paramVal.Split(ParamValSplitter);
                     if (!dictParams.ContainsKey(paramKv[0]))
                     {
                         dictParams.Add(paramKv[0], paramKv.Length == 2 ? paramKv[1] : string.Empty);

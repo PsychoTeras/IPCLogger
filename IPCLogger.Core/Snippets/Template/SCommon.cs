@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Principal;
 using System.Threading;
 using IPCLogger.Core.Caches;
@@ -32,6 +33,8 @@ namespace IPCLogger.Core.Snippets.Template
 
         private static readonly string _userName = WindowsIdentity.GetCurrent().Name;
         private static readonly Process _process = System.Diagnostics.Process.GetCurrentProcess();
+        private static string _appName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
+        private static string _appDomain = AppDomain.CurrentDomain.FriendlyName;
 
 #endregion
 
@@ -50,6 +53,7 @@ namespace IPCLogger.Core.Snippets.Template
                     ,"ticks"
                     ,"uptime"
                     ,"username"
+                    ,"appname"
                     ,"appdomain"
                     ,"thread"
                     ,"event"
@@ -125,12 +129,13 @@ namespace IPCLogger.Core.Snippets.Template
                 case "ticks":
                     return Environment.TickCount.ToString(@params);
                 case "uptime":
-                    Process process = System.Diagnostics.Process.GetCurrentProcess();
-                    return (DateTime.Now - process.StartTime).Milliseconds.ToString(@params);
+                    return (DateTime.Now - _process.StartTime).Milliseconds.ToString(@params);
                 case "username":
                     return _userName;
+                case "appname":
+                    return _appName;
                 case "appdomain":
-                    return AppDomain.CurrentDomain.FriendlyName;
+                    return _appDomain;
                 case "thread":
                     Thread thread = Thread.CurrentThread;
                     switch (@params)
