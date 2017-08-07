@@ -10,7 +10,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 #region Constants
 
         private const int DEF_FILE_SIZE = 1024;
-        private const int MAX_FILE_SIZE = int.MaxValue/4;
+        private const int MAX_FILE_SIZE = 1024*1024*32; //32MB
 
 #endregion
 
