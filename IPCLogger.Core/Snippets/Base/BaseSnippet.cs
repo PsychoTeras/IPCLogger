@@ -15,7 +15,7 @@ namespace IPCLogger.Core.Snippets.Base
                 {SnippetType.Template, '$'},
                 {SnippetType.Snippet, '%'},
                 {SnippetType.Storage, '#'},
-                {SnippetType.AutoKey, '~'}
+                {SnippetType.AutoKey, '^'}
             };
 
         internal static readonly Dictionary<char, SnippetType> SnippetTypes =

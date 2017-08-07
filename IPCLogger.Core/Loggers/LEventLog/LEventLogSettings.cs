@@ -89,8 +89,8 @@ namespace IPCLogger.Core.Loggers.LEventLog
                 MaxLogSize += 65536 - remainder;
             }
             MaxLogSize /= 1024;
-            EventId = EventId.Trim();
-            Category = Category.Trim();
+            EventId = EventId;
+            Category = Category;
             SetLogEntryTypeMatches();
         }
 

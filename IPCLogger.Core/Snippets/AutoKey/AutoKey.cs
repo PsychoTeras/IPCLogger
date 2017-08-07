@@ -1,6 +1,7 @@
 ﻿using System;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets.Base;
+using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets.AutoKey
 {
@@ -27,7 +28,7 @@ namespace IPCLogger.Core.Snippets.AutoKey
         public override string Process(Type callerType, Enum eventType, string snippetName, 
             string text, string @params, PFactory pFactory)
         {
-            return string.Empty;
+            return AutoKeyS.Pop(snippetName);
         }
 
 #endregion

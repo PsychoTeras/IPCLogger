@@ -1,4 +1,6 @@
-﻿namespace IPCLogger.Core.Storages
+﻿using System.Threading;
+
+namespace IPCLogger.Core.Storages
 {
     internal class AutoKeyItem
     {
@@ -16,8 +18,7 @@
 
         public string GetAndIncrease()
         {
-            int value = Value;
-            Value += Increment;
+            int value = Interlocked.Add(ref Value, Increment);
             return Format != null ? value.ToString(Format) : value.ToString();
         }
 

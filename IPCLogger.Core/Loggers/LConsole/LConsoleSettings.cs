@@ -91,7 +91,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 XmlAttribute aEvents = highlightNode.Attributes["events"];
                 string sEvents = aEvents != null ? aEvents.Value : null;
-                string[] events = string.IsNullOrEmpty(sEvents)
+                string[] events = string.IsNullOrWhiteSpace(sEvents)
                     ? new[] {Constants.ApplicableForAllMark}
                     : sEvents.Split(Constants.Splitter);
                 foreach (string s in events)

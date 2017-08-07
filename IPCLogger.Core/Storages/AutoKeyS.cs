@@ -24,20 +24,12 @@ namespace IPCLogger.Core.Storages
                 _autoKeys.Add(name, new AutoKeyItem(initValue, increment, format));
             }
             _lockObj.Set();
-
         }
 
         internal static string Pop(string name)
         {
             AutoKeyItem item;
-            if (_autoKeys.TryGetValue(name, out item))
-            {
-                _lockObj.WaitOne();
-                string value = item.GetAndIncrease();
-                _lockObj.Set();
-                return value;
-            }
-            return null;
+            return _autoKeys.TryGetValue(name, out item) ? item.GetAndIncrease() : null;
         }
 
         internal static void Remove(string name)
@@ -52,9 +44,7 @@ namespace IPCLogger.Core.Storages
             AutoKeyItem item;
             if (_autoKeys.TryGetValue(name, out item))
             {
-                _lockObj.WaitOne();
                 item.Value = value;
-                _lockObj.Set();
             }
         }
 
@@ -63,9 +53,7 @@ namespace IPCLogger.Core.Storages
             AutoKeyItem item;
             if (_autoKeys.TryGetValue(name, out item))
             {
-                _lockObj.WaitOne();
                 item.Reset();
-                _lockObj.Set();
             }
         }
 
