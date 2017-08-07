@@ -18,8 +18,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Constants
 
-        private static readonly Func<string, bool> DefCheckApplicableEvent = s => true;
-        protected const string ROOT_LOGGERS_CFG_PATH = Constants.ROOT_LOGGER_CFG_PATH + "/Loggers";
+        private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
+        protected const string RootLoggersCfgPath = Constants.RootLoggerCfgPath + "/Loggers";
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Internal fields
 
-        internal Func<string, bool> CheckApplicableEvent = DefCheckApplicableEvent;
+        internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
 
 #endregion
 
@@ -156,7 +156,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
             loggerName = !string.IsNullOrEmpty(loggerName) ? string.Format("[@name='{0}']", loggerName) : string.Empty;
-            return string.Format("{0}/{1}{2}", ROOT_LOGGERS_CFG_PATH, _loggerType.Name, loggerName);
+            return string.Format("{0}/{1}{2}", RootLoggersCfgPath, _loggerType.Name, loggerName);
         }
 
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
@@ -199,7 +199,7 @@ namespace IPCLogger.Core.Loggers.Base
                 return;
             }
 
-            CheckApplicableEvent = DefCheckApplicableEvent;
+            CheckApplicableEvent = _defCheckApplicableEvent;
         }
 
         protected virtual Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)

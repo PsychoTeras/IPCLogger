@@ -3,8 +3,8 @@
     public enum SnippetType : byte
     {
         Template,
-        Code,
         Snippet,
         Storage,
+        AutoKey
     }
 }

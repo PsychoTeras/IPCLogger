@@ -78,7 +78,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 return loggers;
             }
 
-            string loggersXPath = string.Format("{0}/*", ROOT_LOGGERS_CFG_PATH);
+            string loggersXPath = string.Format("{0}/*", RootLoggersCfgPath);
             XmlNodeList cfgNodes = xmlCfg.SelectNodes(loggersXPath);
             foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
             {
@@ -98,7 +98,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override string GetLoggerSettingsNodeName(string loggerName = null)
         {
-            return Constants.ROOT_LOGGER_CFG_PATH;
+            return Constants.RootLoggerCfgPath;
         }
 
         protected override void ApplyCommonSettings(XmlNode cfgNode)

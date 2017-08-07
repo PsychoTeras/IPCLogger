@@ -40,7 +40,7 @@ namespace IPCLogger.Core.Loggers.LDB
 
 #region Class methods
 
-        private void ReadDBParameters(XmlNode cfgNode)
+        private void ReadDbParameters(XmlNode cfgNode)
         {
             ParamValues = new Dictionary<string, string>();
 
@@ -61,7 +61,7 @@ namespace IPCLogger.Core.Loggers.LDB
 
         protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
         {
-            ReadDBParameters(cfgNode);
+            ReadDbParameters(cfgNode);
             return GetSettingsDictionary(cfgNode, new[] { PARAMS_NODE_NAME });
         }
 

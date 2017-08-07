@@ -15,7 +15,7 @@ namespace IPCLogger.Core.Patterns
 
 #region Constants
 
-        private const string ROOT_PATTERNS_CFG_PATH   = Constants.ROOT_LOGGER_CFG_PATH + "/Patterns/Pattern";
+        private const string ROOT_PATTERNS_CFG_PATH   = Constants.RootLoggerCfgPath + "/Patterns/Pattern";
         private const string PATTERN_CONTENT_CFG_PATH = "./Content";
 
 

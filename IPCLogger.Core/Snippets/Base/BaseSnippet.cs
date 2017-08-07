@@ -13,9 +13,9 @@ namespace IPCLogger.Core.Snippets.Base
             new Dictionary<SnippetType, char>
             {
                 {SnippetType.Template, '$'},
-                {SnippetType.Code, '@'},
                 {SnippetType.Snippet, '%'},
                 {SnippetType.Storage, '#'},
+                {SnippetType.AutoKey, '~'}
             };
 
         internal static readonly Dictionary<char, SnippetType> SnippetTypes =
@@ -27,7 +27,7 @@ namespace IPCLogger.Core.Snippets.Base
 
 #region Protected fields
 
-        protected char Mark { get; private set; }
+        protected char Mark { get; }
 
 
 #endregion

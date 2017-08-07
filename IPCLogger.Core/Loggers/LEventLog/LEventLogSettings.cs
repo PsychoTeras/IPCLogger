@@ -13,12 +13,12 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
 #region Constants
 
-        private static readonly char ParamSplitter = ';';
-        private static readonly char ParamValSplitter = '=';
+        private static readonly char _paramSplitter = ';';
+        private static readonly char _paramValSplitter = '=';
 
         private const string MACHINE_NAME = ".";
 
-        private static readonly string SOURCE = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
+        private static readonly string _source = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
 
         private const OverflowAction OVERFLOW_ACTION = OverflowAction.OverwriteOlder;
 
@@ -71,7 +71,7 @@ namespace IPCLogger.Core.Loggers.LEventLog
             : base(loggerType, onApplyChanges)
         {
             MachineName = MACHINE_NAME;
-            Source = LogName = SOURCE;
+            Source = LogName = _source;
             EventId = EVENT_ID;
             Category = CATEGORY;
             DefaultLogEntryType = DEFAULT_LOG_ENTRY_TYPE;
@@ -106,12 +106,12 @@ namespace IPCLogger.Core.Loggers.LEventLog
             if (!string.IsNullOrEmpty(LogEntryTypeMatches))
             {
 
-                string[] pairs = LogEntryTypeMatches.Split(new[] { ParamSplitter }, StringSplitOptions.RemoveEmptyEntries);
+                string[] pairs = LogEntryTypeMatches.Split(new[] { _paramSplitter }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string paramVal in pairs)
                 {
                     try
                     {
-                        string[] kv = paramVal.Split(new[] { ParamValSplitter }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] kv = paramVal.Split(new[] { _paramValSplitter }, StringSplitOptions.RemoveEmptyEntries);
                         if (kv.Length != 2)
                         {
                             string msg = "invalid pair";

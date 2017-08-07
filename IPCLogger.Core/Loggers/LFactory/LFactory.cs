@@ -14,7 +14,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Private static fields
 
-        private static readonly List<Type> AvailableLoggers;
+        private static readonly List<Type> _availableLoggers;
 
 #endregion
 
@@ -42,7 +42,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         static LFactory()
         {
             Instance = new LFactory();
-            AvailableLoggers = GetAvailableLoggers();
+            _availableLoggers = GetAvailableLoggers();
         }
 
         private LFactory() : base(true)
@@ -384,11 +384,11 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         private BaseLoggerInt InstantiateLoggerByDeclared(DeclaredLogger declaredLogger)
         {
-            Type loggerType = AvailableLoggers.FirstOrDefault
+            Type loggerType = _availableLoggers.FirstOrDefault
                 (
                     t => t.Name == declaredLogger.TypeName &&
                          (string.IsNullOrEmpty(declaredLogger.Namespace) ||
-                          (t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, StringComparison.InvariantCultureIgnoreCase)))
+                          t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, StringComparison.InvariantCultureIgnoreCase))
                 );
 
             BaseLoggerInt logger = loggerType != null

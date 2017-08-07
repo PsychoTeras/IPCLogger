@@ -16,7 +16,7 @@ namespace IPCLogger.Core.Snippets.Storage
 
 #region Private fields
 
-        private static readonly string CollItemPrefix = "\t";
+        private static readonly string _collItemPrefix = "\t";
         private static readonly DictionaryCache<string, KeyValuePair<bool, bool>> _cacheParams = 
             new DictionaryCache<string, KeyValuePair<bool, bool>>();
 
@@ -96,7 +96,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 {
                     if (prefix == null)
                     {
-                        prefix = CollItemPrefix;
+                        prefix = _collItemPrefix;
                         sb.AppendFormat("{0}{1}", Constants.NewLine, prefix);
                     }
                     sb.AppendFormat("[{0}, size {1}] >", name, iColl.Count);
@@ -117,7 +117,7 @@ namespace IPCLogger.Core.Snippets.Storage
 
             if (iColl != null && iColl.Count > 0)
             {
-                string newPrefix = prefix == null ? CollItemPrefix : prefix + CollItemPrefix;
+                string newPrefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
                 foreach (object item in iColl)
                 {
                     sb.Append(Constants.NewLine);

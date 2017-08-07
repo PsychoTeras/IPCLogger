@@ -9,6 +9,6 @@ namespace IPCLogger.Core.Common
         public static readonly string NewLine = "\r\n";
         public static readonly int ProcessorsCount = Environment.ProcessorCount;
         public static readonly bool Is64Bit = IntPtr.Size == 8;
-        public const string ROOT_LOGGER_CFG_PATH = "/configuration/IPCLogger";
+        public const string RootLoggerCfgPath = "/configuration/IPCLogger";
     }
 }

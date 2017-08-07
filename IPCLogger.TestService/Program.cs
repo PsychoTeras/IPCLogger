@@ -20,9 +20,9 @@ namespace IPCLogger.TestService
     {
         //--------------------------------------------Configure test environment here----------------------------------------------
 
-        private static readonly WaitCallback WorkMethod = WriteLogIPC;                  //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int ParallelOperations = 1;    //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int RecordsCount = 500000 / 500000;         //Number of iterations
+        private static readonly WaitCallback _workMethod = WriteLogIPC;                  //Do we use WriteLogIPC or WriteLog4Net?
+        private static readonly int _parallelOperations = Environment.ProcessorCount;    //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly int _recordsCount = 500000 / _parallelOperations;         //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -57,8 +57,8 @@ namespace IPCLogger.TestService
                 case CtrlType.CtrlShutdownEvent:
                 case CtrlType.CtrlCloseEvent:
                 {
-                    if (WorkMethod == null) return false;
-                    if (WorkMethod == WriteLogIPC)
+                    if (_workMethod == null) return false;
+                    if (_workMethod == WriteLogIPC)
                     {
                         LFactory.Instance.Flush();
                     }
@@ -79,7 +79,7 @@ namespace IPCLogger.TestService
             _logger.Info(_sGuid); //'Cold' write
 
             _timer = HRTimer.CreateAndStart();
-            for (int i = 0; i < RecordsCount - 1; i++)
+            for (int i = 0; i < _recordsCount - 1; i++)
             {
                 _logger.Info(_sGuid);
             }
@@ -97,7 +97,7 @@ namespace IPCLogger.TestService
             LFactory.Instance.Write(LogEvent.Info, _sGuid); //'Cold' write
 
             _timer = HRTimer.CreateAndStart();
-            for (int i = 0; i < RecordsCount - 1; i++)
+            for (int i = 0; i < _recordsCount - 1; i++)
             {
                 //Thread.Sleep(1);
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
@@ -117,7 +117,7 @@ namespace IPCLogger.TestService
 
         private static void Echo(string[] args)
         {
-            if (WorkMethod == WriteLogIPC)
+            if (_workMethod == WriteLogIPC)
             {
                 LFactory.Instance.Initialize();
             }
@@ -126,20 +126,20 @@ namespace IPCLogger.TestService
                 XmlConfigurator.Configure(new FileInfo(@"IPCLogger.TestService.exe.config"));
             }
 
-            _tEvents = new WaitHandle[ParallelOperations];
-            for (int i = 0; i < ParallelOperations; i++)
+            _tEvents = new WaitHandle[_parallelOperations];
+            for (int i = 0; i < _parallelOperations; i++)
             {
                 _tEvents[i] = new ManualResetEvent(false);
             }
 
-            for (int i = 0; i < ParallelOperations; i++)
+            for (int i = 0; i < _parallelOperations; i++)
             {
-                ThreadPool.QueueUserWorkItem(WorkMethod, _tEvents[i]);
+                ThreadPool.QueueUserWorkItem(_workMethod, _tEvents[i]);
             }
 
             WaitHandle.WaitAll(_tEvents);
 
-            if (WorkMethod == WriteLogIPC)
+            if (_workMethod == WriteLogIPC)
             {
                 LFactory.Instance.Flush();
             }

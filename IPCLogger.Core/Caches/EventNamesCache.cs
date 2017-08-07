@@ -5,7 +5,7 @@ namespace IPCLogger.Core.Caches
 {
     internal static class EventNamesCache
     {
-        private static readonly Dictionary<int, string> EventNames = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> _eventNames = new Dictionary<int, string>();
 
         public static string GetEventName(Enum eventType)
         {
@@ -14,14 +14,14 @@ namespace IPCLogger.Core.Caches
             int key = (int)(object)eventType;
 
             string eventName;
-            if (!EventNames.TryGetValue(key, out eventName))
+            if (!_eventNames.TryGetValue(key, out eventName))
             {
-                lock (EventNames)
+                lock (_eventNames)
                 {
-                    if (!EventNames.TryGetValue(key, out eventName))
+                    if (!_eventNames.TryGetValue(key, out eventName))
                     {
                         eventName = eventType.ToString();
-                        EventNames.Add(key, eventName);
+                        _eventNames.Add(key, eventName);
                     }
                 }
             }
@@ -31,15 +31,15 @@ namespace IPCLogger.Core.Caches
         public static string GetEventName(Enum eventType, int key)
         {
             string eventName;
-            if (!EventNames.TryGetValue(key, out eventName))
+            if (!_eventNames.TryGetValue(key, out eventName))
             {
                 if (eventType == null) return string.Empty;
-                lock (EventNames)
+                lock (_eventNames)
                 {
-                    if (!EventNames.TryGetValue(key, out eventName))
+                    if (!_eventNames.TryGetValue(key, out eventName))
                     {
                         eventName = eventType.ToString();
-                        EventNames.Add(key, eventName);
+                        _eventNames.Add(key, eventName);
                     }
                 }
             }

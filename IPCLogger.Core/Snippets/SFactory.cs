@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Patterns.Base;
 using IPCLogger.Core.Snippets.Base;
+using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets
 {
@@ -15,13 +16,13 @@ namespace IPCLogger.Core.Snippets
 
 #region Static fields
 
-        private static readonly Dictionary<SnippetType, BaseSnippet> CustomBodySnippets =
+        private static readonly Dictionary<SnippetType, BaseSnippet> _customBodySnippets =
             new Dictionary<SnippetType, BaseSnippet>();
 
-        private static readonly Dictionary<SnippetType, Dictionary<string, BaseSnippet>> Snippets =
+        private static readonly Dictionary<SnippetType, Dictionary<string, BaseSnippet>> _snippets =
             new Dictionary<SnippetType, Dictionary<string, BaseSnippet>>();
 
-        private static readonly Dictionary<int, SnippetsCache> SnippetsCache =
+        private static readonly Dictionary<int, SnippetsCache> _snippetsCache =
             new Dictionary<int, SnippetsCache>();
 
         private static Regex _regexParseString;
@@ -65,9 +66,9 @@ namespace IPCLogger.Core.Snippets
                     SnippetType snippetType = snippet.Type;
                     if (snippet.Names == null)
                     {
-                        if (!CustomBodySnippets.ContainsKey(snippetType))
+                        if (!_customBodySnippets.ContainsKey(snippetType))
                         {
-                            CustomBodySnippets.Add(snippetType, snippet);
+                            _customBodySnippets.Add(snippetType, snippet);
                         }
                         else
                         {
@@ -77,11 +78,11 @@ namespace IPCLogger.Core.Snippets
                     }
                     else
                     {
-                        if (!Snippets.ContainsKey(snippetType))
+                        if (!_snippets.ContainsKey(snippetType))
                         {
-                            Snippets.Add(snippetType, new Dictionary<string, BaseSnippet>());
+                            _snippets.Add(snippetType, new Dictionary<string, BaseSnippet>());
                         }
-                        Dictionary<string, BaseSnippet> snippetsList = Snippets[snippetType];
+                        Dictionary<string, BaseSnippet> snippetsList = _snippets[snippetType];
                         foreach (string name in snippet.Names)
                         {
                             if (!snippetsList.ContainsKey(name))
@@ -107,7 +108,7 @@ namespace IPCLogger.Core.Snippets
 
             //Create regexp for regular snippets
             List<string> namesList = new List<string>();
-            foreach (KeyValuePair<SnippetType, Dictionary<string, BaseSnippet>> dict in Snippets)
+            foreach (KeyValuePair<SnippetType, Dictionary<string, BaseSnippet>> dict in _snippets)
             {
                 typeMarks.Append(BaseSnippet.SnippetMarks[dict.Key]);
                 namesList.AddRange(dict.Value.Select(s => Regex.Escape(s.Key)));
@@ -122,7 +123,7 @@ namespace IPCLogger.Core.Snippets
 
             //Create regexp for custom-body snippets
             typeMarks = new StringBuilder();
-            foreach (KeyValuePair<SnippetType, BaseSnippet> dict in CustomBodySnippets)
+            foreach (KeyValuePair<SnippetType, BaseSnippet> dict in _customBodySnippets)
             {
                 typeMarks.Append(BaseSnippet.SnippetMarks[dict.Key]);
             }
@@ -161,7 +162,7 @@ namespace IPCLogger.Core.Snippets
                     result.Append(contentPart = pattern.Substring(0, match.Index));
                     if (record != null) record.PreContent = contentPart;
                 }
-                else if (prewMatch != null && (startIdx = (prewMatch.Index + prewMatch.Length)) < match.Index)
+                else if (prewMatch != null && (startIdx = prewMatch.Index + prewMatch.Length) < match.Index)
                 {
                     result.Append(contentPart = pattern.Substring(startIdx, match.Index - startIdx));
                     if (record != null) record.PreContent = contentPart;
@@ -174,8 +175,8 @@ namespace IPCLogger.Core.Snippets
                 BaseSnippet snippet;
                 Dictionary<string, BaseSnippet> snippets;
                 bool snippetHasBeenFound =
-                    (Snippets.TryGetValue(snippetType, out snippets) && snippets.TryGetValue(name, out snippet)) ||
-                    CustomBodySnippets.TryGetValue(snippetType, out snippet);
+                    _snippets.TryGetValue(snippetType, out snippets) && snippets.TryGetValue(name, out snippet) ||
+                    _customBodySnippets.TryGetValue(snippetType, out snippet);
                 if (snippetHasBeenFound)
                 {
                     string @params = match.Groups["P"].Value;
@@ -185,6 +186,7 @@ namespace IPCLogger.Core.Snippets
                         record.Snippet = snippet;
                         record.Name = name;
                         record.Params = @params;
+                        ProcessSnippetsCacheRecord(record);
                     }
 
                     string value = snippet.Process(callerType, eventType, name, text, @params, pFactory);
@@ -197,7 +199,7 @@ namespace IPCLogger.Core.Snippets
                 prewMatch = match;
             }
 
-            if (prewMatch != null && (startIdx = (prewMatch.Index + prewMatch.Length)) < pattern.Length)
+            if (prewMatch != null && (startIdx = prewMatch.Index + prewMatch.Length) < pattern.Length)
             {
                 result.Append(contentPart = pattern.Substring(startIdx, pattern.Length - startIdx));
                 if (record != null) record.CreateNext().PreContent = contentPart;
@@ -206,19 +208,41 @@ namespace IPCLogger.Core.Snippets
             return result.ToString();
         }
 
+        private static void ProcessSnippetsCacheRecord(SnippetsCache record)
+        {
+            switch (record.Snippet.Type)
+            {
+                case SnippetType.AutoKey:
+                {
+                    SnippetParams sParams = SnippetParams.Parse(record.Params);
+                    int init;
+                    int.TryParse(sParams.GetValue("init", string.Empty).Trim(), out init);
+                    int increment;
+                    int.TryParse(sParams.GetValue("increment", string.Empty).Trim(), out increment);
+                    string format = sParams.GetValue<string>("format", null);
+                    if (format == string.Empty)
+                    {
+                        format = null;
+                    }
+                    AutoKeyS.Add(record.Name, init, increment, format);
+                    break;
+                }
+            }
+        }
+
         private static string Process(Type callerType, Enum eventType, string text, string pattern, 
             int patternId, PFactory pFactory)
         {
             SnippetsCache record = null;
-            if (patternId != -1 && !SnippetsCache.TryGetValue(patternId, out record))
+            if (patternId != -1 && !_snippetsCache.TryGetValue(patternId, out record))
             {
-                lock (SnippetsCache)
+                lock (_snippetsCache)
                 {
-                    if (!SnippetsCache.TryGetValue(patternId, out record))
+                    if (!_snippetsCache.TryGetValue(patternId, out record))
                     {
                         record = new SnippetsCache();
                         string result = ProcessToCache(callerType, eventType, text, pattern, pFactory, record);
-                        SnippetsCache.Add(patternId, record);
+                        _snippetsCache.Add(patternId, record);
                         return result;
                     }
                 }

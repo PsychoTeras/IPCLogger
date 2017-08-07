@@ -11,7 +11,7 @@ namespace IPCLogger.Core.Caches
     {
         private static int _callerStackLevel = -1;
 
-        private static readonly Dictionary<int, Dictionary<long, Type>> CachedTypes =
+        private static readonly Dictionary<int, Dictionary<long, Type>> _cachedTypes =
             new Dictionary<int, Dictionary<long, Type>>();
 
         public static Type GetCallerType()
@@ -22,11 +22,11 @@ namespace IPCLogger.Core.Caches
             Type type = null;
             Dictionary<long, Type> typeDict;
             int currentThread = Thread.CurrentThread.GetHashCode();
-            if (!CachedTypes.TryGetValue(currentThread, out typeDict))
+            if (!_cachedTypes.TryGetValue(currentThread, out typeDict))
             {
-                lock (CachedTypes)
+                lock (_cachedTypes)
                 {
-                    if (!CachedTypes.TryGetValue(currentThread, out typeDict))
+                    if (!_cachedTypes.TryGetValue(currentThread, out typeDict))
                     {
                         StackTrace stackTrace = new StackTrace();
                         if (_callerStackLevel == -1)
@@ -35,7 +35,7 @@ namespace IPCLogger.Core.Caches
                         }
                         MethodBase method = stackTrace.GetFrame(_callerStackLevel).GetMethod();
                         typeDict = new Dictionary<long, Type> {{stackAddr, type = method.DeclaringType}};
-                        CachedTypes.Add(currentThread, typeDict);
+                        _cachedTypes.Add(currentThread, typeDict);
                     }
                 }
             }

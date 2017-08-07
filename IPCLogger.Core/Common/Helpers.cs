@@ -22,9 +22,9 @@ namespace IPCLogger.Core.Common
 
         public static bool ByteArrayEquals(byte[] b1, byte[] b2)
         {
-            return (b1 == null && b2 == null) ||
-                   (b1 != null && b2 != null && 
-                    b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0);
+            return b1 == null && b2 == null ||
+                   b1 != null && b2 != null && 
+                   b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
         
         public static string CalculateUniqueId(string name, string type, string nameSpace)

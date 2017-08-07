@@ -120,6 +120,7 @@
     <Compile Include="Patterns\PFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proto\Serializer.cs" />
+    <Compile Include="Snippets\AutoKey\AutoKey.cs" />
     <Compile Include="Snippets\Base\BaseSnippet.cs" />
     <Compile Include="Snippets\Base\SnippetParams.cs" />
     <Compile Include="Snippets\Template\SException.cs" />
@@ -131,6 +132,8 @@
     <Compile Include="Snippets\SFactory.cs" />
     <Compile Include="Snippets\Base\SnippetType.cs" />
     <Compile Include="Snippets\Template\SStack.cs" />
+    <Compile Include="Storages\AutoKeyItem.cs" />
+    <Compile Include="Storages\AutoKeyS.cs" />
     <Compile Include="Storages\LS.cs" />
     <Compile Include="Storages\LSObject.cs" />
     <Compile Include="Storages\TLS.cs" />

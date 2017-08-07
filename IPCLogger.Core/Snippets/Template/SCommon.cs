@@ -16,7 +16,7 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Constants
 
-        private static readonly int TimeMarkMod = 0;
+        private static readonly int _timeMarkMod = 0;
 
 #endregion
 
@@ -27,9 +27,9 @@ namespace IPCLogger.Core.Snippets.Template
         private static readonly LightLock _lockDateStrings = new LightLock();
 
 
-        private static volatile int _lastUTCMark;
-        private static readonly Dictionary<string, string> _dateUTCStrings = new Dictionary<string, string>();
-        private static readonly LightLock _lockDateUTCStrings = new LightLock();
+        private static volatile int _lastUtcMark;
+        private static readonly Dictionary<string, string> _dateUtcStrings = new Dictionary<string, string>();
+        private static readonly LightLock _lockDateUtcStrings = new LightLock();
 
         private static readonly string _userName = WindowsIdentity.GetCurrent().Name;
         private static readonly Process _process = System.Diagnostics.Process.GetCurrentProcess();
@@ -86,7 +86,7 @@ namespace IPCLogger.Core.Snippets.Template
                 {
                     string cachedDate;
                     int ticks = Environment.TickCount;
-                    int currentTimeMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
+                    int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks%_timeMarkMod;
                     if (currentTimeMark != _lastDateMark || !_dateStrings.TryGetValue(@params, out cachedDate))
                     {
                         _lockDateStrings.WaitOne();
@@ -108,21 +108,21 @@ namespace IPCLogger.Core.Snippets.Template
                 {
                     string cachedDate;
                     int ticks = Environment.TickCount;
-                    int currentTimeUTCMark = TimeMarkMod == 0 ? ticks : ticks - ticks%TimeMarkMod;
-                    if (currentTimeUTCMark != _lastUTCMark || !_dateUTCStrings.TryGetValue(@params, out cachedDate))
+                    int currentTimeUtcMark = _timeMarkMod == 0 ? ticks : ticks - ticks%_timeMarkMod;
+                    if (currentTimeUtcMark != _lastUtcMark || !_dateUtcStrings.TryGetValue(@params, out cachedDate))
                     {
-                        _lockDateUTCStrings.WaitOne();
+                        _lockDateUtcStrings.WaitOne();
                         cachedDate = DateTime.UtcNow.ToString(@params);
-                        if (currentTimeUTCMark == _lastUTCMark)
+                        if (currentTimeUtcMark == _lastUtcMark)
                         {
-                            _dateUTCStrings.Add(@params, cachedDate);
+                            _dateUtcStrings.Add(@params, cachedDate);
                         }
                         else
                         {
-                            _dateUTCStrings[@params] = cachedDate;
+                            _dateUtcStrings[@params] = cachedDate;
                         }
-                        _lastUTCMark = currentTimeUTCMark;
-                        _lockDateUTCStrings.Set();
+                        _lastUtcMark = currentTimeUtcMark;
+                        _lockDateUtcStrings.Set();
                     }
                     return cachedDate;
                 }

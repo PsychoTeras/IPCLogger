@@ -6,7 +6,7 @@ namespace IPCLogger.Core.Caches
 {
     internal static class TypeNamesCache
     {
-        private static readonly Dictionary<Type, string> TypeNames = new Dictionary<Type, string>();
+        private static readonly Dictionary<Type, string> _typeNames = new Dictionary<Type, string>();
 
         private static void BuildGenericTypeName(Type type, Type[] inGenericTypes, StringBuilder sbName)
         {
@@ -44,15 +44,15 @@ namespace IPCLogger.Core.Caches
             if (type == null) return string.Empty;
 
             string typeName;
-            if (!TypeNames.TryGetValue(type, out typeName))
+            if (!_typeNames.TryGetValue(type, out typeName))
             {
-                lock (TypeNames)
+                lock (_typeNames)
                 {
-                    if (!TypeNames.TryGetValue(type, out typeName))
+                    if (!_typeNames.TryGetValue(type, out typeName))
                     {
                         StringBuilder sbName = new StringBuilder();
                         BuildGenericTypeName(type, null, sbName);
-                        TypeNames.Add(type, typeName = sbName.ToString());
+                        _typeNames.Add(type, typeName = sbName.ToString());
                     }
                 }
             }

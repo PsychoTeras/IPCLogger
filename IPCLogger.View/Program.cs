@@ -11,7 +11,7 @@ namespace IPCLogger.View
 
 #region Private fields
 
-        static readonly Dictionary<string, string> StartupParams = 
+        static readonly Dictionary<string, string> _startupParams = 
             new Dictionary<string, string>();
 
 #endregion
@@ -22,8 +22,8 @@ namespace IPCLogger.View
         {
             get
             {
-                return StartupParams.ContainsKey("-name")
-                    ? StartupParams["-name"]
+                return _startupParams.ContainsKey("-name")
+                    ? _startupParams["-name"]
                     : null;
             }
         }
@@ -40,12 +40,12 @@ namespace IPCLogger.View
             {
                 if (args[i][0] == '-' && i + 1 < args.Length && args[i + 1][0] != '-')
                 {
-                    StartupParams.Add(args[i].ToLower(), args[++i]);
+                    _startupParams.Add(args[i].ToLower(), args[++i]);
                 }
                 else
                 {
                     string param = args[i].ToLower();
-                    StartupParams.Add(param, string.Empty);
+                    _startupParams.Add(param, string.Empty);
                     if (param[0] != '-')
                     {
                         ProcessName = param;

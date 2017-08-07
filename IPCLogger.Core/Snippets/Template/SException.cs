@@ -34,7 +34,7 @@ namespace IPCLogger.Core.Snippets.Template
         public override string Process(Type callerType, Enum eventType, string snippetName, 
             string text, string @params, PFactory pFactory)
         {
-            LSObject lsObj = LS.Peek();
+            LsObject lsObj = Ls.Peek();
             if (lsObj == null || lsObj.Exception == null) return null;
 
             switch (@params)
