@@ -170,6 +170,8 @@ Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s 
 
         public static string ByteArrayToString(byte[] bytes, int lineLength)
         {
+            if (bytes == null || bytes.Length == 0) return null;
+
             int curCharsCnt = 0;
             StringBuilder hex = new StringBuilder(bytes.Length * 2);
             foreach (byte b in bytes)
