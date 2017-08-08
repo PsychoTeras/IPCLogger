@@ -125,7 +125,7 @@
     <Compile Include="Snippets\Base\SnippetParams.cs" />
     <Compile Include="Snippets\Template\SException.cs" />
     <Compile Include="Common\HRTimer.cs" />
-    <Compile Include="Snippets\SnippetsCache.cs" />
+    <Compile Include="Caches\SnippetsCache.cs" />
     <Compile Include="Snippets\Snippet\SSnippet.cs" />
     <Compile Include="Snippets\Storage\SStorage.cs" />
     <Compile Include="Snippets\Template\SCommon.cs" />

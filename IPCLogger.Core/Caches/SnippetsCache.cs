@@ -3,7 +3,7 @@ using System.Text;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets.Base;
 
-namespace IPCLogger.Core.Snippets
+namespace IPCLogger.Core.Caches
 {
     internal sealed class SnippetsCache
     {

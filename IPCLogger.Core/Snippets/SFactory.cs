@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using IPCLogger.Core.Caches;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Patterns.Base;
 using IPCLogger.Core.Snippets.Base;
@@ -262,8 +263,6 @@ namespace IPCLogger.Core.Snippets
 #endregion
 
 #region Public methods
-
-        public static void Setup() { }
 
         public static string Process(string pattern, PFactory pFactory)
         {
