@@ -216,9 +216,15 @@ namespace IPCLogger.Core.Snippets
                 {
                     SnippetParams sParams = SnippetParams.Parse(record.Params);
                     int init;
-                    int.TryParse(sParams.GetValue("init", string.Empty), out init);
+                    if (!int.TryParse(sParams.GetValue("init", string.Empty), out init))
+                    {
+                        init = 1;
+                    }
                     int increment;
-                    int.TryParse(sParams.GetValue("increment", string.Empty), out increment);
+                    if (!int.TryParse(sParams.GetValue("increment", string.Empty), out increment))
+                    {
+                        increment = 1;
+                    }
                     string format = sParams.GetValue<string>("format", null);
                     if (string.IsNullOrWhiteSpace(format))
                     {
