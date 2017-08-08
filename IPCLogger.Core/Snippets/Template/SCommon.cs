@@ -31,8 +31,14 @@ namespace IPCLogger.Core.Snippets.Template
         private static readonly Dictionary<string, string> _dateUtcStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateUtcStrings = new LightLock();
 
+        private static readonly string _machineName = Environment.MachineName;
         private static readonly string _userName = WindowsIdentity.GetCurrent().Name;
+
         private static readonly Process _process = System.Diagnostics.Process.GetCurrentProcess();
+        private static readonly string _processName = _process.ProcessName;
+        private static readonly string _processId = _process.Id.ToString();
+        private static readonly string _processInfo = string.Format("{0} [{1}]", _processName, _processId);
+
         private static string _appName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
         private static string _appDomain = AppDomain.CurrentDomain.FriendlyName;
 
@@ -60,6 +66,7 @@ namespace IPCLogger.Core.Snippets.Template
                     ,"event"
                     ,"guid"
                     ,"process"
+                    ,"machine"
                 };
             }
         }
@@ -156,11 +163,19 @@ namespace IPCLogger.Core.Snippets.Template
                     switch (@params)
                     {
                         case "name":
-                            return _process.ProcessName;
+                            return _processName;
                         case "id":
-                            return _process.Id.ToString();
+                            return _processId;
                         default:
-                            return string.Format("{0} [{1}]", _process.ProcessName, _process.Id);
+                            return _processInfo;
+                    }
+                case "machine":
+                    switch (@params)
+                    {
+                        case "name":
+                            return _machineName;
+                        default:
+                            return _machineName;
                     }
                 case "event":
                     if (eventType == null) return null;
