@@ -28,6 +28,13 @@ namespace IPCLogger.Core.Loggers.Base
         void WriteLine(Enum eventType, Exception ex);
         void WriteLine(Enum eventType, Exception ex, string text);
 
+        void WriteData(byte[] data);
+        void WriteData(byte[] data, string text);
+        void WriteData(Enum eventType, byte[] data);
+        void WriteData(Enum eventType, byte[] data, string text);
+        void WriteData(Enum eventType, Exception ex, byte[] data);
+        void WriteData(Enum eventType, Exception ex, byte[] data, string text);
+
         bool Suspend();
         bool Resume();
         void Flush();
@@ -65,8 +72,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Class methods
 
-        protected internal abstract void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine, bool immediateFlush);
+        protected internal abstract void Write(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine, bool immediateFlush);
 
         internal void SetPatternsFactory(PFactory pFactory)
         {
@@ -102,6 +109,12 @@ namespace IPCLogger.Core.Loggers.Base
         public abstract void Write(Enum eventType, Exception ex, string text);
         public abstract void WriteLine(Enum eventType, Exception ex);
         public abstract void WriteLine(Enum eventType, Exception ex, string text);
+        public abstract void WriteData(byte[] data);
+        public abstract void WriteData(byte[] data, string text);
+        public abstract void WriteData(Enum eventType, byte[] data);
+        public abstract void WriteData(Enum eventType, byte[] data, string text);
+        public abstract void WriteData(Enum eventType, Exception ex, byte[] data);
+        public abstract void WriteData(Enum eventType, Exception ex, byte[] data, string text);
         public abstract bool Suspend();
         public abstract bool Resume();
         public abstract void Flush();
@@ -184,7 +197,7 @@ namespace IPCLogger.Core.Loggers.Base
             Settings = (TSettings) Activator.CreateInstance(typeof (TSettings), GetType(), new Action(OnSetupSettings));
         }
 
-        private bool ProcessText(Type callerType, Enum eventType, int eventTypeId, ref string text,
+        private bool ProcessText(Type callerType, Enum eventType, int eventTypeId, byte[] data, ref string text,
             out string eventName, out bool immediateFlush)
         {
             immediateFlush = false;
@@ -201,7 +214,7 @@ namespace IPCLogger.Core.Loggers.Base
                 if (pattern != null)
                 {
                     immediateFlush = pattern.ImmediateFlush;
-                    text = SFactory.Process(callerType, eventType, text, pattern, Patterns);
+                    text = SFactory.Process(callerType, eventType, data, text, pattern, Patterns);
                 }
             }
             else
@@ -212,13 +225,13 @@ namespace IPCLogger.Core.Loggers.Base
             return true;
         }
 
-        private void WritePlain(string text, bool writeLine)
+        private void WritePlain(byte[] data, string text, bool writeLine)
         {
             try
             {
                 PreInitialize?.Invoke();
 
-                Write(null, null, null, text, writeLine, false);
+                Write(null, null, null, data, text, writeLine, false);
             }
             catch (Exception ex)
             {
@@ -230,7 +243,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        private void WriteEvent(Enum eventType, string text, bool writeLine)
+        private void WriteEvent(Enum eventType, byte[] data, string text, bool writeLine)
         {
             try
             {
@@ -240,9 +253,9 @@ namespace IPCLogger.Core.Loggers.Base
                 Type callerType = CallerTypesCache.GetCallerType();
                 string eventName;
                 bool immediateFlush;
-                if (ProcessText(callerType, eventType, eventTypeId, ref text, out eventName, out immediateFlush))
+                if (ProcessText(callerType, eventType, eventTypeId, data, ref text, out eventName, out immediateFlush))
                 {
-                    Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
+                    Write(callerType, eventType, eventName, data, text, writeLine, immediateFlush);
                 }
             }
             catch (Exception ex)
@@ -257,14 +270,14 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        private void WriteException(Enum eventType, Exception ex, string text, bool writeLine)
+        private void WriteException(Enum eventType, Exception ex, byte[] data, string text, bool writeLine)
         {
             if (ex == null) return;
 
             using (LsObject lsObj = Ls.Push())
             {
                 lsObj.Exception = ex;
-                WriteEvent(eventType, text, writeLine);
+                WriteEvent(eventType, data, text, writeLine);
             }
         }
 
@@ -274,52 +287,82 @@ namespace IPCLogger.Core.Loggers.Base
 
         public override void Write(string text)
         {
-            WritePlain(text, false);
+            WritePlain(null, text, false);
         }
 
         public override void WriteLine()
         {
-            WritePlain(null, true);
+            WritePlain(null, null, true);
         }
 
         public override void WriteLine(string text)
         {
-            WritePlain(text, true);
+            WritePlain(null, text, true);
         }
 
         public override void Write(Enum eventType, string text)
         {
-            WriteEvent(eventType, text, false);
+            WriteEvent(eventType, null, text, false);
         }
 
         public override void WriteLine(Enum eventType)
         {
-            WriteEvent(eventType, null, true);
+            WriteEvent(eventType, null, null, true);
         }
 
         public override void WriteLine(Enum eventType, string text)
         {
-            WriteEvent(eventType, text, true);
+            WriteEvent(eventType, null, text, true);
         }
 
         public override void Write(Enum eventType, Exception ex)
         {
-            WriteException(eventType, ex, null, false);
+            WriteException(eventType, ex, null, null, false);
         }
 
         public override void Write(Enum eventType, Exception ex, string text)
         {
-            WriteException(eventType, ex, text, false);
+            WriteException(eventType, ex, null, text, false);
         }
 
         public override void WriteLine(Enum eventType, Exception ex)
         {
-            WriteException(eventType, ex, null, true);
+            WriteException(eventType, ex, null, null, true);
         }
 
         public override void WriteLine(Enum eventType, Exception ex, string text)
         {
-            WriteException(eventType, ex, text, true);
+            WriteException(eventType, ex, null, text, true);
+        }
+
+        public override void WriteData(byte[] data)
+        {
+            WritePlain(data, null, false);
+        }
+
+        public override void WriteData(byte[] data, string text)
+        {
+            WritePlain(data, null, false);
+        }
+
+        public override void WriteData(Enum eventType, byte[] data)
+        {
+            WriteEvent(eventType, data, null, false);
+        }
+
+        public override void WriteData(Enum eventType, byte[] data, string text)
+        {
+            WriteEvent(eventType, data, text, false);
+        }
+
+        public override void WriteData(Enum eventType, Exception ex, byte[] data)
+        {
+            WriteException(eventType, ex, data, null, true);
+        }
+
+        public override void WriteData(Enum eventType, Exception ex, byte[] data, string text)
+        {
+            WriteException(eventType, ex, data, text, true);
         }
 
         public override bool Suspend()

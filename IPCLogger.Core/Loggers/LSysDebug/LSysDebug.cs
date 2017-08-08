@@ -28,8 +28,8 @@ namespace IPCLogger.Core.Loggers.LSysDebug
 #region ILogger
 
         [SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
-        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine, bool immediateFlush)
+        protected internal override void Write(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine, bool immediateFlush)
         {
             if (writeLine) text += Constants.NewLine;
             OutputDebugString(text);

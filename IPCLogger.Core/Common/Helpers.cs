@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using IPCLogger.Core.Loggers.Base;
 
@@ -75,7 +76,7 @@ namespace IPCLogger.Core.Common
             }
 
             int size;
-            if (!Int32.TryParse(sSize, out size))
+            if (!int.TryParse(sSize, out size))
             {
                 string msg = string.Format("Value '{0}' is invalid", sSize);
                 throw new Exception(msg);
@@ -127,7 +128,7 @@ namespace IPCLogger.Core.Common
             {
                 int count;
                 string sCount = match.Groups["COUNT"].Value;
-                if (!Int32.TryParse(sCount, out count))
+                if (!int.TryParse(sCount, out count))
                 {
                     string msg = string.Format("Value '{0}' is invalid", sCount);
                     throw new Exception(msg);
@@ -165,6 +166,22 @@ Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s 
             }
 
             return new TimeSpan(days, hours, minutes, seconds);
+        }
+
+        public static string ByteArrayToString(byte[] bytes, int lineLength)
+        {
+            int curCharsCnt = 0;
+            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+            foreach (byte b in bytes)
+            {
+                hex.AppendFormat("{0:x2}", b);
+                if (++curCharsCnt >= lineLength)
+                {
+                    curCharsCnt = 0;
+                    hex.AppendLine();
+                }
+            }
+            return hex.ToString();
         }
     }
 }

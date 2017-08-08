@@ -32,16 +32,16 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        protected abstract void WriteSimple(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine);
+        protected abstract void WriteSimple(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine);
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
-            string text, bool writeLine, bool immediateFlush)
+            byte[] data, string text, bool writeLine, bool immediateFlush)
         {
             try
             {
                 if (!Initialized) return;
-                WriteSimple(callerType, eventType, eventName, text, writeLine);
+                WriteSimple(callerType, eventType, eventName, data, text, writeLine);
                 if (immediateFlush)
                 {
                     Flush();

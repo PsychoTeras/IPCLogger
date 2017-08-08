@@ -27,8 +27,8 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
 #region ILogger
 
-        protected override void WriteSimple(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+        protected override void WriteSimple(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine)
         {
             int eventId;
             if (_eventId.HasValue)
@@ -59,7 +59,7 @@ namespace IPCLogger.Core.Loggers.LEventLog
             }
 
             EventLogEntryType logType = Settings.GetLogEntryType(eventName);
-            _eventLog.WriteEntry(text, logType, eventId, category);
+            _eventLog.WriteEntry(text, logType, eventId, category, data);
         }
 
         protected override bool InitializeSimple()

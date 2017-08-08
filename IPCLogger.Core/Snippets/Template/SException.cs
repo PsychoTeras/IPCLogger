@@ -31,8 +31,8 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Class methods
 
-        public override string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName,
+            byte[] data, string text, string @params, PFactory pFactory)
         {
             LsObject lsObj = Ls.Peek();
             if (lsObj == null || lsObj.Exception == null) return null;

@@ -141,17 +141,17 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
-        protected abstract void WriteQueue(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine);
+        protected abstract void WriteQueue(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine);
 
-        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine, bool immediateFlush)
+        protected internal override void Write(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine, bool immediateFlush)
         {
             _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (!Initialized || _suspended) return;
-                WriteQueue(callerType, eventType, eventName, text, writeLine);
+                WriteQueue(callerType, eventType, eventName, data, text, writeLine);
             }
             catch (Exception ex)
             {

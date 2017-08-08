@@ -134,8 +134,8 @@ namespace IPCLogger.Core.Snippets
             _regexParseString = new Regex(regexPattern.ToString(), regexOpt);
         }
 
-        private static string ProcessToCache(Type callerType, Enum eventType, string text,  string pattern, 
-            PFactory pFactory, SnippetsCache record)
+        private static string ProcessToCache(Type callerType, Enum eventType, byte[] data, string text, 
+            string pattern, PFactory pFactory, SnippetsCache record)
         {
             if (string.IsNullOrEmpty(pattern))
             {
@@ -189,7 +189,7 @@ namespace IPCLogger.Core.Snippets
                         ProcessSnippetsCacheRecord(record);
                     }
 
-                    string value = snippet.Process(callerType, eventType, name, text, @params, pFactory);
+                    string value = snippet.Process(callerType, eventType, name, data, text, @params, pFactory);
                     if (!string.IsNullOrEmpty(value))
                     {
                         result.Append(value);
@@ -236,7 +236,7 @@ namespace IPCLogger.Core.Snippets
             }
         }
 
-        private static string Process(Type callerType, Enum eventType, string text, string pattern, 
+        private static string Process(Type callerType, Enum eventType, byte[] data, string text, string pattern, 
             int patternId, PFactory pFactory)
         {
             SnippetsCache record = null;
@@ -247,7 +247,7 @@ namespace IPCLogger.Core.Snippets
                     if (!_snippetsCache.TryGetValue(patternId, out record))
                     {
                         record = new SnippetsCache();
-                        string result = ProcessToCache(callerType, eventType, text, pattern, pFactory, record);
+                        string result = ProcessToCache(callerType, eventType, data, text, pattern, pFactory, record);
                         _snippetsCache.Add(patternId, record);
                         return result;
                     }
@@ -255,8 +255,8 @@ namespace IPCLogger.Core.Snippets
             }
             
             return record == null
-                ? ProcessToCache(callerType, eventType, text, pattern, pFactory, null)
-                : record.Process(callerType, eventType, text, pFactory);
+                ? ProcessToCache(callerType, eventType, data, text, pattern, pFactory, null)
+                : record.Process(callerType, eventType, data, text, pFactory);
         }
 
 #endregion
@@ -267,17 +267,19 @@ namespace IPCLogger.Core.Snippets
 
         public static string Process(string pattern, PFactory pFactory)
         {
-            return Process(null, null, null, pattern, -1, null);
+            return Process(null, null, null, null, pattern, -1, null);
         }
 
-        public static string Process(Type callerType, Enum eventType, string text, string pattern, PFactory pFactory)
+        public static string Process(Type callerType, Enum eventType, byte[] data, string text, 
+            string pattern, PFactory pFactory)
         {
-            return Process(callerType, eventType, text, pattern, -1, pFactory);
+            return Process(callerType, eventType, data, text, pattern, -1, pFactory);
         }
 
-        internal static string Process(Type callerType, Enum eventType, string text, Pattern pattern, PFactory pFactory)
+        internal static string Process(Type callerType, Enum eventType, byte[] data, string text, 
+            Pattern pattern, PFactory pFactory)
         {
-            return Process(callerType, eventType, text, pattern.Content, pattern.Id, pFactory);
+            return Process(callerType, eventType, data, text, pattern.Content, pattern.Id, pFactory);
         }
 
 #endregion

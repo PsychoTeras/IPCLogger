@@ -25,8 +25,8 @@ namespace IPCLogger.Core.Snippets.AutoKey
 
 #region Class methods
 
-        public override string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName,
+            byte[] data, string text, string @params, PFactory pFactory)
         {
             return AutoKeyS.Pop(snippetName);
         }

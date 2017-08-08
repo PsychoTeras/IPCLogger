@@ -17,8 +17,8 @@ namespace IPCLogger.Core.Loggers.LVoid
 
 #region ILogger
 
-        protected internal override void Write(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine, bool immediateFlush) { }
+        protected internal override void Write(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine, bool immediateFlush) { }
 
         public override void Initialize() { }
 

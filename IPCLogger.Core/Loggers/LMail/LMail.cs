@@ -56,8 +56,8 @@ namespace IPCLogger.Core.Loggers.LMail
             return true;
         }
 
-        protected override void WriteQueue(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+        protected override void WriteQueue(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine)
         {
             _pendingMails.Add(new MailData(callerType, eventType, text));
         }

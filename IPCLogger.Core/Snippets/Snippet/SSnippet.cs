@@ -25,12 +25,12 @@ namespace IPCLogger.Core.Snippets.Snippet
 
 #region Class methods
 
-        public override string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName,
+            byte[] data, string text, string @params, PFactory pFactory)
         {
             Pattern pattern;
             return pFactory != null && (pattern = pFactory.Get(callerType, snippetName)) != null
-                ? SFactory.Process(callerType, eventType, text, pattern, pFactory)
+                ? SFactory.Process(callerType, eventType, data, text, pattern, pFactory)
                 : null;
         }
 

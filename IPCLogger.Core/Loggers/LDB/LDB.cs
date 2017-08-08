@@ -57,8 +57,8 @@ namespace IPCLogger.Core.Loggers.LDB
             return false;
         }
 
-        protected override void WriteQueue(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+        protected override void WriteQueue(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine)
         {
             DataRow row = _dataTable.NewRow();
             foreach (string columnName in Settings.Params)
@@ -72,7 +72,7 @@ namespace IPCLogger.Core.Loggers.LDB
                 }
                 else
                 {
-                    value = SFactory.Process(callerType, eventType, text, pattern, Patterns);
+                    value = SFactory.Process(callerType, eventType, data, text, pattern, Patterns);
                     value = value == null ? DBNull.Value : Convert.ChangeType(value, ci.Type);
                 }
                 row[columnName] = value;

@@ -80,7 +80,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 #region ILogger
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
-            string text, bool writeLine, bool immediateFlush)
+            byte[] data, string text, bool writeLine, bool immediateFlush)
         {
             if (!_initialized || _suspended) return;
 
@@ -93,7 +93,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 {
                     if (logger.CheckApplicableEvent(eventName))
                     {
-                        logger.Write(callerType, eventType, eventName, text, writeLine, immediateFlush);
+                        logger.Write(callerType, eventType, eventName, data, text, writeLine, immediateFlush);
                     }
                 }
             }

@@ -47,6 +47,7 @@ namespace IPCLogger.Core.Snippets.Template
                 return new[]
                 {
                      "text"
+                    ,"data"
                     ,"newline"
                     ,"date"
                     ,"utcdate"
@@ -73,13 +74,17 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Class methods
 
-        public override string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName,
+            byte[] data, string text, string @params, PFactory pFactory)
         {
             switch (snippetName)
             {
                 case "text":
                     return text;
+                case "data":
+                    SnippetParams sParams = ParseSnippetParams(@params);
+                    int lineLength = sParams.GetValue("lineLength", int.MaxValue);
+                    return Helpers.ByteArrayToString(data, lineLength);
                 case "newline":
                     return Constants.NewLine;
                 case "date":

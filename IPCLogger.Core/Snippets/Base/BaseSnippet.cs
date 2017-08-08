@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using IPCLogger.Core.Caches;
 using IPCLogger.Core.Patterns;
 
 namespace IPCLogger.Core.Snippets.Base
@@ -8,6 +9,9 @@ namespace IPCLogger.Core.Snippets.Base
     {
 
 #region Static fields
+
+        private static readonly DictionaryCache<string, SnippetParams> _cacheParams = 
+            new DictionaryCache<string, SnippetParams>();
 
         internal static readonly Dictionary<SnippetType, char> SnippetMarks = 
             new Dictionary<SnippetType, char>
@@ -60,8 +64,13 @@ namespace IPCLogger.Core.Snippets.Base
 
 #region Class methods
 
+        protected SnippetParams ParseSnippetParams(string @params)
+        {
+            return _cacheParams.Get(@params, () => SnippetParams.Parse(@params));
+        }
+
         public abstract string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory);
+            byte[] data, string text, string @params, PFactory pFactory);
 
 #endregion
 

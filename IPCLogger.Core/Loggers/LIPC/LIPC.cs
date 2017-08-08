@@ -29,10 +29,10 @@ namespace IPCLogger.Core.Loggers.LIPC
 #region ILogger
 
         protected override void WriteConcurrent(Type callerType, Enum eventType, string eventName,
-            string text, bool writeLine)
+            byte[] data, string text, bool writeLine)
         {
             if (writeLine) text += Constants.NewLine;
-            _eventItem.Setup(eventType != null ? (int)(object)eventType : 0, text);
+            _eventItem.Setup(eventType != null ? (int)(object)eventType : 0, data, text);
             _ipcEventRecords.Write(ref _eventItem);
         }
 

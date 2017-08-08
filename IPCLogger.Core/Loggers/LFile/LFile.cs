@@ -41,8 +41,8 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region ILogger
 
-        protected override void WriteConcurrent(Type callerType, Enum eventType, string eventName, 
-            string text, bool writeLine)
+        protected override void WriteConcurrent(Type callerType, Enum eventType, string eventName,
+            byte[] data, string text, bool writeLine)
         {
             if (writeLine) text += Constants.NewLine;
             PrepareLogFileStream(false);

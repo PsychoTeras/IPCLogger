@@ -55,7 +55,7 @@ namespace IPCLogger.Core.Snippets.Template
         {
             StringBuilder result = new StringBuilder();
 
-            SnippetParams sParams = SnippetParams.Parse(@params);
+            SnippetParams sParams = ParseSnippetParams(@params);
             int level = sParams.GetValue("level", DEF_STACK_LEVEL);
             bool detailed = sParams.HasValue("detailed", DEF_STACK_DETAILED);
 
@@ -105,8 +105,8 @@ namespace IPCLogger.Core.Snippets.Template
             return result.ToString().TrimEnd();
         }
 
-        public override string Process(Type callerType, Enum eventType, string snippetName, 
-            string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName,
+            byte[] data, string text, string @params, PFactory pFactory)
         {
             StackFrame stackFrame;
             switch (snippetName)

@@ -31,17 +31,7 @@ namespace IPCLogger.Core.Proto
 
 #region Class methods
 
-        public void Setup(int type, string message)
-        {
-            unchecked
-            {
-                Id = Interlocked.Increment(ref _idShift);
-            }
-            Type = type;
-            Message = message;
-        }
-
-        public void Setup(int type, byte[] data)
+        public void Setup(int type, byte[] data, string message)
         {
             unchecked
             {
@@ -49,6 +39,7 @@ namespace IPCLogger.Core.Proto
             }
             Type = type;
             Data = data;
+            Message = message;
         }
 
         public int SizeOf

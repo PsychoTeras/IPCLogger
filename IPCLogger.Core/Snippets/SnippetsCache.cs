@@ -21,7 +21,7 @@ namespace IPCLogger.Core.Snippets
             return _nextItem = new SnippetsCache();
         }
 
-        public string Process(Type callerType, Enum eventType, string text, PFactory pFactory)
+        public string Process(Type callerType, Enum eventType, byte[] data, string text, PFactory pFactory)
         {
             StringBuilder result = new StringBuilder(_sbLastCapacity);
             SnippetsCache record = this;
@@ -33,7 +33,8 @@ namespace IPCLogger.Core.Snippets
                 }
                 if (record.Snippet != null)
                 {
-                    string value = record.Snippet.Process(callerType, eventType, record.Name, text, record.Params, pFactory);
+                    string value = record.Snippet.Process(callerType, eventType, record.Name, data, text, 
+                        record.Params, pFactory);
                     if (!string.IsNullOrEmpty(value))
                     {
                         result.Append(value);
