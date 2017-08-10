@@ -11,8 +11,8 @@ namespace IPCLogger.Core.Storages
 
 #region Private fields
 
-        private static readonly DictionaryCache<object, Delegate> _cacheClosureMembers =
-            new DictionaryCache<object, Delegate>();
+        private static readonly DictionaryCache<object, FuncObject> _cacheClosureMembers =
+            new DictionaryCache<object, FuncObject>();
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace IPCLogger.Core.Storages
 
 #region Class methods
 
-        private static Expression NullSafeEvalWrapper(Expression expr, Type type)
+        private static Expression NullSafeWrapper(Expression expr, Type type)
         {
             Expression obj;
             Expression safe = expr;
@@ -112,6 +112,13 @@ namespace IPCLogger.Core.Storages
             return true;
         }
 
+        private static string GetMemberName(Expression body)
+        {
+            string name = body.ToString();
+            int idxOfName = name.IndexOf(").");
+            return idxOfName == -1 ? name : name.Substring(idxOfName + 2);
+        }
+
         public void SetClosure<T>(Expression<Func<T>> memberExpression)
         {
             SetClosure(null, memberExpression);
@@ -136,24 +143,24 @@ namespace IPCLogger.Core.Storages
                 case ExpressionType.MemberAccess:
                 {
                     MemberExpression body = (MemberExpression) memberExpression.Body;
-                    string name = key ?? body.Member.Name;
+                    string name = key ?? GetMemberName(body);
                     this[name] = _cacheClosureMembers.Get(body.Member, () =>
                     {
                         Type bodyType = body.Type;
                         Type delegateType = typeof (Func<>).MakeGenericType(bodyType);
-                        return Expression.Lambda(delegateType, NullSafeEvalWrapper(body, bodyType)).Compile();
+                        return new FuncObject(Expression.Lambda(delegateType, NullSafeWrapper(body, bodyType)).Compile(), name, bodyType);
                     });
                     break;
                 }
                 case ExpressionType.Call:
                 {
                     MethodCallExpression body = (MethodCallExpression) memberExpression.Body;
-                    string name = key ?? body.Method.Name;
+                    string name = key ?? GetMemberName(body);
                     this[name] = _cacheClosureMembers.Get(body.Method, () =>
                     {
                         Type bodyType = body.Type;
                         Type delegateType = typeof (Func<>).MakeGenericType(bodyType);
-                        return Expression.Lambda(delegateType, NullSafeEvalWrapper(body, bodyType)).Compile();
+                        return new FuncObject(Expression.Lambda(delegateType, NullSafeWrapper(body, bodyType)).Compile(), name, bodyType);
                     });
                     break;
                 }

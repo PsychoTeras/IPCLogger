@@ -134,6 +134,7 @@
     <Compile Include="Snippets\Template\SStack.cs" />
     <Compile Include="Storages\AutoKeyItem.cs" />
     <Compile Include="Storages\AutoKeyS.cs" />
+    <Compile Include="Storages\FuncObject.cs" />
     <Compile Include="Storages\LS.cs" />
     <Compile Include="Storages\LSObject.cs" />
     <Compile Include="Storages\TLS.cs" />

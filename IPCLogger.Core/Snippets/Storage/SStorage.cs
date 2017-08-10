@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using IPCLogger.Core.Caches;
@@ -38,32 +39,32 @@ namespace IPCLogger.Core.Snippets.Storage
 
         private bool InvokeValueAsDelegate(Type type, ref string name, ref object val)
         {
-            if (type.BaseType == typeof (MulticastDelegate))
+            if (type == typeof (FuncObject))
             {
-                MulticastDelegate d = (MulticastDelegate) val;
+                FuncObject funcObj = (FuncObject) val;
+                name = TypeNamesCache.GetTypeName(funcObj.ObjType);
+                MulticastDelegate d = (MulticastDelegate) funcObj.Delegate;
                 try
                 {
                     Closure closure = (Closure) d.Target;
                     if (closure.Constants.Length == 1)
                     {
                         object oVal = closure.Constants[0];
-                        val = oVal.GetType().GetFields()[0].GetValue(oVal);
-                    }
-                    else
-                    {
-                        val = d.DynamicInvoke();
+                        FieldInfo field = oVal.GetType().GetField(funcObj.ObjName);
+                        if (field != null)
+                        {
+                            val = field.GetValue(oVal);
+                            return true;
+                        }
                     }
 
-                    if (val != null)
-                    {
-                        name = TypeNamesCache.GetTypeName(val.GetType());
-                    }
+                    val = d.DynamicInvoke();
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     val = string.Format("{0} invocation error: {1}", d.Method.Name, ex);
                 }
-                return true;
             }
             return false;
         }
@@ -81,13 +82,14 @@ namespace IPCLogger.Core.Snippets.Storage
             ICollection iColl = unfold ? val as ICollection : null;
             if (detailed)
             {
-                if (type == null || !InvokeValueAsDelegate(type, ref name, ref val))
+                if (type != null && !InvokeValueAsDelegate(type, ref name, ref val))
                 {
                     name = TypeNamesCache.GetTypeName(type);
                 }
+                name = name ?? DefUnknownTypeString;
                 if (iColl == null)
                 {
-                    sb.AppendFormat("[{0}] {1}", name, val ?? defValue);
+                    sb.AppendFormat("[{0}]: {1}", name, val ?? defValue);
                 }
                 else
                 {
@@ -144,7 +146,10 @@ namespace IPCLogger.Core.Snippets.Storage
                 int cnt = val.Keys.Count;
                 foreach (object key in val.Keys)
                 {
-                    sb.AppendFormat("{0}: ", key);
+                    if (detailed)
+                    {
+                        sb.AppendFormat("{0} ", key);
+                    }
                     ObjectToString(val[key], sb, unfold, detailed, null, defValue);
                     if (++idx < cnt)
                     {
@@ -155,6 +160,10 @@ namespace IPCLogger.Core.Snippets.Storage
             else
             {
                 object val = TLS.Get(snippetName);
+                if (detailed)
+                {
+                    sb.AppendFormat("{0} ", snippetName);
+                }
                 ObjectToString(val, sb, unfold, detailed, null, defValue);
             }
             return sb.Length == 0 ? null : sb.ToString();
