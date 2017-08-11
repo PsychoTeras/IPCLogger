@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Linq;
 using System.Text;
 using IPCLogger.Core.Caches;
 using IPCLogger.Core.Common;
@@ -46,18 +45,6 @@ namespace IPCLogger.Core.Snippets.Storage
                 MulticastDelegate d = (MulticastDelegate) funcObj.Delegate;
                 try
                 {
-                    Closure closure = (Closure) d.Target;
-                    if (closure.Constants.Length == 1)
-                    {
-                        object oVal = closure.Constants[0];
-                        FieldInfo field = oVal.GetType().GetField(funcObj.ObjName);
-                        if (field != null)
-                        {
-                            val = field.GetValue(oVal);
-                            return true;
-                        }
-                    }
-
                     val = d.DynamicInvoke();
                     return true;
                 }
@@ -135,6 +122,7 @@ namespace IPCLogger.Core.Snippets.Storage
             SnippetParams sParams = ParseSnippetParams(@params);
             bool unfold = sParams.HasValue("unfold");
             bool detailed = sParams.HasValue("detailed");
+            bool ordered = sParams.HasValue("ordered");
             string defValue = detailed ? DefNullValueString : null;
 
             if (snippetName == Constants.ApplicableForAllMark)
@@ -144,7 +132,10 @@ namespace IPCLogger.Core.Snippets.Storage
 
                 int idx = 0;
                 int cnt = val.Keys.Count;
-                foreach (object key in val.Keys)
+                IEnumerable keys = ordered
+                    ? (IEnumerable) val.Keys.OfType<object>().OrderBy(k => k).AsEnumerable()
+                    : val.Keys;
+                foreach (object key in keys)
                 {
                     if (detailed)
                     {

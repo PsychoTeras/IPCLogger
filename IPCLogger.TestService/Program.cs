@@ -154,19 +154,35 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
+            using (TLSObject tlsObj = TLS.Push())
+            {
+                tlsObj.CaptureObject(new X {Y = "1", Z = 2}, false);
+                _timer = HRTimer.CreateAndStart();
+                for (int i = 0; i < 500000; i++)
+                {
+                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+                }
+                Console.WriteLine(_timer.StopWatch());
+            }
+
+            Console.ReadKey();
+            Process.GetCurrentProcess().Kill();
+            return;
+
             //X x = new X();
             //x.Y = "12";
-
-            //string value = "data";
             //using (TLSObject tlsObj = TLS.Push())
             //{
-            //    tlsObj.SetClosure(() => x.Y);
-            //    _timer = HRTimer.CreateAndStart();
-            //    for (int i = 0; i < 1000000; i++)
-            //    {
-            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string) null);
-            //    }
-            //    Console.WriteLine(_timer.StopWatch());
+            //    var obj = new ASCIIEncoding();
+
+            //    //_timer = HRTimer.CreateAndStart();
+            //    //for (int i = 0; i < 500000; i++)
+            //    //{
+            //    //    tlsObj.CaptureObject(obj);
+            //    //}
+            //    //Console.WriteLine(_timer.StopWatch());
+            //    tlsObj.CaptureObject(obj);
+            //    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
             //}
 
             //Console.ReadKey();
@@ -215,5 +231,6 @@ namespace IPCLogger.TestService
     class X
     {
         public string Y;
+        public int Z { get; set; }
     }
 }
