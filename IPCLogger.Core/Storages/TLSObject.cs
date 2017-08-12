@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using IPCLogger.Core.Caches;
@@ -176,11 +177,13 @@ namespace IPCLogger.Core.Storages
             }
         }
 
-        private void CaptureObjectField<T>(T obj, bool useFullClassName, FieldInfo field)
+        private void CaptureObjectField<T>(TLSObject tlsObj, T obj, bool useFullClassName, FieldInfo field, HashSet<string> excludeNames)
         {
             string fieldName = field.Name;
+            if (excludeNames != null && excludeNames.Contains(fieldName)) return;
+
             string name = useFullClassName ? typeof(T).Name + "." + fieldName : fieldName;
-            this[name] = _cacheClosureMembers.Get(field, () =>
+            tlsObj[name] = _cacheClosureMembers.Get(field, () =>
             {
                 Type fieldType = field.FieldType;
                 MemberExpression body = field.IsStatic
@@ -191,11 +194,14 @@ namespace IPCLogger.Core.Storages
             });
         }
 
-        private void CaptureObjectProperty<T>(T obj, bool useFullClassName, PropertyInfo property, bool isStatic)
+        private void CaptureObjectProperty<T>(TLSObject tlsObj, T obj, bool useFullClassName, PropertyInfo property, bool isStatic,
+            HashSet<string> excludeNames)
         {
             string propertyName = property.Name;
+            if (excludeNames != null && excludeNames.Contains(propertyName)) return;
+
             string name = useFullClassName ? typeof(T).Name + "." + propertyName : propertyName;
-            this[name] = _cacheClosureMembers.Get(property, () =>
+            tlsObj[name] = _cacheClosureMembers.Get(property, () =>
             {
                 Type propertyType = property.PropertyType;
                 MemberExpression body = isStatic
@@ -206,18 +212,29 @@ namespace IPCLogger.Core.Storages
             });
         }
 
-        public void CaptureObject<T>(T obj, bool useFullClassName = true,
+        public void CaptureObject<T>(string key, T obj, bool useFullClassName = true,
             BindingFlags? bfFields = BindingFlags.GetField | BF_DEFAULT, 
-            BindingFlags? bfProperties = BindingFlags.GetProperty | BF_DEFAULT)
+            BindingFlags? bfProperties = BindingFlags.GetProperty | BF_DEFAULT,
+            HashSet<string> excludeNames = null)
         {
             if (obj == null) return;
+
+            if (string.IsNullOrEmpty(key))
+            {
+                key = typeof (T).Name + "_" + obj.GetHashCode();
+            }
+
+            TLSObject tlsObj = new TLSObject();
 
             if (bfFields != null)
             {
                 FieldInfo[] fields = typeof(T).GetFields(bfFields.Value);
                 foreach (FieldInfo field in fields)
                 {
-                    CaptureObjectField(obj, useFullClassName, field);
+                    if (field.Name[0] != '<')
+                    {
+                        CaptureObjectField(tlsObj, obj, useFullClassName, field, excludeNames);
+                    }
                 }
             }
 
@@ -229,9 +246,14 @@ namespace IPCLogger.Core.Storages
                     MethodInfo[] propAccessors = property.GetAccessors(true);
                     if (propAccessors.Length > 0)
                     {
-                        CaptureObjectProperty(obj, useFullClassName, property, propAccessors[0].IsStatic);
+                        CaptureObjectProperty(tlsObj, obj, useFullClassName, property, propAccessors[0].IsStatic, excludeNames);
                     }
                 }
+            }
+
+            if (tlsObj.Count > 0)
+            {
+                this[key] = tlsObj;
             }
         }
 

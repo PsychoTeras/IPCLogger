@@ -65,6 +65,16 @@ namespace IPCLogger.Core.Snippets.Storage
             }
 
             string name = null;
+            if (val is DictionaryEntry)
+            {
+                DictionaryEntry de = (DictionaryEntry) val;
+                if (detailed)
+                {
+                    sb.AppendFormat("{0} ", de.Key);
+                }
+                val = de.Value;
+            }
+
             Type type = val != null ? val.GetType() : null;
             ICollection iColl = unfold ? val as ICollection : null;
             if (detailed)
@@ -76,9 +86,9 @@ namespace IPCLogger.Core.Snippets.Storage
                 name = name ?? DefUnknownTypeString;
                 if (iColl == null)
                 {
-                    sb.AppendFormat("[{0}]: {1}", name, val ?? defValue);
+                    sb.AppendFormat("[{0}]: '{1}'", name, val ?? defValue);
                 }
-                else
+                else if (!(iColl is TLSObject))
                 {
                     if (prefix == null)
                     {
