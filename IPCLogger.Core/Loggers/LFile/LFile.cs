@@ -59,6 +59,10 @@ namespace IPCLogger.Core.Loggers.LFile
             _logRollingDateTime = null;
             _lastFilePathCheckTime = DateTime.Now;
             _lastFilePathCheckHour = _lastFilePathCheckTime.Hour;
+            if (Settings.ConnectNetShare)
+            {
+                NetworkConnection.ConnectShare(Settings.LogDir, Settings.NetUser, Settings.NetPassword);
+            }
             PrepareLogFileStream(false);
             return true;
         }
@@ -67,6 +71,10 @@ namespace IPCLogger.Core.Loggers.LFile
         {
             Flush();
             DestroyLogFileStream(false);
+            if (Settings.ConnectNetShare)
+            {
+                NetworkConnection.DisconnectShare(Settings.LogDir, Settings.NetUser);
+            }
             return true;
         }
 

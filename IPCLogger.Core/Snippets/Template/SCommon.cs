@@ -26,7 +26,6 @@ namespace IPCLogger.Core.Snippets.Template
         private static readonly Dictionary<string, string> _dateStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateStrings = new LightLock();
 
-
         private static volatile int _lastUtcMark;
         private static readonly Dictionary<string, string> _dateUtcStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateUtcStrings = new LightLock();

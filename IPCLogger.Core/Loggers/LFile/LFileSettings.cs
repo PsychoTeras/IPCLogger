@@ -35,6 +35,10 @@ namespace IPCLogger.Core.Loggers.LFile
 
         public bool DynamicFilePath { get; set; }
 
+        public string NetUser { get; set; }
+
+        public string NetPassword { get; set; }
+
         [NonSetting]
         internal bool RollByFileSize { get; private set; }
 
@@ -43,6 +47,9 @@ namespace IPCLogger.Core.Loggers.LFile
 
         [NonSetting]
         internal string ExpandedLogFilePathWithMark { get; private set; }
+
+        [NonSetting]
+        internal bool ConnectNetShare { get; private set; }
 
 #endregion
 
@@ -66,6 +73,7 @@ namespace IPCLogger.Core.Loggers.LFile
                 IdxPlaceMark, Path.GetExtension(LogFile));
             ExpandedLogFilePathWithMark = Path.Combine(LogDir, ExpandedLogFilePathWithMark);
             ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
+            ConnectNetShare = !string.IsNullOrWhiteSpace(NetUser);
         }
 
 #endregion
