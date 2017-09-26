@@ -134,6 +134,14 @@ namespace IPCLogger.Core.Storages
             SetClosure(null, memberExpression);
         }
 
+        public void SetClosure(params Expression<Func<object>>[] membersExpressions)
+        {
+            foreach (Expression<Func<object>> memberExpression in membersExpressions)
+            {
+                SetClosure((string) null, memberExpression);
+            }
+        }
+
         public void SetClosure<T>(string key, Expression<Func<T>> memberExpression)
         {
             switch (memberExpression.Body.NodeType)

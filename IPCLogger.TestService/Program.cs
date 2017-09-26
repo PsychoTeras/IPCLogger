@@ -170,8 +170,9 @@ namespace IPCLogger.TestService
 
             using (TLSObject tlsObj = TLS.Push())
             {
-                tlsObj.CaptureObject("XService", new X { Y = "1", Z = 2, G = new Guid() }, false);
+                tlsObj.CaptureObject("XService", new X {Y = "1", Z = 2, G = new Guid()}, false);
                 _timer = HRTimer.CreateAndStart();
+                tlsObj.SetClosure(() => _timer, () => LFactory.Instance);
                 for (int i = 0; i < 1; i++)
                 {
                     LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
