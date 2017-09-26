@@ -33,8 +33,6 @@ namespace IPCLogger.Core.Loggers.LFile
         [TimeStringConversion]
         public TimeSpan MaxFileAge { get; set; }
 
-        public bool DynamicFilePath { get; set; }
-
         public string NetUser { get; set; }
 
         public string NetPassword { get; set; }

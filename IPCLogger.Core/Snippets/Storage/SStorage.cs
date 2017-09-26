@@ -86,7 +86,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 name = name ?? DefUnknownTypeString;
                 if (iColl == null)
                 {
-                    sb.AppendFormat("[{0}]: '{1}'", name, val ?? defValue);
+                    sb.AppendFormat("[{0}]: {1}", name, val ?? defValue);
                 }
                 else if (!(iColl is TLSObject))
                 {

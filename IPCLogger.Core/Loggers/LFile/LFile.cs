@@ -26,7 +26,7 @@ namespace IPCLogger.Core.Loggers.LFile
         private int _logCurrentIdx;
         private DateTime? _logRollingDateTime;
         private string _logGenericPath;
-        private bool _logGenericPathIsConstant;
+        private bool _isLogGenericPathDynamic;
 
 #endregion
 
@@ -59,6 +59,7 @@ namespace IPCLogger.Core.Loggers.LFile
             _logRollingDateTime = null;
             _lastFilePathCheckTime = DateTime.Now;
             _lastFilePathCheckHour = _lastFilePathCheckTime.Hour;
+            _isLogGenericPathDynamic = true;
             if (Settings.ConnectNetShare)
             {
                 NetworkConnection.ConnectShare(Settings.LogDir, Settings.NetUser, Settings.NetPassword);
@@ -128,7 +129,7 @@ namespace IPCLogger.Core.Loggers.LFile
         {
             //Roll By The File Age check / Roll By The File Path check
             bool rollByFileAge = false, rollByFilePath = false;
-            if (Settings.RollByFileAge && _logRollingDateTime.HasValue || Settings.DynamicFilePath)
+            if (Settings.RollByFileAge && _logRollingDateTime.HasValue || _isLogGenericPathDynamic)
             {
                 int ticks = Environment.TickCount;
                 int currentTimeMark = ticks - ticks%1000; //Each 1 second
@@ -141,7 +142,7 @@ namespace IPCLogger.Core.Loggers.LFile
                     }
 
                     //Check DynamicFilePath
-                    if (Settings.DynamicFilePath)
+                    if (_isLogGenericPathDynamic)
                     {
                         DateTime localNow = DateTime.Now;
                         int localHour = localNow.Hour;
@@ -173,14 +174,13 @@ namespace IPCLogger.Core.Loggers.LFile
                     //Is the file path is not dynamic turn off the appropriate processing snippet
                     if (Settings.ExpandedLogFilePathWithMark == logGenericPath)
                     {
-                        Settings.DynamicFilePath = false;
-                        _logGenericPathIsConstant = true;
+                        _isLogGenericPathDynamic = false;
                     }
 
                     _logGenericPath = logGenericPath;
                 }
 
-                logGenericPath = _logGenericPathIsConstant
+                logGenericPath = !_isLogGenericPathDynamic
                     ? _logGenericPath
                     : SFactory.Process(Settings.ExpandedLogFilePathWithMark, Patterns);
 
@@ -189,7 +189,7 @@ namespace IPCLogger.Core.Loggers.LFile
                 bool logPathHasBeenChanged = false;
                 if (shouldRollTheLog)
                 {
-                    logPathHasBeenChanged = !_logGenericPathIsConstant && logGenericPath != _logGenericPath;
+                    logPathHasBeenChanged = _isLogGenericPathDynamic && logGenericPath != _logGenericPath;
                     if (logPathHasBeenChanged)
                     {
                         _logCurrentIdx = 0;
@@ -226,8 +226,7 @@ namespace IPCLogger.Core.Loggers.LFile
                         logPath = logGenericPath.Replace(LFileSettings.IdxPlaceMark,
                             _logCurrentIdx == 0 ? string.Empty : "_" + _logCurrentIdx);
 
-                        bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) &&
-                                             Helpers.PathFileExists(logPath);
+                        bool logFileExists = (shouldRollTheLog || !Settings.RecreateFile) && Helpers.PathFileExists(logPath);
                         if (shouldRollTheLog && logFileExists && !Settings.RecreateFile)
                         {
                             _logCurrentIdx++;

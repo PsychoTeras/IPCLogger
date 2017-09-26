@@ -100,12 +100,12 @@ namespace IPCLogger.TestService
             //LFactory.Instance.WriteData(LogEvent.Info, bytes, _sGuid); //'Cold' write
 
             _timer = HRTimer.CreateAndStart();
-            LFactory.Instance.Write(LogEvent.Info, _sGuid);
-            //for (int i = 0; i < _recordsCount - 1; i++)
-            //{
-            //    //Thread.Sleep(1);
-            //    LFactory.Instance.Write(LogEvent.Info, _sGuid);
-            //}
+            //LFactory.Instance.Write(LogEvent.Info, _sGuid);
+            for (int i = 0; i < _recordsCount - 1; i++)
+            {
+                Thread.Sleep(1);
+                LFactory.Instance.Write(LogEvent.Info, _sGuid);
+            }
 
             ((ManualResetEvent) obj).Set();
         }
@@ -168,20 +168,20 @@ namespace IPCLogger.TestService
         {
             //TestMethod(120);
 
-            //using (TLSObject tlsObj = TLS.Push())
-            //{
-            //    tlsObj.CaptureObject("XService", new X { Y = "1", Z = 2 }, false);
-            //    _timer = HRTimer.CreateAndStart();
-            //    for (int i = 0; i < 1; i++)
-            //    {
-            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-            //    }
-            //    Console.WriteLine(_timer.StopWatch());
-            //}
+            using (TLSObject tlsObj = TLS.Push())
+            {
+                tlsObj.CaptureObject("XService", new X { Y = "1", Z = 2, G = new Guid() }, false);
+                _timer = HRTimer.CreateAndStart();
+                for (int i = 0; i < 1; i++)
+                {
+                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+                }
+                Console.WriteLine(_timer.StopWatch());
+            }
 
-            //Console.ReadKey();
-            //Process.GetCurrentProcess().Kill();
-            //return;
+            Console.ReadKey();
+            Process.GetCurrentProcess().Kill();
+            return;
 
             //X x = new X();
             //x.Y = "12";
@@ -246,5 +246,6 @@ namespace IPCLogger.TestService
     {
         public string Y;
         public int Z { get; set; }
+        public Guid G { get; set; }
     }
 }
