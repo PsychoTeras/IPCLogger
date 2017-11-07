@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace IPCLogger.Core.Common
 {
     [Flags]
-    internal enum MapProtection
+    enum MapProtection
     {
         //Access
         PageNone = 0x00000000,
@@ -23,7 +23,7 @@ namespace IPCLogger.Core.Common
         SecNoCache = 0x10000000,
     }
 
-    internal enum MapAccess
+    enum MapAccess
     {
         FileMapCopy = 0x0001,
         FileMapWrite = 0x0002,
@@ -32,7 +32,7 @@ namespace IPCLogger.Core.Common
     }
 
     [Flags]
-    internal enum AllocationType
+    enum AllocationType
     {
         Commit = 0x1000,
         Reserve = 0x2000,
@@ -46,7 +46,7 @@ namespace IPCLogger.Core.Common
     }
 
     [Flags]
-    internal enum MemoryProtection
+    enum MemoryProtection
     {
         Execute = 0x10,
         ExecuteRead = 0x20,
@@ -62,7 +62,7 @@ namespace IPCLogger.Core.Common
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct MemoryBasicInformation
+    struct MemoryBasicInformation
     {
         public IntPtr BaseAddress;
         public IntPtr AllocationBase;
@@ -74,7 +74,7 @@ namespace IPCLogger.Core.Common
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal class SecurityAttributes : IDisposable
+    class SecurityAttributes : IDisposable
     {
         public int Length;
         public IntPtr SecurityDescriptor;
@@ -108,7 +108,7 @@ namespace IPCLogger.Core.Common
     }
 
     [Serializable]
-    internal class Win32Exception : IOException
+    class Win32Exception : IOException
     {
         private string _message;
         public int Win32ErrorCode { get; }
@@ -138,7 +138,7 @@ namespace IPCLogger.Core.Common
         }
     }
 
-    internal static unsafe class Win32
+    static unsafe class Win32
     {
         [DllImport("kernel32", EntryPoint = "CopyMemory")]
         public static extern void* Copy(void* dest, void* src, int count);
@@ -189,7 +189,7 @@ namespace IPCLogger.Core.Common
         }
     }
 
-    internal static class NetworkConnection
+    static class NetworkConnection
     {
         class ConnectionManager
         {

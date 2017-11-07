@@ -4,38 +4,38 @@ using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Storages
 {
-    internal static class Ls 
+    internal static class LS 
     {
 
 #region Private fields
 
-        private static readonly Dictionary<int, LsObject> _threadStorage = new Dictionary<int, LsObject>();
+        private static readonly Dictionary<int, LSObject> _threadStorage = new Dictionary<int, LSObject>();
         private static readonly LightLock _lockObj = new LightLock();
 
 #endregion
 
 #region Static methods
 
-        public static LsObject Push()
+        public static LSObject Push()
         {
             _lockObj.WaitOne();
-            LsObject lsObj;
+            LSObject lsObj;
             int threadId = Thread.CurrentThread.ManagedThreadId;
             if (!_threadStorage.TryGetValue(threadId, out lsObj))
             {
-                lsObj = new LsObject();
+                lsObj = new LSObject();
                 _threadStorage.Add(threadId, lsObj);
             }
             _lockObj.Set();
             return lsObj;
         }
 
-        public static LsObject Peek()
+        public static LSObject Peek()
         {
             _lockObj.WaitOne();
-            LsObject lsObj;
+            LSObject lsObj;
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            LsObject val = _threadStorage.TryGetValue(threadId, out lsObj) ? lsObj : null;
+            LSObject val = _threadStorage.TryGetValue(threadId, out lsObj) ? lsObj : null;
             _lockObj.Set();
             return val;
         }

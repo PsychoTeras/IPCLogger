@@ -5,7 +5,7 @@ using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets.Template
 {
-    internal sealed class SException : BaseSnippet
+    sealed class SException : BaseSnippet
     {
 
 #region Properties
@@ -34,7 +34,7 @@ namespace IPCLogger.Core.Snippets.Template
         public override string Process(Type callerType, Enum eventType, string snippetName,
             byte[] data, string text, string @params, PFactory pFactory)
         {
-            LsObject lsObj = Ls.Peek();
+            LSObject lsObj = LS.Peek();
             if (lsObj == null || lsObj.Exception == null) return null;
 
             switch (@params)

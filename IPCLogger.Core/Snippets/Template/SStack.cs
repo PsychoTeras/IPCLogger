@@ -9,7 +9,7 @@ using IPCLogger.Core.Snippets.Base;
 
 namespace IPCLogger.Core.Snippets.Template
 {
-    internal sealed class SStack : BaseSnippet
+    sealed class SStack : BaseSnippet
     {
 
 #region Constants

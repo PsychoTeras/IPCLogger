@@ -274,7 +274,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             if (ex == null) return;
 
-            using (LsObject lsObj = Ls.Push())
+            using (LSObject lsObj = LS.Push())
             {
                 lsObj.Exception = ex;
                 WriteEvent(eventType, data, text, writeLine);

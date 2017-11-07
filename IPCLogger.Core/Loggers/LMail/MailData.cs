@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Loggers.LMail
 {
-    internal sealed class MailData
+    sealed class MailData
     {
 
 #region Public fields

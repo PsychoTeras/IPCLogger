@@ -168,6 +168,8 @@ namespace IPCLogger.TestService
         {
             //TestMethod(120);
 
+            TLS.CaptureObjectGlobal("XService", new X { Y = "1", Z = 2, G = new Guid() });
+
             using (TLSObject tlsObj = TLS.Push())
             {
                 tlsObj.CaptureObject("XService", new X {Y = "1", Z = 2, G = new Guid()}, false);

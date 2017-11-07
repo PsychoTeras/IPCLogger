@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace IPCLogger.Core.Patterns.Base
 {
-    internal sealed class RawPatterns
+    sealed class RawPatterns
     {
 
 #region Public fields

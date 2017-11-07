@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Common
 {
-    internal sealed class HRTimer
+    sealed class HRTimer
     {
         private long _start;
         private double _result;

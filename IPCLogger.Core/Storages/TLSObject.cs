@@ -21,6 +21,8 @@ namespace IPCLogger.Core.Storages
 
 #region Private fields
 
+        private static readonly Expression _exprConstantNull = Expression.Constant(null);
+
         private static readonly DictionaryCache<object, FuncObject> _cacheClosureMembers =
             new DictionaryCache<object, FuncObject>();
 
@@ -41,7 +43,7 @@ namespace IPCLogger.Core.Storages
             string memberName;
             while (!IsNullSafe(expr, out obj, out memberName) && obj != null)
             {
-                Expression isNull = Expression.Equal(obj, Expression.Constant(null));
+                Expression isNull = Expression.Equal(obj, _exprConstantNull);
                 safe = Expression.Condition(isNull,
                     memberName != null
                         ? (Expression) Expression.Constant(
@@ -267,7 +269,7 @@ namespace IPCLogger.Core.Storages
 
 #endregion
 
-#region #region IDisposable
+#region IDisposable
 
         public void Dispose()
         {

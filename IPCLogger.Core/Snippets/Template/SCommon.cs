@@ -11,7 +11,7 @@ using IPCLogger.Core.Snippets.Base;
 
 namespace IPCLogger.Core.Snippets.Template
 {
-    internal sealed class SCommon : BaseSnippet
+    sealed class SCommon : BaseSnippet
     {
 
 #region Constants

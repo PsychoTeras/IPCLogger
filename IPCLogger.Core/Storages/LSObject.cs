@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Storages
 {
-    internal sealed class LsObject : IDisposable
+    sealed class LSObject : IDisposable
     {
 
 #region Public fields
@@ -15,7 +15,7 @@ namespace IPCLogger.Core.Storages
 
         public void Dispose()
         {
-            Ls.Pop();
+            LS.Pop();
         }
 
 #endregion
