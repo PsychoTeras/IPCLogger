@@ -155,17 +155,17 @@ namespace IPCLogger.Core.Snippets.Storage
             if (snippetName == Constants.ApplicableForAllMark)
             {
                 TLSObject val = TLS.Peek();
-                if (val == null || val.Count == 0) return null;
+                int keysCount;
+                if (val == null || (keysCount = val.Count) == 0) return null;
 
                 int idx = 0;
-                int cnt = val.Keys.Count;
                 IEnumerable keys = ordered
                     ? val.Keys.OrderBy(k => k).AsEnumerable()
                     : val.Keys;
                 foreach (string objName in keys)
                 {
                     ObjectToString(val[objName], objName, sb, unfold, detailed, null, defValue);
-                    if (++idx < cnt)
+                    if (++idx < keysCount)
                     {
                         sb.Append(Constants.NewLine);
                     }
