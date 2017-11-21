@@ -18,7 +18,14 @@ namespace IPCLogger.Core.Caches
                 return;
             }
 
-            sbName.AppendFormat("{0}<", name.Substring(0, name.IndexOf("`")));
+            int idx = name.IndexOf("`", StringComparison.Ordinal);
+            if (idx == -1)
+            {
+                sbName.Append(name);
+                return;
+            }
+
+            sbName.AppendFormat("{0}<", name.Substring(0, idx));
             for (int i = 0; i < genericTypes.Length; i++)
             {
                 if (i != 0)

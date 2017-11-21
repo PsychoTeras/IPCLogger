@@ -13,13 +13,12 @@ namespace IPCLogger.Core.Storages
 #region Constants
 
         private const int USE_DYNAMIC_THREAD_ID = 0;
-        private static readonly char GLOBALS_MEMBER_ACCESS_SEPARATOR = '.';
 
 #endregion
 
 #region Private fields
 
-        private static readonly Dictionary<string, TLSObject> _threadGlobalStorage = new Dictionary<string, TLSObject>();
+        private static readonly TLSObject _globalStorage = new TLSObject();
         private static readonly LightLock _lockObjGlobal = new LightLock();
 
         private static readonly Dictionary<int, TLSObject> _threadStorage = new Dictionary<int, TLSObject>();
@@ -29,21 +28,14 @@ namespace IPCLogger.Core.Storages
 
 #endregion
 
-#region Properties
-
-        private static int CurrentThreadId
-        {
-            get
-            {
-                return _currentThreadId == USE_DYNAMIC_THREAD_ID
-                    ? Thread.CurrentThread.ManagedThreadId
-                    : _currentThreadId;
-            }
-        }
-
-#endregion
-
 #region Static methods
+
+        private static int GetCurrentThreadId()
+        {
+            return _currentThreadId == USE_DYNAMIC_THREAD_ID
+                ? Thread.CurrentThread.ManagedThreadId
+                : _currentThreadId;
+        }
 
         public static void PinCurrentThreadId()
         {
@@ -63,7 +55,7 @@ namespace IPCLogger.Core.Storages
         public static void Push(TLSObject tlsObj)
         {
             _lockObjThread.WaitOne();
-            int threadId = CurrentThreadId;
+            int threadId = GetCurrentThreadId();
             if (_threadStorage.ContainsKey(threadId))
             {
                 _threadStorage[threadId] = tlsObj;
@@ -79,7 +71,7 @@ namespace IPCLogger.Core.Storages
         {
             _lockObjThread.WaitOne();
             TLSObject tlsObj;
-            int threadId = CurrentThreadId;
+            int threadId = GetCurrentThreadId();
             if (!_threadStorage.TryGetValue(threadId, out tlsObj))
             {
                 tlsObj = new TLSObject();
@@ -93,7 +85,7 @@ namespace IPCLogger.Core.Storages
         {
             _lockObjThread.WaitOne();
             TLSObject tlsObj;
-            int threadId = CurrentThreadId;
+            int threadId = GetCurrentThreadId();
             TLSObject val = _threadStorage.TryGetValue(threadId, out tlsObj) ? tlsObj : null;
             _lockObjThread.Set();
             return val;
@@ -102,7 +94,7 @@ namespace IPCLogger.Core.Storages
         public static void Pop()
         {
             _lockObjThread.WaitOne();
-            int threadId = CurrentThreadId;
+            int threadId = GetCurrentThreadId();
             if (_threadStorage.ContainsKey(threadId))
             {
                 _threadStorage.Remove(threadId);
@@ -114,23 +106,7 @@ namespace IPCLogger.Core.Storages
         {
             if (string.IsNullOrEmpty(key)) return null;
 
-            TLSObject tlsObj;
-
-            int memAccSepIdx = key.IndexOf(GLOBALS_MEMBER_ACCESS_SEPARATOR);
-            if (memAccSepIdx != -1)
-            {
-                string globalObjectName = key.Substring(0, memAccSepIdx);
-                if (_threadGlobalStorage.TryGetValue(globalObjectName, out tlsObj))
-                {
-                    string globalMemberName = key.Substring(memAccSepIdx + 1);
-                    return globalMemberName != string.Empty ? tlsObj[globalMemberName] : tlsObj;
-                }
-            }
-
-            if (!_threadGlobalStorage.TryGetValue(key, out tlsObj))
-            {
-                tlsObj = Peek();
-            }
+            TLSObject tlsObj = _globalStorage.ContainsKey(key) ? _globalStorage : Peek();
             return tlsObj != null ? tlsObj[key] : null;
         }
 
@@ -147,9 +123,7 @@ namespace IPCLogger.Core.Storages
             AsssertGlobalName(globalName);
 
             _lockObjGlobal.WaitOne();
-            TLSObject tlsObj = new TLSObject();
-            tlsObj.SetClosure(memberExpression);
-            _threadGlobalStorage[globalName] = tlsObj;
+            _globalStorage.SetClosure(globalName, memberExpression);
             _lockObjGlobal.Set();
         }
 
@@ -158,24 +132,11 @@ namespace IPCLogger.Core.Storages
             AsssertGlobalName(globalName);
 
             _lockObjGlobal.WaitOne();
-            TLSObject tlsObj = new TLSObject();
-            tlsObj.SetClosure(membersExpressions);
-            _threadGlobalStorage[globalName] = tlsObj;
+            _globalStorage.SetClosure(membersExpressions);
             _lockObjGlobal.Set();
         }
 
-        public static void SetClosureGlobal<T>(string globalName, string key, Expression<Func<T>> memberExpression)
-        {
-            AsssertGlobalName(globalName);
-
-            _lockObjGlobal.WaitOne();
-            TLSObject tlsObj = new TLSObject();
-            tlsObj.SetClosure(key, memberExpression);
-            _threadGlobalStorage[globalName] = tlsObj;
-            _lockObjGlobal.Set();
-        }
-
-        public static void CaptureObjectGlobal<T>(string globalName, string key, T obj, bool useFullClassName = true,
+        public static void CaptureObjectGlobal<T>(string globalName, T obj, bool useFullClassName = true,
             BindingFlags? bfFields = BindingFlags.GetField | TLSObject.BF_DEFAULT,
             BindingFlags? bfProperties = BindingFlags.GetProperty | TLSObject.BF_DEFAULT,
             HashSet<string> excludeNames = null)
@@ -183,9 +144,7 @@ namespace IPCLogger.Core.Storages
             AsssertGlobalName(globalName);
 
             _lockObjGlobal.WaitOne();
-            TLSObject tlsObj = new TLSObject();
-            tlsObj.CaptureObject(key, obj, useFullClassName, bfFields, bfProperties, excludeNames);
-            _threadGlobalStorage[globalName] = tlsObj;
+            _globalStorage.CaptureObject(globalName, obj, useFullClassName, bfFields, bfProperties, excludeNames);
             _lockObjGlobal.Set();
         }
 
@@ -194,9 +153,9 @@ namespace IPCLogger.Core.Storages
             AsssertGlobalName(globalName);
 
             _lockObjGlobal.WaitOne();
-            if (_threadGlobalStorage.ContainsKey(globalName))
+            if (_globalStorage.ContainsKey(globalName))
             {
-                _threadGlobalStorage.Remove(globalName);
+                _globalStorage.Remove(globalName);
             }
             _lockObjGlobal.Set();
         }

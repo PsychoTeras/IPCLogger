@@ -36,12 +36,12 @@ namespace IPCLogger.Core.Snippets.Storage
 
 #region Class methods
 
-        private bool InvokeValueAsDelegate(Type type, ref string name, ref object val)
+        private bool InvokeValueAsDelegate(Type type, ref string typeName, ref object val)
         {
             if (type == typeof (FuncObject))
             {
                 FuncObject funcObj = (FuncObject) val;
-                name = TypeNamesCache.GetTypeName(funcObj.ObjType);
+                typeName = TypeNamesCache.GetTypeName(funcObj.ObjType);
                 MulticastDelegate d = (MulticastDelegate) funcObj.Delegate;
                 try
                 {
@@ -56,54 +56,71 @@ namespace IPCLogger.Core.Snippets.Storage
             return false;
         }
 
-        private void ObjectToString(object val, StringBuilder sb, bool unfold, bool detailed, 
-            string prefix, string defValue)
+        private void ObjectToString(object obj, string objName, StringBuilder sb, bool unfold, 
+            bool detailed, string prefix, string defValue)
         {
             if (prefix != null)
             {
                 sb.Append(prefix);
             }
 
-            string name = null;
-            if (val is DictionaryEntry)
+            if (detailed && objName != null)
             {
-                DictionaryEntry de = (DictionaryEntry) val;
+                sb.AppendFormat("{0} ", objName);
+            }
+
+            Type type = obj != null ? obj.GetType() : null;
+            if (type == typeof(TLSObject))
+            {
+                TLSObject tlsObj = (TLSObject) obj;
+                string newPrefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
+                foreach (FuncObject propObj in tlsObj.Values)
+                {
+                    sb.Append(Constants.NewLine);
+                    ObjectToString(propObj, propObj.ObjName, sb, unfold, detailed, newPrefix, defValue);
+                }
+                return;
+            }
+
+            string typeName = null;
+            if (type == typeof(DictionaryEntry))
+            {
+                DictionaryEntry de = (DictionaryEntry) obj;
                 if (detailed)
                 {
                     sb.AppendFormat("{0} ", de.Key);
                 }
-                val = de.Value;
+                obj = de.Value;
             }
 
-            Type type = val != null ? val.GetType() : null;
-            ICollection iColl = unfold ? val as ICollection : null;
+            ICollection iColl = unfold ? obj as ICollection : null;
             if (detailed)
             {
-                if (type != null && !InvokeValueAsDelegate(type, ref name, ref val))
+                if (type != null && !InvokeValueAsDelegate(type, ref typeName, ref obj))
                 {
-                    name = TypeNamesCache.GetTypeName(type);
+                    typeName = TypeNamesCache.GetTypeName(type);
                 }
-                name = name ?? DefUnknownTypeString;
+                typeName = typeName ?? DefUnknownTypeString;
                 if (iColl == null)
                 {
-                    sb.AppendFormat("[{0}]: {1}", name, val ?? defValue);
+                    sb.AppendFormat("[{0}]: {1}", typeName, obj ?? defValue);
                 }
-                else if (!(iColl is TLSObject))
+                else
                 {
                     if (prefix == null)
                     {
                         prefix = _collItemPrefix;
                         sb.AppendFormat("{0}{1}", Constants.NewLine, prefix);
                     }
-                    sb.AppendFormat("[{0}, size {1}] >", name, iColl.Count);
+                    sb.AppendFormat("[{0}, size {1}] >", typeName, iColl.Count);
                 }
             }
             else
             {
                 if (iColl == null)
                 {
-                    InvokeValueAsDelegate(type, ref name, ref val);
-                    sb.Append(val ?? defValue);
+                    InvokeValueAsDelegate(type, ref typeName, ref obj);
+                    sb.Append(obj ?? defValue);
                 }
                 else
                 {
@@ -117,7 +134,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 foreach (object item in iColl)
                 {
                     sb.Append(Constants.NewLine);
-                    ObjectToString(item, sb, true, detailed, newPrefix, defValue);
+                    ObjectToString(item, null, sb, true, detailed, newPrefix, defValue);
                 }
             }
         }
@@ -137,21 +154,17 @@ namespace IPCLogger.Core.Snippets.Storage
 
             if (snippetName == Constants.ApplicableForAllMark)
             {
-                Hashtable val = TLS.Peek();
+                TLSObject val = TLS.Peek();
                 if (val == null || val.Count == 0) return null;
 
                 int idx = 0;
                 int cnt = val.Keys.Count;
                 IEnumerable keys = ordered
-                    ? (IEnumerable) val.Keys.OfType<object>().OrderBy(k => k).AsEnumerable()
+                    ? val.Keys.OrderBy(k => k).AsEnumerable()
                     : val.Keys;
-                foreach (object key in keys)
+                foreach (string objName in keys)
                 {
-                    if (detailed)
-                    {
-                        sb.AppendFormat("{0} ", key);
-                    }
-                    ObjectToString(val[key], sb, unfold, detailed, null, defValue);
+                    ObjectToString(val[objName], objName, sb, unfold, detailed, null, defValue);
                     if (++idx < cnt)
                     {
                         sb.Append(Constants.NewLine);
@@ -161,11 +174,7 @@ namespace IPCLogger.Core.Snippets.Storage
             else
             {
                 object val = TLS.Get(snippetName);
-                if (detailed)
-                {
-                    sb.AppendFormat("{0} ", snippetName);
-                }
-                ObjectToString(val, sb, unfold, detailed, null, defValue);
+                ObjectToString(val, snippetName, sb, unfold, detailed, null, defValue);
             }
             return sb.Length == 0 ? null : sb.ToString();
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -7,7 +6,7 @@ using IPCLogger.Core.Caches;
 
 namespace IPCLogger.Core.Storages
 {
-    public sealed class TLSObject : Hashtable, IDisposable
+    public sealed class TLSObject : Dictionary<string, object>, IDisposable
     {
 
 #region Constants

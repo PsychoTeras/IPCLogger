@@ -88,19 +88,11 @@ namespace IPCLogger.TestService
             ((ManualResetEvent) obj).Set();
         }
 
-        internal static int GetInt()
-        {
-            return -1;
-        }
-
         internal static void WriteLogIPC(object obj)
         {
-            //byte[] bytes = new byte[512];
-            //new Random().NextBytes(bytes);
-            //LFactory.Instance.WriteData(LogEvent.Info, bytes, _sGuid); //'Cold' write
-
+            LFactory.Instance.Write(LogEvent.Info, _sGuid);
+            
             _timer = HRTimer.CreateAndStart();
-            //LFactory.Instance.Write(LogEvent.Info, _sGuid);
             for (int i = 0; i < _recordsCount - 1; i++)
             {
                 Thread.Sleep(1);
@@ -166,45 +158,27 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            //TestMethod(120);
-
-            TLS.CaptureObjectGlobal("XService", new X { Y = "1", Z = 2, G = new Guid() });
-
             using (TLSObject tlsObj = TLS.Push())
             {
-                tlsObj.CaptureObject("XService", new X {Y = "1", Z = 2, G = new Guid()}, false);
-                _timer = HRTimer.CreateAndStart();
-                tlsObj.SetClosure(() => _timer, () => LFactory.Instance);
-                for (int i = 0; i < 1; i++)
-                {
-                    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-                }
-                Console.WriteLine(_timer.StopWatch());
+                TLS.CaptureObjectGlobal("XService", new X {Y = "1", Z = 2, G = new Guid()});
+                LFactory.Instance.WriteLine(LogEvent.Debug, (string) null);
             }
+
+            //using (TLSObject tlsObj = TLS.Push())
+            //{
+            //    tlsObj.CaptureObject("XService", new X {Y = "1", Z = 2, G = new Guid()}, false);
+            //    _timer = HRTimer.CreateAndStart();
+            //    tlsObj.SetClosure(() => _timer, () => LFactory.Instance);
+            //    for (int i = 0; i < 1; i++)
+            //    {
+            //        LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
+            //    }
+            //    Console.WriteLine(_timer.StopWatch());
+            //}
 
             Console.ReadKey();
             Process.GetCurrentProcess().Kill();
             return;
-
-            //X x = new X();
-            //x.Y = "12";
-            //using (TLSObject tlsObj = TLS.Push())
-            //{
-            //    var obj = new ASCIIEncoding();
-
-            //    //_timer = HRTimer.CreateAndStart();
-            //    //for (int i = 0; i < 500000; i++)
-            //    //{
-            //    //    tlsObj.CaptureObject(obj);
-            //    //}
-            //    //Console.WriteLine(_timer.StopWatch());
-            //    tlsObj.CaptureObject(obj);
-            //    LFactory.Instance.WriteLine(LogEvent.Debug, (string)null);
-            //}
-
-            //Console.ReadKey();
-            //Process.GetCurrentProcess().Kill();
-            //return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
