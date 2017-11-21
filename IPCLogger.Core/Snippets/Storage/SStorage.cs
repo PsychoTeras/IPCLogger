@@ -72,12 +72,22 @@ namespace IPCLogger.Core.Snippets.Storage
             Type type = obj != null ? obj.GetType() : null;
             if (type == typeof(TLSObject))
             {
-                TLSObject tlsObj = (TLSObject) obj;
-                string newPrefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
-                foreach (FuncObject propObj in tlsObj.Values)
+                if (detailed)
                 {
                     sb.Append(Constants.NewLine);
-                    ObjectToString(propObj, propObj.ObjName, sb, unfold, detailed, newPrefix, defValue);
+                    prefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
+                }
+
+                TLSObject tlsObj = (TLSObject) obj;
+                int idx = 0;
+                int keysCount = tlsObj.Values.Count;
+                foreach (FuncObject propObj in tlsObj.Values)
+                {
+                    ObjectToString(propObj, propObj.ObjName, sb, unfold, detailed, prefix, defValue);
+                    if (++idx < keysCount)
+                    {
+                        sb.Append(Constants.NewLine);
+                    }
                 }
                 return;
             }
@@ -93,7 +103,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 obj = de.Value;
             }
 
-            ICollection iColl = unfold ? obj as ICollection : null;
+            ICollection objAsCollection;
             if (detailed)
             {
                 if (type != null && !InvokeValueAsDelegate(type, ref typeName, ref obj))
@@ -101,7 +111,9 @@ namespace IPCLogger.Core.Snippets.Storage
                     typeName = TypeNamesCache.GetTypeName(type);
                 }
                 typeName = typeName ?? DefUnknownTypeString;
-                if (iColl == null)
+
+                objAsCollection = unfold ? obj as ICollection : null;
+                if (objAsCollection == null)
                 {
                     sb.AppendFormat("[{0}]: {1}", typeName, obj ?? defValue);
                 }
@@ -112,29 +124,26 @@ namespace IPCLogger.Core.Snippets.Storage
                         prefix = _collItemPrefix;
                         sb.AppendFormat("{0}{1}", Constants.NewLine, prefix);
                     }
-                    sb.AppendFormat("[{0}, size {1}] >", typeName, iColl.Count);
+                    sb.AppendFormat("[{0}, size {1}] >", typeName, objAsCollection.Count);
                 }
             }
             else
             {
-                if (iColl == null)
+                InvokeValueAsDelegate(type, ref typeName, ref obj);
+                objAsCollection = unfold ? obj as ICollection : null;
+                if (objAsCollection == null)
                 {
-                    InvokeValueAsDelegate(type, ref typeName, ref obj);
                     sb.Append(obj ?? defValue);
-                }
-                else
-                {
-                    sb.AppendFormat("Collection, size {0} >", iColl.Count);
                 }
             }
 
-            if (iColl != null && iColl.Count > 0)
+            if (objAsCollection != null && objAsCollection.Count > 0)
             {
-                string newPrefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
-                foreach (object item in iColl)
+                prefix = prefix == null ? _collItemPrefix : prefix + _collItemPrefix;
+                foreach (object collectionItem in objAsCollection)
                 {
                     sb.Append(Constants.NewLine);
-                    ObjectToString(item, null, sb, true, detailed, newPrefix, defValue);
+                    ObjectToString(collectionItem, null, sb, true, detailed, prefix, defValue);
                 }
             }
         }

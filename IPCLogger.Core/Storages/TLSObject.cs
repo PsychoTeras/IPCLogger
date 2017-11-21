@@ -159,6 +159,18 @@ namespace IPCLogger.Core.Storages
                     this[name] = name;
                     break;
                 }
+                case ExpressionType.NewArrayInit:
+                {
+                    NewArrayExpression body = (NewArrayExpression)memberExpression.Body;
+                    string name = key ?? GetMemberName(body);
+                    this[name] = _cacheClosureMembers.Get(body.Expressions, () =>
+                    {
+                        Type bodyType = body.Type;
+                        Type delegateType = typeof(Func<>).MakeGenericType(bodyType);
+                        return new FuncObject(Expression.Lambda(delegateType, NullSafeWrapper(body, bodyType)).Compile(), name, bodyType);
+                    });
+                    break;
+                }
                 case ExpressionType.MemberAccess:
                 {
                     MemberExpression body = (MemberExpression) memberExpression.Body;
