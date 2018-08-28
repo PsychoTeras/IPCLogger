@@ -22,16 +22,19 @@ namespace IPCLogger.TestService
         //--------------------------------------------Configure test environment here----------------------------------------------
 
         private static readonly WaitCallback _workMethod = WriteLogIPC;                  //Do we use WriteLogIPC or WriteLog4Net?
-        private static readonly int _parallelOperations = 1;    //Number of parallel operations (Environment.ProcessorCount)
+        private static readonly bool IsIPCLogger = _workMethod == WriteLogIPC;           //Whether target logger is IPCLogger
+        private static readonly int _parallelOperations = Environment.ProcessorCount;    //Number of parallel operations (Environment.ProcessorCount)
         private static readonly int _recordsCount = 500000 / _parallelOperations;        //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 
-        static WaitHandle[] _tEvents;
         private static HRTimer _timer;
+        private static WaitHandle[] _tEvents;
         private static Guid _guid = new Guid();
         private static string _sGuid = _guid.ToString();
         private static ILog _logger = LogManager.GetLogger(typeof(Program));
+
+        private static ManualResetEventSlim _sEvent;
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -59,7 +62,7 @@ namespace IPCLogger.TestService
                 case CtrlType.CtrlCloseEvent:
                 {
                     if (_workMethod == null) return false;
-                    if (_workMethod == WriteLogIPC)
+                    if (IsIPCLogger)
                     {
                         LFactory.Instance.Flush();
                     }
@@ -77,9 +80,8 @@ namespace IPCLogger.TestService
 
         internal static void WriteLog4Net(object obj)
         {
-            _logger.Info(_sGuid); //'Cold' write
+            _sEvent.Wait();
 
-            _timer = HRTimer.CreateAndStart();
             for (int i = 0; i < _recordsCount - 1; i++)
             {
                 _logger.Info(_sGuid);
@@ -90,12 +92,10 @@ namespace IPCLogger.TestService
 
         internal static void WriteLogIPC(object obj)
         {
-            LFactory.Instance.Write(LogEvent.Info, _sGuid);
-            
-            _timer = HRTimer.CreateAndStart();
+            _sEvent.Wait();
+
             for (int i = 0; i < _recordsCount - 1; i++)
             {
-                Thread.Sleep(1);
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
 
@@ -113,13 +113,15 @@ namespace IPCLogger.TestService
 
         private static void Echo(string[] args)
         {
-            if (_workMethod == WriteLogIPC)
+            if (IsIPCLogger)
             {
                 LFactory.Instance.Initialize();
+                LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
             else
             {
                 XmlConfigurator.Configure(new FileInfo(@"IPCLogger.TestService.exe.config"));
+                _logger.Info(_sGuid);
             }
 
             _tEvents = new WaitHandle[_parallelOperations];
@@ -127,15 +129,20 @@ namespace IPCLogger.TestService
             {
                 _tEvents[i] = new ManualResetEvent(false);
             }
+            _sEvent = new ManualResetEventSlim(false);
 
             for (int i = 0; i < _parallelOperations; i++)
             {
                 ThreadPool.QueueUserWorkItem(_workMethod, _tEvents[i]);
             }
 
+            Console.ReadKey();
+
+            _timer = HRTimer.CreateAndStart();
+            _sEvent.Set();
             WaitHandle.WaitAll(_tEvents);
 
-            if (_workMethod == WriteLogIPC)
+            if (IsIPCLogger)
             {
                 LFactory.Instance.Flush();
             }
@@ -158,12 +165,12 @@ namespace IPCLogger.TestService
 
         static void Main(string[] param)
         {
-            using (TLSObject tlsObj = TLS.Push())
-            {
-                //TLS.CaptureObjectGlobal("XService", new X {Y = "1", Z = 2, G = new Guid()});
-                TLS.SetClosureGlobal("XService", () => new[] {1, 2, 3});
-                LFactory.Instance.WriteLine(LogEvent.Debug, (string) null);
-            }
+            //using (TLSObject tlsObj = TLS.Push())
+            //{
+            //    //TLS.CaptureObjectGlobal("XService", new X {Y = "1", Z = 2, G = new Guid()});
+            //    TLS.SetClosureGlobal("XService", () => new[] {1, 2, 3});
+            //    LFactory.Instance.WriteLine(LogEvent.Debug, (string) null);
+            //}
 
             //using (TLSObject tlsObj = TLS.Push())
             //{
@@ -177,9 +184,9 @@ namespace IPCLogger.TestService
             //    Console.WriteLine(_timer.StopWatch());
             //}
 
-            Console.ReadKey();
-            Process.GetCurrentProcess().Kill();
-            return;
+            //Console.ReadKey();
+            //Process.GetCurrentProcess().Kill();
+            //return;
 
             LFactory.LoggerException += LoggerException;
             Thread.CurrentThread.Name = "MainThread";
