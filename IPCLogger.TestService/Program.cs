@@ -82,7 +82,7 @@ namespace IPCLogger.TestService
         {
             _sEvent.Wait();
 
-            for (int i = 0; i < _recordsCount - 1; i++)
+            for (int i = 0; i < _recordsCount; i++)
             {
                 _logger.Info(_sGuid);
             }
@@ -94,7 +94,7 @@ namespace IPCLogger.TestService
         {
             _sEvent.Wait();
 
-            for (int i = 0; i < _recordsCount - 1; i++)
+            for (int i = 0; i < _recordsCount; i++)
             {
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
             }
