@@ -152,17 +152,17 @@ namespace IPCLogger.Core.Loggers.Base
 #region Properties
 
         public TSettings Settings { get; private set; }
-        public bool ThreadSafetyIsGuaranteed { get; }
+        public bool ThreadSafetyGuaranteed { get; }
 
 #endregion
 
 #region Ctor
 
-        protected BaseLogger(bool threadSafetyIsGuaranteed)
+        protected BaseLogger(bool threadSafetyGuaranteed)
         {
             InitSettings();
             SetPatternsFactory(PFactory.Instance);
-            ThreadSafetyIsGuaranteed = threadSafetyIsGuaranteed;
+            ThreadSafetyGuaranteed = threadSafetyGuaranteed;
         }
 
 #endregion

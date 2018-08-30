@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Storages
 {
-    class AutoKeyItem
+    internal class AutoKeyItem
     {
         public int InitValue;
         public int Value;

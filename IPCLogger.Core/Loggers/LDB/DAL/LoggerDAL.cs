@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace IPCLogger.Core.Loggers.LDB.DAL
 {
-    class LoggerDAL
+    internal class LoggerDAL
     {
         private string _connectionString;
 

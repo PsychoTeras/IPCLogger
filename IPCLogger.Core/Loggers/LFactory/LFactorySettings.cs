@@ -9,7 +9,7 @@ using IPCLogger.Core.Loggers.Base;
 namespace IPCLogger.Core.Loggers.LFactory
 {
     // ReSharper disable PossibleNullReferenceException
-    public class LFactorySettings : BaseSettings
+    public sealed class LFactorySettings : BaseSettings
     {
 
 #region Private fields

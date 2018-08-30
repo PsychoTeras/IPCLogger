@@ -3,7 +3,7 @@ using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LVoid
 {
-    sealed class LVoidSettings : BaseSettings
+    public sealed class LVoidSettings : BaseSettings
     {
 
 #region Ctor

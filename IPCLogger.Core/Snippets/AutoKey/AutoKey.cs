@@ -5,7 +5,7 @@ using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets.AutoKey
 {
-    sealed class AutoKey : BaseSnippet
+    internal class AutoKey : BaseSnippet
     {
 
 #region Properties

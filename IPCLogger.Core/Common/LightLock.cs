@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace IPCLogger.Core.Common
 {
-    public sealed class LightLock
+    internal class LightLock
     {
         private const int SPINS_COUNT = 10;
         private const int SPINS_COUNT_MID = 5;

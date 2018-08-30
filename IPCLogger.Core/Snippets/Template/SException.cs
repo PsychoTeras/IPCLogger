@@ -5,7 +5,7 @@ using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets.Template
 {
-    sealed class SException : BaseSnippet
+    internal class SException : BaseSnippet
     {
 
 #region Properties

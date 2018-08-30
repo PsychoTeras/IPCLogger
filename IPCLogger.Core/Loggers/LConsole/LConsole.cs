@@ -15,8 +15,8 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region Ctor
 
-        public LConsole(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LConsole(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

@@ -3,7 +3,7 @@ using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LSysDebug
 {
-    public class LSysDebugSettings : BaseSettings
+    public sealed class LSysDebugSettings : BaseSettings
     {
 
 #region Ctor

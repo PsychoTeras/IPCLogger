@@ -5,7 +5,6 @@ namespace IPCLogger.TestService.Common
     class HRTimer
     {
         private long _start;
-        private double _result;
         private readonly long _frequency;
 
         [DllImport("kernel32.dll")]
@@ -20,10 +19,7 @@ namespace IPCLogger.TestService.Common
             QueryPerformanceFrequency(ref _frequency);
         }
 
-        public double Result
-        {
-            get { return _result; }
-        }
+        public double Result { get; private set; }
 
         public static HRTimer CreateAndStart()
         {
@@ -34,7 +30,7 @@ namespace IPCLogger.TestService.Common
 
         public void StartWatch()
         {
-            _result = 0;
+            Result = 0;
             QueryPerformanceCounter(ref _start);
         }
 
@@ -42,8 +38,8 @@ namespace IPCLogger.TestService.Common
         {
             long stop = 0;
             QueryPerformanceCounter(ref stop);
-            _result = (double)(stop - _start)/_frequency * 1000;
-            return _result;
+            Result = (double)(stop - _start)/_frequency * 1000;
+            return Result;
         }
     }
 }

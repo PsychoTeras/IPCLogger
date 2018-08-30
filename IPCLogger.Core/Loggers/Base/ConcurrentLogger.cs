@@ -25,11 +25,11 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Ctor
 
-        protected ConcurrentLogger(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        protected ConcurrentLogger(bool threadSafetyGuaranteed) 
+            : base(threadSafetyGuaranteed)
         {
             _lockObj = new LightLock();
-            _shouldLock = !threadSafetyIsGuaranteed;
+            _shouldLock = !threadSafetyGuaranteed;
         }
 
 #endregion

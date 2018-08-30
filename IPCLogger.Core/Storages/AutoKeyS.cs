@@ -3,13 +3,12 @@ using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Storages
 {
-    public static class AutoKeyS
+    internal static class AutoKeyS
     {
 
 #region Private fields
 
-        private static Dictionary<string, AutoKeyItem> _autoKeys = 
-            new Dictionary<string, AutoKeyItem>();
+        private static Dictionary<string, AutoKeyItem> _autoKeys = new Dictionary<string, AutoKeyItem>();
         private static readonly LightLock _lockObj = new LightLock();
 
 #endregion

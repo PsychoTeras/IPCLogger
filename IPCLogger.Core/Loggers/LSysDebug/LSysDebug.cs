@@ -18,8 +18,8 @@ namespace IPCLogger.Core.Loggers.LSysDebug
 
 #region Ctor
 
-        public LSysDebug(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LSysDebug(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

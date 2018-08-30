@@ -309,7 +309,7 @@ get_generic_pattern:
     }
     // ReSharper restore PossibleNullReferenceException
 
-    class ContentComparer : IComparer<string>
+    internal class ContentComparer : IComparer<string>
     {
         private int PosOrMax(int val)
         {

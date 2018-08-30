@@ -5,7 +5,7 @@ using IPCLogger.Core.Snippets.Base;
 
 namespace IPCLogger.Core.Snippets.Snippet
 {
-    sealed class SSnippet : BaseSnippet
+    internal class SSnippet : BaseSnippet
     {
 
 #region Properties

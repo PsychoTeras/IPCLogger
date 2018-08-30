@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Storages
 {
-    sealed class LSObject : IDisposable
+    internal class LSObject : IDisposable
     {
 
 #region Public fields

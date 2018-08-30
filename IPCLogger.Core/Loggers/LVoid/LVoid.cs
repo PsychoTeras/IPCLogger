@@ -3,13 +3,13 @@ using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LVoid
 {
-    sealed class LVoid : BaseLogger<LVoidSettings>
+    public class LVoid : BaseLogger<LVoidSettings>
     {
 
 #region Ctor
 
-        public LVoid(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LVoid(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

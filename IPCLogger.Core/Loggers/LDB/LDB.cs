@@ -29,8 +29,8 @@ namespace IPCLogger.Core.Loggers.LDB
 
 #region Ctor
 
-        public LDB(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LDB(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace IPCLogger.Core.Caches
 {
-    public class DictionaryCache<TKey, TValue>
+    internal class DictionaryCache<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _dict = new Dictionary<TKey, TValue>();
 

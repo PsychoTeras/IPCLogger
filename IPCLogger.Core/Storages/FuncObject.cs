@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Storages
 {
-    sealed class FuncObject
+    internal class FuncObject
     {
         public Delegate Delegate;
         public string ObjName;

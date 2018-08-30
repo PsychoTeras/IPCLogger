@@ -18,8 +18,8 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
 #region Ctor
 
-        public LEventLog(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        public LEventLog(bool threadSafetyGuaranteed) 
+            : base(threadSafetyGuaranteed)
         {
         }
 

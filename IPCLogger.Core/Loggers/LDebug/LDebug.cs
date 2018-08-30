@@ -10,8 +10,8 @@ namespace IPCLogger.Core.Loggers.LDebug
 
 #region Ctor
 
-        public LDebug(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LDebug(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

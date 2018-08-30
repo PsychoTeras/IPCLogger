@@ -2,7 +2,7 @@
 
 namespace IPCLogger.Core.Loggers.LDB.DAL
 {
-    public class ColumnInfo
+    internal class ColumnInfo
     {
         private Type _type;
 

@@ -14,8 +14,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Ctor
 
-        protected SimpleLogger(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        protected SimpleLogger(bool threadSafetyGuaranteed) 
+            : base(threadSafetyGuaranteed)
         {
         }
 

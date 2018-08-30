@@ -32,8 +32,8 @@ namespace IPCLogger.Core.Loggers.LFile
 
 #region Ctor
 
-        public LFile(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        public LFile(bool threadSafetyGuaranteed) 
+            : base(threadSafetyGuaranteed)
         {
         }
 

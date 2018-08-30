@@ -5,7 +5,7 @@ using IPCLogger.Core.Snippets.Base;
 
 namespace IPCLogger.Core.Caches
 {
-    sealed class SnippetsCache
+    internal class SnippetsCache
     {
         private SnippetsCache _nextItem;
         private volatile int _sbLastCapacity = 16;

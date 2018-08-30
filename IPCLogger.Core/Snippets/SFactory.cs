@@ -12,7 +12,7 @@ using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets
 {
-    public static class SFactory
+    internal static class SFactory
     {
 
 #region Static fields

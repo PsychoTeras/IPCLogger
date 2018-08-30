@@ -19,8 +19,8 @@ namespace IPCLogger.Core.Loggers.LIPC
 
 #region Ctor
 
-        public LIPC(bool threadSafetyIsGuaranteed) 
-            : base(threadSafetyIsGuaranteed)
+        public LIPC(bool threadSafetyGuaranteed) 
+            : base(threadSafetyGuaranteed)
         {
         }
 

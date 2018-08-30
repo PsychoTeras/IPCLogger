@@ -34,8 +34,8 @@ namespace IPCLogger.Core.Loggers.LMail
 
 #region Ctor
 
-        public LMail(bool threadSafetyIsGuaranteed)
-            : base(threadSafetyIsGuaranteed)
+        public LMail(bool threadSafetyGuaranteed)
+            : base(threadSafetyGuaranteed)
         {
         }
 

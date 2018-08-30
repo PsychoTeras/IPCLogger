@@ -10,7 +10,7 @@ using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets.Storage
 {
-    sealed class SStorage : BaseSnippet
+    internal class SStorage : BaseSnippet
     {
 
 #region Private fields
