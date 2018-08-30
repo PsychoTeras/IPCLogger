@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 
 namespace IPCLogger.ConfigurationService.Web
 {
@@ -201,7 +202,20 @@ namespace IPCLogger.ConfigurationService.Web
             string destFile;
             if (_srcDestFilesMatch.TryGetValue(e.FullPath, out destFile))
             {
-                File.Copy(e.FullPath, destFile, true);
+                int tryCnt = 0;
+                while (tryCnt < 3)
+                {
+                    try
+                    {
+                        File.Copy(e.FullPath, destFile, true);
+                        tryCnt = 3;
+                    }
+                    catch
+                    {
+                        Thread.Sleep(100);
+                        tryCnt++;
+                    }
+                }
             }
         }
 
