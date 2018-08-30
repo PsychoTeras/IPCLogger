@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.Core", "IPCLogger.Core\IPCLogger.Core.csproj", "{8E5B0F61-C2F0-4829-83D0-A123F614497E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.View", "IPCLogger.View\IPCLogger.View.csproj", "{8D37B136-1555-4FF2-8826-197CCA369827}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.TestService", "IPCLogger.TestService\IPCLogger.TestService.csproj", "{7B09EC35-5487-4A1A-ABB6-4416D75E4FB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.ConfigurationService", "IPCLogger.ConfigurationService\IPCLogger.ConfigurationService.csproj", "{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,8 +43,19 @@ Global
 		{7B09EC35-5487-4A1A-ABB6-4416D75E4FB4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B09EC35-5487-4A1A-ABB6-4416D75E4FB4}.Release|x86.ActiveCfg = Release|x86
 		{7B09EC35-5487-4A1A-ABB6-4416D75E4FB4}.Release|x86.Build.0 = Release|x86
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Debug|x86.ActiveCfg = Debug|x86
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Debug|x86.Build.0 = Debug|x86
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|x86.ActiveCfg = Release|Any CPU
+		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E4335FD-7250-42CC-A3CF-75F0C228DB41}
 	EndGlobalSection
 EndGlobal
