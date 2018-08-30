@@ -6,7 +6,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleSignIn()
         {
-            Get["/"] = x => View["Web/views/signin.html"];
+            Get["/"] = x => View["Web/html/signin.html"];
         }
     }
 }

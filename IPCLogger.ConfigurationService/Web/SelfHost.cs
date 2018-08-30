@@ -1,18 +1,32 @@
-﻿using Nancy.Hosting.Self;
+﻿using IPCLogger.ConfigurationService.Web.modules;
+using Nancy.Hosting.Self;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 
 namespace IPCLogger.ConfigurationService.Web
 {
-    public class SelfHost
+    internal class SelfHost
     {
+
+#region Private fields
+
         private NancyHost _host;
         private int _port = 8080;
 
+        private HostAssetsWatcher _assetsWatcher;
+
+#endregion
+
+#region Properties
+
+        public static SelfHost Instance { get; } = new SelfHost();
+
         public bool Started { get; private set; }
-
-        public static SelfHost Instance = new SelfHost();
-
-        private SelfHost() { }
 
         public int Port
         {
@@ -30,31 +44,180 @@ namespace IPCLogger.ConfigurationService.Web
             }
         }
 
+#endregion
+
+#region Ctor
+
+        private SelfHost() { }
+
+#endregion
+
+#region Private methods
+
+        private string GetLocalIPAddresses()
+        {
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+
+#endregion
+
+#region Public methods
+
         public void Stop()
         {
             if (!Started) return;
 
-            _host.Dispose();
+            _host?.Dispose();
             _host = null;
+            _assetsWatcher?.Dispose();
+            _assetsWatcher = null;
+
+            Started = false;
         }
 
         public void Start()
         {
             if (Started) return;
 
-            if (_host != null)
+            if (System.Diagnostics.Debugger.IsAttached)
             {
-                _host.Dispose();
+                _assetsWatcher = new HostAssetsWatcher();
+                _assetsWatcher.Start();
             }
 
-            _host = new NancyHost(new Uri($"http://localhost:{_port}"));
+            _host = new NancyHost
+            (
+                new Uri($"http://localhost:{_port}"),
+                new Uri($"http://127.0.0.1:{_port}"),
+                new Uri($"http://{GetLocalIPAddresses()}:{_port}")
+            );
             _host.Start();
+
+            Started = true;
         }
 
         public void Restart()
         {
             Stop();
             Start();
+        }
+
+#endregion
+
+    }
+
+    internal class HostAssetsWatcher : IDisposable
+    {
+        private string[] _srcFolders;
+        private string[] _destFolders;
+        private List<FileSystemWatcher> _watchers;
+        private Dictionary<string, string> _srcDestFilesMatch;
+
+        public HostAssetsWatcher()
+        {
+            SetStaticContentFolders();
+            FirstStartCopyContent();
+        }
+
+        private void SetStaticContentFolders()
+        {
+            string binPath = Directory.GetCurrentDirectory();
+            string appName = Assembly.GetExecutingAssembly().GetName().Name;
+            string solutionPath = Path.Combine(Directory.GetParent(binPath).Parent.FullName, appName);
+            _srcFolders = BootstrapperMain.StaticContentsConventions.
+                Select(kv => solutionPath + kv.Value.Replace('/', '\\')).
+                ToArray();
+            _destFolders = BootstrapperMain.StaticContentsConventions.
+                Select(kv => binPath + kv.Value.Replace('/', '\\')).
+                ToArray();
+        }
+
+        private void FirstStartCopyContent()
+        {
+            string GetMatchFile(string destFolder, string[] destFiles, string srcFolder, string srcFile, out bool targetFileExists)
+            {
+                string relFileName = srcFile.Replace(srcFolder + "\\", "");
+                string targetFileName = Path.Combine(destFolder, relFileName);
+                targetFileExists = destFiles.Contains(targetFileName);
+                return targetFileName;
+            }
+
+            _srcDestFilesMatch = new Dictionary<string, string>();
+
+            for (int i = 0; i < _srcFolders.Length; i++)
+            {
+                string srcFolder = _srcFolders[i];
+                if (!Directory.Exists(srcFolder)) continue;
+
+                string[] srcFiles = Directory.EnumerateFiles(srcFolder, "*.*", SearchOption.AllDirectories).ToArray();
+
+                string destFolder = _destFolders[i];
+                Directory.CreateDirectory(destFolder);
+                string[] destFiles = Directory.EnumerateFiles(destFolder, "*.*", SearchOption.AllDirectories).ToArray();
+
+                foreach (string srcFile in srcFiles)
+                {
+                    bool targetFileExists;
+                    string targetFile = GetMatchFile(destFolder, destFiles, srcFolder, srcFile, out targetFileExists);
+                                        
+                    if (!targetFileExists || File.GetLastWriteTime(srcFile) != File.GetLastWriteTime(targetFile))
+                    {
+                        string targetPath = Path.GetDirectoryName(targetFile);
+                        Directory.CreateDirectory(targetPath);
+                        File.Copy(srcFile, targetFile, true);
+                    }
+
+                    _srcDestFilesMatch.Add(srcFile, targetFile);
+                }
+            }
+        }
+
+        public void Start()
+        {
+            _watchers = new List<FileSystemWatcher>();
+            foreach (string srcFolder in _srcFolders)
+            {
+                if (!Directory.Exists(srcFolder)) continue;
+
+                FileSystemWatcher watcher = new FileSystemWatcher(srcFolder);
+                watcher.IncludeSubdirectories = true;
+                watcher.Changed += WatcherFileChanged;
+                watcher.Renamed += WatcherFileChanged;
+                watcher.EnableRaisingEvents = true;
+                _watchers.Add(watcher);
+            }
+        }
+
+        private void WatcherFileChanged(object sender, FileSystemEventArgs e)
+        {
+            string destFile;
+            if (_srcDestFilesMatch.TryGetValue(e.FullPath, out destFile))
+            {
+                File.Copy(e.FullPath, destFile, true);
+            }
+        }
+
+        public void Stop()
+        {
+            foreach (FileSystemWatcher watcher in _watchers)
+            {
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+            }
+            _watchers = null;
+        }
+
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }
