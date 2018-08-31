@@ -77,17 +77,16 @@
     <Compile Include="Entities\UserAuthDTO.cs" />
     <Compile Include="Web\modules\BootstrapperMain.cs" />
     <Compile Include="Web\modules\ModuleSignIn.cs" />
-    <Compile Include="Forms\frmConfigurationService.cs">
+    <Compile Include="Forms\frmSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmConfigurationService.Designer.cs">
-      <DependentUpon>frmConfigurationService.cs</DependentUpon>
+    <Compile Include="Forms\frmSettings.Designer.cs">
+      <DependentUpon>frmSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\SelfHost.cs" />
-    <EmbeddedResource Include="Forms\frmConfigurationService.resx">
-      <DependentUpon>frmConfigurationService.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmSettings.resx">
+      <DependentUpon>frmSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -131,6 +130,7 @@
     <Content Include="Web\images\icon72x72.png" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\bootstrap\bootstrap.min.js" />
+    <None Include="Web\views\index.cshtml" />
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>
   <ItemGroup />

@@ -22,9 +22,16 @@ WHERE
 
                 command.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
 
-                using (SQLiteDataReader dataReader = command.ExecuteReader())
+                using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    return new User();
+                    if (!reader.Read())
+                    {
+                        throw new Exception("Wrong session");
+                    }
+                    return new User
+                    {
+                        UserName = reader["user_name"].ToString()
+                    };
                 }
             }
         }

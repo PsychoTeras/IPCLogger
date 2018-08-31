@@ -29,12 +29,11 @@ namespace IPCLogger.ConfigurationService.Web
 
         public bool Started { get; private set; }
 
+        public string Url => $"http://localhost:{_port}";
+
         public int Port
         {
-            get
-            {
-                return _port;
-            }
+            get => _port;
             set
             {
                 _port = value;
