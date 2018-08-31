@@ -1,6 +1,6 @@
 ﻿namespace IPCLogger.ConfigurationService.Forms
 {
-    sealed partial class frmSettings
+    sealed partial class frmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.SuspendLayout();
             // 
             // frmSettings
@@ -41,8 +41,8 @@
             this.Name = "frmSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configuration Service";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSettingsClosing);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmSettingsKeyDown);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormOnClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainFormOnKeyDown);
             this.ResumeLayout(false);
 
         }

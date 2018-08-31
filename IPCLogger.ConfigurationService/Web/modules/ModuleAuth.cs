@@ -14,6 +14,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
         {
             //this.RequiresAuthentication();
 
+
             //Before += x =>
             //{
             //    if (x.Request.Path == "/signin")

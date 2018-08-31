@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Nancy.Security;
 using System.Collections.Generic;
-using Nancy.Security;
 
 namespace IPCLogger.ConfigurationService.Entities
 {
@@ -8,6 +7,6 @@ namespace IPCLogger.ConfigurationService.Entities
     {
         public string UserName { get; set; }
 
-        public IEnumerable<string> Claims => null;
+        public IEnumerable<string> Claims { get; set; }
     }
 }

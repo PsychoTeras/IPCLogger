@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace IPCLogger.ConfigurationService.Forms
 {
-    public sealed partial class frmSettings : Form
+    public sealed partial class frmMain : Form
     {
 
 #region Private fields
@@ -30,15 +30,12 @@ namespace IPCLogger.ConfigurationService.Forms
         {
             if (!CheckSingleApplicationInstance()) return;
 
-            UserDAL dal = new UserDAL();
-            dal.Register(new UserAuthDTO("a", "1"));
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
                 SelfHost.Instance.Start();
-                using (new frmSettings())
+                using (new frmMain())
                 {
                     Application.Run();
                 }
@@ -53,14 +50,13 @@ namespace IPCLogger.ConfigurationService.Forms
 
 #region Class methods
 
-        public frmSettings()
+        public frmMain()
         {
             InitializeComponent();
 
-
             //Create tray menu
             ContextMenu trayMenu = new ContextMenu();
-            trayMenu.MenuItems.Add("Configure", OnShowSettings);
+            trayMenu.MenuItems.Add("Configure", MainFormOnShow);
             trayMenu.MenuItems.Add("Open console", OnOpenConsole);
             trayMenu.MenuItems.Add("-");
             //trayMenu.MenuItems.Add("About", OnShowAbout);
@@ -70,7 +66,7 @@ namespace IPCLogger.ConfigurationService.Forms
             //Create tray icon
             _trayIcon = new NotifyIcon();
             _trayIcon.ContextMenu = trayMenu;
-            _trayIcon.DoubleClick += OnOpenConsole;
+            _trayIcon.DoubleClick += MainFormOnShow;
             _trayIcon.Icon = Icon;
             _trayIcon.Text = Text;
             _trayIcon.Visible = true;
@@ -86,25 +82,25 @@ namespace IPCLogger.ConfigurationService.Forms
             ExitApplication();
         }
 
-        private void OnShowSettings(object sender, EventArgs e)
+        private void MainFormOnShow(object sender, EventArgs e)
         {
-            ShowSettings();
+            ShowMainForm();
         }
 
-        private void ShowSettings()
+        private void ShowMainForm()
         {
             Visible = ShowInTaskbar = true;
             BringToFront();
             Activate();
         }
 
-        private void FrmSettingsClosing(object sender, FormClosingEventArgs e)
+        private void MainFormOnClosing(object sender, FormClosingEventArgs e)
         {
-            HideSettings();
+            HideMainForm();
             e.Cancel = true;
         }
 
-        private void HideSettings()
+        private void HideMainForm()
         {
             Visible = ShowInTaskbar = false;
         }
@@ -115,7 +111,7 @@ namespace IPCLogger.ConfigurationService.Forms
             Application.Exit();
         }
 
-        private void FrmSettingsKeyDown(object sender, KeyEventArgs e)
+        private void MainFormOnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
