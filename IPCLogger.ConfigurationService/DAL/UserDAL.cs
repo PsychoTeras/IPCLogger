@@ -1,9 +1,9 @@
-﻿using System;
-using System.Data.SQLite;
-using IPCLogger.ConfigurationService.Entities;
+﻿using IPCLogger.ConfigurationService.Entities;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Security;
+using System;
+using System.Data.SQLite;
 
 namespace IPCLogger.ConfigurationService.DAL
 {

@@ -32,12 +32,15 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
+            //base.ConfigureRequestContainer(container, context);
+
             container.Register<IUserMapper, UserDAL>(UserDAL.Instance);
         }
 
         protected override void ConfigureConventions(NancyConventions nancyConventions)
         {
             base.ConfigureConventions(nancyConventions);
+
             nancyConventions.StaticContentsConventions.Clear();
             foreach (KeyValuePair<string, string> pair in StaticContentsConventions)
             {
@@ -47,6 +50,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
         {
+            //base.RequestStartup(requestContainer, pipelines, context);
+
             FormsAuthenticationConfiguration formsAuthConfiguration = new FormsAuthenticationConfiguration
             {
                 RedirectUrl = "~/signin",

@@ -3,58 +3,35 @@ using IPCLogger.ConfigurationService.Entities;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Extensions;
-using Nancy.Security;
+using Nancy.ModelBinding;
 using System;
-using System.Dynamic;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
     public class ModuleSignIn : NancyModule
     {
-        private static string CreateMD5(string input)
-        {
-            using (MD5 md5 = MD5.Create())
-            {
-                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
-                StringBuilder sb = new StringBuilder();
-                foreach (byte t in hashBytes)
-                {
-                    sb.Append($"{t:x2}");
-                }
-                return sb.ToString();
-            }
-        }
-
         public ModuleSignIn()
         {
-            Get["/"] = x =>
-            {
-                this.RequiresAuthentication();
-                return View["index"];
-            };
-
             Get["/signin"] = x =>
             {
-                dynamic model = new ExpandoObject();
-                model.Errored = Request.Query.error.HasValue;
+                UserAuthDTO model = new UserAuthDTO
+                (
+                    Request.Query.username,
+                    Request.Query.rememberme.HasValue,
+                    Request.Query.failed.HasValue
+                );
                 return View["signin", model];
             };
 
             Post["/signin"] = x =>
             {
-                UserAuthDTO dto = new UserAuthDTO
-                {
-                    UserName = (string)Request.Form.UserName,
-                    PasswordHash = CreateMD5((string)Request.Form.Password)
-                };
-                Guid? userGuid = UserDAL.Instance.Login(dto);
+                UserAuthDTO model = this.Bind<UserAuthDTO>();
+                Guid? userGuid = UserDAL.Instance.Login(model);
 
                 if (userGuid == null)
                 {
-                    return Context.GetRedirect("~/signin?error=true&username=" + (string)Request.Form.UserName);
+                    return Context.GetRedirect("~/signin?username=" + model.UserName + "&failed" +
+                        (model.RememberMe ? "&rememberme" : ""));
                 }
 
                 DateTime? expiry = null;

@@ -31,7 +31,7 @@ namespace IPCLogger.ConfigurationService.Forms
             if (!CheckSingleApplicationInstance()) return;
 
             UserDAL dal = new UserDAL();
-            dal.Register(new UserAuthDTO { UserName = "a", PasswordHash = "c4ca4238a0b923820dcc509a6f75849b" });
+            dal.Register(new UserAuthDTO("a", "1"));
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
