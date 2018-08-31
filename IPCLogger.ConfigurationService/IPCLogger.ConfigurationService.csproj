@@ -71,6 +71,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\BaseDAL.cs" />
+    <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserAuthDTO.cs" />
     <Compile Include="Web\modules\BootstrapperMain.cs" />
     <Compile Include="Web\modules\ModuleSignIn.cs" />
     <Compile Include="Forms\frmConfigurationService.cs">
@@ -127,18 +131,21 @@
     <Content Include="Web\images\icon72x72.png" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\bootstrap\bootstrap.min.js" />
-    <Content Include="Web\html\signin.html" />
+    <None Include="Web\views\signin.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Nancy">
       <Version>1.4.4</Version>
     </PackageReference>
+    <PackageReference Include="Nancy.Authentication.Forms">
+      <Version>1.4.1</Version>
+    </PackageReference>
     <PackageReference Include="Nancy.Hosting.Self">
       <Version>1.4.1</Version>
     </PackageReference>
-    <PackageReference Include="Nancy.RouteHelpers">
-      <Version>1.0.6</Version>
+    <PackageReference Include="System.Data.SQLite">
+      <Version>1.0.109.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

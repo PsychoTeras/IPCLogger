@@ -1,6 +1,10 @@
 ﻿using Nancy;
 using Nancy.Conventions;
 using System.Collections.Generic;
+using IPCLogger.ConfigurationService.DAL;
+using Nancy.Authentication.Forms;
+using Nancy.Bootstrapper;
+using Nancy.TinyIoc;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
@@ -8,12 +12,28 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
         {
-            new KeyValuePair<string, string>("html", "/Web/html"),
+            new KeyValuePair<string, string>("html", "/Web/views"),
+            new KeyValuePair<string, string>("cshtml", "/Web/views"),
             new KeyValuePair<string, string>("css", "/Web/css"),
             new KeyValuePair<string, string>("js", "/Web/js"),
             new KeyValuePair<string, string>("images", "/Web/images"),
-            new KeyValuePair<string, string>("fonts", "/Web/fonts"),
+            new KeyValuePair<string, string>("fonts", "/Web/fonts")
         };
+
+        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
+        {
+            Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
+        }
+
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        {
+            //We don't call "base" here to prevent auto-discovery of types/dependencies
+        }
+
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
+        {
+            container.Register<IUserMapper, UserDAL>(UserDAL.Instance);
+        }
 
         protected override void ConfigureConventions(NancyConventions nancyConventions)
         {
@@ -23,6 +43,16 @@ namespace IPCLogger.ConfigurationService.Web.modules
             {
                 nancyConventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory(pair.Key, pair.Value));
             }
+        }
+
+        protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
+        {
+            FormsAuthenticationConfiguration formsAuthConfiguration = new FormsAuthenticationConfiguration
+            {
+                RedirectUrl = "~/signin",
+                UserMapper = requestContainer.Resolve<IUserMapper>()
+            };
+            FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
         }
     }
 }
