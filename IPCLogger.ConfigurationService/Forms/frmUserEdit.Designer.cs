@@ -37,11 +37,11 @@ namespace IPCLogger.ConfigurationService.Forms
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.tbUserName = new System.Windows.Forms.TextBox();
+            this.cbRole = new System.Windows.Forms.ComboBox();
+            this.tbPassword1 = new System.Windows.Forms.TextBox();
+            this.tbPassword2 = new System.Windows.Forms.TextBox();
+            this.cbDontChangePassword = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             this.tlpInner.SuspendLayout();
@@ -61,14 +61,15 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpMain.Size = new System.Drawing.Size(404, 251);
+            this.tlpMain.Size = new System.Drawing.Size(376, 284);
             this.tlpMain.TabIndex = 9;
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(312, 216);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 7, 5, 7);
+            this.btnCancel.Location = new System.Drawing.Point(282, 249);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 7, 7, 7);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 28);
             this.btnCancel.TabIndex = 14;
@@ -85,28 +86,29 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpInner.Controls.Add(this.label6, 0, 1);
             this.tlpInner.Controls.Add(this.label7, 0, 2);
             this.tlpInner.Controls.Add(this.label8, 0, 3);
-            this.tlpInner.Controls.Add(this.textBox1, 1, 0);
-            this.tlpInner.Controls.Add(this.comboBox1, 1, 1);
-            this.tlpInner.Controls.Add(this.textBox2, 1, 2);
-            this.tlpInner.Controls.Add(this.textBox3, 1, 3);
-            this.tlpInner.Controls.Add(this.checkBox1, 1, 4);
+            this.tlpInner.Controls.Add(this.tbUserName, 1, 0);
+            this.tlpInner.Controls.Add(this.cbRole, 1, 1);
+            this.tlpInner.Controls.Add(this.tbPassword1, 1, 2);
+            this.tlpInner.Controls.Add(this.tbPassword2, 1, 3);
+            this.tlpInner.Controls.Add(this.cbDontChangePassword, 1, 4);
             this.tlpInner.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpInner.Location = new System.Drawing.Point(3, 3);
             this.tlpInner.Name = "tlpInner";
+            this.tlpInner.Padding = new System.Windows.Forms.Padding(0, 3, 2, 0);
             this.tlpInner.RowCount = 5;
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tlpInner.Size = new System.Drawing.Size(398, 144);
+            this.tlpInner.Size = new System.Drawing.Size(370, 144);
             this.tlpInner.TabIndex = 9;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Location = new System.Drawing.Point(3, 0);
+            this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(114, 29);
             this.label5.TabIndex = 1;
@@ -117,7 +119,7 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label6.AutoSize = true;
             this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label6.Location = new System.Drawing.Point(3, 29);
+            this.label6.Location = new System.Drawing.Point(3, 32);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(114, 29);
             this.label6.TabIndex = 5;
@@ -128,7 +130,7 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label7.AutoSize = true;
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label7.Location = new System.Drawing.Point(3, 58);
+            this.label7.Location = new System.Drawing.Point(3, 61);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(114, 29);
             this.label7.TabIndex = 6;
@@ -139,78 +141,79 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label8.AutoSize = true;
             this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label8.Location = new System.Drawing.Point(3, 87);
+            this.label8.Location = new System.Drawing.Point(3, 90);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(114, 29);
             this.label8.TabIndex = 7;
             this.label8.Text = "Repeat password:";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // textBox1
+            // tbUserName
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(123, 3);
-            this.textBox1.MaxLength = 39;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(272, 21);
-            this.textBox1.TabIndex = 8;
+            this.tbUserName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbUserName.Location = new System.Drawing.Point(123, 6);
+            this.tbUserName.MaxLength = 39;
+            this.tbUserName.Name = "tbUserName";
+            this.tbUserName.Size = new System.Drawing.Size(242, 21);
+            this.tbUserName.TabIndex = 8;
             // 
-            // comboBox1
+            // cbRole
             // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(123, 32);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(272, 21);
-            this.comboBox1.TabIndex = 9;
+            this.cbRole.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cbRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRole.FormattingEnabled = true;
+            this.cbRole.Location = new System.Drawing.Point(123, 35);
+            this.cbRole.Name = "cbRole";
+            this.cbRole.Size = new System.Drawing.Size(242, 21);
+            this.cbRole.TabIndex = 9;
             // 
-            // textBox2
+            // tbPassword1
             // 
-            this.textBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox2.Location = new System.Drawing.Point(123, 61);
-            this.textBox2.MaxLength = 100;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PasswordChar = '•';
-            this.textBox2.Size = new System.Drawing.Size(272, 21);
-            this.textBox2.TabIndex = 10;
+            this.tbPassword1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbPassword1.Location = new System.Drawing.Point(123, 64);
+            this.tbPassword1.MaxLength = 100;
+            this.tbPassword1.Name = "tbPassword1";
+            this.tbPassword1.PasswordChar = '•';
+            this.tbPassword1.Size = new System.Drawing.Size(242, 21);
+            this.tbPassword1.TabIndex = 10;
             // 
-            // textBox3
+            // tbPassword2
             // 
-            this.textBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox3.Location = new System.Drawing.Point(123, 90);
-            this.textBox3.MaxLength = 100;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.PasswordChar = '•';
-            this.textBox3.Size = new System.Drawing.Size(272, 21);
-            this.textBox3.TabIndex = 11;
+            this.tbPassword2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbPassword2.Location = new System.Drawing.Point(123, 93);
+            this.tbPassword2.MaxLength = 100;
+            this.tbPassword2.Name = "tbPassword2";
+            this.tbPassword2.PasswordChar = '•';
+            this.tbPassword2.Size = new System.Drawing.Size(242, 21);
+            this.tbPassword2.TabIndex = 11;
             // 
-            // checkBox1
+            // cbDontChangePassword
             // 
-            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.checkBox1.Location = new System.Drawing.Point(228, 119);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(167, 22);
-            this.checkBox1.TabIndex = 12;
-            this.checkBox1.Text = "Do not change password";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.cbDontChangePassword.Dock = System.Windows.Forms.DockStyle.Right;
+            this.cbDontChangePassword.Location = new System.Drawing.Point(198, 122);
+            this.cbDontChangePassword.Name = "cbDontChangePassword";
+            this.cbDontChangePassword.Size = new System.Drawing.Size(167, 21);
+            this.cbDontChangePassword.TabIndex = 12;
+            this.cbDontChangePassword.Text = "Do not change password";
+            this.cbDontChangePassword.UseVisualStyleBackColor = true;
             // 
             // btnOk
             // 
             this.btnOk.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnOk.Location = new System.Drawing.Point(221, 216);
+            this.btnOk.Location = new System.Drawing.Point(191, 249);
             this.btnOk.Margin = new System.Windows.Forms.Padding(5, 7, 2, 7);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(87, 28);
             this.btnOk.TabIndex = 15;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
             // 
             // frmUserEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 275);
+            this.ClientSize = new System.Drawing.Size(400, 308);
             this.Controls.Add(this.tlpMain);
             this.Font = new System.Drawing.Font("Verdana", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -237,11 +240,11 @@ namespace IPCLogger.ConfigurationService.Forms
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TextBox tbUserName;
+        private System.Windows.Forms.ComboBox cbRole;
+        private System.Windows.Forms.TextBox tbPassword1;
+        private System.Windows.Forms.TextBox tbPassword2;
+        private System.Windows.Forms.CheckBox cbDontChangePassword;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOk;
     }

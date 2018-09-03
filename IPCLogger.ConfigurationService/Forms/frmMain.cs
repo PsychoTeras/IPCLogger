@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.Web;
+﻿using IPCLogger.ConfigurationService.DAL;
+using IPCLogger.ConfigurationService.Web;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -128,7 +129,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void btnUserAdd_Click(object sender, EventArgs e)
         {
-            new frmUserEdit().ShowDialog();
+            new frmUserEdit().Execute(UserDAL.Instance.GetRoles());
         }
 
         private void btnUserEdit_Click(object sender, EventArgs e)
