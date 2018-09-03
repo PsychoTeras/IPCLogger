@@ -8,22 +8,22 @@ namespace IPCLogger.ConfigurationService.DAL
 {
     static class SQLiteHost
     {
-        private static readonly string _baseFileName = "sqlite.dat";
+        private static readonly string _baseFileName = "local.sqlite";
 
         public static bool ItWasNewDatabase { get; }
-        public static HashSet<Type> WhoCreatedDbStructureYet { get; }
+        public static HashSet<Type> WhoHasCreatedDbStructureYet { get; }
         public static SQLiteConnection Connection { get; }
 
         static SQLiteHost()
         {
-            WhoCreatedDbStructureYet = new HashSet<Type>();
+            WhoHasCreatedDbStructureYet = new HashSet<Type>();
             ItWasNewDatabase = !File.Exists(_baseFileName);
 
-            if (!ItWasNewDatabase)
-            {
-                File.Delete(_baseFileName);
-                ItWasNewDatabase = true;
-            }
+            //if (!ItWasNewDatabase)
+            //{
+            //    File.Delete(_baseFileName);
+            //    ItWasNewDatabase = true;
+            //}
 
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;New={1};Compress=True;",
                 _baseFileName, ItWasNewDatabase));
@@ -47,10 +47,10 @@ namespace IPCLogger.ConfigurationService.DAL
         private void CheckDBStructure()
         {
             Type thisType = GetType();
-            if (SQLiteHost.ItWasNewDatabase && !SQLiteHost.WhoCreatedDbStructureYet.Contains(thisType))
+            if (SQLiteHost.ItWasNewDatabase && !SQLiteHost.WhoHasCreatedDbStructureYet.Contains(thisType))
             {
                 CreateDbStructure();
-                SQLiteHost.WhoCreatedDbStructureYet.Add(thisType);
+                SQLiteHost.WhoHasCreatedDbStructureYet.Add(thisType);
             }
         }
 

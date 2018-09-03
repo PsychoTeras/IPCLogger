@@ -1,6 +1,6 @@
-﻿namespace IPCLogger.ConfigurationService.Entities
+﻿namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    public class Role : DBRecord
+    public class ClaimModel : DBRecord
     {
         public string Name { get; set; }
 

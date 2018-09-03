@@ -1,5 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.DAL;
-using IPCLogger.ConfigurationService.Entities;
+using IPCLogger.ConfigurationService.Entities.DTO;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Extensions;

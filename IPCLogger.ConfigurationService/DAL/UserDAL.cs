@@ -1,9 +1,12 @@
 ﻿using IPCLogger.ConfigurationService.Entities;
+using IPCLogger.ConfigurationService.Entities.DTO;
+using IPCLogger.ConfigurationService.Entities.Models;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Security;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 
 namespace IPCLogger.ConfigurationService.DAL
@@ -72,8 +75,11 @@ namespace IPCLogger.ConfigurationService.DAL
 SELECT
      id
     ,user_name
-FROM T_USER
-WHERE guid = @guid";
+FROM T_USERS
+WHERE
+    guid = @guid AND
+    blocked = 0 AND
+    deleted = 0";
 
                 command.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
 
@@ -119,10 +125,12 @@ WHERE ur.user_id = @user_id";
             {
                 command.CommandText = @"
 SELECT guid
-FROM T_USER
+FROM T_USERS
 WHERE
     user_name = @user_name AND
-    password_hash = @password_hash";
+    password_hash = @password_hash AND
+    blocked = 0 AND
+    deleted = 0";
 
                 command.Parameters.Add(new SQLiteParameter("@user_name", dto.UserName));
                 command.Parameters.Add(new SQLiteParameter("@password_hash", dto.PasswordHash));
@@ -134,27 +142,115 @@ WHERE
             }
         }
 
-        public void Register(UserRegDTO dto)
+        public int Create(UserRegDTO dto)
         {
+            int userId;
             using (SQLiteCommand command = new SQLiteCommand(Connection))
             {
                 command.CommandText = @"
-INSERT OR IGNORE INTO T_USER
+INSERT INTO T_USERS
     (user_name, password_hash, guid)
 VALUES
-    (@user_name, @password_hash, @guid)";
+    (@user_name, @password_hash, @guid);
+SELECT last_insert_rowid()";
 
+                command.Parameters.Add(new SQLiteParameter("@user_id", dto.Id));
                 command.Parameters.Add(new SQLiteParameter("@user_name", dto.UserName));
                 command.Parameters.Add(new SQLiteParameter("@password_hash", dto.PasswordHash));
                 command.Parameters.Add(new SQLiteParameter("@guid", Guid.NewGuid().ToString()));
 
-                int result = command.ExecuteNonQuery();
+                try
+                {
+                    userId = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch
+                {
+                    throw new Exception($"Duplicate user name \"{dto.UserName}\"");
+                }
+
+                command.CommandText = @"
+INSERT INTO T_USER_ROLE 
+    (user_id, role_id)
+VALUES
+    (@user_id, @role_id)";
+
+                command.Parameters.Clear();
+                command.Parameters.Add(new SQLiteParameter("@user_id", userId));
+                command.Parameters.Add(new SQLiteParameter("@role_id", dto.RoleId));
+
+                command.ExecuteNonQuery();
+                return userId;
             }
         }
 
-        public List<Claim> GetClaims()
+        public int Update(UserRegDTO dto)
         {
-            List<Claim> claims = new List<Claim>();
+            using (SQLiteCommand command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+UPDATE T_USERS
+SET
+     user_name = @user_name
+    ,password_hash = COALESCE(@password_hash, password_hash)
+WHERE id = @user_id";
+
+                command.Parameters.Add(new SQLiteParameter("@user_id", dto.Id));
+                command.Parameters.Add(new SQLiteParameter("@user_name", dto.UserName));
+                command.Parameters.Add(new SQLiteParameter("@password_hash", dto.PasswordHash));
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    throw new Exception($"Duplicate user name \"{dto.UserName}\"");
+                }
+
+                command.CommandText = @"
+UPDATE T_USER_ROLE
+SET role_id = @role_id
+WHERE user_id = @user_id";
+
+                command.Parameters.Add(new SQLiteParameter("@role_id", dto.RoleId));
+                command.ExecuteNonQuery();
+
+                return dto.Id;
+            }
+        }
+
+        public void Delete(int userId)
+        {
+            using (SQLiteCommand command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+UPDATE T_USERS
+SET deleted = 1
+WHERE id = @user_id";
+
+                command.Parameters.Add(new SQLiteParameter("@user_id", userId));
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void ChangeBlock(int userId, bool blocked)
+        {
+            using (SQLiteCommand command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+UPDATE T_USERS
+SET blocked = @blocked
+WHERE id = @user_id";
+
+                command.Parameters.Add(new SQLiteParameter("@user_id", userId));
+                command.Parameters.Add(new SQLiteParameter("@blocked", blocked));
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public List<ClaimModel> GetClaims()
+        {
+            List<ClaimModel> claims = new List<ClaimModel>();
 
             using (SQLiteCommand command = new SQLiteCommand(Connection))
             {
@@ -166,7 +262,7 @@ FROM T_CLAIMS";
                 {
                     while (reader.Read())
                     {
-                        claims.Add(new Claim
+                        claims.Add(new ClaimModel
                         {
                             Id = Convert.ToInt32(reader["id"]),
                             Name = reader["name"].ToString(),
@@ -179,9 +275,9 @@ FROM T_CLAIMS";
             return claims;
         }
 
-        public List<Role> GetRoles()
+        public List<RoleModel> GetRoles()
         {
-            List<Role> claims = new List<Role>();
+            List<RoleModel> claims = new List<RoleModel>();
 
             using (SQLiteCommand command = new SQLiteCommand(Connection))
             {
@@ -193,7 +289,7 @@ FROM T_ROLES";
                 {
                     while (reader.Read())
                     {
-                        claims.Add(new Role
+                        claims.Add(new RoleModel
                         {
                             Id = Convert.ToInt32(reader["id"]),
                             Name = reader["name"].ToString(),
@@ -206,6 +302,37 @@ FROM T_ROLES";
             return claims;
         }
 
+        public List<UserModel> GetUsers()
+        {
+            List<UserModel> users = new List<UserModel>();
+
+            using (SQLiteCommand command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+SELECT *
+FROM T_USERS u
+JOIN T_USER_ROLE ur ON
+    ur.user_id = u.id
+WHERE deleted = 0";
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        users.Add(new UserModel
+                        {
+                            Id = Convert.ToInt32(reader["id"]),
+                            UserName = reader["user_name"].ToString(),
+                            Blocked = Convert.ToBoolean(reader["blocked"]),
+                            RoleId = Convert.ToInt32(reader["role_id"])
+                        });
+                    }
+                }
+            }
+
+            return users;
+        }
+
         private void CreateTables(SQLiteCommand command)
         {
             //Create T_ROLES table
@@ -214,7 +341,8 @@ CREATE TABLE T_ROLES
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT(39) NOT NULL UNIQUE COLLATE NOCASE,
-    description TEXT(160)
+    description TEXT(160),
+    deleted BOOLEAN DEFAULT 0 NOT NULL
 )";
             command.ExecuteNonQuery();
 
@@ -239,22 +367,23 @@ CREATE TABLE T_ROLE_CLAIMS
 )";
             command.ExecuteNonQuery();
 
-            //Create T_USER table
+            //Create T_USERS table
             command.CommandText = @"
-CREATE TABLE T_USER
+CREATE TABLE T_USERS
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     user_name TEXT(39) NOT NULL UNIQUE COLLATE NOCASE,
     password_hash TEXT(32) NOT NULL,
     guid TEXT(36) NOT NULL,
-    blocked BOOLEAN DEFAULT 0 NOT NULL    
+    blocked BOOLEAN DEFAULT 0 NOT NULL,
+    deleted BOOLEAN DEFAULT 0 NOT NULL
 )";
             command.ExecuteNonQuery();
 
             //Create IDX_T_USER_AUTH index
             command.CommandText = @"
 CREATE UNIQUE INDEX IDX_T_USER_AUTH
-ON [T_USER] (user_name, password_hash)
+ON [T_USERS] (user_name, password_hash)
 ";
             command.ExecuteNonQuery();
 
@@ -322,7 +451,7 @@ VALUES
 
             //Create default users
             command.CommandText = @"
-INSERT INTO T_USER
+INSERT INTO T_USERS
     (user_name, password_hash, guid)
 VALUES
     (@user_name, @password_hash, @guid);

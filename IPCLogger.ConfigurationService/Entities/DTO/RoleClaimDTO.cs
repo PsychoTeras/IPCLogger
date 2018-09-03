@@ -1,4 +1,4 @@
-﻿namespace IPCLogger.ConfigurationService.Entities
+﻿namespace IPCLogger.ConfigurationService.Entities.DTO
 {
     public class RoleClaimDTO
     {

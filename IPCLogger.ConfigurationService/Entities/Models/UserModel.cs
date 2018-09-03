@@ -1,4 +1,4 @@
-﻿namespace IPCLogger.ConfigurationService.Entities
+﻿namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class UserModel : DBRecord
     {
@@ -7,5 +7,10 @@
         public int RoleId { get; set; }
 
         public bool Blocked { get; set; }
+
+        public override string ToString()
+        {
+            return UserName;
+        }
     }
 }

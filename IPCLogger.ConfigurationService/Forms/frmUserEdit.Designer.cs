@@ -56,22 +56,22 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpMain.Controls.Add(this.tlpInner, 0, 0);
             this.tlpMain.Controls.Add(this.btnOk, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMain.Location = new System.Drawing.Point(12, 12);
+            this.tlpMain.Location = new System.Drawing.Point(12, 14);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpMain.Size = new System.Drawing.Size(376, 284);
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+            this.tlpMain.Size = new System.Drawing.Size(376, 327);
             this.tlpMain.TabIndex = 9;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(282, 249);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 7, 7, 7);
+            this.btnCancel.Location = new System.Drawing.Point(282, 289);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 8, 7, 8);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(87, 28);
+            this.btnCancel.Size = new System.Drawing.Size(87, 30);
             this.btnCancel.TabIndex = 14;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -80,7 +80,7 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.tlpInner.ColumnCount = 2;
             this.tlpMain.SetColumnSpan(this.tlpInner, 2);
-            this.tlpInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tlpInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
             this.tlpInner.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpInner.Controls.Add(this.label5, 0, 0);
             this.tlpInner.Controls.Add(this.label6, 0, 1);
@@ -96,12 +96,12 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpInner.Name = "tlpInner";
             this.tlpInner.Padding = new System.Windows.Forms.Padding(0, 3, 2, 0);
             this.tlpInner.RowCount = 5;
-            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tlpInner.Size = new System.Drawing.Size(370, 144);
+            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tlpInner.Size = new System.Drawing.Size(370, 158);
             this.tlpInner.TabIndex = 9;
             // 
             // label5
@@ -110,7 +110,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(114, 29);
+            this.label5.Size = new System.Drawing.Size(104, 31);
             this.label5.TabIndex = 1;
             this.label5.Text = "User name:";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -119,9 +119,9 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label6.AutoSize = true;
             this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label6.Location = new System.Drawing.Point(3, 32);
+            this.label6.Location = new System.Drawing.Point(3, 34);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(114, 29);
+            this.label6.Size = new System.Drawing.Size(104, 31);
             this.label6.TabIndex = 5;
             this.label6.Text = "Role:";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -130,9 +130,9 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label7.AutoSize = true;
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label7.Location = new System.Drawing.Point(3, 61);
+            this.label7.Location = new System.Drawing.Point(3, 65);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(114, 29);
+            this.label7.Size = new System.Drawing.Size(104, 31);
             this.label7.TabIndex = 6;
             this.label7.Text = "Password:";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -141,9 +141,9 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             this.label8.AutoSize = true;
             this.label8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label8.Location = new System.Drawing.Point(3, 90);
+            this.label8.Location = new System.Drawing.Point(3, 96);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(114, 29);
+            this.label8.Size = new System.Drawing.Size(104, 31);
             this.label8.TabIndex = 7;
             this.label8.Text = "Repeat password:";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -151,10 +151,10 @@ namespace IPCLogger.ConfigurationService.Forms
             // tbUserName
             // 
             this.tbUserName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbUserName.Location = new System.Drawing.Point(123, 6);
+            this.tbUserName.Location = new System.Drawing.Point(113, 6);
             this.tbUserName.MaxLength = 39;
             this.tbUserName.Name = "tbUserName";
-            this.tbUserName.Size = new System.Drawing.Size(242, 21);
+            this.tbUserName.Size = new System.Drawing.Size(252, 23);
             this.tbUserName.TabIndex = 8;
             // 
             // cbRole
@@ -162,48 +162,50 @@ namespace IPCLogger.ConfigurationService.Forms
             this.cbRole.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbRole.FormattingEnabled = true;
-            this.cbRole.Location = new System.Drawing.Point(123, 35);
+            this.cbRole.Location = new System.Drawing.Point(113, 37);
             this.cbRole.Name = "cbRole";
-            this.cbRole.Size = new System.Drawing.Size(242, 21);
+            this.cbRole.Size = new System.Drawing.Size(252, 23);
             this.cbRole.TabIndex = 9;
             // 
             // tbPassword1
             // 
             this.tbPassword1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbPassword1.Location = new System.Drawing.Point(123, 64);
+            this.tbPassword1.Location = new System.Drawing.Point(113, 68);
             this.tbPassword1.MaxLength = 100;
             this.tbPassword1.Name = "tbPassword1";
             this.tbPassword1.PasswordChar = '•';
-            this.tbPassword1.Size = new System.Drawing.Size(242, 21);
+            this.tbPassword1.Size = new System.Drawing.Size(252, 23);
             this.tbPassword1.TabIndex = 10;
             // 
             // tbPassword2
             // 
             this.tbPassword2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbPassword2.Location = new System.Drawing.Point(123, 93);
+            this.tbPassword2.Location = new System.Drawing.Point(113, 99);
             this.tbPassword2.MaxLength = 100;
             this.tbPassword2.Name = "tbPassword2";
             this.tbPassword2.PasswordChar = '•';
-            this.tbPassword2.Size = new System.Drawing.Size(242, 21);
+            this.tbPassword2.Size = new System.Drawing.Size(252, 23);
             this.tbPassword2.TabIndex = 11;
             // 
             // cbDontChangePassword
             // 
+            this.cbDontChangePassword.AutoSize = true;
             this.cbDontChangePassword.Dock = System.Windows.Forms.DockStyle.Right;
-            this.cbDontChangePassword.Location = new System.Drawing.Point(198, 122);
+            this.cbDontChangePassword.Location = new System.Drawing.Point(208, 130);
             this.cbDontChangePassword.Name = "cbDontChangePassword";
-            this.cbDontChangePassword.Size = new System.Drawing.Size(167, 21);
+            this.cbDontChangePassword.Size = new System.Drawing.Size(157, 25);
             this.cbDontChangePassword.TabIndex = 12;
             this.cbDontChangePassword.Text = "Do not change password";
             this.cbDontChangePassword.UseVisualStyleBackColor = true;
+            this.cbDontChangePassword.CheckedChanged += new System.EventHandler(this.CbDontChangePassword_CheckedChanged);
             // 
             // btnOk
             // 
             this.btnOk.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnOk.Location = new System.Drawing.Point(191, 249);
-            this.btnOk.Margin = new System.Windows.Forms.Padding(5, 7, 2, 7);
+            this.btnOk.Location = new System.Drawing.Point(190, 289);
+            this.btnOk.Margin = new System.Windows.Forms.Padding(5, 8, 3, 8);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(87, 28);
+            this.btnOk.Size = new System.Drawing.Size(87, 30);
             this.btnOk.TabIndex = 15;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
@@ -211,21 +213,22 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             // frmUserEdit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 308);
+            this.ClientSize = new System.Drawing.Size(400, 355);
             this.Controls.Add(this.tlpMain);
-            this.Font = new System.Drawing.Font("Verdana", 8.25F);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmUserEdit";
-            this.Padding = new System.Windows.Forms.Padding(12);
+            this.Padding = new System.Windows.Forms.Padding(12, 14, 12, 14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add/Edit User";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmUserEdit_KeyDown);
             this.tlpMain.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);
             this.tlpInner.PerformLayout();

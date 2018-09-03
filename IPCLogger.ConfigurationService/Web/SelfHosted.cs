@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace IPCLogger.ConfigurationService.Web
 {
-    internal class SelfHost
+    internal class SelfHosted
     {
 
 #region Private fields
@@ -25,7 +25,7 @@ namespace IPCLogger.ConfigurationService.Web
 
 #region Properties
 
-        public static SelfHost Instance { get; } = new SelfHost();
+        public static SelfHosted Instance { get; } = new SelfHosted();
 
         public bool Started { get; private set; }
 
@@ -48,7 +48,7 @@ namespace IPCLogger.ConfigurationService.Web
 
 #region Ctor
 
-        private SelfHost() { }
+        private SelfHosted() { }
 
 #endregion
 

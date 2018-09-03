@@ -6,7 +6,7 @@ namespace IPCLogger.ConfigurationService.Controls
 {
     public class BorderedTableLayoutPanel : TableLayoutPanel
     {
-        private readonly Pen _blackDarkGray = new Pen(Color.DarkGray, 1) { DashStyle = DashStyle.Dash };
+        private readonly Pen _penDarkGrayDash = new Pen(Color.DarkGray, 1) { DashStyle = DashStyle.Dash };
 
         public BorderedTableLayoutPanel() : base()
         {
@@ -25,7 +25,7 @@ namespace IPCLogger.ConfigurationService.Controls
             base.OnCellPaint(e);
             if (e.Row > 0)
             {
-                e.Graphics.DrawLine(_blackDarkGray, e.CellBounds.Left, e.CellBounds.Top,
+                e.Graphics.DrawLine(_penDarkGrayDash, e.CellBounds.Left, e.CellBounds.Top,
                     e.CellBounds.Left + e.CellBounds.Width - 1, e.CellBounds.Top);
             }
         }

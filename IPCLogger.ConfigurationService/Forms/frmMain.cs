@@ -1,7 +1,10 @@
 ﻿using IPCLogger.ConfigurationService.DAL;
+using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.ConfigurationService.Web;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace IPCLogger.ConfigurationService.Forms
@@ -12,6 +15,7 @@ namespace IPCLogger.ConfigurationService.Forms
 #region Private fields
 
         private NotifyIcon _trayIcon;
+        private Dictionary<int, RoleModel> _roles;
 
 #endregion
 
@@ -33,7 +37,7 @@ namespace IPCLogger.ConfigurationService.Forms
             Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                SelfHost.Instance.Start();
+                SelfHosted.Instance.Start();
                 using (new frmMain())
                 {
                     Application.Run();
@@ -41,7 +45,7 @@ namespace IPCLogger.ConfigurationService.Forms
             }
             finally
             {
-                SelfHost.Instance.Stop();
+                SelfHosted.Instance.Stop();
             }
         }
 
@@ -69,11 +73,14 @@ namespace IPCLogger.ConfigurationService.Forms
             _trayIcon.Icon = Icon;
             _trayIcon.Text = Text;
             _trayIcon.Visible = true;
+
+            RefreshRoles();
+            RefreshUsers();
         }
 
         private void OnOpenConsole(object sender, EventArgs e)
         {
-            Process.Start(SelfHost.Instance.Url);
+            Process.Start(SelfHosted.Instance.Url);
         }
 
         private void OnExit(object sender, EventArgs e)
@@ -125,26 +132,122 @@ namespace IPCLogger.ConfigurationService.Forms
 
 #endregion
 
+#region Roles
+
+        private void RefreshRoles()
+        {
+            _roles = UserDAL.Instance.GetRoles().ToDictionary(r => r.Id, r => r);
+        }
+
+#endregion
+
 #region Users
 
-        private void btnUserAdd_Click(object sender, EventArgs e)
+        private UserModel GetSelectedUser()
         {
-            new frmUserEdit().Execute(UserDAL.Instance.GetRoles());
+            ListViewItem item = lvUsers.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
+            return item?.Tag as UserModel;
         }
 
-        private void btnUserEdit_Click(object sender, EventArgs e)
+        private void RefreshUsers()
         {
+            lvUsers.BeginUpdate();
 
+            lvUsers.Items.Clear();
+            List<UserModel> users = UserDAL.Instance.GetUsers();
+            foreach (UserModel user in users)
+            {
+                ListViewItem item = new ListViewItem(user.UserName) { Tag = user };
+                item.SubItems.Add(_roles[user.RoleId].ToString());
+                item.SubItems.Add(user.Blocked ? "YES" : "NO");
+                lvUsers.Items.Add(item);
+            }
+
+            lvUsers.EndUpdate();
+            UsersSelectedIndexChanged();
         }
 
-        private void btnUserDelete_Click(object sender, EventArgs e)
+        private void BtnUsersRefresh_Click(object sender, EventArgs e)
         {
-
+            RefreshUsers();
         }
 
-        private void btnUserBlockChange_Click(object sender, EventArgs e)
+        private void AddUser()
         {
+            if (new frmUserEdit().Execute(_roles.Values.ToArray()))
+            {
+                RefreshUsers();
+            }
+        }
 
+        private void BtnUserAdd_Click(object sender, EventArgs e)
+        {
+            AddUser();
+        }
+
+        private void EditUser()
+        {
+            UserModel user = GetSelectedUser();
+            if (user != null && new frmUserEdit().Execute(_roles.Values.ToArray(), user))
+            {
+                RefreshUsers();
+            }
+        }
+
+        private void BtnUserEdit_Click(object sender, EventArgs e)
+        {
+            EditUser();
+        }
+
+        private void DeleteUser()
+        {
+            UserModel user = GetSelectedUser();
+            if (user != null && MessageBox.Show($"Delete user \"{user.UserName}\"?", "Confirmation",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                UserDAL.Instance.Delete(user.Id);
+                RefreshUsers();
+            }
+        }
+
+        private void BtnUserDelete_Click(object sender, EventArgs e)
+        {
+            DeleteUser();
+        }
+
+        private void BlockChangeUser()
+        {
+            UserModel user = GetSelectedUser();
+            if (user == null) return;
+
+            string action = user.Blocked ? "Unblock" : "Block";
+            if (MessageBox.Show($"{action} user \"{user.UserName}\"?", "Confirmation",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                UserDAL.Instance.ChangeBlock(user.Id, !user.Blocked);
+                RefreshUsers();
+            }
+        }
+
+        private void BtnUserBlockChange_Click(object sender, EventArgs e)
+        {
+            BlockChangeUser();
+        }
+
+        private void UsersSelectedIndexChanged()
+        {
+            UserModel user = GetSelectedUser();
+            btnUserEdit.Enabled = btnUserDelete.Enabled = btnUserBlockChange.Enabled = user != null;
+            bool userBlocked = user != null && user.Blocked;
+            btnUserBlockChange.Image = userBlocked
+                ? Properties.Resources.unblock_user
+                : Properties.Resources.block_user;
+            btnUserBlockChange.Text = $"{(userBlocked ? "Unblock" : "Block")} user";
+        }
+
+        private void LvUsers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UsersSelectedIndexChanged();
         }
 
 #endregion
