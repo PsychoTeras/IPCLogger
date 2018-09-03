@@ -146,20 +146,22 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             // btnUserAdd
             // 
+            this.btnUserAdd.AutoSize = false;
             this.btnUserAdd.Image = global::IPCLogger.ConfigurationService.Properties.Resources.add_user;
             this.btnUserAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUserAdd.Name = "btnUserAdd";
-            this.btnUserAdd.Size = new System.Drawing.Size(58, 36);
+            this.btnUserAdd.Size = new System.Drawing.Size(62, 36);
             this.btnUserAdd.Text = "Add user";
             this.btnUserAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnUserAdd.Click += new System.EventHandler(this.BtnUserAdd_Click);
             // 
             // btnUserEdit
             // 
+            this.btnUserEdit.AutoSize = false;
             this.btnUserEdit.Image = global::IPCLogger.ConfigurationService.Properties.Resources.edit_user;
             this.btnUserEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUserEdit.Name = "btnUserEdit";
-            this.btnUserEdit.Size = new System.Drawing.Size(56, 36);
+            this.btnUserEdit.Size = new System.Drawing.Size(62, 36);
             this.btnUserEdit.Text = "Edit user";
             this.btnUserEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnUserEdit.Click += new System.EventHandler(this.BtnUserEdit_Click);
@@ -169,8 +171,8 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnUserDelete.Image = ((System.Drawing.Image)(resources.GetObject("btnUserDelete.Image")));
             this.btnUserDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUserDelete.Name = "btnUserDelete";
-            this.btnUserDelete.Size = new System.Drawing.Size(69, 36);
-            this.btnUserDelete.Text = "Delete user";
+            this.btnUserDelete.Size = new System.Drawing.Size(62, 36);
+            this.btnUserDelete.Text = "Drop user";
             this.btnUserDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnUserDelete.Click += new System.EventHandler(this.BtnUserDelete_Click);
             // 
@@ -297,29 +299,32 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             // toolStripButton1
             // 
-            this.toolStripButton1.Image = global::IPCLogger.ConfigurationService.Properties.Resources.add_user;
+            this.toolStripButton1.AutoSize = false;
+            this.toolStripButton1.Image = global::IPCLogger.ConfigurationService.Properties.Resources.add_app;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(58, 36);
-            this.toolStripButton1.Text = "Add user";
+            this.toolStripButton1.Size = new System.Drawing.Size(62, 36);
+            this.toolStripButton1.Text = "Register";
             this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripButton2
             // 
-            this.toolStripButton2.Image = global::IPCLogger.ConfigurationService.Properties.Resources.edit_user;
+            this.toolStripButton2.AutoSize = false;
+            this.toolStripButton2.Image = global::IPCLogger.ConfigurationService.Properties.Resources.edit_app;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(56, 36);
-            this.toolStripButton2.Text = "Edit user";
+            this.toolStripButton2.Size = new System.Drawing.Size(62, 36);
+            this.toolStripButton2.Text = "Modify";
             this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripButton3
             // 
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.AutoSize = false;
+            this.toolStripButton3.Image = global::IPCLogger.ConfigurationService.Properties.Resources.delete_app;
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(69, 36);
-            this.toolStripButton3.Text = "Delete user";
+            this.toolStripButton3.Size = new System.Drawing.Size(62, 36);
+            this.toolStripButton3.Text = "Delete";
             this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripSeparator2
@@ -329,12 +334,11 @@ namespace IPCLogger.ConfigurationService.Forms
             // 
             // toolStripButton4
             // 
-            this.toolStripButton4.AutoSize = false;
-            this.toolStripButton4.Image = global::IPCLogger.ConfigurationService.Properties.Resources.block_user;
+            this.toolStripButton4.Image = global::IPCLogger.ConfigurationService.Properties.Resources.hide_app;
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(80, 36);
-            this.toolStripButton4.Text = "Block user";
+            this.toolStripButton4.Size = new System.Drawing.Size(68, 36);
+            this.toolStripButton4.Text = "Show/hide";
             this.toolStripButton4.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripButton5
