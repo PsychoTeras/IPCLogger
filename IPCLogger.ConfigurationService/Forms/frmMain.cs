@@ -1,6 +1,4 @@
-﻿using IPCLogger.ConfigurationService.DAL;
-using IPCLogger.ConfigurationService.Entities;
-using IPCLogger.ConfigurationService.Web;
+﻿using IPCLogger.ConfigurationService.Web;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -122,6 +120,30 @@ namespace IPCLogger.ConfigurationService.Forms
                     //BtnCancelClick(null, null);
                     break;
             }
+        }
+
+#endregion
+
+#region Users
+
+        private void btnUserAdd_Click(object sender, EventArgs e)
+        {
+            new frmUserEdit().ShowDialog();
+        }
+
+        private void btnUserEdit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnUserDelete_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnUserBlockChange_Click(object sender, EventArgs e)
+        {
+
         }
 
 #endregion

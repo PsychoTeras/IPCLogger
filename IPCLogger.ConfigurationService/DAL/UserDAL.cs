@@ -247,7 +247,7 @@ CREATE TABLE T_USER
     user_name TEXT(39) NOT NULL UNIQUE COLLATE NOCASE,
     password_hash TEXT(32) NOT NULL,
     guid TEXT(36) NOT NULL,
-    is_active BOOLEAN DEFAULT 1 NOT NULL    
+    blocked BOOLEAN DEFAULT 0 NOT NULL    
 )";
             command.ExecuteNonQuery();
 
