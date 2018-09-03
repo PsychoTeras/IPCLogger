@@ -19,6 +19,7 @@ CREATE TABLE T_APPLICATIONS
     name TEXT(100) NOT NULL,
     description TEXT(160),
     log_file_path TEXT(260) NOT NULL,
+    visible BOOLEAN DEFAULT 1 NOT NULL
 )";
             command.ExecuteNonQuery();
         }
