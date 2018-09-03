@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
-@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<IPCLogger.ConfigurationService.Entities.UserAuthDTO>
+@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<IPCLogger.ConfigurationService.Entities.DTO.UserAuthDTO>
 
 <head>
     <meta charset="utf-8">
@@ -24,7 +24,7 @@
 
         @if (Model.LoginFailed)
         {
-            <label class="alert alert-danger">Invalid Username or Password</label>
+            <label class="alert alert-danger">Invalid User name or Password</label>
         }
 
         <label for="UserName" class="sr-only">User name</label>

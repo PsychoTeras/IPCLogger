@@ -41,16 +41,33 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnUserDelete = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnUserBlockChange = new System.Windows.Forms.ToolStripButton();
+            this.btnUsersRefresh = new System.Windows.Forms.ToolStripButton();
             this.lvUsers = new IPCLogger.ConfigurationService.Controls.BorderedListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnUsersRefresh = new System.Windows.Forms.ToolStripButton();
+            this.pApps = new IPCLogger.ConfigurationService.Controls.BorderedPanel();
+            this.hdApps = new IPCLogger.ConfigurationService.Controls.HorizontalDivider();
+            this.tsApps = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.lvApps = new IPCLogger.ConfigurationService.Controls.BorderedListView();
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tcMain.SuspendLayout();
             this.tpUsers.SuspendLayout();
             this.pUsers.SuspendLayout();
             this.tsUsers.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.pApps.SuspendLayout();
+            this.tsApps.SuspendLayout();
             this.SuspendLayout();
             // 
             // tcMain
@@ -70,7 +87,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tcMain.TabColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(222)))), ((int)(((byte)(222)))));
             this.tcMain.TabColorInactive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.tcMain.TabIndex = 0;
-            this.tcMain.TabRigthSeparator = 5;
+            this.tcMain.TabRigthSeparator = 1;
             // 
             // tpUsers
             // 
@@ -79,7 +96,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tpUsers.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tpUsers.Location = new System.Drawing.Point(4, 44);
             this.tpUsers.Name = "tpUsers";
-            this.tpUsers.Padding = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tpUsers.Padding = new System.Windows.Forms.Padding(8);
             this.tpUsers.Size = new System.Drawing.Size(728, 544);
             this.tpUsers.TabIndex = 0;
             this.tpUsers.Text = "Users";
@@ -92,9 +109,9 @@ namespace IPCLogger.ConfigurationService.Forms
             this.pUsers.Controls.Add(this.tsUsers);
             this.pUsers.Controls.Add(this.lvUsers);
             this.pUsers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pUsers.Location = new System.Drawing.Point(8, 7);
+            this.pUsers.Location = new System.Drawing.Point(8, 8);
             this.pUsers.Name = "pUsers";
-            this.pUsers.Size = new System.Drawing.Size(712, 530);
+            this.pUsers.Size = new System.Drawing.Size(712, 528);
             this.pUsers.TabIndex = 1;
             // 
             // hdUsers
@@ -173,6 +190,17 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnUserBlockChange.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnUserBlockChange.Click += new System.EventHandler(this.BtnUserBlockChange_Click);
             // 
+            // btnUsersRefresh
+            // 
+            this.btnUsersRefresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.btnUsersRefresh.Image = global::IPCLogger.ConfigurationService.Properties.Resources.refresh;
+            this.btnUsersRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnUsersRefresh.Name = "btnUsersRefresh";
+            this.btnUsersRefresh.Size = new System.Drawing.Size(50, 36);
+            this.btnUsersRefresh.Text = "Refresh";
+            this.btnUsersRefresh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnUsersRefresh.Click += new System.EventHandler(this.BtnUsersRefresh_Click);
+            // 
             // lvUsers
             // 
             this.lvUsers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -183,6 +211,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.lvUsers.CompactGridLines = true;
             this.lvUsers.FullRowSelect = true;
             this.lvUsers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvUsers.LabelWrap = false;
@@ -190,8 +219,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.lvUsers.MultiSelect = false;
             this.lvUsers.Name = "lvUsers";
             this.lvUsers.OwnerDraw = true;
-            this.lvUsers.CompactGridLines = true;
-            this.lvUsers.Size = new System.Drawing.Size(710, 490);
+            this.lvUsers.Size = new System.Drawing.Size(710, 488);
             this.lvUsers.TabIndex = 1;
             this.lvUsers.UseCompatibleStateImageBehavior = false;
             this.lvUsers.View = System.Windows.Forms.View.Details;
@@ -206,34 +234,161 @@ namespace IPCLogger.ConfigurationService.Forms
             // columnHeader2
             // 
             this.columnHeader2.Text = "Role";
-            this.columnHeader2.Width = 238;
+            this.columnHeader2.Width = 321;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Blocked";
-            this.columnHeader3.Width = 143;
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(222)))), ((int)(((byte)(222)))));
+            this.tabPage2.Controls.Add(this.pApps);
             this.tabPage2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tabPage2.Location = new System.Drawing.Point(4, 44);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(8);
             this.tabPage2.Size = new System.Drawing.Size(728, 544);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Logged Applications";
             // 
-            // btnUsersRefresh
+            // pApps
             // 
-            this.btnUsersRefresh.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.btnUsersRefresh.Image = global::IPCLogger.ConfigurationService.Properties.Resources.refresh;
-            this.btnUsersRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnUsersRefresh.Name = "btnUsersRefresh";
-            this.btnUsersRefresh.Size = new System.Drawing.Size(50, 36);
-            this.btnUsersRefresh.Text = "Refresh";
-            this.btnUsersRefresh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnUsersRefresh.Click += new System.EventHandler(this.BtnUsersRefresh_Click);
+            this.pApps.BackColor = System.Drawing.Color.Transparent;
+            this.pApps.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pApps.Controls.Add(this.hdApps);
+            this.pApps.Controls.Add(this.tsApps);
+            this.pApps.Controls.Add(this.lvApps);
+            this.pApps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pApps.Location = new System.Drawing.Point(8, 8);
+            this.pApps.Name = "pApps";
+            this.pApps.Size = new System.Drawing.Size(712, 528);
+            this.pApps.TabIndex = 2;
+            // 
+            // hdApps
+            // 
+            this.hdApps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hdApps.Location = new System.Drawing.Point(0, 38);
+            this.hdApps.Name = "hdApps";
+            this.hdApps.Size = new System.Drawing.Size(711, 1);
+            this.hdApps.TabIndex = 4;
+            // 
+            // tsApps
+            // 
+            this.tsApps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tsApps.AutoSize = false;
+            this.tsApps.Dock = System.Windows.Forms.DockStyle.None;
+            this.tsApps.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tsApps.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.tsApps.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripSeparator2,
+            this.toolStripButton4,
+            this.toolStripButton5});
+            this.tsApps.Location = new System.Drawing.Point(-2, 0);
+            this.tsApps.Name = "tsApps";
+            this.tsApps.Padding = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.tsApps.Size = new System.Drawing.Size(714, 39);
+            this.tsApps.TabIndex = 3;
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = global::IPCLogger.ConfigurationService.Properties.Resources.add_user;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(58, 36);
+            this.toolStripButton1.Text = "Add user";
+            this.toolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.Image = global::IPCLogger.ConfigurationService.Properties.Resources.edit_user;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(56, 36);
+            this.toolStripButton2.Text = "Edit user";
+            this.toolStripButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(69, 36);
+            this.toolStripButton3.Text = "Delete user";
+            this.toolStripButton3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 39);
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.AutoSize = false;
+            this.toolStripButton4.Image = global::IPCLogger.ConfigurationService.Properties.Resources.block_user;
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(80, 36);
+            this.toolStripButton4.Text = "Block user";
+            this.toolStripButton4.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButton5.Image = global::IPCLogger.ConfigurationService.Properties.Resources.refresh;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(50, 36);
+            this.toolStripButton5.Text = "Refresh";
+            this.toolStripButton5.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // lvApps
+            // 
+            this.lvApps.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvApps.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lvApps.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6,
+            this.columnHeader7});
+            this.lvApps.CompactGridLines = true;
+            this.lvApps.FullRowSelect = true;
+            this.lvApps.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lvApps.LabelWrap = false;
+            this.lvApps.Location = new System.Drawing.Point(0, 38);
+            this.lvApps.MultiSelect = false;
+            this.lvApps.Name = "lvApps";
+            this.lvApps.OwnerDraw = true;
+            this.lvApps.Size = new System.Drawing.Size(710, 488);
+            this.lvApps.TabIndex = 1;
+            this.lvApps.UseCompatibleStateImageBehavior = false;
+            this.lvApps.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Application";
+            this.columnHeader4.Width = 153;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Description";
+            this.columnHeader5.Width = 178;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Log file path";
+            this.columnHeader6.Width = 319;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Visibility";
             // 
             // frmMain
             // 
@@ -255,6 +410,10 @@ namespace IPCLogger.ConfigurationService.Forms
             this.pUsers.ResumeLayout(false);
             this.tsUsers.ResumeLayout(false);
             this.tsUsers.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.pApps.ResumeLayout(false);
+            this.tsApps.ResumeLayout(false);
+            this.tsApps.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -277,6 +436,20 @@ namespace IPCLogger.ConfigurationService.Forms
         private System.Windows.Forms.ToolStripButton btnUserBlockChange;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnUsersRefresh;
+        private BorderedPanel pApps;
+        private HorizontalDivider hdApps;
+        private System.Windows.Forms.ToolStrip tsApps;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private BorderedListView lvApps;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
     }
 }
 

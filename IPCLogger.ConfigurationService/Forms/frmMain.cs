@@ -136,7 +136,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void RefreshRoles()
         {
-            _roles = UserDAL.Instance.GetRoles().ToDictionary(r => r.Id, r => r);
+            _roles = UserDAL.Instance.GetRoles(true).ToDictionary(r => r.Id, r => r);
         }
 
 #endregion

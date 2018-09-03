@@ -6,7 +6,6 @@ using Nancy.Authentication.Forms;
 using Nancy.Security;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SQLite;
 
 namespace IPCLogger.ConfigurationService.DAL
@@ -266,7 +265,7 @@ FROM T_CLAIMS";
                         {
                             Id = Convert.ToInt32(reader["id"]),
                             Name = reader["name"].ToString(),
-                            Description = reader["description"].ToString()
+                            Description = StringOrNull(reader["description"])
                         });
                     }
                 }
@@ -275,7 +274,7 @@ FROM T_CLAIMS";
             return claims;
         }
 
-        public List<RoleModel> GetRoles()
+        public List<RoleModel> GetRoles(bool includeDeleted)
         {
             List<RoleModel> claims = new List<RoleModel>();
 
@@ -283,8 +282,10 @@ FROM T_CLAIMS";
             {
                 command.CommandText = @"
 SELECT *
-FROM T_ROLES";
+FROM T_ROLES
+WHERE deleted = 0 OR @include_deleted = 1";
 
+                command.Parameters.Add(new SQLiteParameter("@include_deleted", includeDeleted));
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -293,7 +294,7 @@ FROM T_ROLES";
                         {
                             Id = Convert.ToInt32(reader["id"]),
                             Name = reader["name"].ToString(),
-                            Description = reader["description"].ToString()
+                            Description = StringOrNull(reader["description"])
                         });
                     }
                 }
@@ -414,7 +415,7 @@ VALUES
                 command.Parameters.Clear();
                 command.Parameters.Add(new SQLiteParameter("@id", i + 1));
                 command.Parameters.Add(new SQLiteParameter("@name", claim.Key));
-                command.Parameters.Add(new SQLiteParameter("@description", claim.Value));
+                command.Parameters.Add(new SQLiteParameter("@description", StringOrDBNull(claim.Value)));
                 command.ExecuteNonQuery();
             }
 
@@ -431,7 +432,7 @@ SELECT last_insert_rowid()";
                 DefaultUserRole defaultRole = _defaultRoles[i];
                 command.Parameters.Clear();
                 command.Parameters.Add(new SQLiteParameter("@name", defaultRole.UserName));
-                command.Parameters.Add(new SQLiteParameter("@description", defaultRole.Description));
+                command.Parameters.Add(new SQLiteParameter("@description", StringOrDBNull(defaultRole.Description)));
                 int roleId = Convert.ToInt32(command.ExecuteScalar());
 
                 command.CommandText = @"
@@ -487,7 +488,7 @@ VALUES
                     //Create tables structure
                     CreateTables(command);
 
-                    //Cerate tables data
+                    //Create tables data
                     CreateTablesData(command);
 
                     //Commit

@@ -55,5 +55,15 @@ namespace IPCLogger.ConfigurationService.DAL
         }
 
         protected abstract void CreateDbStructure();
+
+        protected object StringOrDBNull(string str)
+        {
+            return string.IsNullOrEmpty(str) ? (object)DBNull.Value : str;
+        }
+
+        protected string StringOrNull(object val)
+        {
+            return val == DBNull.Value ? null : val.ToString();
+        }
     }
 }
