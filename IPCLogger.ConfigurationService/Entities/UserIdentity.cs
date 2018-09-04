@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.Entities
 {
-    internal class User : IUserIdentity
+    internal class UserIdentity : IUserIdentity
     {
         public string UserName { get; set; }
 

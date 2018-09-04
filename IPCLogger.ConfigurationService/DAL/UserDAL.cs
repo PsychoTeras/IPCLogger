@@ -63,7 +63,7 @@ namespace IPCLogger.ConfigurationService.DAL
         public IUserIdentity GetUserFromIdentifier(Guid guid, NancyContext context)
         {
             int userId;
-            User user = new User
+            UserIdentity user = new UserIdentity
             {
                 Claims = new List<string>()
             };

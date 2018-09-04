@@ -76,6 +76,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
             RefreshRoles();
             RefreshUsers();
+            RefreshLoggers();
         }
 
         private void OnOpenConsole(object sender, EventArgs e)
@@ -248,6 +249,76 @@ namespace IPCLogger.ConfigurationService.Forms
         private void LvUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             UsersSelectedIndexChanged();
+        }
+
+#endregion
+
+#region Loggers
+
+        private LoggerModel GetSelectedLogger()
+        {
+            ListViewItem item = lvLoggers.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
+            return item?.Tag as LoggerModel;
+        }
+
+        private void RefreshLoggers()
+        {
+            lvLoggers.BeginUpdate();
+
+            lvLoggers.Items.Clear();
+            List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(true);
+            foreach (LoggerModel logger in loggers)
+            {
+                ListViewItem item = new ListViewItem(logger.ApplicationName) { Tag = logger };
+                item.SubItems.Add(logger.Description);
+                item.SubItems.Add(logger.ConfigurationFile);
+                item.SubItems.Add(logger.Visible ? "Visible" : "Hidden");
+                lvLoggers.Items.Add(item);
+            }
+
+            lvLoggers.EndUpdate();
+            LoggersSelectedIndexChanged();
+        }
+
+        private void btnLoggersRefresh_Click(object sender, EventArgs e)
+        {
+            RefreshLoggers();
+        }
+
+        private void BtnLoggerRegister_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnLoggerModify_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnLoggerUnregister_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnLoggerVisibleChange_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoggersSelectedIndexChanged()
+        {
+            LoggerModel logger = GetSelectedLogger();
+            btnLoggerModify.Enabled = btnLoggerUnregister.Enabled = btnLoggerVisibleChange.Enabled = logger != null;
+            bool loggerHidden = logger != null && !logger.Visible;
+            btnLoggerVisibleChange.Image = loggerHidden
+                ? Properties.Resources.show_app
+                : Properties.Resources.hide_app;
+            btnLoggerVisibleChange.Text = loggerHidden ? "Show" : "Hide";
+        }
+
+        private void lvLoggers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoggersSelectedIndexChanged();
         }
 
 #endregion

@@ -102,7 +102,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void BindModels()
         {
-            Text = _userModel.Id != 0 ? "Create new user" : "Change user";
+            Text = _userModel.Id == 0 ? "Create new user" : "Modify user";
             cbDontChangePassword.Visible = _userModel.Id != 0;
             tbUserName.DataBindings.Add("Text", _userModel, "UserName", false, DataSourceUpdateMode.OnPropertyChanged);
             cbRole.DataSource = _roles;

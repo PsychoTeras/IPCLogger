@@ -87,17 +87,27 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DrawingHelper.cs" />
-    <Compile Include="DAL\ApplicationDAL.cs" />
+    <Compile Include="Controls\TextBoxWithButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DAL\LoggerDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
     <Compile Include="Entities\DBRecord.cs" />
     <Compile Include="Entities\Models\RoleModel.cs" />
     <Compile Include="Entities\DTO\RoleClaimDTO.cs" />
-    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserIdentity.cs" />
     <Compile Include="Entities\DTO\UserAuthDTO.cs" />
     <Compile Include="Entities\Models\UserModel.cs" />
     <Compile Include="Entities\DTO\UserRegDTO.cs" />
+    <Compile Include="Forms\frmManageLogger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmManageLogger.Designer.cs">
+      <DependentUpon>frmManageLogger.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmManageUser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +129,9 @@
     <Compile Include="Web\SelfHosted.cs" />
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmManageLogger.resx">
+      <DependentUpon>frmManageLogger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmManageUser.resx">
       <DependentUpon>frmManageUser.cs</DependentUpon>
