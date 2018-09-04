@@ -9,14 +9,14 @@ using System.Windows.Forms;
 
 namespace IPCLogger.ConfigurationService.Forms
 {
-    public partial class frmUserEdit : Form
+    public partial class frmManageUser : Form
     {
         private IEnumerable<RoleModel> _roles;
         private UserModel _userModel;
 
         public UserRegDTO Result { get; private set; }
 
-        public frmUserEdit()
+        public frmManageUser()
         {
             InitializeComponent();
         }
@@ -102,7 +102,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void BindModels()
         {
-            Text = _userModel.Id != 0 ? "Edit user" : "Add new user";
+            Text = _userModel.Id != 0 ? "Create new user" : "Change user";
             cbDontChangePassword.Visible = _userModel.Id != 0;
             tbUserName.DataBindings.Add("Text", _userModel, "UserName", false, DataSourceUpdateMode.OnPropertyChanged);
             cbRole.DataSource = _roles;

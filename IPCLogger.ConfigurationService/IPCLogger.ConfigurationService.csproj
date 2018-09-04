@@ -98,11 +98,11 @@
     <Compile Include="Entities\DTO\UserAuthDTO.cs" />
     <Compile Include="Entities\Models\UserModel.cs" />
     <Compile Include="Entities\DTO\UserRegDTO.cs" />
-    <Compile Include="Forms\frmUserEdit.cs">
+    <Compile Include="Forms\frmManageUser.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmUserEdit.Designer.cs">
-      <DependentUpon>frmUserEdit.cs</DependentUpon>
+    <Compile Include="Forms\frmManageUser.Designer.cs">
+      <DependentUpon>frmManageUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BaseHelpers.cs" />
     <Compile Include="Web\modules\BootstrapperMain.cs" />
@@ -120,8 +120,8 @@
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmUserEdit.resx">
-      <DependentUpon>frmUserEdit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmManageUser.resx">
+      <DependentUpon>frmManageUser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

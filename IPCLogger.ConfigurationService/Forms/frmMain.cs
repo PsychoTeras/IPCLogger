@@ -174,7 +174,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void AddUser()
         {
-            if (new frmUserEdit().Execute(_roles.Values.ToArray()))
+            if (new frmManageUser().Execute(_roles.Values.ToArray()))
             {
                 RefreshUsers();
             }
@@ -185,18 +185,18 @@ namespace IPCLogger.ConfigurationService.Forms
             AddUser();
         }
 
-        private void EditUser()
+        private void ModifyUser()
         {
             UserModel user = GetSelectedUser();
-            if (user != null && new frmUserEdit().Execute(_roles.Values.ToArray(), user))
+            if (user != null && new frmManageUser().Execute(_roles.Values.ToArray(), user))
             {
                 RefreshUsers();
             }
         }
 
-        private void BtnUserEdit_Click(object sender, EventArgs e)
+        private void BtnUserModify_Click(object sender, EventArgs e)
         {
-            EditUser();
+            ModifyUser();
         }
 
         private void DeleteUser()
@@ -237,12 +237,12 @@ namespace IPCLogger.ConfigurationService.Forms
         private void UsersSelectedIndexChanged()
         {
             UserModel user = GetSelectedUser();
-            btnUserEdit.Enabled = btnUserDelete.Enabled = btnUserBlockChange.Enabled = user != null;
+            btnUserModify.Enabled = btnUserDelete.Enabled = btnUserBlockChange.Enabled = user != null;
             bool userBlocked = user != null && user.Blocked;
             btnUserBlockChange.Image = userBlocked
                 ? Properties.Resources.unblock_user
                 : Properties.Resources.block_user;
-            btnUserBlockChange.Text = $"{(userBlocked ? "Unblock" : "Block")} user";
+            btnUserBlockChange.Text = userBlocked ? "Unblock" : "Block";
         }
 
         private void LvUsers_SelectedIndexChanged(object sender, EventArgs e)

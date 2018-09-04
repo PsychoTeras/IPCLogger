@@ -2,7 +2,7 @@
 
 namespace IPCLogger.ConfigurationService.Forms
 {
-    partial class frmUserEdit
+    partial class frmManageUser
     {
         /// <summary>
         /// Required designer variable.
