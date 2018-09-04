@@ -207,7 +207,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnLoggersRefresh.Text = "Refresh";
             this.btnLoggersRefresh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnLoggersRefresh.ToolTipText = "Refresh list";
-            this.btnLoggersRefresh.Click += new System.EventHandler(this.btnLoggersRefresh_Click);
+            this.btnLoggersRefresh.Click += new System.EventHandler(this.BtnLoggersRefresh_Click);
             // 
             // lvLoggers
             // 
@@ -232,7 +232,8 @@ namespace IPCLogger.ConfigurationService.Forms
             this.lvLoggers.TabIndex = 1;
             this.lvLoggers.UseCompatibleStateImageBehavior = false;
             this.lvLoggers.View = System.Windows.Forms.View.Details;
-            this.lvLoggers.SelectedIndexChanged += new System.EventHandler(this.lvLoggers_SelectedIndexChanged);
+            this.lvLoggers.SelectedIndexChanged += new System.EventHandler(this.LvLoggers_SelectedIndexChanged);
+            this.lvLoggers.DoubleClick += new System.EventHandler(this.BtnLoggerModify_Click);
             // 
             // columnHeader4
             // 

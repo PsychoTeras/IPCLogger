@@ -93,6 +93,7 @@
     <Compile Include="DAL\LoggerDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="Entities\DTO\LoggerRegDTO.cs" />
     <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
     <Compile Include="Entities\DBRecord.cs" />

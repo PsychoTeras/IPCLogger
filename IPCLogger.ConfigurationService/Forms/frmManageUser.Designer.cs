@@ -72,7 +72,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 8, 7, 8);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 30);
-            this.btnCancel.TabIndex = 14;
+            this.btnCancel.TabIndex = 15;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -206,7 +206,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnOk.Margin = new System.Windows.Forms.Padding(5, 8, 3, 8);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(87, 30);
-            this.btnOk.TabIndex = 15;
+            this.btnOk.TabIndex = 14;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
@@ -228,7 +228,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add/Edit User";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmUserEdit_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmKeyDown);
             this.tlpMain.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);
             this.tlpInner.PerformLayout();

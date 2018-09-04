@@ -40,6 +40,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tbAppName = new System.Windows.Forms.TextBox();
             this.tbConfigurationFile = new IPCLogger.ConfigurationService.Controls.TextBoxWithButton();
             this.btnOk = new System.Windows.Forms.Button();
+            this.odLogFile = new System.Windows.Forms.OpenFileDialog();
             this.tlpMain.SuspendLayout();
             this.tlpInner.SuspendLayout();
             this.SuspendLayout();
@@ -58,18 +59,18 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
-            this.tlpMain.Size = new System.Drawing.Size(516, 258);
+            this.tlpMain.Size = new System.Drawing.Size(540, 233);
             this.tlpMain.TabIndex = 10;
             // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(422, 220);
+            this.btnCancel.Location = new System.Drawing.Point(446, 195);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 8, 7, 8);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 30);
-            this.btnCancel.TabIndex = 14;
+            this.btnCancel.TabIndex = 15;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -94,7 +95,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
             this.tlpInner.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tlpInner.Size = new System.Drawing.Size(510, 97);
+            this.tlpInner.Size = new System.Drawing.Size(534, 97);
             this.tlpInner.TabIndex = 9;
             // 
             // tbDescription
@@ -103,8 +104,8 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tbDescription.Location = new System.Drawing.Point(113, 37);
             this.tbDescription.MaxLength = 39;
             this.tbDescription.Name = "tbDescription";
-            this.tbDescription.Size = new System.Drawing.Size(392, 23);
-            this.tbDescription.TabIndex = 13;
+            this.tbDescription.Size = new System.Drawing.Size(416, 23);
+            this.tbDescription.TabIndex = 2;
             // 
             // label5
             // 
@@ -145,48 +146,57 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tbAppName.Location = new System.Drawing.Point(113, 6);
             this.tbAppName.MaxLength = 39;
             this.tbAppName.Name = "tbAppName";
-            this.tbAppName.Size = new System.Drawing.Size(392, 23);
-            this.tbAppName.TabIndex = 8;
+            this.tbAppName.Size = new System.Drawing.Size(416, 23);
+            this.tbAppName.TabIndex = 1;
             // 
             // tbConfigurationFile
             // 
+            this.tbConfigurationFile.ButtonFont = new System.Drawing.Font("Verdana", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbConfigurationFile.ButtonImage = null;
+            this.tbConfigurationFile.ButtonPadding = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.tbConfigurationFile.ButtonText = "...";
             this.tbConfigurationFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbConfigurationFile.Location = new System.Drawing.Point(113, 68);
             this.tbConfigurationFile.MaxLength = 100;
             this.tbConfigurationFile.Name = "tbConfigurationFile";
-            this.tbConfigurationFile.PasswordChar = '•';
-            this.tbConfigurationFile.Size = new System.Drawing.Size(392, 23);
-            this.tbConfigurationFile.TabIndex = 10;
+            this.tbConfigurationFile.Size = new System.Drawing.Size(416, 23);
+            this.tbConfigurationFile.TabIndex = 3;
+            this.tbConfigurationFile.ButtonClick += new System.EventHandler(this.TbConfigurationFile_ButtonClick);
             // 
             // btnOk
             // 
             this.btnOk.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnOk.Location = new System.Drawing.Point(330, 220);
+            this.btnOk.Location = new System.Drawing.Point(354, 195);
             this.btnOk.Margin = new System.Windows.Forms.Padding(5, 8, 3, 8);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(87, 30);
-            this.btnOk.TabIndex = 15;
+            this.btnOk.TabIndex = 14;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
+            // 
+            // odLogFile
+            // 
+            this.odLogFile.Filter = "Configuration files (*.config)|*.config|All files|*.*";
             // 
             // frmManageLogger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(540, 286);
+            this.ClientSize = new System.Drawing.Size(564, 261);
             this.Controls.Add(this.tlpMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(580, 300);
             this.Name = "frmManageLogger";
             this.Padding = new System.Windows.Forms.Padding(12, 14, 12, 14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Register/Manage application";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmKeyDown);
             this.tlpMain.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);
             this.tlpInner.PerformLayout();
@@ -206,5 +216,6 @@ namespace IPCLogger.ConfigurationService.Forms
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tbDescription;
+        private System.Windows.Forms.OpenFileDialog odLogFile;
     }
 }

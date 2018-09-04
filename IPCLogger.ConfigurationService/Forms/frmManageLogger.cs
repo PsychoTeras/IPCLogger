@@ -1,6 +1,9 @@
-﻿using IPCLogger.ConfigurationService.Entities.Models;
+﻿using IPCLogger.ConfigurationService.DAL;
+using IPCLogger.ConfigurationService.Entities.DTO;
+using IPCLogger.ConfigurationService.Entities.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Windows.Forms;
 
 namespace IPCLogger.ConfigurationService.Forms
@@ -9,7 +12,7 @@ namespace IPCLogger.ConfigurationService.Forms
     {
         private LoggerModel _loggerModel;
 
-        public object Result { get; private set; }
+        public LoggerRegDTO Result { get; private set; }
 
         public frmManageLogger()
         {
@@ -21,7 +24,7 @@ namespace IPCLogger.ConfigurationService.Forms
             Ok();
         }
 
-        private void FrmUserEdit_KeyDown(object sender, KeyEventArgs e)
+        private void FrmKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
@@ -99,14 +102,43 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void AssertChanges()
         {
+            if (string.IsNullOrWhiteSpace(tbAppName.Text))
+            {
+                tbAppName.Focus();
+                throw new ValidationException("Application name cannot be empty");
+            }
+
+            if (string.IsNullOrWhiteSpace(tbConfigurationFile.Text) || !File.Exists(tbConfigurationFile.Text))
+            {
+                tbConfigurationFile.Focus();
+                throw new ValidationException("Invalid configuration file");
+            }
         }
 
         private void CreateResultDTO()
         {
+            Result = new LoggerRegDTO
+            {
+                Id = _loggerModel.Id,
+                ApplicationName = _loggerModel.ApplicationName.Trim(),
+                Description = _loggerModel.Description,
+                ConfigurationFile = _loggerModel.ConfigurationFile
+            };
         }
 
         private void SaveChanges()
         {
+            Result.Id = Result.Id == 0
+                ? LoggerDAL.Instance.Create(Result)
+                : LoggerDAL.Instance.Update(Result);
+        }
+
+        private void TbConfigurationFile_ButtonClick(object sender, EventArgs e)
+        {
+            if (odLogFile.ShowDialog() == DialogResult.OK)
+            {
+                tbConfigurationFile.Text = odLogFile.FileName;
+            }
         }
     }
 }

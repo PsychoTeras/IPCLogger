@@ -26,7 +26,7 @@ namespace IPCLogger.ConfigurationService.Forms
             Ok();
         }
 
-        private void FrmUserEdit_KeyDown(object sender, KeyEventArgs e)
+        private void FrmKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {

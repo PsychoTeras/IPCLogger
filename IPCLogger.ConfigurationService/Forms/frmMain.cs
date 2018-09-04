@@ -280,29 +280,71 @@ namespace IPCLogger.ConfigurationService.Forms
             LoggersSelectedIndexChanged();
         }
 
-        private void btnLoggersRefresh_Click(object sender, EventArgs e)
+        private void BtnLoggersRefresh_Click(object sender, EventArgs e)
         {
             RefreshLoggers();
         }
 
+        private void RegisterLogger()
+        {
+            if (new frmManageLogger().Execute())
+            {
+                RefreshLoggers();
+            }
+        }
+
         private void BtnLoggerRegister_Click(object sender, EventArgs e)
         {
+            RegisterLogger();
+        }
 
+        private void ModifyLogger()
+        {
+            LoggerModel logger = GetSelectedLogger();
+            if (logger != null && new frmManageLogger().Execute(logger))
+            {
+                RefreshLoggers();
+            }
         }
 
         private void BtnLoggerModify_Click(object sender, EventArgs e)
         {
+            ModifyLogger();
+        }
 
+        private void UnregisterLogger()
+        {
+            LoggerModel logger = GetSelectedLogger();
+            if (logger != null && MessageBox.Show($"Unregister logger \"{logger.ApplicationName}\"?", "Confirmation",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                LoggerDAL.Instance.Delete(logger.Id);
+                RefreshLoggers();
+            }
         }
 
         private void BtnLoggerUnregister_Click(object sender, EventArgs e)
         {
+            UnregisterLogger();
+        }
 
+        private void VisibleChangeLogger()
+        {
+            LoggerModel logger = GetSelectedLogger();
+            if (logger == null) return;
+
+            string action = logger.Visible ? "Hide" : "Show";
+            if (MessageBox.Show($"{action} logger \"{logger.ApplicationName}\"?", "Confirmation",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                LoggerDAL.Instance.ChangeVisibility(logger.Id, !logger.Visible);
+                RefreshLoggers();
+            }
         }
 
         private void BtnLoggerVisibleChange_Click(object sender, EventArgs e)
         {
-
+            VisibleChangeLogger();
         }
 
         private void LoggersSelectedIndexChanged()
@@ -316,7 +358,7 @@ namespace IPCLogger.ConfigurationService.Forms
             btnLoggerVisibleChange.Text = loggerHidden ? "Show" : "Hide";
         }
 
-        private void lvLoggers_SelectedIndexChanged(object sender, EventArgs e)
+        private void LvLoggers_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoggersSelectedIndexChanged();
         }
