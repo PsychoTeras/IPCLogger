@@ -25,8 +25,7 @@ namespace IPCLogger.ConfigurationService.DAL
             //    ItWasNewDatabase = true;
             //}
 
-            Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;New={1};Compress=True;",
-                _baseFileName, ItWasNewDatabase));
+            Connection = new SQLiteConnection($"Data Source={_baseFileName};Version=3;New={ItWasNewDatabase};Compress=True;");
             Connection.Open();
         }
     }

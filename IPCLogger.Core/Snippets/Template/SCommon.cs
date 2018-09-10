@@ -36,7 +36,7 @@ namespace IPCLogger.Core.Snippets.Template
         private static readonly Process _process = System.Diagnostics.Process.GetCurrentProcess();
         private static readonly string _processName = _process.ProcessName;
         private static readonly string _processId = _process.Id.ToString();
-        private static readonly string _processInfo = string.Format("{0} [{1}]", _processName, _processId);
+        private static readonly string _processInfo = $"{_processName} [{_processId}]";
 
         private static string _appName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
         private static string _appDomain = AppDomain.CurrentDomain.FriendlyName;
@@ -156,7 +156,7 @@ namespace IPCLogger.Core.Snippets.Template
                         case "id":
                             return thread.ManagedThreadId.ToString();
                         default:
-                            return string.Format("{0} [{1}]", thread.Name, thread.ManagedThreadId);
+                            return $"{thread.Name} [{thread.ManagedThreadId}]";
                     }
                 case "process":
                     switch (@params)

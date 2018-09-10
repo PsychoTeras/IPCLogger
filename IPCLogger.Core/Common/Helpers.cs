@@ -63,46 +63,6 @@ namespace IPCLogger.Core.Common
             return frame + 1;
         }
 
-        public static string SizeToBytesString(long size)
-        {
-            string sBytes = string.Empty;
-
-            double sizeLeft = size;
-            while (sizeLeft >= ONE_KBYTE)
-            {
-                int value = 0;
-                if (sizeLeft >= ONE_GBYTE)
-                {
-                    value = (int)Math.Floor(sizeLeft / ONE_GBYTE);
-                    sBytes += $"{value} GB ";
-                    sizeLeft -= value * ONE_GBYTE;
-                }
-                else if (sizeLeft >= ONE_MBYTE)
-                {
-                    value = (int)Math.Floor(sizeLeft / ONE_MBYTE);
-                    sBytes += $"{value} MB ";
-                    sizeLeft -= value * ONE_MBYTE;
-                }
-                else if (sizeLeft >= ONE_KBYTE)
-                {
-                    value = (int)Math.Floor(sizeLeft / ONE_KBYTE);
-                    sBytes += $"{value} KB ";
-                    sizeLeft -= value * ONE_KBYTE;
-                }
-            }
-
-            if (sBytes == string.Empty)
-            {
-                sBytes = $"{sizeLeft} B";
-            }
-            else if (sizeLeft != 0)
-            {
-                sBytes += $"{sizeLeft} B";
-            }
-
-            return sBytes.TrimEnd();
-        }
-
         public static long BytesStringToSize(string sBytes)
         {
             if (sBytes == string.Empty)
@@ -152,13 +112,53 @@ namespace IPCLogger.Core.Common
                             multiplier = ONE_GBYTE;
                             break;
                         default:
-                            string msg = $"Unit '{sUnit}' is invalid. Use B, KB, MB, GB instead";
+                            string msg = $"Unit '{sUnit}' is invalid. Use B, KB, MB, GB instead (case-insensitive)";
                             throw new Exception(msg);
                     }
                 }
                 value += size * multiplier;
             }
             return value;
+        }
+
+        public static string SizeToBytesString(long size)
+        {
+            string sSize = string.Empty;
+
+            double sizeLeft = size;
+            while (sizeLeft >= ONE_KBYTE)
+            {
+                int value = 0;
+                if (sizeLeft >= ONE_GBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_GBYTE);
+                    sSize += $"{value} GB ";
+                    sizeLeft -= value * ONE_GBYTE;
+                }
+                else if (sizeLeft >= ONE_MBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_MBYTE);
+                    sSize += $"{value} MB ";
+                    sizeLeft -= value * ONE_MBYTE;
+                }
+                else if (sizeLeft >= ONE_KBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_KBYTE);
+                    sSize += $"{value} KB ";
+                    sizeLeft -= value * ONE_KBYTE;
+                }
+            }
+
+            if (sSize == string.Empty)
+            {
+                sSize = $"{sizeLeft} B";
+            }
+            else if (sizeLeft != 0)
+            {
+                sSize += $"{sizeLeft} B";
+            }
+
+            return sSize.TrimEnd();
         }
 
         public static TimeSpan TimeStringToTimeSpan(string sTime)
@@ -186,18 +186,9 @@ namespace IPCLogger.Core.Common
                     throw new Exception(msg);
                 }
 
-                string sUnit = match.Groups["UNIT"].Value;
+                string sUnit = match.Groups["UNIT"].Value.ToLower();
                 switch (sUnit)
                 {
-                    case "y":
-                        days += count*365;
-                        break;
-                    case "M":
-                        days += count*31;
-                        break;
-                    case "w":
-                        days += count*7;
-                        break;
                     case "d":
                         days += count;
                         break;
@@ -211,12 +202,36 @@ namespace IPCLogger.Core.Common
                         seconds += count;
                         break;
                     default:
-                        string msg = $"Unit '{sUnit}' is invalid. Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s (=seconds) instead";
+                        string msg = $"Unit '{sUnit}' is invalid. Use d (=days), h (=hours), m (=minutes), s (=seconds) instead (case-insensitive)";
                         throw new Exception(msg);
                 }
             }
 
             return new TimeSpan(days, hours, minutes, seconds);
+        }
+
+        public static string TimeSpanToTimeString(TimeSpan timeSpan)
+        {
+            string sTime = string.Empty;
+
+            if (timeSpan.Days > 0)
+            {
+                sTime += $"{timeSpan.Days}d ";
+            }
+            if (timeSpan.Hours > 0)
+            {
+                sTime += $"{timeSpan.Hours}h ";
+            }
+            if (timeSpan.Minutes > 0)
+            {
+                sTime += $"{timeSpan.Minutes}m ";
+            }
+            if (timeSpan.Seconds > 0)
+            {
+                sTime += $"{timeSpan.Seconds}s";
+            }
+
+            return sTime.TrimEnd();
         }
 
         public static string ByteArrayToString(byte[] bytes, int lineLength)

@@ -104,8 +104,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
-                string msg = string.Format("Configuration file '{0}' is invalid or doesn't exists",
-                    configurationFile);
+                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exists";
                 throw new ArgumentException(msg);
             }
 
@@ -119,8 +118,7 @@ namespace IPCLogger.Core.Loggers.Base
             XmlNode cfgNode = GetLoggerSettingsNode(xmlCfg, loggerName);
             if (cfgNode == null)
             {
-                string msg = string.Format("Settings for logger '{0}', name '{1}' haven't found",
-                    _loggerType.Name, loggerName);
+                string msg = $"Settings for logger '{_loggerType.Name}', name '{loggerName}' haven't found";
                 throw new Exception(msg);
             }
 
@@ -156,8 +154,8 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
-            loggerName = !string.IsNullOrEmpty(loggerName) ? string.Format("[@name='{0}']", loggerName) : string.Empty;
-            return string.Format("{0}/{1}{2}", RootLoggersCfgPath, _loggerType.Name, loggerName);
+            loggerName = !string.IsNullOrEmpty(loggerName) ? $"[@name='{loggerName}']" : string.Empty;
+            return $"{RootLoggersCfgPath}/{_loggerType.Name}{loggerName}";
         }
 
         protected internal XmlNode GetLoggerSettingsNode(XmlDocument xmlCfg, string loggerName = null)
@@ -190,7 +188,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual void ApplyCommonSettings(XmlNode cfgNode)
         {
             XmlAttribute aName = cfgNode.Attributes["name"];
-            Name = aName != null ? aName.InnerText.Trim() : null;
+            Name = aName?.InnerText.Trim();
 
             LoadEventsApplicableSet(cfgNode, "allow-events", out _allowEvents);
             if (_allowEvents != null)
@@ -220,19 +218,18 @@ namespace IPCLogger.Core.Loggers.Base
             IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);
             if (excludes != null)
             {
-                HashSet<string> hExcludes = new HashSet<string>(excludes.Select(s => s.ToLower()));
-                nodes = nodes.Where(n => !hExcludes.Contains(n.Name.ToLower()));
+                nodes = nodes.Where(n => !excludes.Contains(n.Name.ToLower()));
             }
             foreach (XmlNode settingNode in nodes)
             {
                 if (!_properties.ContainsKey(settingNode.Name))
                 {
-                    string msg = string.Format("Undefined settings node '{0}'", settingNode.Name);
+                    string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
                 if (settingsDict.ContainsKey(settingNode.Name))
                 {
-                    string msg = string.Format("Duplicated settings definition '{0}'", settingNode.Name);
+                    string msg = $"Duplicated settings definition '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
                 settingsDict.Add(settingNode.Name, settingNode.InnerText);
@@ -267,7 +264,7 @@ namespace IPCLogger.Core.Loggers.Base
                             catch
                             {
                                 string names = string.Join(", ", Enum.GetNames(propertyType));
-                                string msg = string.Format("Possible values: {0}", names);
+                                string msg = $"Possible values: {names}";
                                 throw new Exception(msg);
                             }
                         }
@@ -284,11 +281,10 @@ namespace IPCLogger.Core.Loggers.Base
                 }
                 catch (Exception ex)
                 {
-                    string msg = string.Format("Invalid setting value '{0}' for setting '{1}' type '{2}'",
-                        setting.Value, setting.Key, propertyType.Name);
+                    string msg = $"Invalid setting value '{setting.Value}' for setting '{setting.Key}' type '{propertyType.Name}'";
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
-                        msg += string.Format(". {0}", ex.Message);
+                        msg += $". {ex.Message}";
                     }
                     throw new Exception(msg);
                 }
@@ -320,60 +316,51 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void FinalizeSetup() { }
 
-
         public virtual void Save(XmlNode cfgNode)
         {
-            Dictionary<string, string> settingsDict = GetSettingsDictionary(cfgNode);
-
-            foreach (KeyValuePair<string, string> setting in settingsDict)
+            foreach (KeyValuePair<PropertyInfo, object> item in _properties.Values)
             {
-                KeyValuePair<PropertyInfo, object> item = _properties[setting.Key];
-                Type propertyType = item.Key.PropertyType;
-                try
+                PropertyInfo property = item.Key;
+                object value = property.GetValue(this, null);
+
+                if (item.Value != null)
                 {
-                    object value;
-                    string sValue = setting.Value.Trim();
-                    if (item.Value != null)
-                    {
-                        CustomConversionAttribute cc = (CustomConversionAttribute)item.Value;
-                        value = cc.ConvertValue(sValue);
-                    }
-                    else
-                    {
-                        if (propertyType.IsEnum)
-                        {
-                            try
-                            {
-                                value = Enum.Parse(propertyType, sValue);
-                            }
-                            catch
-                            {
-                                string names = string.Join(", ", Enum.GetNames(propertyType));
-                                string msg = string.Format("Possible values: {0}", names);
-                                throw new Exception(msg);
-                            }
-                        }
-                        else
-                        {
-                            value = Convert.ChangeType(sValue, propertyType, CultureInfo.InvariantCulture);
-                        }
-                    }
-                    if (value == null)
-                    {
-                        throw new Exception();
-                    }
+                    CustomConversionAttribute cc = (CustomConversionAttribute)item.Value;
+                    value = cc.UnconvertValue(value);
                 }
-                catch (Exception ex)
-                {
-                    string msg = string.Format("Invalid setting value '{0}' for setting '{1}' type '{2}'",
-                        setting.Value, setting.Key, propertyType.Name);
-                    if (!string.IsNullOrEmpty(ex.Message))
-                    {
-                        msg += string.Format(". {0}", ex.Message);
-                    }
-                    throw new Exception(msg);
-                }
+
+                SetCfgNodeValue(cfgNode, property.Name, value);
             }
+        }
+
+#endregion
+
+#region Helpers
+
+        protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
+        {
+            XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
+            if (valNode == null)
+            {
+                XmlDocument xmlDoc = cfgNode.OwnerDocument;
+                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
+                cfgNode.AppendChild(valNode);
+            }
+
+            valNode.InnerText = value?.ToString() ?? string.Empty;
+        }
+
+        protected void SetCfgAttributeValue(XmlNode cfgNode, string attributeName, object value)
+        {
+            XmlAttribute valAttribute = cfgNode.Attributes[attributeName];
+            if (valAttribute == null)
+            {
+                XmlDocument xmlDoc = cfgNode.OwnerDocument;
+                valAttribute = xmlDoc.CreateAttribute(attributeName);
+                cfgNode.Attributes.Append(valAttribute);
+            }
+
+            valAttribute.InnerText = value?.ToString() ?? string.Empty;
         }
 
 #endregion

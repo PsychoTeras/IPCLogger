@@ -50,7 +50,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 }
                 catch (Exception ex)
                 {
-                    val = string.Format("{0} invocation error: {1}", d.Method.Name, ex);
+                    val = $"{d.Method.Name} invocation error: {ex}";
                 }
             }
             return false;
@@ -69,7 +69,7 @@ namespace IPCLogger.Core.Snippets.Storage
                 sb.AppendFormat("{0} ", objName);
             }
 
-            Type type = obj != null ? obj.GetType() : null;
+            Type type = obj?.GetType();
             if (type == typeof(TLSObject))
             {
                 if (detailed)

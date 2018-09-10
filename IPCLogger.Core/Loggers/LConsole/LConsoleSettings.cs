@@ -54,7 +54,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 if (!Enum.IsDefined(typeof(ConsoleColor), sColor))
                 {
-                    string msg = string.Format("Invalid {0} value '{1}'", colorType, sColor);
+                    string msg = $"Invalid {colorType} value '{sColor}'";
                     throw new Exception(msg);
                 }
                 ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), sColor);
@@ -62,7 +62,7 @@ namespace IPCLogger.Core.Loggers.LConsole
                 {
                     if (defConsoleColor.HasValue)
                     {
-                        string msg = string.Format("Duplicated default {0} definition", colorType);
+                        string msg = $"Duplicated default {colorType} definition";
                         throw new Exception(msg);
                     }
                     defConsoleColor = color;
@@ -71,7 +71,7 @@ namespace IPCLogger.Core.Loggers.LConsole
                 {
                     if (consoleColors.ContainsKey(@event))
                     {
-                        string msg = string.Format("Duplicated {0} definition for event '{1}'", colorType, @event);
+                        string msg = $"Duplicated {colorType} definition for event '{@event}'";
                         throw new Exception(msg);
                     }
                     consoleColors.Add(@event, color);
@@ -90,7 +90,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             foreach (XmlNode highlightNode in highlightNodes)
             {
                 XmlAttribute aEvents = highlightNode.Attributes["events"];
-                string sEvents = aEvents != null ? aEvents.Value : null;
+                string sEvents = aEvents?.Value;
                 string[] events = string.IsNullOrWhiteSpace(sEvents)
                     ? new[] {Constants.ApplicableForAllMark}
                     : sEvents.Split(Constants.Splitter);

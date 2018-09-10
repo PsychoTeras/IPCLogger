@@ -45,8 +45,7 @@ namespace IPCLogger.Core.Storages
                 Expression isNull = Expression.Equal(obj, _exprConstantNull);
                 safe = Expression.Condition(isNull,
                     memberName != null
-                        ? (Expression) Expression.Constant(
-                            string.Format("<{0}{1} NULL>", memberName, obj.NodeType == ExpressionType.Call ? "() returned" : " is"))
+                        ? (Expression) Expression.Constant($"<{memberName}{(obj.NodeType == ExpressionType.Call ? "() returned" : " is")} NULL>")
                         : Expression.Default(type), safe);
                 expr = obj;
             }

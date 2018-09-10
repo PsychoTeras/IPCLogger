@@ -52,7 +52,7 @@ namespace IPCLogger.Core.Loggers.LDB
             {
                 if (ParamValues.ContainsKey(paramNode.Name))
                 {
-                    string msg = string.Format("Duplicated DB parameter definition '{0}'", paramNode.Name);
+                    string msg = $"Duplicated DB parameter definition '{paramNode.Name}'";
                     throw new Exception(msg);
                 }
                 ParamValues.Add(paramNode.Name, paramNode.InnerText);

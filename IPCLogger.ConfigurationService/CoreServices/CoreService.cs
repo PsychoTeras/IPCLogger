@@ -1,10 +1,6 @@
 ﻿using IPCLogger.Core.Loggers.LFactory;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace IPCLogger.ConfigurationService.CoreServices
@@ -44,6 +40,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
             _factorySettings.NoLock = true;
 
             _factorySettings.Save(cfgNode);
+        }
+
+        public void SaveConfiguration()
+        {
+            _configurationXml.Save(_configurationFile);
         }
 
 #endregion

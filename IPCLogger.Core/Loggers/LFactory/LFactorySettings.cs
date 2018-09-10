@@ -32,7 +32,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         [NonSetting]
         public bool NoLock
         {
-            get { return _noLock; } 
+            get { return _noLock; }
             set { _noLock = value; }
         }
 
@@ -78,7 +78,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 return loggers;
             }
 
-            string loggersXPath = string.Format("{0}/*", RootLoggersCfgPath);
+            string loggersXPath = $"{RootLoggersCfgPath}/*";
             XmlNodeList cfgNodes = xmlCfg.SelectNodes(loggersXPath);
             foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
             {
@@ -103,8 +103,6 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override void ApplyCommonSettings(XmlNode cfgNode)
         {
-            XmlAttribute aName = cfgNode.Attributes["name"];
-            Name = aName != null ? aName.InnerText.Trim() : null;
             XmlAttribute aNoLock = cfgNode.Attributes["no-lock"];
             _noLock = aNoLock != null && bool.TryParse(aNoLock.Value, out _noLock) && _noLock;
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
@@ -116,6 +114,13 @@ namespace IPCLogger.Core.Loggers.LFactory
         protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
         {
             return new Dictionary<string, string>();
+        }
+
+        public override void Save(XmlNode cfgNode)
+        {
+            SetCfgAttributeValue(cfgNode, "no-lock", _noLock);
+            SetCfgAttributeValue(cfgNode, "enabled", _enabled);
+            SetCfgAttributeValue(cfgNode, "auto-reload", _autoReload);
         }
 
 #endregion
@@ -136,11 +141,11 @@ namespace IPCLogger.Core.Loggers.LFactory
             CfgNode = cfgNode;
             TypeName = cfgNode.Name;
             XmlAttribute aNamespace = cfgNode.Attributes["namespace"];
-            Namespace = aNamespace != null ? aNamespace.Value : null;
+            Namespace = aNamespace?.Value;
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out Enabled) || Enabled;
             XmlAttribute aName = cfgNode.Attributes["name"];
-            string name = aName != null ? aName.Value : null;
+            string name = aName?.Value;
             UniqueId = Helpers.CalculateUniqueId(name, TypeName, Namespace);
         }
     }

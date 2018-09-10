@@ -1,4 +1,5 @@
 ﻿using IPCLogger.Core.Common;
+using System;
 
 namespace IPCLogger.Core.Attributes
 {
@@ -11,7 +12,7 @@ namespace IPCLogger.Core.Attributes
 
         public override string UnconvertValue(object value)
         {
-            return value == null ? string.Empty : value.ToString();
+            return value is TimeSpan timeSpan ? Helpers.TimeSpanToTimeString(timeSpan) : string.Empty;
         }
     }
 }

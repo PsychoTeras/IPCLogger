@@ -238,7 +238,7 @@ namespace IPCLogger.Core.Loggers.LIPC.FileMap
 
         public override string ToString()
         {
-            return string.Format("Count {0}", Header.Count);
+            return $"Count {Header.Count}";
         }
 
         public void Dispose()

@@ -174,8 +174,7 @@ get_generic_pattern:
         {
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
-                string msg = string.Format("Configuration file '{0}' is invalid or doesn't exists",
-                    configurationFile);
+                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exists";
                 throw new ArgumentException(msg);
             }
 
@@ -213,7 +212,7 @@ get_generic_pattern:
                 }
 
                 XmlAttribute aEvents = patternNode.Attributes["events"];
-                string events = aEvents != null ? aEvents.Value : null;
+                string events = aEvents?.Value;
                 if (string.IsNullOrEmpty(events))
                 {
                     events = Constants.ApplicableForAllMark;
@@ -287,8 +286,7 @@ get_generic_pattern:
                         continue;
                     }
 
-                    string msg = string.Format("Duplicate applicable-for '{0}' for pattern '{1}'",
-                        classMask, rawPattern.Event);
+                    string msg = $"Duplicate applicable-for '{classMask}' for pattern '{rawPattern.Event}'";
                     throw new Exception(msg);
                 }
             }

@@ -376,7 +376,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Failed to setup logger '{0}'", logger);
+                string msg = $"Failed to setup logger '{logger}'";
                 CatchLoggerException(msg, ex);
             }
             return false;
@@ -400,11 +400,11 @@ namespace IPCLogger.Core.Loggers.LFactory
                 logger.SetUniqueId(declaredLogger.UniqueId);
                 return logger;
             }
-            
-            string msg = string.Format("Logger '{0}{1}' is not available",
-                !string.IsNullOrEmpty(declaredLogger.Namespace)
-                    ? declaredLogger.Namespace + "."
-                    : string.Empty, declaredLogger.TypeName);
+
+            string nameSpace = !string.IsNullOrEmpty(declaredLogger.Namespace)
+                ? declaredLogger.Namespace + "."
+                : string.Empty;
+            string msg = $"Logger '{nameSpace}{declaredLogger.TypeName}' is not available";
             CatchLoggerException(msg, null);
             return null;
         }

@@ -57,7 +57,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("OnSetupSettings failed for {0}", this);
+                string msg = $"OnSetupSettings failed for {this}";
                 CatchLoggerException(msg, ex);
             }
             finally
@@ -92,7 +92,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Initialize failed for {0}", this);
+                string msg = $"Initialize failed for {this}";
                 CatchLoggerException(msg, ex);
             }
             finally
@@ -132,7 +132,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Deinitialize failed for {0}", this);
+                string msg = $"Deinitialize failed for {this}";
                 CatchLoggerException(msg, ex);
             }
             finally
@@ -155,7 +155,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Write failed for {0}", this);
+                string msg = $"Write failed for {this}";
                 CatchLoggerException(msg, ex);
             }
             finally
@@ -181,7 +181,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Flush failed for {0}", this);
+                string msg = $"Flush failed for {this}";
                 CatchLoggerException(msg, ex);
             }
             finally
@@ -208,7 +208,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Suspend failed for {0}", this);
+                string msg = $"Suspend failed for {this}";
                 CatchLoggerException(msg, ex);
                 return false;
             }
@@ -236,7 +236,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Resume failed for {0}", this);
+                string msg = $"Resume failed for {this}";
                 CatchLoggerException(msg, ex);
                 return false;
             }

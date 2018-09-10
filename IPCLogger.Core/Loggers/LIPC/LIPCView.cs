@@ -81,7 +81,7 @@ namespace IPCLogger.Core.Loggers.LIPC
 
         public void StartView(Process process, OnEvent onEvent)
         {
-            string mmfName = string.Format(@"{0}_{1}", process.ProcessName, process.Id);
+            string mmfName = $"{process.ProcessName}_{process.Id}";
             StartView(mmfName, onEvent);
         }
 
@@ -92,7 +92,7 @@ namespace IPCLogger.Core.Loggers.LIPC
             _onEvent = onEvent;
 
             _processedEventsList = new HashSet<long>();
-            string hostName = string.Format(@"Global\LIPC~{0}", customName);
+            string hostName = $"Global\\LIPC~{customName}";
             _ipcEventRecords = MapRingBuffer<LogItem>.View(hostName);
 
             RecreatePoolTimer();

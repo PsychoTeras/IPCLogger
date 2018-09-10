@@ -53,9 +53,9 @@ namespace IPCLogger.Core.Loggers.LIPC
             else
             {
                 Process process = Process.GetCurrentProcess();
-                mmfName = string.Format(@"{0}_{1}", process.ProcessName, process.Id);
+                mmfName = $"{process.ProcessName}_{process.Id}";
             }
-            string name = string.Format(@"Global\LIPC~{0}", mmfName);
+            string name = $"Global\\LIPC~{mmfName}";
             _ipcEventRecords = MapRingBuffer<LogItem>.Host(name, Settings.CachedRecordsNum);
 
             return true;

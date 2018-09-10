@@ -236,9 +236,9 @@ namespace IPCLogger.Core.Loggers.Base
             catch (Exception ex)
             {
                 string msgText = !writeLine || text != null
-                    ? string.Format(", text '{0}'", text)
+                    ? $", text '{text}'"
                     : null;
-                string msg = string.Format("Write{0} failed for {1}{2}", writeLine ? "Line" : null, this, msgText);
+                string msg = $"Write{(writeLine ? "Line" : null)} failed for {this}{msgText}";
                 CatchLoggerException(msg, ex);
             }
         }
@@ -261,11 +261,9 @@ namespace IPCLogger.Core.Loggers.Base
             catch (Exception ex)
             {
                 string msgText = !writeLine || text != null
-                    ? string.Format(", text '{0}'", text)
+                    ? $", text '{text}'"
                     : null;
-                string msg = string.Format("Write{0} failed for {1}, event '{2}', text '{3}'",
-                    writeLine ? "Line" : null, this, eventType != null ? eventType.ToString() : null,
-                    msgText);
+                string msg = $"Write{(writeLine ? "Line" : null)} failed for {this}, event '{eventType?.ToString()}', text '{msgText}'";
                 CatchLoggerException(msg, ex);
             }
         }
@@ -385,8 +383,8 @@ namespace IPCLogger.Core.Loggers.Base
         public override string ToString()
         {
             return !string.IsNullOrEmpty(Settings.Name)
-                ? string.Format("{0} [{1}]", GetType().Name, Settings.Name)
-                : string.Format("{0}", GetType().Name);
+                ? $"{GetType().Name} [{Settings.Name}]"
+                : $"{GetType().Name}";
         }
 
 #endregion

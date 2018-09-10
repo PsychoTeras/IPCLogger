@@ -24,16 +24,15 @@ namespace IPCLogger.Core.Loggers.LDB.DAL
         {
             using (SqlConnection connection = OpenConnection())
             {
-                string sqlQuery = string.Format(
-                    @"
+                string sqlQuery = $@"
 SELECT 
      c.name
     ,c.system_type_id
     ,c.is_identity
     ,c.is_nullable
-FROM [{0}].sys.columns c (NOLOCK)
-WHERE object_id = OBJECT_ID('[{0}].dbo.[{1}]') AND c.is_computed = 0
-", connection.Database, tableName);
+FROM [{connection.Database}].sys.columns c (NOLOCK)
+WHERE object_id = OBJECT_ID('[{connection.Database}].dbo.[{tableName}]') AND c.is_computed = 0";
+
                 using (SqlCommand cmd = new SqlCommand(sqlQuery, connection))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())

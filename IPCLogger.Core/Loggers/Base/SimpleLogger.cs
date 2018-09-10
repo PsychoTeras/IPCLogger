@@ -49,7 +49,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Write failed for {0}", this);
+                string msg = $"Write failed for {this}";
                 CatchLoggerException(msg, ex);
             }
         }
@@ -65,7 +65,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Initialize failed for {0}", this);
+                string msg = $"Initialize failed for {this}";
                 CatchLoggerException(msg, ex);
             }
         }
@@ -82,7 +82,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Deinitialize failed for {0}", this);
+                string msg = $"Deinitialize failed for {this}";
                 CatchLoggerException(msg, ex);
             }
         }
@@ -97,7 +97,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             catch (Exception ex)
             {
-                string msg = string.Format("Flush failed for {0}", this);
+                string msg = $"Flush failed for {this}";
                 CatchLoggerException(msg, ex);
             }
         }

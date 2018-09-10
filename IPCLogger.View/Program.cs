@@ -98,7 +98,7 @@ namespace IPCLogger.View
                     started = host != null;
                     if (started)
                     {
-                        Console.Title = string.Format("{0} [{1}]", host.ProcessName, host.Id);
+                        Console.Title = $"{host.ProcessName} [{host.Id}]";
                         logger.StartView(host, OnEvent);
                     }
                 }

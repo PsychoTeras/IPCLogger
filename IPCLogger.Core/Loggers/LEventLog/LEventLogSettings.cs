@@ -121,7 +121,7 @@ namespace IPCLogger.Core.Loggers.LEventLog
                         string eventName = kv[0].Trim();
                         if (_logEntryTypeMatches.ContainsKey(eventName))
                         {
-                            string msg = string.Format("duplicated event name '{0}'", eventName);
+                            string msg = $"duplicated event name '{eventName}'";
                             throw new Exception(msg);
                         }
 
@@ -129,8 +129,7 @@ namespace IPCLogger.Core.Loggers.LEventLog
                         EventLogEntryType entryType;
                         if (!Enum.TryParse(sEntryType, out entryType))
                         {
-                            string msg = string.Format("improper entry type '{0}'. Possible values: {1}", sEntryType,
-                                string.Join(", ", Enum.GetNames(typeof (EventLogEntryType))));
+                            string msg = $"improper entry type '{sEntryType}'. Possible values: {string.Join(", ", Enum.GetNames(typeof(EventLogEntryType)))}";
                             throw new Exception(msg);
                         }
 
@@ -138,10 +137,10 @@ namespace IPCLogger.Core.Loggers.LEventLog
                     }
                     catch (Exception ex)
                     {
-                        string msg = string.Format("Failed to parse LogEntryTypeMatches '{0}'", paramVal);
+                        string msg = $"Failed to parse LogEntryTypeMatches '{paramVal}'";
                         if (!string.IsNullOrEmpty(ex.Message))
                         {
-                            msg += string.Format(": {0}", ex.Message);
+                            msg += $": {ex.Message}";
                         }
                         throw new Exception(msg);
                     }

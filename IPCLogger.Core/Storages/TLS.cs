@@ -107,7 +107,7 @@ namespace IPCLogger.Core.Storages
             if (string.IsNullOrEmpty(key)) return null;
 
             TLSObject tlsObj = _globalStorage.ContainsKey(key) ? _globalStorage : Peek();
-            return tlsObj != null ? tlsObj[key] : null;
+            return tlsObj?[key];
         }
 
         private static void AsssertGlobalName(string globalName)

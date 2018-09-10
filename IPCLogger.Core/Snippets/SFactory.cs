@@ -73,7 +73,7 @@ namespace IPCLogger.Core.Snippets
                         }
                         else
                         {
-                            string msg = string.Format("Duplicate custom-body snippet, type '{0}'", snippetType);
+                            string msg = $"Duplicate custom-body snippet, type '{snippetType}'";
                             throw new Exception(msg);
                         }
                     }
@@ -92,7 +92,7 @@ namespace IPCLogger.Core.Snippets
                             }
                             else
                             {
-                                string msg = string.Format("Duplicate snippet, name '{0}', type '{1}'", name, snippetType);
+                                string msg = $"Duplicate snippet, name '{name}', type '{snippetType}'";
                                 throw new Exception(msg);
                             }
                         }

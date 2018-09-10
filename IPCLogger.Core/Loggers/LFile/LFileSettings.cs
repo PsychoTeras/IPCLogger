@@ -67,8 +67,7 @@ namespace IPCLogger.Core.Loggers.LFile
         {
             RollByFileSize = MaxFileSize > 0;
             RollByFileAge = MaxFileAge.Ticks > 0;
-            ExpandedLogFilePathWithMark = string.Format("{0}{1}{2}", Path.GetFileNameWithoutExtension(LogFile),
-                IdxPlaceMark, Path.GetExtension(LogFile));
+            ExpandedLogFilePathWithMark = $"{Path.GetFileNameWithoutExtension(LogFile)}{IdxPlaceMark}{Path.GetExtension(LogFile)}";
             ExpandedLogFilePathWithMark = Path.Combine(LogDir, ExpandedLogFilePathWithMark);
             ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
             ConnectNetShare = !string.IsNullOrWhiteSpace(NetUser);

@@ -39,7 +39,7 @@ namespace IPCLogger.View
 
             foreach (Process host in hosts)
             {
-                string hostName = string.Format("{0} [{1}]", host.ProcessName, host.Id);
+                string hostName = $"{host.ProcessName} [{host.Id}]";
                 ListViewItem item = new ListViewItem(hostName) {Tag = host};
                 item.SubItems.Add(GetCommandLine(host));
                 lvHosts.Items.Add(item);
