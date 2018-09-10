@@ -90,6 +90,7 @@
     <Compile Include="Controls\TextBoxWithButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CoreServices\CoreService.cs" />
     <Compile Include="DAL\LoggerDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />

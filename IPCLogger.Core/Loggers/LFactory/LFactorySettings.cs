@@ -105,16 +105,16 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             XmlAttribute aName = cfgNode.Attributes["name"];
             Name = aName != null ? aName.InnerText.Trim() : null;
-        }
-
-        protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
-        {
             XmlAttribute aNoLock = cfgNode.Attributes["no-lock"];
             _noLock = aNoLock != null && bool.TryParse(aNoLock.Value, out _noLock) && _noLock;
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             _enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out _enabled) || _enabled;
             XmlAttribute aAutoReload = cfgNode.Attributes["auto-reload"];
             _autoReload = aAutoReload != null && bool.TryParse(aAutoReload.Value, out _autoReload) && _autoReload;
+        }
+
+        protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
+        {
             return new Dictionary<string, string>();
         }
 

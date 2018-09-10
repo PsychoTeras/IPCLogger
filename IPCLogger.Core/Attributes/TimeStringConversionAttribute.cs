@@ -8,5 +8,10 @@ namespace IPCLogger.Core.Attributes
         {
             return Helpers.TimeStringToTimeSpan(sValue);
         }
+
+        public override string UnconvertValue(object value)
+        {
+            return value == null ? string.Empty : value.ToString();
+        }
     }
 }

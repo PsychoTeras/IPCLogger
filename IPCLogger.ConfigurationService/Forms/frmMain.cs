@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.DAL;
+﻿using IPCLogger.ConfigurationService.CoreServices;
+using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.ConfigurationService.Web;
 using System;
@@ -56,6 +57,12 @@ namespace IPCLogger.ConfigurationService.Forms
         public frmMain()
         {
             InitializeComponent();
+
+            //var v = 1073741824 + 65536 + 123;
+            //var s = Core.Common.Helpers.SizeToBytesString(v);
+            //var l = Core.Common.Helpers.BytesStringToSize(s);
+
+            //new CoreService().LoadConfiguration(@"D:\_Sources\IPCLogger\_bin\TestService\IPCLogger.TestService.exe.config");
 
             //Create tray menu
             ContextMenu trayMenu = new ContextMenu();

@@ -19,11 +19,11 @@ namespace IPCLogger.ConfigurationService.DAL
             WhoHasCreatedDbStructureYet = new HashSet<Type>();
             ItWasNewDatabase = !File.Exists(_baseFileName);
 
-            if (!ItWasNewDatabase)
-            {
-                File.Delete(_baseFileName);
-                ItWasNewDatabase = true;
-            }
+            //if (!ItWasNewDatabase)
+            //{
+            //    File.Delete(_baseFileName);
+            //    ItWasNewDatabase = true;
+            //}
 
             Connection = new SQLiteConnection(string.Format("Data Source={0};Version=3;New={1};Compress=True;",
                 _baseFileName, ItWasNewDatabase));

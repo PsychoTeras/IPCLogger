@@ -9,13 +9,17 @@ namespace IPCLogger.Core.Common
 {
     internal static class Helpers
     {
+        private const int ONE_GBYTE = 1073741824;
+        private const int ONE_MBYTE = 1048576;
+        private const int ONE_KBYTE = 1024;
+
         [DllImport("shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool PathFileExists(string path);
 
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
 
-        private static readonly Regex _regexBytesString = new Regex(@"^\s*(?<SIZE>\d+)+[ ]*(?<UNIT>[a-z]+)*", 
+        private static readonly Regex _regexBytesString = new Regex(@"\s*(?<SIZE>\d+)+[ ]*(?<UNIT>[a-z]+)*", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
         private static readonly Regex _regexTimeString = new Regex(@"(?<COUNT>\d+)+[ ]*(?<UNIT>[a-z]+)+",
@@ -30,7 +34,7 @@ namespace IPCLogger.Core.Common
         
         public static string CalculateUniqueId(string name, string type, string nameSpace)
         {
-            return string.Format("^{0}${1}%{2}^", name, type, nameSpace);
+            return $"^{name}${type}%{type}^";
         }
 
         public static bool IsAssignableTo(Type givenType, Type genericType)
@@ -59,7 +63,47 @@ namespace IPCLogger.Core.Common
             return frame + 1;
         }
 
-        public static int BytesStringToSize(string sBytes)
+        public static string SizeToBytesString(long size)
+        {
+            string sBytes = string.Empty;
+
+            double sizeLeft = size;
+            while (sizeLeft >= ONE_KBYTE)
+            {
+                int value = 0;
+                if (sizeLeft >= ONE_GBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_GBYTE);
+                    sBytes += $"{value} GB ";
+                    sizeLeft -= value * ONE_GBYTE;
+                }
+                else if (sizeLeft >= ONE_MBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_MBYTE);
+                    sBytes += $"{value} MB ";
+                    sizeLeft -= value * ONE_MBYTE;
+                }
+                else if (sizeLeft >= ONE_KBYTE)
+                {
+                    value = (int)Math.Floor(sizeLeft / ONE_KBYTE);
+                    sBytes += $"{value} KB ";
+                    sizeLeft -= value * ONE_KBYTE;
+                }
+            }
+
+            if (sBytes == string.Empty)
+            {
+                sBytes = $"{sizeLeft} B";
+            }
+            else if (sizeLeft != 0)
+            {
+                sBytes += $"{sizeLeft} B";
+            }
+
+            return sBytes.TrimEnd();
+        }
+
+        public static long BytesStringToSize(string sBytes)
         {
             if (sBytes == string.Empty)
             {
@@ -67,45 +111,54 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            Match match = _regexBytesString.Match(sBytes);
-            string sSize = match.Groups["SIZE"].Value;
-            if (sSize == string.Empty)
+            MatchCollection matches = _regexBytesString.Matches(sBytes);
+            if (matches.Count == 0)
             {
-                string msg = "Value is not defined";
+                string msg = "Size string is invalid";
                 throw new Exception(msg);
             }
 
-            int size;
-            if (!int.TryParse(sSize, out size))
+            long value = 0;
+            foreach (Match match in matches)
             {
-                string msg = string.Format("Value '{0}' is invalid", sSize);
-                throw new Exception(msg);
-            }
-
-            int multiplier = 1;
-            string sUnit = match.Groups["UNIT"].Value.ToLower();
-            if (sUnit != string.Empty)
-            {
-                switch (sUnit)
+                string sSize = match.Groups["SIZE"].Value;
+                if (sSize == string.Empty)
                 {
-                    case "b":
-                        break;
-                    case "kb":
-                        multiplier = 1024;
-                        break;
-                    case "mb":
-                        multiplier = 1048576;
-                        break;
-                    case "gb":
-                        multiplier = 1073741824;
-                        break;
-                    default:
-                        string msg = string.Format("Unit '{0}' is invalid. Use B, KB, MB, GB instead", sUnit);
-                        throw new Exception(msg);
+                    string msg = "Value is not defined";
+                    throw new Exception(msg);
                 }
-            }
 
-            return size*multiplier;
+                if (!long.TryParse(sSize, out long size))
+                {
+                    string msg = $"Value '{sSize}' is invalid";
+                    throw new Exception(msg);
+                }
+
+                int multiplier = 1;
+                string sUnit = match.Groups["UNIT"].Value.ToUpper();
+                if (sUnit != string.Empty)
+                {
+                    switch (sUnit)
+                    {
+                        case "B":
+                            break;
+                        case "KB":
+                            multiplier = ONE_KBYTE;
+                            break;
+                        case "MB":
+                            multiplier = ONE_MBYTE;
+                            break;
+                        case "GB":
+                            multiplier = ONE_GBYTE;
+                            break;
+                        default:
+                            string msg = $"Unit '{sUnit}' is invalid. Use B, KB, MB, GB instead";
+                            throw new Exception(msg);
+                    }
+                }
+                value += size * multiplier;
+            }
+            return value;
         }
 
         public static TimeSpan TimeStringToTimeSpan(string sTime)
@@ -126,11 +179,10 @@ namespace IPCLogger.Core.Common
             int days = 0, hours = 0, minutes = 0, seconds = 0;
             foreach (Match match in matches)
             {
-                int count;
                 string sCount = match.Groups["COUNT"].Value;
-                if (!int.TryParse(sCount, out count))
+                if (!int.TryParse(sCount, out int count))
                 {
-                    string msg = string.Format("Value '{0}' is invalid", sCount);
+                    string msg = $"Value '{sCount}' is invalid";
                     throw new Exception(msg);
                 }
 
@@ -159,8 +211,7 @@ namespace IPCLogger.Core.Common
                         seconds += count;
                         break;
                     default:
-                        string msg = string.Format(@"Unit '{0}' is invalid.
-Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s (=seconds) instead", sUnit);
+                        string msg = $"Unit '{sUnit}' is invalid. Use y (=years), M (=months), w (=weeks), d (=days), h (=hours), m (=minutes), s (=seconds) instead";
                         throw new Exception(msg);
                 }
             }

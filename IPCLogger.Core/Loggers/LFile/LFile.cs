@@ -269,13 +269,13 @@ namespace IPCLogger.Core.Loggers.LFile
 
                 _fileStream = Settings.BufferSize <= 0
                     ? new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read)
-                    : new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read, Settings.BufferSize);
+                    : new FileStream(_fileName = logPath, fileMode, FileAccess.Write, FileShare.Read, (int)Settings.BufferSize);
 
                 _fileStreamSize = fileMode == FileMode.Append ? _fileStream.Length : 0;
 
                 _logWriter = Settings.BufferSize <= 0
-                    ? new StreamWriter(_fileStream, _utf8) {AutoFlush = true}
-                    : new StreamWriter(_fileStream, _utf8, Settings.BufferSize);
+                    ? new StreamWriter(_fileStream, _utf8) { AutoFlush = true }
+                    : new StreamWriter(_fileStream, _utf8, (int)Settings.BufferSize);
             }
         }
 

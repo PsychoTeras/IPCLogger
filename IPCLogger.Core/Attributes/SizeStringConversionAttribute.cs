@@ -8,5 +8,10 @@ namespace IPCLogger.Core.Attributes
         {
             return Helpers.BytesStringToSize(sValue);
         }
+
+        public override string UnconvertValue(object value)
+        {
+            return value is long size ? Helpers.SizeToBytesString(size) : string.Empty;
+        }
     }
 }

@@ -25,8 +25,8 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Private fields
 
-        private Action _onApplyChanges;
         private Type _loggerType;
+        private Action _onApplyChanges;
 
         private Dictionary<string, KeyValuePair<PropertyInfo, object>> _properties;
 
@@ -72,9 +72,11 @@ namespace IPCLogger.Core.Loggers.Base
         {
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
-            _properties = GetType().GetProperties(
-                BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy).
-                Where
+            _properties = GetType().
+                GetProperties
+                (
+                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
+                ).Where
                 (
                     p => p.CanRead && p.CanWrite && p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
                 ).ToDictionary
@@ -114,8 +116,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Setup(XmlDocument xmlCfg, string loggerName = null)
         {
-            string loggerXPath = GetLoggerSettingsNodeName(loggerName);
-            XmlNode cfgNode = xmlCfg.SelectSingleNode(loggerXPath);
+            XmlNode cfgNode = GetLoggerSettingsNode(xmlCfg, loggerName);
             if (cfgNode == null)
             {
                 string msg = string.Format("Settings for logger '{0}', name '{1}' haven't found",
@@ -157,6 +158,12 @@ namespace IPCLogger.Core.Loggers.Base
         {
             loggerName = !string.IsNullOrEmpty(loggerName) ? string.Format("[@name='{0}']", loggerName) : string.Empty;
             return string.Format("{0}/{1}{2}", RootLoggersCfgPath, _loggerType.Name, loggerName);
+        }
+
+        protected internal XmlNode GetLoggerSettingsNode(XmlDocument xmlCfg, string loggerName = null)
+        {
+            string loggerXPath = GetLoggerSettingsNodeName(loggerName);
+            return xmlCfg.SelectSingleNode(loggerXPath);
         }
 
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
@@ -313,8 +320,65 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void FinalizeSetup() { }
 
+
+        public virtual void Save(XmlNode cfgNode)
+        {
+            Dictionary<string, string> settingsDict = GetSettingsDictionary(cfgNode);
+
+            foreach (KeyValuePair<string, string> setting in settingsDict)
+            {
+                KeyValuePair<PropertyInfo, object> item = _properties[setting.Key];
+                Type propertyType = item.Key.PropertyType;
+                try
+                {
+                    object value;
+                    string sValue = setting.Value.Trim();
+                    if (item.Value != null)
+                    {
+                        CustomConversionAttribute cc = (CustomConversionAttribute)item.Value;
+                        value = cc.ConvertValue(sValue);
+                    }
+                    else
+                    {
+                        if (propertyType.IsEnum)
+                        {
+                            try
+                            {
+                                value = Enum.Parse(propertyType, sValue);
+                            }
+                            catch
+                            {
+                                string names = string.Join(", ", Enum.GetNames(propertyType));
+                                string msg = string.Format("Possible values: {0}", names);
+                                throw new Exception(msg);
+                            }
+                        }
+                        else
+                        {
+                            value = Convert.ChangeType(sValue, propertyType, CultureInfo.InvariantCulture);
+                        }
+                    }
+                    if (value == null)
+                    {
+                        throw new Exception();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string msg = string.Format("Invalid setting value '{0}' for setting '{1}' type '{2}'",
+                        setting.Value, setting.Key, propertyType.Name);
+                    if (!string.IsNullOrEmpty(ex.Message))
+                    {
+                        msg += string.Format(". {0}", ex.Message);
+                    }
+                    throw new Exception(msg);
+                }
+            }
+        }
+
 #endregion
 
     }
+
     // ReSharper restore PossibleNullReferenceException
 }

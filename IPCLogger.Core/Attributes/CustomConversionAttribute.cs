@@ -6,5 +6,7 @@ namespace IPCLogger.Core.Attributes
     public abstract class CustomConversionAttribute : Attribute
     {
         public abstract object ConvertValue(string sValue);
+
+        public abstract string UnconvertValue(object value);        
     }
 }

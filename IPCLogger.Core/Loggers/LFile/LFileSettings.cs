@@ -19,7 +19,7 @@ namespace IPCLogger.Core.Loggers.LFile
 #region Properties
 
         [SizeStringConversion]
-        public int BufferSize { get; set; }
+        public long BufferSize { get; set; }
 
         public string LogDir { get; set; }
 
@@ -28,7 +28,7 @@ namespace IPCLogger.Core.Loggers.LFile
         public bool RecreateFile { get; set; }
 
         [SizeStringConversion]
-        public int MaxFileSize { get; set; }
+        public long MaxFileSize { get; set; }
 
         [TimeStringConversion]
         public TimeSpan MaxFileAge { get; set; }
