@@ -66,7 +66,7 @@ namespace IPCLogger.ConfigurationService.Forms
             //var s = Core.Common.Helpers.TimeSpanToTimeString(v);
             //var l = Core.Common.Helpers.TimeStringToTimeSpan(s);
 
-            new CoreService().LoadConfiguration(@"..\TestService\IPCLogger.TestService.exe.config");
+            new CoreService(@"..\TestService\IPCLogger.TestService.exe.config");
 
             //Create tray menu
             ContextMenu trayMenu = new ContextMenu();

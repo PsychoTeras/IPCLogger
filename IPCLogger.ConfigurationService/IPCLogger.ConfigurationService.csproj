@@ -91,9 +91,11 @@
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Entities\DTO\LoggerRegDTO.cs" />
+    <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
     <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
     <Compile Include="Entities\DBRecord.cs" />
+    <Compile Include="Entities\Models\RegisteredLoggerModel.cs" />
     <Compile Include="Entities\Models\RoleModel.cs" />
     <Compile Include="Entities\DTO\RoleClaimDTO.cs" />
     <Compile Include="Entities\UserIdentity.cs" />
@@ -144,7 +146,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Configuration\app.config" />
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

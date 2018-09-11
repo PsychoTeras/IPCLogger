@@ -14,7 +14,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Private static fields
 
-        private static readonly List<Type> _availableLoggers;
+        private static readonly List<Type> _registeredLoggers;
 
 #endregion
 
@@ -42,7 +42,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         static LFactory()
         {
             Instance = new LFactory();
-            _availableLoggers = GetAvailableLoggers();
+            _registeredLoggers = GetRegisteredLoggers();
         }
 
         private LFactory() : base(true)
@@ -56,7 +56,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Static methods
 
-        private static List<Type> GetAvailableLoggers()
+        internal static List<Type> GetRegisteredLoggers()
         {
             List<Type> types = new List<Type>();
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.
@@ -68,7 +68,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                 {
                     types.AddRange(assembly.
                         GetTypes().
-                        Where(t => Helpers.IsAssignableTo(t, typeof(BaseLogger<>))));
+                        Where(t => Helpers.IsAssignableTo(t, typeof(BaseLogger<>)) && !t.IsAbstract));
                 }
                 catch { }
             }
@@ -384,7 +384,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         private BaseLoggerInt InstantiateLoggerByDeclared(DeclaredLogger declaredLogger)
         {
-            Type loggerType = _availableLoggers.FirstOrDefault
+            Type loggerType = _registeredLoggers.FirstOrDefault
                 (
                     t => t.Name == declaredLogger.TypeName &&
                          (string.IsNullOrEmpty(declaredLogger.Namespace) ||
