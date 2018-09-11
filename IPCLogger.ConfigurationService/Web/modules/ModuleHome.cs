@@ -9,7 +9,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
         {
             Get["/"] = x =>
             {
-                this.RequiresAuthentication();
+                //this.RequiresAuthentication();
                 return View["index"];
             };
         }

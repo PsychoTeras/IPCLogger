@@ -169,6 +169,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Web\views\partials\_footer.cshtml" />
+    <None Include="Web\views\partials\_header.cshtml" />
     <None Include="Resources\add-user.png" />
     <Content Include="Resources\application.ico" />
     <None Include="Resources\block-user.png" />
@@ -178,8 +180,9 @@
     <Content Include="Web\css\bootstrap\bootstrap-grid.min.css" />
     <Content Include="Web\css\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\bootstrap\bootstrap.min.css" />
+    <Content Include="Web\css\main.css" />
     <Content Include="Web\css\signin.css" />
-    <Content Include="Web\images\icon72x72.png" />
+    <Content Include="Web\assets\icon72x72.png" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\bootstrap\bootstrap.min.js" />
     <Content Include="Web\js\jQuery\jquery-3.3.1.min.js" />

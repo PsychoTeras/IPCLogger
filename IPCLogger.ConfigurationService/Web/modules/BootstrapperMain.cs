@@ -12,11 +12,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
         {
-            new KeyValuePair<string, string>("html", "/Web/views"),
-            new KeyValuePair<string, string>("cshtml", "/Web/views"),
+            new KeyValuePair<string, string>("views", "/Web/views"),
             new KeyValuePair<string, string>("css", "/Web/css"),
             new KeyValuePair<string, string>("js", "/Web/js"),
-            new KeyValuePair<string, string>("images", "/Web/images"),
+            new KeyValuePair<string, string>("assets", "/Web/assets"),
             new KeyValuePair<string, string>("fonts", "/Web/fonts")
         };
 

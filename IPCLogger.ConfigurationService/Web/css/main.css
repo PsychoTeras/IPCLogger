@@ -1,0 +1,151 @@
+﻿body {
+    font-size: .875rem;
+    width: 85rem;
+}
+
+.navbar-caption {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: 1rem;
+    color: white !important;
+    background-color: rgba(0, 0, 0, .25);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100; /* Behind the navbar */
+    padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #333;
+}
+
+.sidebar .nav-link .feather {
+  margin-right: 4px;
+  color: #999;
+}
+
+.sidebar .nav-link.active {
+  color: #007bff;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+  color: inherit;
+}
+
+.sidebar-heading {
+  font-size: .75rem;
+  text-transform: uppercase;
+}
+
+input {
+  height: 32px !important;
+}
+
+textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
+    -webkit-box-shadow: 0 0 0;
+    -ms-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+    outline: 0 none;
+}
+
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
+
+.td-actions > * {
+    margin-right: 6px;
+}
+
+.td-actions .btn-glyph {
+    width: 37px;
+    height: 34px;
+    display: inline-block;
+}
+
+.td-autosize {
+    width: 1px; 
+    white-space: nowrap;
+}
+
+#tableUsers tr td {
+    vertical-align: middle
+}
+
+.modal.popup {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal.popup:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal.popup .modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.ui-autocomplete {
+    z-index: 5000;    
+}
+
+.dialog-alert .modal-body {
+    padding: 0 !important;
+}
+
+.dialog-alert .alert-danger {
+    margin-bottom: 0 !important;
+}
+
+.ajax-animation {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 100%;
+    margin-top: 52px;
+    margin-left: -48px;
+    height: 48px;
+    width: 48px;
+    /*background: url('http://c564799.r99.cf2.rackcdn.com/indicator.gif') 100% 100% no-repeat;*/
+}
+
+body.loading {
+    overflow: hidden;
+}
+
+body.loading .ajax-animation {
+    display: block;
+}
+
+.page-lock {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0);
+}
+
+body.locked .page-lock {
+    display: block;
+}
+
+.input-group-addon {
+    padding: 6px 10px 3px;
+}
