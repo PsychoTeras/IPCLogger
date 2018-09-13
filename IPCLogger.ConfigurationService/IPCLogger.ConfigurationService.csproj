@@ -171,6 +171,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\js\views\index.js" />
     <None Include="Web\views\loggers.cshtml" />
     <None Include="Web\views\users.cshtml" />
@@ -190,8 +191,8 @@
     <Content Include="Web\css\signin.css" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\bootstrap\bootstrap.min.js" />
-    <Content Include="Web\js\jQuery\jquery-3.3.1.min.js" />
-    <None Include="Web\js\jQuery\jquery-3.3.1.min.map" />
+    <Content Include="Web\js\jquery\jquery-3.3.1.min.js" />
+    <None Include="Web\js\jquery\jquery-3.3.1.min.map" />
     <None Include="Web\views\index.cshtml" />
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>

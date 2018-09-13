@@ -7,14 +7,14 @@ using System.Windows.Forms.VisualStyles;
 
 namespace IPCLogger.ConfigurationService.Controls
 {
-    public class BorderedListView : ListView
+    public sealed class BorderedListView : ListView
     {
         private bool _compactGridLines;
         private bool _forceResizeColumn;
         private bool _canResizeLastColumn;
 
         private static readonly Pen _penBorder = new Pen(DrawingHelper.BorderColor);
-        private static readonly Brush _brushSelected = new SolidBrush(Color.FromArgb(235, 235, 235));
+        private static readonly Brush _brushSelected = new SolidBrush(Color.FromArgb(70, Color.LightSteelBlue));
         private static readonly Brush _brushChecked = new SolidBrush(Color.FromArgb(125, 125, 125));
 
         public new ListViewItemCollectionNewEvent Items;
@@ -73,7 +73,7 @@ namespace IPCLogger.ConfigurationService.Controls
             g.DrawLine(_penBorder, e.Bounds.X, e.Bounds.Y + e.Bounds.Height - 1,
                 e.Bounds.X + e.Bounds.Width, e.Bounds.Y + e.Bounds.Height - 1);
 
-            using (Brush brush = new SolidBrush(ForeColor))
+            //using (Brush brush = new SolidBrush(ForeColor))
             {
                 StringFormat tf = new StringFormat
                 {

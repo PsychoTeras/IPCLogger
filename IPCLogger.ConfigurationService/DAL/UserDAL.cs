@@ -7,7 +7,6 @@ using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using Nancy.Extensions;
 
 namespace IPCLogger.ConfigurationService.DAL
 {
@@ -88,7 +87,6 @@ WHERE
                     if (!reader.Read())
                     {
                         context.Request.Query.wrongsession = "";
-                        FormsAuthentication.LogOutAndRedirectResponse(context, "/");
                         return null;
                     }
                     userId = Convert.ToInt32(reader["id"]);

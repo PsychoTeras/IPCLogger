@@ -21,7 +21,7 @@ namespace IPCLogger.ConfigurationService.Forms
             InitializeComponent();
         }
 
-        private void BtnOk_Click(object sender, System.EventArgs e)
+        private void BtnOk_Click(object sender, EventArgs e)
         {
             Ok();
         }

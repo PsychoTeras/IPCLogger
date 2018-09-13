@@ -16,7 +16,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
             Get["/loggers"] = x =>
             {
-                this.RequiresAuthentication();
+                //this.RequiresAuthentication();
 
                 List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(false);
                 return View["index", PageModel.Loggers(loggers)];
@@ -24,7 +24,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
             Get["/users"] = x =>
             {
-                this.RequiresAuthentication();
+                //this.RequiresAuthentication();
 
                 List<UserModel> users = UserDAL.Instance.GetUsers();
                 return View["index", PageModel.Users(users)];

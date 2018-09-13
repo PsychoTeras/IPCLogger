@@ -30,36 +30,43 @@
     padding-top: .5rem;
 }
 
-    .sidebar .nav-link {
-        font-weight: 500;
-        color: #333;
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+    .sidebar .nav-link.active {
+        color: #007bff;
     }
 
-        .sidebar .nav-link.active {
-            color: #007bff;
-        }
+    .sidebar .nav-link .feather {
+        margin: 0px 7px 2px 0px;
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        color: #999;
+    }
 
-        .sidebar .nav-link .feather {
-            margin: 0px 7px 2px 0px;
-            width: 16px;
-            height: 16px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            color: #999;
-        }
-
-        .sidebar .nav-link:hover .feather,
-        .sidebar .nav-link.active .feather {
-            color: inherit;
-        }
+    .sidebar .nav-link:hover .feather,
+    .sidebar .nav-link.active .feather {
+        color: inherit;
+    }
 
 .sidebar-heading {
     font-size: .75rem;
     text-transform: uppercase;
 }
+
+.btn.focus, .btn:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+
 
 input {
     height: 32px !important;
@@ -72,12 +79,18 @@ input {
         outline: 0 none;
     }
 
-.table > tbody > tr > td {
+.table {
+    font-size: .875rem;
     vertical-align: middle;
 }
 
+    .table > tbody > tr > td {
+        vertical-align: middle;
+    }
+
 .td-actions > * {
-    margin-right: 6px;
+    height: 30px;
+    min-width: 35px;
 }
 
 .td-actions .btn-glyph {
@@ -89,10 +102,6 @@ input {
 .td-autosize {
     width: 1px;
     white-space: nowrap;
-}
-
-#tableUsers tr td {
-    vertical-align: middle
 }
 
 .modal.popup {
