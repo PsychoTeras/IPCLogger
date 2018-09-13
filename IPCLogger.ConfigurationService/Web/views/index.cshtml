@@ -21,7 +21,6 @@
     @Html.Partial("partials/_header.cshtml")
 
     <div class="container-fluid">
-
         <div class="row">
 
             <nav class="col-lg-2 d-none d-lg-block bg-light sidebar">
@@ -51,10 +50,10 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
                     <h2>@Model.Caption</h2>
                 </div>
-                @Html.Partial(string.Format("partials/{0}.cshtml", Model.PageName), Model.Model)
+                @Html.Partial(string.Format("{0}.cshtml", Model.PageName), Model.Model)
             </main>
-        </div>
 
+        </div>
     </div>
 
     @Html.Partial("partials/_footer.cshtml")

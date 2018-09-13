@@ -7,6 +7,7 @@ using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using Nancy.Extensions;
 
 namespace IPCLogger.ConfigurationService.DAL
 {
@@ -62,7 +63,6 @@ namespace IPCLogger.ConfigurationService.DAL
 
         public IUserIdentity GetUserFromIdentifier(Guid guid, NancyContext context)
         {
-            int userId;
             UserIdentity user = new UserIdentity
             {
                 Claims = new List<string>()
@@ -82,11 +82,14 @@ WHERE
 
                 command.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
 
+                int userId;
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
                     if (!reader.Read())
                     {
-                        throw new Exception("Wrong session");
+                        context.Request.Query.wrongsession = "";
+                        FormsAuthentication.LogOutAndRedirectResponse(context, "/");
+                        return null;
                     }
                     userId = Convert.ToInt32(reader["id"]);
                     user.UserName = reader["user_name"].ToString();
@@ -143,7 +146,6 @@ WHERE
 
         public int Create(UserRegDTO dto)
         {
-            int userId;
             using (SQLiteCommand command = new SQLiteCommand(Connection))
             {
                 command.CommandText = @"
@@ -158,6 +160,7 @@ SELECT last_insert_rowid()";
                 command.Parameters.Add(new SQLiteParameter("@password_hash", dto.PasswordHash));
                 command.Parameters.Add(new SQLiteParameter("@guid", Guid.NewGuid().ToString()));
 
+                int userId;
                 try
                 {
                     userId = Convert.ToInt32(command.ExecuteScalar());
@@ -191,11 +194,14 @@ UPDATE T_USERS
 SET
      user_name = @user_name
     ,password_hash = COALESCE(@password_hash, password_hash)
+    ,guid = COALESCE(@guid, guid)
 WHERE id = @user_id";
 
+                string newGuid = dto.PasswordHash != null ? Guid.NewGuid().ToString() : null;
                 command.Parameters.Add(new SQLiteParameter("@user_id", dto.Id));
                 command.Parameters.Add(new SQLiteParameter("@user_name", dto.UserName));
                 command.Parameters.Add(new SQLiteParameter("@password_hash", dto.PasswordHash));
+                command.Parameters.Add(new SQLiteParameter("@guid", newGuid));
 
                 try
                 {

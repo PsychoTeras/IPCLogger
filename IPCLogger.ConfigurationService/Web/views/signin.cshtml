@@ -26,6 +26,11 @@
         {
             <label class="alert alert-danger">Invalid User name or Password</label>
         }
+        
+        @if (Model.WrongSession)
+        {
+            <label class="alert alert-danger">Wrong session</label>
+        }
 
         <label for="UserName" class="sr-only">User name</label>
         <input type="text" id="UserName" name="UserName" class="form-control" placeholder="User name" value="@Model.UserName" required

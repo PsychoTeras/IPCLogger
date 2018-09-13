@@ -2,6 +2,7 @@
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
 using Nancy;
+using Nancy.Responses;
 using Nancy.Security;
 using System.Collections.Generic;
 
@@ -11,23 +12,19 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleHome()
         {
-            Get["/"] = x =>
-            {
-                //this.RequiresAuthentication();
+            Get["/"] = x => Response.AsRedirect("/loggers", RedirectResponse.RedirectType.Temporary);
 
-                List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(false);
-                return View["index", PageModel.Loggers(loggers)];
-            };
             Get["/loggers"] = x =>
             {
-                //this.RequiresAuthentication();
+                this.RequiresAuthentication();
 
                 List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(false);
                 return View["index", PageModel.Loggers(loggers)];
             };
+
             Get["/users"] = x =>
             {
-                //this.RequiresAuthentication();
+                this.RequiresAuthentication();
 
                 List<UserModel> users = UserDAL.Instance.GetUsers();
                 return View["index", PageModel.Users(users)];

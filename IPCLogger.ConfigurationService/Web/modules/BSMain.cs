@@ -8,7 +8,7 @@ using Nancy.TinyIoc;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
-    public class BootstrapperMain : DefaultNancyBootstrapper
+    public class BSMain : DefaultNancyBootstrapper
     {
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
         {

@@ -116,10 +116,10 @@
       <DependentUpon>frmManageUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BaseHelpers.cs" />
-    <Compile Include="Web\modules\BootstrapperMain.cs" />
+    <Compile Include="Web\modules\BSMain.cs" />
     <Compile Include="Web\modules\ModuleAuth.cs" />
     <Compile Include="Web\modules\ModuleHome.cs" />
-    <Compile Include="Web\modules\ModuleSignIn.cs" />
+    <Compile Include="Web\modules\ModuleLogin.cs" />
     <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +127,7 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Web\modules\RequestStartupMain.cs" />
     <Compile Include="Web\SelfHosted.cs" />
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -170,8 +171,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\views\partials\loggers.cshtml" />
-    <None Include="Web\views\partials\users.cshtml" />
+    <Content Include="Web\js\views\index.js" />
+    <None Include="Web\views\loggers.cshtml" />
+    <None Include="Web\views\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
     <None Include="Resources\add-user.png" />

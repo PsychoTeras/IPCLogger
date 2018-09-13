@@ -8,9 +8,9 @@ using System;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
-    public class ModuleSignIn : NancyModule
+    public class ModuleLogin : NancyModule
     {
-        public ModuleSignIn()
+        public ModuleLogin()
         {
             Get["/signin"] = x =>
             {
@@ -18,7 +18,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 (
                     Request.Query.username,
                     Request.Query.rememberme.HasValue,
-                    Request.Query.failed.HasValue
+                    Request.Query.failed.HasValue,
+                    Request.Query.wrongsession.HasValue
                 );
                 return View["signin", model];
             };
@@ -30,8 +31,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 if (userGuid == null)
                 {
-                    return Context.GetRedirect("~/signin?username=" + model.UserName + "&failed" +
-                        (model.RememberMe ? "&rememberme" : ""));
+                    string rememberMe = model.RememberMe ? "&rememberme" : "";
+                    return Context.GetRedirect("~/signin?username=" + model.UserName + "&failed" + rememberMe);
                 }
 
                 DateTime? expiry = null;
@@ -42,6 +43,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 return this.LoginAndRedirect(userGuid.Value, expiry);
             };
+
+            Get["/signout"] = x => this.LogoutAndRedirect("/");
         }
     }
 }

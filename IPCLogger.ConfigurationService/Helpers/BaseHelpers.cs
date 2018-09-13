@@ -7,7 +7,7 @@ namespace IPCLogger.ConfigurationService.Helpers
     {
         public static string CreateMD5(string input)
         {
-            if (string.IsNullOrEmpty(input)) return string.Empty;
+            if (string.IsNullOrEmpty(input)) return null;
 
             using (MD5 md5 = MD5.Create())
             {
