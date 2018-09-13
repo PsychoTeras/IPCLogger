@@ -91,6 +91,7 @@
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Entities\DTO\LoggerRegDTO.cs" />
+    <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
     <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
@@ -169,7 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\views\partials\apps.cshtml" />
+    <None Include="Web\views\partials\loggers.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
