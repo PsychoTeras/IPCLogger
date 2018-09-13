@@ -1,6 +1,10 @@
 ﻿body {
     font-size: .875rem;
-    width: 85rem;
+}
+
+[role="main"] {
+    padding-left: 335px;
+    padding-top: 48px; /* Space for fixed navbar */
 }
 
 .navbar-caption {
