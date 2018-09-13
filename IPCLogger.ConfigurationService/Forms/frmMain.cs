@@ -264,7 +264,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
 #endregion
 
-#region Loggers
+#region Applications
 
         private LoggerModel GetSelectedLogger()
         {

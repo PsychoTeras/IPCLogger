@@ -61,7 +61,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-#region Loggers methods
+#region Applications methods
 
         private void ReadDeclaredLoggers(string configurationFile)
         {

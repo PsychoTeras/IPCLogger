@@ -12,14 +12,14 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleHome()
         {
-            Get["/"] = x => Response.AsRedirect("/loggers", RedirectResponse.RedirectType.Temporary);
+            Get["/"] = x => Response.AsRedirect("/applications", RedirectResponse.RedirectType.Temporary);
 
-            Get["/loggers"] = x =>
+            Get["/applications"] = x =>
             {
                 //this.RequiresAuthentication();
 
                 List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(false);
-                return View["index", PageModel.Loggers(loggers)];
+                return View["index", PageModel.Applications(loggers)];
             };
 
             Get["/users"] = x =>

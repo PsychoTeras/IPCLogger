@@ -173,7 +173,7 @@
   <ItemGroup>
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\js\views\index.js" />
-    <None Include="Web\views\loggers.cshtml" />
+    <None Include="Web\views\applications.cshtml" />
     <None Include="Web\views\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
