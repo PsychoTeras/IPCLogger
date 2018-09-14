@@ -161,6 +161,11 @@
     <None Include="Web\css\bootstrap\bootstrap-grid.min.css.map" />
     <None Include="Web\css\bootstrap\bootstrap-reboot.min.css.map" />
     <None Include="Web\css\bootstrap\bootstrap.min.css.map" />
+    <None Include="Web\fonts\fontawesome-webfont.eot" />
+    <None Include="Web\fonts\fontawesome-webfont.ttf" />
+    <None Include="Web\fonts\fontawesome-webfont.woff" />
+    <None Include="Web\fonts\fontawesome-webfont.woff2" />
+    <None Include="Web\fonts\FontAwesome.otf" />
     <None Include="Web\js\bootstrap\bootstrap.bundle.min.js.map" />
     <None Include="Web\js\bootstrap\bootstrap.min.js.map" />
   </ItemGroup>
@@ -172,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
+    <Content Include="Web\fonts\fontawesome-webfont.svg" />
     <Content Include="Web\js\views\index.js" />
     <None Include="Web\views\applications.cshtml" />
     <None Include="Web\views\users.cshtml" />
