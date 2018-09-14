@@ -1,0 +1,42 @@
+﻿.btn-breadcrumb .btn:not(:last-child):after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    left: 100%;
+    z-index: 3;
+}
+
+.btn-breadcrumb .btn {
+    padding: 6px 12px 6px 24px;
+}
+
+    .btn-breadcrumb .btn:first-child {
+        padding: 6px 6px 6px 10px;
+    }
+
+    .btn-breadcrumb .btn:last-child {
+        padding: 6px 18px 6px 24px;
+    }
+
+    .btn-breadcrumb .btn:not(:last-child):after {
+        border-left: 10px solid #fff;
+    }
+
+    .btn-breadcrumb .btn:not(:last-child):before {
+        border-left: 10px solid #ccc;
+    }
+
+    .btn-breadcrumb .btn:hover:not(:last-child):after {
+        border-left: 10px solid #ebebeb;
+    }
+
+    .btn-breadcrumb .btn:hover:not(:last-child):before {
+        border-left: 10px solid #adadad;
+    }
