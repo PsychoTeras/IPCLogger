@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="Helpers\BaseHelpers.cs" />
     <Compile Include="Web\modules\BSMain.cs" />
+    <Compile Include="Web\modules\ModuleLogger.cs" />
     <Compile Include="Web\modules\ModuleAuth.cs" />
     <Compile Include="Web\modules\ModuleHome.cs" />
     <Compile Include="Web\modules\ModuleLogin.cs" />
@@ -179,7 +180,7 @@
     <Content Include="Web\css\breadcrumb.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
-    <Content Include="Web\js\views\index.js" />
+    <Content Include="Web\js\views\applications.js" />
     <None Include="Web\views\applications.cshtml" />
     <None Include="Web\views\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />

@@ -16,7 +16,7 @@
                 <td id="cell-application-name">@(model.ApplicationName)</td>
                 <td id="cell-desciption">@(model.Description)</td>
                 <td id="cell-actions" class="td-actions">
-                    <button class="btn btn-info btn-sm">Configure logger</button>
+                    <button id="btn-configure-logger" class="btn btn-info btn-sm" action="@Url.Action("SendMail", "Home")">Configure logger</button>
                     <button class="btn btn-secondary btn-sm fa fa-save"></button>
                 </td>
             </tr>
