@@ -180,6 +180,9 @@
     <Content Include="Web\css\breadcrumb.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
+    <Content Include="Web\js\controllers\applicationsController.js" />
+    <Content Include="Web\js\global.js" />
+    <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\applications.js" />
     <None Include="Web\views\applications.cshtml" />
     <None Include="Web\views\users.cshtml" />

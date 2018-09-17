@@ -1,17 +1,18 @@
 ﻿(function () {
 
+    function getModelId(caller) {
+        var modelId = $(caller).parentsUntil("tbody", "#row-application").attr("modelId");
+        return modelId;
+    };
+
+    function loggerConfigure(sender) {
+        var me = this;
+        var caller = sender.target;
+        var modelId = getModelId(caller);
+    };
+
     function initialize() {
-        $("#btn-configure-logger").on("click", ruleAdd);
-
-        userId = getParameterByName("userId");
-        UsersController.getById(userId, onSetupUserName);
-
-        RuleTypesController.get(true, function (data, success) {
-            if (success) {
-                window.app.ruleTypes = data;
-                AssignedRulesController.get(userId, reloadAssignedRulesTable);
-            }
-        });
+        $("#btn-configure-logger").on("click", loggerConfigure);
     };
 
     initialize();
