@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Exceptions\InvalidRequestException.cs" />
     <Compile Include="Controls\BorderedListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -116,10 +117,9 @@
       <DependentUpon>frmManageUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BaseHelpers.cs" />
-    <Compile Include="Web\modules\BSMain.cs" />
-    <Compile Include="Web\modules\ModuleLogger.cs" />
+    <Compile Include="Web\modules\common\BootstrapperCommon.cs" />
     <Compile Include="Web\modules\ModuleAuth.cs" />
-    <Compile Include="Web\modules\ModuleHome.cs" />
+    <Compile Include="Web\modules\ModuleIndex.cs" />
     <Compile Include="Web\modules\ModuleLogin.cs" />
     <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
@@ -128,7 +128,7 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\modules\RequestStartupMain.cs" />
+    <Compile Include="Web\modules\common\RequestStartupCommon.cs" />
     <Compile Include="Web\SelfHosted.cs" />
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -180,11 +180,12 @@
     <Content Include="Web\css\breadcrumb.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
-    <Content Include="Web\js\controllers\applicationsController.js" />
+    <Content Include="Web\js\controllers\loggersController.js" />
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
-    <Content Include="Web\js\views\applications.js" />
-    <None Include="Web\views\applications.cshtml" />
+    <Content Include="Web\js\views\loggers.js" />
+    <None Include="Web\views\logger.cshtml" />
+    <None Include="Web\views\loggers.cshtml" />
     <None Include="Web\views\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />

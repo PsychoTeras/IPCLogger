@@ -62,7 +62,7 @@
             return params;
         };
 
-        var url = globalSetting.UNTRACKER_API_URL;
+        var url = globalSetting.APP_URL;
         $.each(arguments, function(i, value) {
             if (value instanceof Object) {
                 url = url.concat(valueToGetParams(value));

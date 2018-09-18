@@ -6,9 +6,9 @@ using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 
-namespace IPCLogger.ConfigurationService.Web.modules
+namespace IPCLogger.ConfigurationService.Web.modules.common
 {
-    public class BSMain : DefaultNancyBootstrapper
+    public class BootstrapperCommon : DefaultNancyBootstrapper
     {
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
         {

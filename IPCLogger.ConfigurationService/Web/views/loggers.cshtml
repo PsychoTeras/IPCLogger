@@ -12,7 +12,7 @@
     <tbody>
         @foreach (LoggerModel model in Model)
         {
-            <tr id="row-application" modelId="@(model.Id)">
+            <tr id="row-logger" modelId="@(model.Id)">
                 <td id="cell-application-name">@(model.ApplicationName)</td>
                 <td id="cell-desciption">@(model.Description)</td>
                 <td id="cell-actions" class="td-actions">
@@ -24,4 +24,5 @@
     </tbody>
 </table>
 
-<script src="../js/views/applications.js" type="text/javascript"></script>
+<script src="../js/controllers/loggersController.js" type="text/javascript"></script>
+<script src="../js/views/loggers.js" type="text/javascript"></script>

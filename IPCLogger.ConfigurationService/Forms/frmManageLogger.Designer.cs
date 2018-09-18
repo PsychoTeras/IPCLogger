@@ -195,7 +195,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Register/Manage application";
+            this.Text = "Register/Manage logger";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmKeyDown);
             this.tlpMain.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);

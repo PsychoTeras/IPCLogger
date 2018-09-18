@@ -1,0 +1,25 @@
+﻿@using IPCLogger.ConfigurationService.Entities.Models;
+@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<DeclaredLoggerModel>>
+
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th style="width: 40%">Type</th>
+            <th style="width: auto">Namespace</th>
+            <th style="width: 172px">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DeclaredLoggerModel model in Model)
+        {
+            <tr id="row-logger" modelId="@(0)">
+                <td id="cell-logger-type">@(model.TypeName)</td>
+                <td id="cell-desciption">@(model.Namespace)</td>
+                <td id="cell-actions" class="td-actions">
+                    <button id="btn-configure-logger" class="btn btn-info btn-sm">Configure logger</button>
+                    <button class="btn btn-secondary btn-sm fa fa-save"></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

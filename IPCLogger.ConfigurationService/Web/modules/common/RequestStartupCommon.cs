@@ -1,9 +1,9 @@
 ﻿using Nancy;
 using Nancy.Bootstrapper;
 
-namespace IPCLogger.ConfigurationService.Web.modules
+namespace IPCLogger.ConfigurationService.Web.modules.common
 {
-    public class RequestStartupMain : IRequestStartup
+    public class RequestStartupCommon : IRequestStartup
     {
         public void Initialize(IPipelines pipelines, NancyContext context)
         {

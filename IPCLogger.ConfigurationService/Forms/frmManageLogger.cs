@@ -94,7 +94,7 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void BindModels()
         {
-            Text = _loggerModel.Id == 0 ? "Register new logger" : "Modify logger";
+            Text = _loggerModel.Id == 0 ? "Register logger" : "Modify logger";
             tbAppName.DataBindings.Add("Text", _loggerModel, "ApplicationName", false, DataSourceUpdateMode.OnPropertyChanged);
             tbDescription.DataBindings.Add("Text", _loggerModel, "Description", false, DataSourceUpdateMode.OnPropertyChanged);
             tbConfigurationFile.DataBindings.Add("Text", _loggerModel, "ConfigurationFile", false, DataSourceUpdateMode.OnPropertyChanged);

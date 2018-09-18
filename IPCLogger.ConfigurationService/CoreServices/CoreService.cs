@@ -22,6 +22,20 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
+#region Properties
+
+        public List<DeclaredLoggerModel> DeclaredLoggers
+        {
+            get { return _declaredLoggers; }
+        }
+
+        public List<RegisteredLoggerModel> RegisteredLoggers
+        {
+            get { return _registeredLoggers; }
+        }
+
+#endregion
+
 #region Ctor
 
         public CoreService(string configurationFile)

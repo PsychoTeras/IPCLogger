@@ -1,14 +1,14 @@
 ﻿(function () {
 
     function getModelId(caller) {
-        var modelId = $(caller).parentsUntil("tbody", "#row-application").attr("modelId");
-        return modelId;
+        return $(caller).parentsUntil("tbody", "#row-logger").attr("modelId");
     };
 
     function loggerConfigure(sender) {
         var me = this;
         var caller = sender.target;
         var modelId = getModelId(caller);
+        LoggersController.manageLogger(modelId);
     };
 
     function initialize() {

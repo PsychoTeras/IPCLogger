@@ -2,8 +2,9 @@
 {
     public enum PageType
     {
-        Applications,
-        Users
+        Loggers,
+        Logger,
+        Users,        
     }
 
     public class PageModel
@@ -20,9 +21,14 @@
             Model = model;
         }
 
-        public static PageModel Applications(object model)
+        public static PageModel Loggers(object model)
         {
-            return new PageModel(PageType.Applications, model);
+            return new PageModel(PageType.Loggers, model);
+        }
+
+        public static PageModel Logger(object model)
+        {
+            return new PageModel(PageType.Logger, model);
         }
 
         public static PageModel Users(object model)

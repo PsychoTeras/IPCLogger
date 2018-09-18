@@ -11,11 +11,15 @@
     <title>IPCLogger Configuration Console</title>
 
     <script src="../js/jquery/jquery-3.3.1.min.js" type="text/javascript"></script>
+
     <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="../css/font-awesome/font-awesome.min.css" rel="stylesheet">
     <link href="../css/breadcrumb.css" rel="stylesheet">
 
     <link href="../css/main.css" rel="stylesheet">
+
+    <script src="../js/settings.js" type="text/javascript"></script>
+    <script src="../js/global.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -29,11 +33,11 @@
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link @(Model.PageType == PageType.Applications ? "active" : "")" href="applications">
+                            <a class="nav-link @(Model.PageType != PageType.Users ? "active" : "")" href="loggers">
                                 <svg class="feather" viewBox="0 0 24 24">
                                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                                </svg>Applications
+                                </svg>Loggers
                             </a>
                             <a class="nav-link @(Model.PageType == PageType.Users ? "active" : "")" href="users">
                                 <svg class="feather" viewBox="0 0 24 24">

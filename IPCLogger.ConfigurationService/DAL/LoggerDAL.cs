@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.Entities.DTO;
+﻿using IPCLogger.ConfigurationService.Common.Exceptions;
+using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,32 @@ namespace IPCLogger.ConfigurationService.DAL
 {
     internal class LoggerDAL : BaseDAL<LoggerDAL>
     {
+        public string GetConfigurationFile(int loggerId)
+        {
+            using (SQLiteCommand command = new SQLiteCommand(Connection))
+            {
+                command.CommandText = @"
+SELECT configuration_file
+FROM T_LOGGERS
+WHERE
+    id = @logger_id AND
+    deleted = 0 AND
+    visible = 1";
+
+                command.Parameters.Add(new SQLiteParameter("@logger_id", loggerId));
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return reader["configuration_file"].ToString();
+                    }
+
+                    throw new InvalidRequestException();
+                }
+            }
+        }
+
         public List<LoggerModel> GetLoggers(bool includeHidden)
         {
             List<LoggerModel> loggers = new List<LoggerModel>();
