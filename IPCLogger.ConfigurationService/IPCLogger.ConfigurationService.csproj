@@ -177,7 +177,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Web\css\breadcrumb.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
     <Content Include="Web\js\controllers\loggersController.js" />

@@ -53,9 +53,11 @@
             </nav>
 
             <main role="main" class="col-md-10 col-lg-12">
+
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
                     <h3>@Model.Caption</h3>
                 </div>
+
                 @Html.Partial(string.Format("{0}.cshtml", Model.PageName), Model.Model)
             </main>
 
