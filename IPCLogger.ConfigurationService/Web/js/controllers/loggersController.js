@@ -3,7 +3,7 @@
     this.manageLogger = function (loggerId) {
 
         var url = getApiUrl("loggers", loggerId);
-        window.location.href = url;
+        window.location.assign(url);
     };
 
 };

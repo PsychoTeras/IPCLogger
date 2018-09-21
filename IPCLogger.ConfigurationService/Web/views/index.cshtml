@@ -24,7 +24,7 @@
 
 <body>
 
-    @Html.Partial("partials/_header.cshtml")
+    @Html.Partial("partials/_header.cshtml", Model)
 
     <div class="container-fluid">
         <div class="row">
@@ -64,7 +64,7 @@
         </div>
     </div>
 
-    @Html.Partial("partials/_footer.cshtml")
+    @Html.Partial("partials/_footer.cshtml", Model)
 
 </body>
 

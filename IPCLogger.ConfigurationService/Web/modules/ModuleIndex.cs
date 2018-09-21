@@ -27,22 +27,21 @@ namespace IPCLogger.ConfigurationService.Web.modules
             {
                 //this.RequiresAuthentication();
 
-                ModuleIndex me = this;
-
                 int loggerId = int.Parse(x.id);
                 string configurationFile = LoggerDAL.Instance.GetConfigurationFile(loggerId);
                 CoreService coreService;
-                if (!me.ViewBag.CoreService.HasValue)
+                if (!ViewBag.CoreService.HasValue)
                 {
                     coreService = new CoreService(configurationFile);
-                    me.ViewBag.CoreService = new CoreService(configurationFile);
+                    ViewBag.CoreService = new CoreService(configurationFile);
                 }
                 else
                 {
-                    coreService = me.ViewBag.CoreService;
+                    coreService = ViewBag.CoreService;
                 }
 
-                return View["index", PageModel.Logger(coreService.DeclaredLoggers)];
+                PageModel previousPageModel = Request.Session["PreviousPageModel"] as PageModel;
+                return View["index", PageModel.Logger(coreService.DeclaredLoggers, loggerId, previousPageModel)];
             };
 
             Get["/users"] = x =>

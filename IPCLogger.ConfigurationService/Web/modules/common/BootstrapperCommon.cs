@@ -5,6 +5,7 @@ using IPCLogger.ConfigurationService.DAL;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
+using Nancy.Session;
 
 namespace IPCLogger.ConfigurationService.Web.modules.common
 {
@@ -21,6 +22,7 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            CookieBasedSessions.Enable(pipelines);
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
         }
 
