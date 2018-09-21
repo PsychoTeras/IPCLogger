@@ -22,7 +22,10 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            CookieBasedSessions.Enable(pipelines);
+            CookieBasedSessionsConfiguration configuration = new CookieBasedSessionsConfiguration();
+            configuration.CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default;
+            configuration.Serializer = new DefaultObjectSerializer();
+            CookieBasedSessions.Enable(pipelines, configuration);
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
         }
 

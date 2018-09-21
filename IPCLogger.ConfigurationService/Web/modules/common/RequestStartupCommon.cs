@@ -11,6 +11,11 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
         {
             pipelines.OnError += (ctx, ex) => throw ex;
 
+            pipelines.BeforeRequest += (ctx) =>
+            {
+                return null;
+            };
+
             pipelines.AfterRequest += (ctx) => 
             {
                 if (ctx.NegotiationContext.ViewName != null)

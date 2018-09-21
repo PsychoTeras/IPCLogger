@@ -20,6 +20,8 @@ namespace IPCLogger.ConfigurationService.Entities
 
         public PageModel PreviousPageModel;
 
+        public PageModel() { }
+
         public PageModel(PageType pageType, string pageName, string pagePath, string caption, 
             object model, PageModel previousPageModel)
         {

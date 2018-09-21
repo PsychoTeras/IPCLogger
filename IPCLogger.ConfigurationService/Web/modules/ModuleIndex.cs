@@ -40,7 +40,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     coreService = ViewBag.CoreService;
                 }
 
-                PageModel previousPageModel = Request.Session["PreviousPageModel"] as PageModel;
+                PageModel previousPageModel = Session["PreviousPageModel"] as PageModel;
                 return View["index", PageModel.Logger(coreService.DeclaredLoggers, loggerId, previousPageModel)];
             };
 
