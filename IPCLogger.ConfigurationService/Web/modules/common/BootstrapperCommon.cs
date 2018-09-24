@@ -22,21 +22,19 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            CookieBasedSessionsConfiguration configuration = new CookieBasedSessionsConfiguration();
-            configuration.CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default;
-            configuration.Serializer = new DefaultObjectSerializer();
-            CookieBasedSessions.Enable(pipelines, configuration);
+            base.ApplicationStartup(container, pipelines);
+
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
         }
 
-        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
-        {
-            //We don't call "base" here to prevent auto-discovery of types/dependencies
-        }
+        //protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        //{
+        //    //We don't call "base" here to prevent auto-discovery of types/dependencies
+        //}
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
-            //base.ConfigureRequestContainer(container, context);
+           base.ConfigureRequestContainer(container, context);
 
             container.Register<IUserMapper, UserDAL>(UserDAL.Instance);
         }
@@ -52,9 +50,21 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             }
         }
 
+        private void ConfigureCookieBasedSessions(IPipelines pipelines)
+        {
+            CookieBasedSessionsConfiguration configuration = new CookieBasedSessionsConfiguration();
+            configuration.CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default;
+            configuration.Serializer = new CookieSerializer();
+            CookieBasedSessions.Enable(pipelines, configuration);
+
+            //CookieBasedSessions.Enable(pipelines);
+        }
+
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
         {
-            //base.RequestStartup(requestContainer, pipelines, context);
+            base.RequestStartup(requestContainer, pipelines, context);
+
+            ConfigureCookieBasedSessions(pipelines);
 
             FormsAuthenticationConfiguration formsAuthConfiguration = new FormsAuthenticationConfiguration
             {

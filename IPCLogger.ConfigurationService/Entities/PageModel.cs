@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.Entities
@@ -10,13 +14,37 @@ namespace IPCLogger.ConfigurationService.Entities
         Users,        
     }
 
+    [JsonObject]
     public class PageModel : IEnumerable<PageModel>
     {
+        private object _model;
+
         public string PageName;
         public PageType PageType;
         public string PagePath;
         public string Caption;
-        public object Model;
+
+        public object Model
+        {
+            get
+            {
+                if (_model is JToken jToken)
+                {
+                    Type objType = Type.GetType(ModelType);
+                    _model = JsonConvert.DeserializeObject(jToken.ToString(), objType);
+                }
+                return _model;
+            }
+            set
+            {
+                if (!(value is JToken))
+                {
+                    ModelType = value?.GetType().AssemblyQualifiedName;
+                }
+                _model = value;
+            }
+        }
+        public string ModelType;
 
         public PageModel PreviousPageModel;
 
@@ -69,6 +97,11 @@ namespace IPCLogger.ConfigurationService.Entities
                 yield return pageModel;
                 pageModel = pageModel.PreviousPageModel;
             }
+        }
+
+        public IEnumerable<PageModel> Reverse()
+        {
+            return this.Reverse<PageModel>().ToArray();
         }
     }
 }

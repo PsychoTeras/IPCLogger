@@ -118,6 +118,7 @@
     </Compile>
     <Compile Include="Helpers\BaseHelpers.cs" />
     <Compile Include="Web\modules\common\BootstrapperCommon.cs" />
+    <Compile Include="Web\modules\common\CookieSerializer.cs" />
     <Compile Include="Web\modules\ModuleAuth.cs" />
     <Compile Include="Web\modules\ModuleIndex.cs" />
     <Compile Include="Web\modules\ModuleLogin.cs" />
@@ -220,6 +221,9 @@
     </PackageReference>
     <PackageReference Include="Nancy.Viewengines.Razor">
       <Version>1.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.109.1</Version>
