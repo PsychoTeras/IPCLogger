@@ -11,6 +11,17 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 {
     public class BootstrapperCommon : DefaultNancyBootstrapper
     {
+        private static readonly CookieBasedSessionsConfiguration _cookieBasedSessionsConfiguration = new CookieBasedSessionsConfiguration
+        {
+            CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default,
+            Serializer = new CookieSerializer()
+        };
+
+        private static readonly FormsAuthenticationConfiguration _formsAuthConfiguration = new FormsAuthenticationConfiguration
+        {
+            RedirectUrl = "~/signin",
+        };
+
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
         {
             new KeyValuePair<string, string>("views", "/Web/views"),
@@ -27,22 +38,20 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
         }
 
-        //protected override void ConfigureApplicationContainer(TinyIoCContainer container)
-        //{
-        //    //We don't call "base" here to prevent auto-discovery of types/dependencies
-        //}
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        {
+            //We don't call "base" here to prevent auto-discovery of types/dependencies
+        }
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
-           base.ConfigureRequestContainer(container, context);
+            base.ConfigureRequestContainer(container, context);
 
             container.Register<IUserMapper, UserDAL>(UserDAL.Instance);
         }
 
         protected override void ConfigureConventions(NancyConventions nancyConventions)
         {
-            base.ConfigureConventions(nancyConventions);
-
             nancyConventions.StaticContentsConventions.Clear();
             foreach (KeyValuePair<string, string> pair in StaticContentsConventions)
             {
@@ -50,28 +59,14 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             }
         }
 
-        private void ConfigureCookieBasedSessions(IPipelines pipelines)
-        {
-            CookieBasedSessionsConfiguration configuration = new CookieBasedSessionsConfiguration();
-            configuration.CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default;
-            configuration.Serializer = new CookieSerializer();
-            CookieBasedSessions.Enable(pipelines, configuration);
-
-            //CookieBasedSessions.Enable(pipelines);
-        }
-
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
         {
             base.RequestStartup(requestContainer, pipelines, context);
 
-            ConfigureCookieBasedSessions(pipelines);
+            CookieBasedSessions.Enable(pipelines, _cookieBasedSessionsConfiguration);
 
-            FormsAuthenticationConfiguration formsAuthConfiguration = new FormsAuthenticationConfiguration
-            {
-                RedirectUrl = "~/signin",
-                UserMapper = requestContainer.Resolve<IUserMapper>()
-            };
-            FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
+            _formsAuthConfiguration.UserMapper = requestContainer.Resolve<IUserMapper>();
+            FormsAuthentication.Enable(pipelines, _formsAuthConfiguration);
         }
     }
 }
