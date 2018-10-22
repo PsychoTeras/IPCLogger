@@ -19,7 +19,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
             {
                 //this.RequiresAuthentication();
 
-                List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(false);
+                List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers();
                 return View["index", PageModel.Loggers(loggers)];
             };
 
@@ -28,12 +28,13 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 //this.RequiresAuthentication();
 
                 int loggerId = int.Parse(x.id);
-                string configurationFile = LoggerDAL.Instance.GetConfigurationFile(loggerId);
+                LoggerModel logger = LoggerDAL.Instance.GetLogger(loggerId);
+
                 CoreService coreService;
                 if (!ViewBag.CoreService.HasValue)
                 {
-                    coreService = new CoreService(configurationFile);
-                    ViewBag.CoreService = new CoreService(configurationFile);
+                    coreService = new CoreService(logger.ConfigurationFile);
+                    ViewBag.CoreService = coreService;
                 }
                 else
                 {
@@ -41,7 +42,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
 
                 PageModel previousPageModel = Session["PreviousPageModel"] as PageModel;
-                return View["index", PageModel.Logger(coreService.DeclaredLoggers, loggerId, previousPageModel)];
+                return View["index", PageModel.Logger(logger, coreService.DeclaredLoggers, previousPageModel)];
             };
 
             Get["/users"] = x =>

@@ -7,20 +7,6 @@
         <a class="">IPCLogger Configuration Console</a>
     </div>
 
-    <ol style="margin-bottom: 0px; display: flex; list-style: none">
-        @foreach (PageModel model in Model.Reverse())
-        {
-            if (model == Model)
-            {
-                <li class="breadcrumb-item active" aria-current="page">@(model.Caption)</li>
-            }
-            else
-            {
-                <li class="breadcrumb-item"><a href="@(model.PagePath)">@(model.Caption)</a></li>
-            }
-        }
-    </ol>
-
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link" href="signout"><span class="fa fa-sign-out pr-2"></span>Sign out</a>

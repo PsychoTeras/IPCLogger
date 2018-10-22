@@ -16,7 +16,7 @@
     <link href="../css/font-awesome/font-awesome.min.css" rel="stylesheet">
     <link href="../css/breadcrumb.css" rel="stylesheet">
 
-    <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/index.css" rel="stylesheet">
 
     <script src="../js/settings.js" type="text/javascript"></script>
     <script src="../js/global.js" type="text/javascript"></script>
@@ -54,11 +54,21 @@
 
             <main role="main" class="col-md-10 col-lg-12">
 
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
-                    <h3>@Model.Caption</h3>
-                </div>
+                <ol style="margin: 0; padding: 0; display: flex; list-style: none" class="pt-3 pb-2">
+                    @foreach (PageModel model in Model.Reverse())
+                    {
+                        if (model == Model)
+                        {
+                            <li class="breadcrumb-item active h3" aria-current="page">@(model.Caption)</li>
+                        }
+                        else
+                        {
+                            <li class="breadcrumb-item h3"><a href="@(model.PagePath)">@(model.Caption)</a></li>
+                        }
+                    }
+                </ol>
 
-                @Html.Partial(string.Format("{0}.cshtml", Model.PageName), Model.Model)
+                @Html.Partial(string.Format("partials/{0}.cshtml", Model.PageName), Model.Model)
             </main>
 
         </div>

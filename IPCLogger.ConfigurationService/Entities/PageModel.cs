@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using IPCLogger.ConfigurationService.Entities.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Entities
 {
@@ -48,9 +49,9 @@ namespace IPCLogger.ConfigurationService.Entities
 
         public PageModel PreviousPageModel;
 
-        public PageModel() { }
+        private PageModel() { }
 
-        public PageModel(PageType pageType, string pageName, string pagePath, string caption, 
+        private PageModel(PageType pageType, string pageName, string pagePath, string caption, 
             object model, PageModel previousPageModel)
         {
             PageType = pageType;
@@ -61,27 +62,42 @@ namespace IPCLogger.ConfigurationService.Entities
             PreviousPageModel = previousPageModel;
         }
 
-        public PageModel(PageType pageType, object model) : 
-            this(pageType, null, null, null, model, null) { }
-
-        public PageModel(PageType pageType, object model, string pagePath, PageModel previousPageModel) :
-            this(pageType, null, pagePath, null, model, previousPageModel)
-        { }
-
-        public static PageModel Loggers(object model)
+        private static PageModel GetPageModel(PageType pageType, object model)
         {
-            return new PageModel(PageType.Loggers, model);
+            return GetPageModel(pageType, null, null, null, model, null);
         }
 
-        public static PageModel Logger(object model, int loggerId, PageModel previousPageModel)
+        private static PageModel GetPageModel(PageType pageType, string pagePath, string caption, object model, PageModel previousPageModel)
         {
-            string pagePath = $"/loggers/{loggerId}";
-            return new PageModel(PageType.Logger, model, pagePath, previousPageModel);
+            return GetPageModel(pageType, null, pagePath, caption, model, previousPageModel);
         }
 
-        public static PageModel Users(object model)
+        private static PageModel GetPageModel(PageType pageType, string pageName, string pagePath, string caption,
+            object model, PageModel previousPageModel)
         {
-            return new PageModel(PageType.Users, model);
+            pagePath = pagePath ?? $"/{pageType.ToString().ToLower()}";
+            if (previousPageModel != null && previousPageModel.PagePath.Equals(pagePath, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return previousPageModel;
+            }
+
+            return new PageModel(pageType, pageName, pagePath, caption, model, previousPageModel);
+        }
+
+        public static PageModel Loggers(List<LoggerModel> loggers)
+        {
+            return GetPageModel(PageType.Loggers, loggers);
+        }
+
+        public static PageModel Logger(LoggerModel logger, List<DeclaredLoggerModel> declaredLoggers, PageModel previousPageModel)
+        {
+            string pagePath = $"/loggers/{logger.Id}";
+            return GetPageModel(PageType.Logger, pagePath, logger.ApplicationName, declaredLoggers, previousPageModel);
+        }
+
+        public static PageModel Users(List<UserModel> users)
+        {
+            return GetPageModel(PageType.Users, users);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

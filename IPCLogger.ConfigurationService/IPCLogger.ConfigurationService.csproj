@@ -184,9 +184,9 @@
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggers.js" />
-    <None Include="Web\views\logger.cshtml" />
-    <None Include="Web\views\loggers.cshtml" />
-    <None Include="Web\views\users.cshtml" />
+    <None Include="Web\views\partials\logger.cshtml" />
+    <None Include="Web\views\partials\loggers.cshtml" />
+    <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
     <None Include="Resources\add-user.png" />
@@ -199,7 +199,7 @@
     <Content Include="Web\css\bootstrap\bootstrap-grid.min.css" />
     <Content Include="Web\css\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\bootstrap\bootstrap.min.css" />
-    <Content Include="Web\css\main.css" />
+    <Content Include="Web\css\index.css" />
     <Content Include="Web\css\signin.css" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\bootstrap\bootstrap.min.js" />

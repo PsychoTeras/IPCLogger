@@ -66,6 +66,19 @@
     box-shadow: none !important;
 }
 
+.breadcrumb-item.active {
+    color: #343a40;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "►";
+    font-family: "Arial";
+    font-size: 0.8rem;
+    padding-bottom: .2rem;
+    vertical-align: middle;
+    color: #343a40;
+}
+
 
 
 input {

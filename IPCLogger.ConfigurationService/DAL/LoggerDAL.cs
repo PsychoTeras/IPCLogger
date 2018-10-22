@@ -9,12 +9,24 @@ namespace IPCLogger.ConfigurationService.DAL
 {
     internal class LoggerDAL : BaseDAL<LoggerDAL>
     {
-        public string GetConfigurationFile(int loggerId)
+        private LoggerModel LoggerModelFromReader(SQLiteDataReader reader)
+        {
+            return new LoggerModel
+            {
+                Id = Convert.ToInt32(reader["id"]),
+                ApplicationName = reader["application_name"].ToString(),
+                Description = reader["description"].ToString(),
+                ConfigurationFile = reader["configuration_file"].ToString(),
+                Visible = Convert.ToBoolean(reader["visible"])
+            };
+        }
+
+        public LoggerModel GetLogger(int loggerId)
         {
             using (SQLiteCommand command = new SQLiteCommand(Connection))
             {
                 command.CommandText = @"
-SELECT configuration_file
+SELECT *
 FROM T_LOGGERS
 WHERE
     id = @logger_id AND
@@ -27,15 +39,15 @@ WHERE
                 {
                     if (reader.Read())
                     {
-                        return reader["configuration_file"].ToString();
+                        return LoggerModelFromReader(reader);
                     }
-
-                    throw new InvalidRequestException();
                 }
             }
+
+            throw new InvalidRequestException();
         }
 
-        public List<LoggerModel> GetLoggers(bool includeHidden)
+        public List<LoggerModel> GetLoggers(bool includeHidden = false)
         {
             List<LoggerModel> loggers = new List<LoggerModel>();
 
@@ -54,14 +66,7 @@ WHERE
                 {
                     while (reader.Read())
                     {
-                        loggers.Add(new LoggerModel
-                        {
-                            Id = Convert.ToInt32(reader["id"]),
-                            ApplicationName = reader["application_name"].ToString(),
-                            Description = reader["description"].ToString(),
-                            ConfigurationFile = reader["configuration_file"].ToString(),
-                            Visible = Convert.ToBoolean(reader["visible"])
-                        });
+                        loggers.Add(LoggerModelFromReader(reader));
                     }
                 }
             }
