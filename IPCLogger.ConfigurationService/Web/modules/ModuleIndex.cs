@@ -13,6 +13,21 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleIndex()
         {
+            CoreService LoadCoreService(string configurationFile)
+            {
+                CoreService coreService;
+                if (!ViewBag.CoreService.HasValue)
+                {
+                    coreService = new CoreService(configurationFile);
+                    ViewBag.CoreService = coreService;
+                }
+                else
+                {
+                    coreService = ViewBag.CoreService;
+                }
+                return coreService;
+            }
+
             Get["/"] = x => Response.AsRedirect("/loggers", RedirectResponse.RedirectType.Temporary);
 
             Get["/loggers"] = x =>
@@ -30,16 +45,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 int loggerId = int.Parse(x.id);
                 LoggerModel logger = LoggerDAL.Instance.GetLogger(loggerId);
 
-                CoreService coreService;
-                if (!ViewBag.CoreService.HasValue)
-                {
-                    coreService = new CoreService(logger.ConfigurationFile);
-                    ViewBag.CoreService = coreService;
-                }
-                else
-                {
-                    coreService = ViewBag.CoreService;
-                }
+                CoreService coreService = LoadCoreService(logger.ConfigurationFile);
 
                 PageModel previousPageModel = Session["PreviousPageModel"] as PageModel;
                 return View["index", PageModel.Logger(logger, coreService.DeclaredLoggers, previousPageModel)];

@@ -1,4 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
@@ -99,6 +100,15 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             ReadRegisteredLoggers(configurationFile);
             ReadDeclaredLoggers(configurationFile);
+        }
+
+#endregion
+
+#region Logger methods
+
+        public BaseSettings ReadLoggerSettings(RegisteredLoggerModel loggerModel)
+        {
+            return null;
         }
 
 #endregion
