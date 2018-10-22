@@ -184,6 +184,7 @@
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggers.js" />
+    <None Include="Web\views\partials\loggerSettings.cshtml" />
     <None Include="Web\views\partials\logger.cshtml" />
     <None Include="Web\views\partials\loggers.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
