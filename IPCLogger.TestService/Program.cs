@@ -1,11 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
 using IPCLogger.Core.Storages;
@@ -14,6 +7,13 @@ using log4net;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Repository;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.ServiceProcess;
+using System.Text;
+using System.Threading;
 
 namespace IPCLogger.TestService
 {

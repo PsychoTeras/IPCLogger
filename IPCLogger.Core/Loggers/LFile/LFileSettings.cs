@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Web.Hosting;
 using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Loggers.Base;
 
@@ -68,7 +69,13 @@ namespace IPCLogger.Core.Loggers.LFile
             RollByFileSize = MaxFileSize > 0;
             RollByFileAge = MaxFileAge.Ticks > 0;
             ExpandedLogFilePathWithMark = $"{Path.GetFileNameWithoutExtension(LogFile)}{IdxPlaceMark}{Path.GetExtension(LogFile)}";
-            ExpandedLogFilePathWithMark = Path.Combine(LogDir, ExpandedLogFilePathWithMark);
+
+            string logDir = LogDir;
+            if (logDir.StartsWith("~\\"))
+            {
+                logDir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, logDir.Remove(0, 2));
+            }
+            ExpandedLogFilePathWithMark = Path.Combine(logDir, ExpandedLogFilePathWithMark);
             ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
             ConnectNetShare = !string.IsNullOrWhiteSpace(NetUser);
         }
