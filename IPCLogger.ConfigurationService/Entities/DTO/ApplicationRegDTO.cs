@@ -1,8 +1,8 @@
 ﻿namespace IPCLogger.ConfigurationService.Entities.DTO
 {
-    public class LoggerRegDTO : DBRecord
+    public class ApplicationRegDTO : DBRecord
     {
-        public string ApplicationName { get; set; }
+        public string Name { get; set; }
 
         public string Description { get; set; }
 

@@ -1,10 +1,14 @@
-﻿using IPCLogger.Core.Loggers.LFactory;
+﻿using System.Collections.Generic;
+using IPCLogger.Core.ConfigurationService;
+using IPCLogger.Core.Loggers.LFactory;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    public class DeclaredLoggerModel : RegisteredLoggerModel
+    public class DeclaredLoggerModel : LoggerModel
     {
-        internal static DeclaredLoggerModel FromRegisteredLogger(RegisteredLoggerModel source)
+        public List<KeyValuePair<CSProperty, object>> ChangedValues { get; private set; }
+
+        internal static DeclaredLoggerModel FromLogger(LoggerModel source)
         {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
             model.TypeName = source.TypeName;

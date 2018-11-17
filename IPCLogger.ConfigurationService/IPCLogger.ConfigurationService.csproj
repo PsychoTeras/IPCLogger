@@ -88,27 +88,27 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CoreServices\CoreService.cs" />
-    <Compile Include="DAL\LoggerDAL.cs" />
+    <Compile Include="DAL\ApplicationDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
-    <Compile Include="Entities\DTO\LoggerRegDTO.cs" />
+    <Compile Include="Entities\DTO\ApplicationRegDTO.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
-    <Compile Include="Entities\Models\LoggerModel.cs" />
+    <Compile Include="Entities\Models\ApplicationModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
     <Compile Include="Entities\DBRecord.cs" />
-    <Compile Include="Entities\Models\RegisteredLoggerModel.cs" />
+    <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\RoleModel.cs" />
     <Compile Include="Entities\DTO\RoleClaimDTO.cs" />
     <Compile Include="Entities\UserIdentity.cs" />
     <Compile Include="Entities\DTO\UserAuthDTO.cs" />
     <Compile Include="Entities\Models\UserModel.cs" />
     <Compile Include="Entities\DTO\UserRegDTO.cs" />
-    <Compile Include="Forms\frmManageLogger.cs">
+    <Compile Include="Forms\frmManageApplication.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmManageLogger.Designer.cs">
-      <DependentUpon>frmManageLogger.cs</DependentUpon>
+    <Compile Include="Forms\frmManageApplication.Designer.cs">
+      <DependentUpon>frmManageApplication.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmManageUser.cs">
       <SubType>Form</SubType>
@@ -134,8 +134,8 @@
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmManageLogger.resx">
-      <DependentUpon>frmManageLogger.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmManageApplication.resx">
+      <DependentUpon>frmManageApplication.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmManageUser.resx">
       <DependentUpon>frmManageUser.cs</DependentUpon>
@@ -180,13 +180,15 @@
   <ItemGroup>
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
-    <Content Include="Web\js\controllers\loggersController.js" />
+    <Content Include="Web\js\controllers\loggerController.js" />
+    <Content Include="Web\js\controllers\applicationController.js" />
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggers.js" />
+    <Content Include="Web\js\views\applications.js" />
     <None Include="Web\views\partials\loggerSettings.cshtml" />
-    <None Include="Web\views\partials\logger.cshtml" />
     <None Include="Web\views\partials\loggers.cshtml" />
+    <None Include="Web\views\partials\applications.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
@@ -212,7 +214,7 @@
   <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Nancy">
-      <Version>1.4.4</Version>
+      <Version>1.4.5</Version>
     </PackageReference>
     <PackageReference Include="Nancy.Authentication.Forms">
       <Version>1.4.1</Version>
@@ -227,7 +229,7 @@
       <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite">
-      <Version>1.0.109.1</Version>
+      <Version>1.0.109.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

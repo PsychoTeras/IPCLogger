@@ -78,6 +78,7 @@
     <Compile Include="Caches\EventNamesCache.cs" />
     <Compile Include="Common\LightLock.cs" />
     <Compile Include="Common\LogEvent.cs" />
+    <Compile Include="ConfigurationService\CSProperty.cs" />
     <Compile Include="Loggers\Base\BaseLogger.cs" />
     <Compile Include="Loggers\Base\BaseSettings.cs" />
     <Compile Include="Common\Helpers.cs" />

@@ -1,5 +1,4 @@
-﻿using IPCLogger.ConfigurationService.CoreServices;
-using IPCLogger.ConfigurationService.DAL;
+﻿using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.ConfigurationService.Web;
 using System;
@@ -58,16 +57,6 @@ namespace IPCLogger.ConfigurationService.Forms
         {
             InitializeComponent();
 
-            //var v = 1073741824 + 65536 + 123;
-            //var s = Core.Common.Helpers.SizeToBytesString(v);
-            //var l = Core.Common.Helpers.BytesStringToSize(s);
-
-            //var v = new TimeSpan(10, 5, 4, 3);
-            //var s = Core.Common.Helpers.TimeSpanToTimeString(v);
-            //var l = Core.Common.Helpers.TimeStringToTimeSpan(s);
-
-            new CoreService(@"..\TestService\IPCLogger.TestService.exe.config");
-
             //Create tray menu
             ContextMenu trayMenu = new ContextMenu();
             trayMenu.MenuItems.Add("Configure", MainFormOnShow);
@@ -80,14 +69,14 @@ namespace IPCLogger.ConfigurationService.Forms
             //Create tray icon
             _trayIcon = new NotifyIcon();
             _trayIcon.ContextMenu = trayMenu;
-            _trayIcon.DoubleClick += MainFormOnShow;
+            _trayIcon.DoubleClick += OnOpenConsole;// MainFormOnShow;
             _trayIcon.Icon = Icon;
             _trayIcon.Text = Text;
             _trayIcon.Visible = true;
 
             RefreshRoles();
             RefreshUsers();
-            RefreshLoggers();
+            RefreshApplications();
         }
 
         private void OnOpenConsole(object sender, EventArgs e)
@@ -266,112 +255,113 @@ namespace IPCLogger.ConfigurationService.Forms
 
 #region Applications
 
-        private LoggerModel GetSelectedLogger()
+        private ApplicationModel GetSelectedApplication()
         {
-            ListViewItem item = lvLoggers.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
-            return item?.Tag as LoggerModel;
+            ListViewItem item = lvApplications.SelectedItems.OfType<ListViewItem>().FirstOrDefault();
+            return item?.Tag as ApplicationModel;
         }
 
-        private void RefreshLoggers()
+        private void RefreshApplications()
         {
-            lvLoggers.BeginUpdate();
+            lvApplications.BeginUpdate();
 
-            lvLoggers.Items.Clear();
-            List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers(true);
-            foreach (LoggerModel logger in loggers)
+            lvApplications.Items.Clear();
+            List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications(true);
+            foreach (ApplicationModel application in applications)
             {
-                ListViewItem item = new ListViewItem(logger.ApplicationName) { Tag = logger };
-                item.SubItems.Add(logger.Description);
-                item.SubItems.Add(logger.ConfigurationFile);
-                item.SubItems.Add(logger.Visible ? "Visible" : "Hidden");
-                lvLoggers.Items.Add(item);
+                ListViewItem item = new ListViewItem(application.Name) { Tag = application };
+                item.SubItems.Add(application.Description);
+                item.SubItems.Add(application.ConfigurationFile);
+                item.SubItems.Add(application.Visible ? "Visible" : "Hidden");
+                lvApplications.Items.Add(item);
             }
 
-            lvLoggers.EndUpdate();
-            LoggersSelectedIndexChanged();
+            lvApplications.EndUpdate();
+            ApplicationsSelectedIndexChanged();
         }
 
-        private void BtnLoggersRefresh_Click(object sender, EventArgs e)
+        private void BtnApplicationsRefreshClick(object sender, EventArgs e)
         {
-            RefreshLoggers();
+            RefreshApplications();
         }
 
-        private void RegisterLogger()
+        private void RegisterApplication()
         {
-            if (new frmManageLogger().Execute())
+            if (new frmManageApplication().Execute())
             {
-                RefreshLoggers();
-            }
-        }
-
-        private void BtnLoggerRegister_Click(object sender, EventArgs e)
-        {
-            RegisterLogger();
-        }
-
-        private void ModifyLogger()
-        {
-            LoggerModel logger = GetSelectedLogger();
-            if (logger != null && new frmManageLogger().Execute(logger))
-            {
-                RefreshLoggers();
+                RefreshApplications();
             }
         }
 
-        private void BtnLoggerModify_Click(object sender, EventArgs e)
+        private void BtnApplicationRegisterClick(object sender, EventArgs e)
         {
-            ModifyLogger();
+            RegisterApplication();
         }
 
-        private void UnregisterLogger()
+        private void ModifyApplication()
         {
-            LoggerModel logger = GetSelectedLogger();
-            if (logger != null && MessageBox.Show($"Unregister logger \"{logger.ApplicationName}\"?", "Confirmation",
+            ApplicationModel application = GetSelectedApplication();
+            if (application != null && new frmManageApplication().Execute(application))
+            {
+                RefreshApplications();
+            }
+        }
+
+        private void BtnApplicationModifyClick(object sender, EventArgs e)
+        {
+            ModifyApplication();
+        }
+
+        private void UnregisterApplication()
+        {
+            ApplicationModel application = GetSelectedApplication();
+            if (application != null && MessageBox.Show($"Unregister application \"{application.Name}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                LoggerDAL.Instance.Delete(logger.Id);
-                RefreshLoggers();
+                ApplicationDAL.Instance.Delete(application.Id);
+                RefreshApplications();
             }
         }
 
-        private void BtnLoggerUnregister_Click(object sender, EventArgs e)
+        private void BtnApplicationUnregisterClick(object sender, EventArgs e)
         {
-            UnregisterLogger();
+            UnregisterApplication();
         }
 
-        private void VisibleChangeLogger()
+        private void VisibleChangeApplication()
         {
-            LoggerModel logger = GetSelectedLogger();
-            if (logger == null) return;
+            ApplicationModel application = GetSelectedApplication();
+            if (application == null) return;
 
-            string action = logger.Visible ? "Hide" : "Show";
-            if (MessageBox.Show($"{action} logger \"{logger.ApplicationName}\"?", "Confirmation",
+            string action = application.Visible ? "Hide" : "Show";
+            if (MessageBox.Show($"{action} application \"{application.Name}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                LoggerDAL.Instance.ChangeVisibility(logger.Id, !logger.Visible);
-                RefreshLoggers();
+                ApplicationDAL.Instance.ChangeVisibility(application.Id, !application.Visible);
+                RefreshApplications();
             }
         }
 
-        private void BtnLoggerVisibleChange_Click(object sender, EventArgs e)
+        private void BtnApplicationVisibleChangeClick(object sender, EventArgs e)
         {
-            VisibleChangeLogger();
+            VisibleChangeApplication();
         }
 
-        private void LoggersSelectedIndexChanged()
+        private void ApplicationsSelectedIndexChanged()
         {
-            LoggerModel logger = GetSelectedLogger();
-            btnLoggerModify.Enabled = btnLoggerUnregister.Enabled = btnLoggerVisibleChange.Enabled = logger != null;
-            bool loggerHidden = logger != null && !logger.Visible;
-            btnLoggerVisibleChange.Image = loggerHidden
+            ApplicationModel application = GetSelectedApplication();
+            btnApplicationModify.Enabled = btnApplicationUnregister.Enabled = 
+                btnApplicationVisibleChange.Enabled = application != null;
+            bool applicationHidden = application != null && !application.Visible;
+            btnApplicationVisibleChange.Image = applicationHidden
                 ? Properties.Resources.show_app
                 : Properties.Resources.hide_app;
-            btnLoggerVisibleChange.Text = loggerHidden ? "Show" : "Hide";
+            btnApplicationVisibleChange.Text = applicationHidden ? "Show" : "Hide";
         }
 
-        private void LvLoggers_SelectedIndexChanged(object sender, EventArgs e)
+        private void LvApplicationsSelectedIndexChanged(object sender, EventArgs e)
         {
-            LoggersSelectedIndexChanged();
+            ApplicationsSelectedIndexChanged();
         }
 
 #endregion

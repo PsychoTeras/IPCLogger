@@ -27,6 +27,7 @@ namespace IPCLogger.Core.Loggers.LDB
 #region Properties
 
         public string ConnectionString { get; set; }
+
         public string TableName { get; set; }
 
 #endregion

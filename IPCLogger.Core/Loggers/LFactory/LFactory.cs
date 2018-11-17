@@ -42,7 +42,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         static LFactory()
         {
             Instance = new LFactory();
-            _registeredLoggers = GetRegisteredLoggers();
+            _registeredLoggers = GetLoggers();
         }
 
         private LFactory() : base(true)
@@ -56,7 +56,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Static methods
 
-        internal static List<Type> GetRegisteredLoggers()
+        internal static List<Type> GetLoggers()
         {
             List<Type> types = new List<Type>();
             IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.

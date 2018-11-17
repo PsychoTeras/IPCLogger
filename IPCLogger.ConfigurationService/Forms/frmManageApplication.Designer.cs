@@ -2,7 +2,7 @@
 
 namespace IPCLogger.ConfigurationService.Forms
 {
-    partial class frmManageLogger
+    partial class frmManageApplication
     {
         /// <summary>
         /// Required designer variable.
@@ -37,7 +37,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.tbAppName = new System.Windows.Forms.TextBox();
+            this.tbApplicationName = new System.Windows.Forms.TextBox();
             this.tbConfigurationFile = new IPCLogger.ConfigurationService.Controls.TextBoxWithButton();
             this.btnOk = new System.Windows.Forms.Button();
             this.odLogFile = new System.Windows.Forms.OpenFileDialog();
@@ -84,7 +84,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.tlpInner.Controls.Add(this.label5, 0, 0);
             this.tlpInner.Controls.Add(this.label6, 0, 1);
             this.tlpInner.Controls.Add(this.label7, 0, 2);
-            this.tlpInner.Controls.Add(this.tbAppName, 1, 0);
+            this.tlpInner.Controls.Add(this.tbApplicationName, 1, 0);
             this.tlpInner.Controls.Add(this.tbConfigurationFile, 1, 2);
             this.tlpInner.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpInner.Location = new System.Drawing.Point(3, 3);
@@ -115,7 +115,7 @@ namespace IPCLogger.ConfigurationService.Forms
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(104, 31);
             this.label5.TabIndex = 1;
-            this.label5.Text = "Applicatoin name:";
+            this.label5.Text = "Name:";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label6
@@ -140,14 +140,14 @@ namespace IPCLogger.ConfigurationService.Forms
             this.label7.Text = "Configuration file:";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tbAppName
+            // tbApplicationName
             // 
-            this.tbAppName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbAppName.Location = new System.Drawing.Point(113, 6);
-            this.tbAppName.MaxLength = 39;
-            this.tbAppName.Name = "tbAppName";
-            this.tbAppName.Size = new System.Drawing.Size(416, 23);
-            this.tbAppName.TabIndex = 1;
+            this.tbApplicationName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbApplicationName.Location = new System.Drawing.Point(113, 6);
+            this.tbApplicationName.MaxLength = 39;
+            this.tbApplicationName.Name = "tbApplicationName";
+            this.tbApplicationName.Size = new System.Drawing.Size(416, 23);
+            this.tbApplicationName.TabIndex = 1;
             // 
             // tbConfigurationFile
             // 
@@ -173,13 +173,13 @@ namespace IPCLogger.ConfigurationService.Forms
             this.btnOk.TabIndex = 14;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
+            this.btnOk.Click += new System.EventHandler(this.BtnOkClick);
             // 
             // odLogFile
             // 
             this.odLogFile.Filter = "Configuration files (*.config)|*.config|All files|*.*";
             // 
-            // frmManageLogger
+            // frmManageApplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -190,12 +190,12 @@ namespace IPCLogger.ConfigurationService.Forms
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(580, 300);
-            this.Name = "frmManageLogger";
+            this.Name = "frmManageApplication";
             this.Padding = new System.Windows.Forms.Padding(12, 14, 12, 14);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Register/Manage logger";
+            this.Text = "Register/Manage application";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmKeyDown);
             this.tlpMain.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);
@@ -210,7 +210,7 @@ namespace IPCLogger.ConfigurationService.Forms
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TableLayoutPanel tlpInner;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbAppName;
+        private System.Windows.Forms.TextBox tbApplicationName;
         private TextBoxWithButton tbConfigurationFile;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Label label6;

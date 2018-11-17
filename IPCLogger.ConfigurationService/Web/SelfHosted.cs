@@ -131,7 +131,7 @@ namespace IPCLogger.ConfigurationService.Web
         {
             string binPath = Directory.GetCurrentDirectory();
             string appName = Assembly.GetExecutingAssembly().GetName().Name;
-            string solutionPath = Path.Combine(Directory.GetParent(binPath).Parent.FullName, appName);
+            string solutionPath = Path.Combine(Directory.GetParent(binPath).Parent?.FullName, appName);
             string[] dirs = BootstrapperCommon.StaticContentsConventions.Select(kv => kv.Value.Replace('/', '\\')).Distinct().ToArray();
             _srcFolders = dirs.Select(dir => solutionPath + dir).ToArray();
             _destFolders = dirs.Select(dir => binPath + dir).ToArray();

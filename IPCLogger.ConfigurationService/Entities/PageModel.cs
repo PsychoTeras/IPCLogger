@@ -10,8 +10,9 @@ namespace IPCLogger.ConfigurationService.Entities
 {
     public enum PageType
     {
+        Applications,
         Loggers,
-        Logger,
+        LoggerSettings,
         Users,        
     }
 
@@ -84,15 +85,23 @@ namespace IPCLogger.ConfigurationService.Entities
             return new PageModel(pageType, pageName, pagePath, caption, model, previousPageModel);
         }
 
-        public static PageModel Loggers(List<LoggerModel> loggers)
+        public static PageModel Applications(List<ApplicationModel> applications)
         {
-            return GetPageModel(PageType.Loggers, loggers);
+            return GetPageModel(PageType.Applications, applications);
         }
 
-        public static PageModel Logger(LoggerModel logger, List<DeclaredLoggerModel> declaredLoggers, PageModel previousPageModel)
+        public static PageModel Loggers(ApplicationModel application, List<DeclaredLoggerModel> declaredLoggers, 
+            PageModel previousPageModel)
         {
-            string pagePath = $"/loggers/{logger.Id}";
-            return GetPageModel(PageType.Logger, pagePath, logger.ApplicationName, declaredLoggers, previousPageModel);
+            string pagePath = $"/applications/{application.Id}";
+            return GetPageModel(PageType.Loggers, pagePath, application.Name, declaredLoggers, previousPageModel);
+        }
+
+        public static PageModel LoggerSettings(int applicationId, List<DeclaredLoggerModel> declaredLoggers,
+            PageModel previousPageModel)
+        {
+            string pagePath = $"/applications/{applicationId}";
+            return GetPageModel(PageType.LoggerSettings, pagePath, "", declaredLoggers, previousPageModel);
         }
 
         public static PageModel Users(List<UserModel> users)

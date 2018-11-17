@@ -14,36 +14,31 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Private fields
 
-        private string _configurationFile;
-        private XmlDocument _configurationXml;
-
-        private LFactorySettings _factorySettings;
-        private List<DeclaredLoggerModel> _declaredLoggers;
-        private List<RegisteredLoggerModel> _registeredLoggers;
-
 #endregion
 
 #region Properties
 
-        public List<DeclaredLoggerModel> DeclaredLoggers
-        {
-            get { return _declaredLoggers; }
-        }
+        public string ConfigurationFile { get; set; }
 
-        public List<RegisteredLoggerModel> RegisteredLoggers
-        {
-            get { return _registeredLoggers; }
-        }
+        public XmlDocument ConfigurationXml { get; set; }
+
+        public LFactorySettings FactorySettings { get; set; }
+
+        public List<LoggerModel> AvailableLoggers { get; set; }
+
+        public List<DeclaredLoggerModel> DeclaredLoggers { get; set; }
 
 #endregion
 
 #region Ctor
 
+        public CoreService() { }
+
         public CoreService(string configurationFile)
         {
             LoadConfiguration(configurationFile);
             ReadLoggers(configurationFile);
-            _configurationFile = configurationFile;
+            ConfigurationFile = configurationFile;
         }
 
 #endregion
@@ -60,53 +55,53 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             //Load XML
-            _configurationXml = new XmlDocument();
-            _configurationXml.Load(configurationFile);
+            ConfigurationXml = new XmlDocument();
+            ConfigurationXml.Load(configurationFile);
 
             //Load factory settings
-            _factorySettings = new LFactorySettings(typeof(LFactory), null);
-            XmlNode cfgNode = _factorySettings.GetLoggerSettingsNode(_configurationXml);
-            _factorySettings.Setup(cfgNode);
+            FactorySettings = new LFactorySettings(typeof(LFactory), null);
+            XmlNode cfgNode = FactorySettings.GetLoggerSettingsNode(ConfigurationXml);
+            FactorySettings.Setup(cfgNode);
         }
 
         public void SaveConfiguration()
         {
-            _configurationXml.Save(_configurationFile);
+            ConfigurationXml.Save(ConfigurationFile);
         }
 
 #endregion
 
 #region Applications methods
 
-        private void ReadDeclaredLoggers(string configurationFile)
+        private void ReadAvailableLoggers(string configurationFile)
         {
-            _declaredLoggers = LFactorySettings.
-                GetDeclaredLoggers(configurationFile).
-                Select(d => DeclaredLoggerModel.FromDeclaredLogger(d)).
+            AvailableLoggers = LFactory.
+                GetLoggers().
+                Select(LoggerModel.FromType).
                 OrderBy(t => t.TypeName).
                 ToList();
         }
 
-        private void ReadRegisteredLoggers(string configurationFile)
+        private void ReadDeclaredLoggers(string configurationFile)
         {
-            _registeredLoggers = LFactory.
-                GetRegisteredLoggers().
-                Select(t => RegisteredLoggerModel.FromType(t)).
+            DeclaredLoggers = LFactorySettings.
+                GetDeclaredLoggers(configurationFile).
+                Select(DeclaredLoggerModel.FromDeclaredLogger).
                 OrderBy(t => t.TypeName).
                 ToList();
         }
 
         private void ReadLoggers(string configurationFile)
         {
-            ReadRegisteredLoggers(configurationFile);
+            ReadAvailableLoggers(configurationFile);
             ReadDeclaredLoggers(configurationFile);
         }
 
 #endregion
 
-#region Logger methods
+#region Application methods
 
-        public BaseSettings ReadLoggerSettings(RegisteredLoggerModel loggerModel)
+        public BaseSettings ReadLoggerSettings(LoggerModel loggerModel)
         {
             return null;
         }

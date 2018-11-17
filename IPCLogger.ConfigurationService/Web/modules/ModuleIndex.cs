@@ -11,44 +11,64 @@ namespace IPCLogger.ConfigurationService.Web.modules
 {
     public class ModuleIndex : NancyModule
     {
+        private PageModel PreviousPageModel
+        {
+            get { return Session["PreviousPageModel"] as PageModel; }
+        }
+
+        private CoreService CoreService
+        {
+            get { return Session["CoreService"] as CoreService; }
+            set { Session["CoreService"] = value; }
+        }
+
         public ModuleIndex()
         {
             CoreService LoadCoreService(string configurationFile)
             {
-                CoreService coreService;
-                if (!ViewBag.CoreService.HasValue)
+                CoreService coreService = CoreService;
+                if (CoreService == null)
                 {
                     coreService = new CoreService(configurationFile);
-                    ViewBag.CoreService = coreService;
-                }
-                else
-                {
-                    coreService = ViewBag.CoreService;
+                    CoreService = coreService;
                 }
                 return coreService;
             }
 
-            Get["/"] = x => Response.AsRedirect("/loggers", RedirectResponse.RedirectType.Temporary);
+            Get["/"] = x => Response.AsRedirect("/applications", RedirectResponse.RedirectType.Temporary);
 
-            Get["/loggers"] = x =>
+            Get["/applications"] = x =>
             {
                 //this.RequiresAuthentication();
 
-                List<LoggerModel> loggers = LoggerDAL.Instance.GetLoggers();
-                return View["index", PageModel.Loggers(loggers)];
+                List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
+                PageModel pageModel = PageModel.Applications(applications);
+                return View["index", pageModel];
             };
 
-            Get["/loggers/{id:int}"] = x =>
+            Get["/applications/{appid:int}"] = x =>
             {
                 //this.RequiresAuthentication();
 
-                int loggerId = int.Parse(x.id);
-                LoggerModel logger = LoggerDAL.Instance.GetLogger(loggerId);
+                int applicationId = ViewBag.applicationId = int.Parse(x.appid);
+                ApplicationModel application = ApplicationDAL.Instance.GetApplication(applicationId);
+                CoreService coreService = LoadCoreService(application.ConfigurationFile);
 
-                CoreService coreService = LoadCoreService(logger.ConfigurationFile);
+                PageModel pageModel = PageModel.Loggers(application, coreService.DeclaredLoggers, PreviousPageModel);
+                return View["index", pageModel];
+            };
 
-                PageModel previousPageModel = Session["PreviousPageModel"] as PageModel;
-                return View["index", PageModel.Logger(logger, coreService.DeclaredLoggers, previousPageModel)];
+            Get["/applications/{appid:int}/logger/{lid:int}/settings"] = x =>
+            {
+                //this.RequiresAuthentication();
+
+                int applicationId = ViewBag.applicationId = int.Parse(x.appid);
+                int loggerId = ViewBag.loggerId = int.Parse(x.lid);
+                ApplicationModel application = ApplicationDAL.Instance.GetApplication(applicationId);
+                CoreService coreService = LoadCoreService(application.ConfigurationFile);
+
+                PageModel pageModel = PageModel.Loggers(application, coreService.DeclaredLoggers, PreviousPageModel);
+                return View["index", pageModel];
             };
 
             Get["/users"] = x =>

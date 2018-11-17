@@ -1,19 +1,23 @@
 ﻿(function () {
 
-    function getModelId(caller) {
-        return $(caller).parentsUntil("tbody", "#row-logger").attr("modelId");
-    };
+    function getApplicationId() {
+        return $("#application-id")[0].value;
+    }
 
-    function loggerConfigure(sender) {
-        var me = this;
+    function getLoggerId(caller) {
+        return $(caller).parentsUntil("tbody", "#row-logger").attr("modelId");
+    }
+
+    function loggerSettings(sender) {
         var caller = sender.target;
-        var modelId = getModelId(caller);
-        LoggersController.manageLogger(modelId);
-    };
+        var applicationId = getApplicationId();
+        var loggerId = getLoggerId(caller);
+        LoggerController.manageSettings(applicationId, loggerId);
+    }
 
     function initialize() {
-        $("#btn-configure-logger").on("click", loggerConfigure);
-    };
+        $("#btn-logger-settings").on("click", loggerSettings);
+    }
 
     initialize();
 })();

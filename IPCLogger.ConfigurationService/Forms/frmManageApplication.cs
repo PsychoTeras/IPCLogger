@@ -8,18 +8,18 @@ using System.Windows.Forms;
 
 namespace IPCLogger.ConfigurationService.Forms
 {
-    public partial class frmManageLogger : Form
+    public partial class frmManageApplication : Form
     {
-        private LoggerModel _loggerModel;
+        private ApplicationModel _applicationModel;
 
-        public LoggerRegDTO Result { get; private set; }
+        public ApplicationRegDTO Result { get; private set; }
 
-        public frmManageLogger()
+        public frmManageApplication()
         {
             InitializeComponent();
         }
 
-        private void BtnOk_Click(object sender, System.EventArgs e)
+        private void BtnOkClick(object sender, System.EventArgs e)
         {
             Ok();
         }
@@ -85,26 +85,26 @@ namespace IPCLogger.ConfigurationService.Forms
             return Execute(null);
         }
 
-        public bool Execute(LoggerModel existingLogger)
+        public bool Execute(ApplicationModel existingApplication)
         {
-            _loggerModel = existingLogger?.Clone<LoggerModel>() ?? new LoggerModel();
+            _applicationModel = existingApplication?.Clone<ApplicationModel>() ?? new ApplicationModel();
             BindModels();
             return ShowDialog() == DialogResult.OK;
         }
 
         private void BindModels()
         {
-            Text = _loggerModel.Id == 0 ? "Register logger" : "Modify logger";
-            tbAppName.DataBindings.Add("Text", _loggerModel, "ApplicationName", false, DataSourceUpdateMode.OnPropertyChanged);
-            tbDescription.DataBindings.Add("Text", _loggerModel, "Description", false, DataSourceUpdateMode.OnPropertyChanged);
-            tbConfigurationFile.DataBindings.Add("Text", _loggerModel, "ConfigurationFile", false, DataSourceUpdateMode.OnPropertyChanged);
+            Text = _applicationModel.Id == 0 ? "Register application" : "Modify application";
+            tbApplicationName.DataBindings.Add("Text", _applicationModel, "Name", false, DataSourceUpdateMode.OnPropertyChanged);
+            tbDescription.DataBindings.Add("Text", _applicationModel, "Description", false, DataSourceUpdateMode.OnPropertyChanged);
+            tbConfigurationFile.DataBindings.Add("Text", _applicationModel, "ConfigurationFile", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void AssertChanges()
         {
-            if (string.IsNullOrWhiteSpace(tbAppName.Text))
+            if (string.IsNullOrWhiteSpace(tbApplicationName.Text))
             {
-                tbAppName.Focus();
+                tbApplicationName.Focus();
                 throw new ValidationException("Application name cannot be empty");
             }
 
@@ -117,20 +117,20 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void CreateResultDTO()
         {
-            Result = new LoggerRegDTO
+            Result = new ApplicationRegDTO
             {
-                Id = _loggerModel.Id,
-                ApplicationName = _loggerModel.ApplicationName.Trim(),
-                Description = _loggerModel.Description,
-                ConfigurationFile = _loggerModel.ConfigurationFile
+                Id = _applicationModel.Id,
+                Name = _applicationModel.Name.Trim(),
+                Description = _applicationModel.Description,
+                ConfigurationFile = _applicationModel.ConfigurationFile
             };
         }
 
         private void SaveChanges()
         {
             Result.Id = Result.Id == 0
-                ? LoggerDAL.Instance.Create(Result)
-                : LoggerDAL.Instance.Update(Result);
+                ? ApplicationDAL.Instance.Create(Result)
+                : ApplicationDAL.Instance.Update(Result);
         }
 
         private void TbConfigurationFile_ButtonClick(object sender, EventArgs e)

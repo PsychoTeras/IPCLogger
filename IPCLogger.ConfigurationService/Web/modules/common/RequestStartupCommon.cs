@@ -11,12 +11,12 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
         {
             pipelines.OnError += (ctx, ex) => throw ex;
 
-            pipelines.BeforeRequest += (ctx) =>
+            pipelines.BeforeRequest += ctx =>
             {
                 return null;
             };
 
-            pipelines.AfterRequest += (ctx) => 
+            pipelines.AfterRequest += ctx => 
             {
                 if (ctx.NegotiationContext.ViewName != null)
                 {
@@ -24,7 +24,8 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
                     PageModel currentPageModel = ctx.NegotiationContext.DefaultModel as PageModel;
                     if (currentPageModel != null && previousPageModel != null)
                     {
-                        PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == currentPageModel.PageType);
+                        PageModel model = currentPageModel;
+                        PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == model.PageType);
                         if (existingPageModel != null)
                         {
                             currentPageModel = existingPageModel;
