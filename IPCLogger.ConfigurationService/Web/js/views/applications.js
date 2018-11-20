@@ -11,7 +11,7 @@
     };
 
     function initialize() {
-        $("#btn-configure-application").on("click", applicationConfigure);
+        $(".btn-configure-application").on("click", applicationConfigure);
     }
 
     initialize();

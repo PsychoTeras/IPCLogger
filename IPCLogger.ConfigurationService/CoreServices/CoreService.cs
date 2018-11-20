@@ -86,7 +86,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
-                GetDeclaredLoggers(configurationFile).
+                GetDeclaredLoggers(configurationFile, true).
                 Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
                 OrderBy(t => t.TypeName).
                 ToList();

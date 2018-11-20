@@ -16,7 +16,7 @@
     }
 
     function initialize() {
-        $("#btn-logger-settings").on("click", loggerSettings);
+        $(".btn-logger-settings").on("click", loggerSettings);
     }
 
     initialize();

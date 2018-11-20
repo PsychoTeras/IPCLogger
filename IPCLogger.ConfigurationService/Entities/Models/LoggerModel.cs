@@ -3,12 +3,17 @@ using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class LoggerModel
     {
+        private static int _refId;
+
+        public int Id { get; }
+
         public Type Type { get; protected set; }
 
         public string TypeName { get; protected set; }
@@ -16,6 +21,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         public string Namespace { get; protected set; }
 
         public CSProperty[] Properties { get; private set; }
+
+        public LoggerModel()
+        {
+            Id = Interlocked.Increment(ref _refId);
+        }
 
         protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
         {

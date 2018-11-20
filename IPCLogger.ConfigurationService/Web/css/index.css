@@ -79,7 +79,15 @@
     color: #343a40;
 }
 
+button.btn-action {
+    height: 34px;
+}
 
+.btn-configure-application {
+}
+
+.btn-logger-settings {
+}
 
 input {
     height: 32px !important;
@@ -102,7 +110,7 @@ input {
     }
 
 .td-actions > * {
-    height: 30px;
+    height: 34px;
     min-width: 35px;
 }
 

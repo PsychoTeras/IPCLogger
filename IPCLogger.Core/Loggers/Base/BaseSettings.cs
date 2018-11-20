@@ -230,7 +230,7 @@ namespace IPCLogger.Core.Loggers.Base
             IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);
             if (excludes != null)
             {
-                nodes = nodes.Where(n => !excludes.Contains(n.Name.ToLower()));
+                nodes = nodes.Where(n => !excludes.Contains(n.Name, StringComparer.InvariantCultureIgnoreCase));
             }
             foreach (XmlNode settingNode in nodes)
             {

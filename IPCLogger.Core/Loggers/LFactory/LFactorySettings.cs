@@ -60,7 +60,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Static methods
 
-        internal static List<DeclaredLogger> GetDeclaredLoggers(string configurationFile)
+        internal static List<DeclaredLogger> GetDeclaredLoggers(string configurationFile, bool includeDisabled = false)
         {
             List<DeclaredLogger> loggers = new List<DeclaredLogger>();
             if (string.IsNullOrEmpty(configurationFile) || !System.IO.File.Exists(configurationFile))
@@ -83,7 +83,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
             {
                 DeclaredLogger declaredLogger = new DeclaredLogger(cfgNode);
-                if (declaredLogger.Enabled)
+                if (includeDisabled || declaredLogger.Enabled)
                 {
                     loggers.Add(declaredLogger);
                 }
