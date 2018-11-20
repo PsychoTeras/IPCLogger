@@ -1,4 +1,7 @@
-﻿using System;
+﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Common;
+using IPCLogger.Core.ConfigurationService;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,8 +10,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-using IPCLogger.Core.Attributes;
-using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.Base
 {
@@ -28,7 +29,7 @@ namespace IPCLogger.Core.Loggers.Base
         private Type _loggerType;
         private Action _onApplyChanges;
 
-        private Dictionary<string, KeyValuePair<PropertyInfo, object>> _properties;
+        private Dictionary<string, KeyValuePair<PropertyInfo, CustomConversionAttribute>> _properties;
 
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
@@ -82,7 +83,11 @@ namespace IPCLogger.Core.Loggers.Base
                 ).ToDictionary
                 (
                     p => p.Name, 
-                    p => new KeyValuePair<PropertyInfo, object>(p, p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault())
+                    p => new KeyValuePair<PropertyInfo, CustomConversionAttribute>
+                        (
+                            p, 
+                            p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute
+                        )
                 );
         }
 
@@ -164,6 +169,13 @@ namespace IPCLogger.Core.Loggers.Base
             return xmlCfg.SelectSingleNode(loggerXPath);
         }
 
+        protected internal CSProperty[] GetCSProperties()
+        {
+            return _properties.Values
+                .Select(p => new CSProperty(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null)))
+                .ToArray();
+        }
+
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
         {
             set = null;
@@ -242,7 +254,7 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, string> setting in settingsDict)
             {
-                KeyValuePair<PropertyInfo, object> item = _properties[setting.Key];
+                KeyValuePair<PropertyInfo, CustomConversionAttribute> item = _properties[setting.Key];
                 Type propertyType = item.Key.PropertyType;
                 try
                 {
@@ -250,8 +262,7 @@ namespace IPCLogger.Core.Loggers.Base
                     string sValue = setting.Value.Trim();
                     if (item.Value != null)
                     {
-                        CustomConversionAttribute cc = (CustomConversionAttribute) item.Value;
-                        value = cc.ConvertValue(sValue);
+                        value = item.Value.ConvertValue(sValue);
                     }
                     else
                     {
@@ -318,15 +329,14 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Save(XmlNode cfgNode)
         {
-            foreach (KeyValuePair<PropertyInfo, object> item in _properties.Values)
+            foreach (KeyValuePair<PropertyInfo, CustomConversionAttribute> item in _properties.Values)
             {
                 PropertyInfo property = item.Key;
                 object value = property.GetValue(this, null);
 
                 if (item.Value != null)
                 {
-                    CustomConversionAttribute cc = (CustomConversionAttribute)item.Value;
-                    value = cc.UnconvertValue(value);
+                    value = item.Value.UnconvertValue(value);
                 }
 
                 SetCfgNodeValue(cfgNode, property.Name, value);

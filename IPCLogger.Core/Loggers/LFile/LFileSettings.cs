@@ -71,12 +71,17 @@ namespace IPCLogger.Core.Loggers.LFile
             ExpandedLogFilePathWithMark = $"{Path.GetFileNameWithoutExtension(LogFile)}{IdxPlaceMark}{Path.GetExtension(LogFile)}";
 
             string logDir = LogDir;
-            if (logDir.StartsWith("~\\"))
+            if (!string.IsNullOrEmpty(logDir))
             {
-                logDir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, logDir.Remove(0, 2));
+                if (logDir.StartsWith("~\\"))
+                {
+                    logDir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, logDir.Remove(0, 2));
+                }
+
+                ExpandedLogFilePathWithMark = Path.Combine(logDir, ExpandedLogFilePathWithMark);
+                ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
             }
-            ExpandedLogFilePathWithMark = Path.Combine(logDir, ExpandedLogFilePathWithMark);
-            ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
+
             ConnectNetShare = !string.IsNullOrWhiteSpace(NetUser);
         }
 

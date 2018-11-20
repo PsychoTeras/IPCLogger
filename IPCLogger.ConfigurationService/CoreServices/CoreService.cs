@@ -84,9 +84,10 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private void ReadDeclaredLoggers(string configurationFile)
         {
+            IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
                 GetDeclaredLoggers(configurationFile).
-                Select(DeclaredLoggerModel.FromDeclaredLogger).
+                Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
                 OrderBy(t => t.TypeName).
                 ToList();
         }

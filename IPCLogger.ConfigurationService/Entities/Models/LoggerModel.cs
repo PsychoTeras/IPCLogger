@@ -1,30 +1,43 @@
 ﻿using IPCLogger.Core.ConfigurationService;
+using IPCLogger.Core.Loggers.Base;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class LoggerModel
     {
-        private CSProperty[] _properties;
-
         public Type Type { get; protected set; }
 
         public string TypeName { get; protected set; }
 
         public string Namespace { get; protected set; }
 
-        public CSProperty[] Properties
-        {
-            get
-            {
-                if (_properties == null)
-                {
-                    LoadProperties();
-                }
+        public CSProperty[] Properties { get; private set; }
 
-                return _properties;
-            }
+        protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
+        {
+            cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
+            Type bsType = ((TypeInfo) Type).ImplementedInterfaces
+                .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
+                .First(i => i != null);
+            BaseSettings settings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
+            settings.Setup(cfgNode);
+            return settings;
+        }
+
+        protected void SetCSProperties(XmlNode cfgNode = null)
+        {
+            BaseSettings settings = InstLoggerSettings(cfgNode);
+            Properties = settings.GetCSProperties();
+        }
+
+        protected void CloneCSProperties(LoggerModel source)
+        {
+            Properties = new CSProperty[source.Properties.Length];
+            Array.Copy(source.Properties, Properties, source.Properties.Length);
         }
 
         internal static LoggerModel FromType(Type loggerType)
@@ -36,13 +49,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             {
                 model.Namespace = loggerType.Namespace;
             }
+            model.SetCSProperties();
             return model;
-        }
-
-        private void LoadProperties()
-        {
-            List<CSProperty> properties = new List<CSProperty>();
-            _properties = properties.ToArray();
         }
 
         public override string ToString()
