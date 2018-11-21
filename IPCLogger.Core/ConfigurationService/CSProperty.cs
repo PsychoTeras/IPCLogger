@@ -1,5 +1,6 @@
 ﻿using IPCLogger.Core.Attributes;
 using System;
+using System.Text;
 
 namespace IPCLogger.Core.ConfigurationService
 {
@@ -23,5 +24,10 @@ namespace IPCLogger.Core.ConfigurationService
 
         public CSProperty(string name, Type type, object value) 
             : this(name, type, null, value) { }
+
+        public override string ToString()
+        {
+            return string.Format("{0} [{1}] = {2}", Name, Type.Name, Value ?? "NULL");
+        }
     }
 }

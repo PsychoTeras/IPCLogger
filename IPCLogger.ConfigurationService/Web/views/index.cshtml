@@ -15,9 +15,11 @@
     <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="../css/font-awesome/font-awesome.min.css" rel="stylesheet">
     <link href="../css/index.css" rel="stylesheet">
+    <link href="../css/controls/TableList.css" rel="stylesheet">
 
     <script src="../js/settings.js" type="text/javascript"></script>
     <script src="../js/global.js" type="text/javascript"></script>
+    <script src="../js/controls/TableList.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -57,11 +59,11 @@
                     {
                         if (model == Model)
                         {
-                            <li class="breadcrumb-item active h5" aria-current="page">@(model.Caption)</li>
+                            <li class="breadcrumb-item active h4" aria-current="page">@(model.Caption)</li>
                         }
                         else
                         {
-                            <li class="breadcrumb-item h5"><a href="@(model.PagePath)">@(model.Caption)</a></li>
+                            <li class="breadcrumb-item h4"><a href="@(model.PagePath)">@(model.Caption)</a></li>
                         }
                     }
                 </ol>

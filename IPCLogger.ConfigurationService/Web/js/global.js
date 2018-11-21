@@ -1,12 +1,34 @@
 ﻿(function() {
     var regexStackGetCaller = new RegExp("\\s+at\\s(.*?)\\s");
 
-    window.app = { };
-
     $(document).on({
-        ajaxStart: function () { $("body").addClass("loading"); },
-        ajaxStop: function () { $("body").removeClass("loading"); }
+        ajaxStart: function() {
+            $("body").addClass("loading");
+        },
+        ajaxStop: function() {
+            $("body").removeClass("loading"); 
+        },
+        mousemove: function (e) {
+            sessionStorage.setItem("mouseX", e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+            sessionStorage.setItem("mouseY", e.clientY + document.body.scrollTop + document.documentElement.scrollTop);
+        }
     });
+
+    window.mouseX = function () {
+        return sessionStorage.getItem("mouseX");
+    };
+
+    window.mouseY = function () {
+        return sessionStorage.getItem("mouseY");
+    };
+
+    window.lockPage = function () {
+        $("body").addClass("loading locked");
+    };
+
+    window.unlockPage = function () {
+        $("body").removeClass("loading locked");
+    };
 
     window.onbeforeunload = function() {
         lockPage();
@@ -56,24 +78,27 @@
         function valueToGetParams(value) {
             var params = "", first = true;
             for (var key in value) {
-                params = (first ? "?" : "&") + key + "=" + value[key];
-                first = false;
+                if (value.hasOwnProperty(key)) {
+                    params = (first ? "?" : "&") + key + "=" + value[key];
+                    first = false;
+                }
             }
             return params;
-        };
+        }
 
         var url = globalSetting.APP_URL;
-        $.each(arguments, function(i, value) {
-            if (value instanceof Object) {
-                url = url.concat(valueToGetParams(value));
-                return false;
-            } else {
-                url = url.concat("/" + value);
-            }
-            return true;
-        });
+        $.each(arguments,
+            function(i, value) {
+                if (value instanceof Object) {
+                    url = url.concat(valueToGetParams(value));
+                    return false;
+                } else {
+                    url = url.concat("/" + value);
+                }
+                return true;
+            });
         return url;
-    }
+    };
 
     window.asyncQuery = function(url, method, success, error, data, dataType) {
 
@@ -135,13 +160,5 @@
             }
             popupSourceDiv.empty();
         });
-    };
-
-    window.lockPage = function() {
-        $("body").addClass("loading locked");
-    };
-
-    window.unlockPage = function() {
-        $("body").removeClass("loading locked");
     };
 })();

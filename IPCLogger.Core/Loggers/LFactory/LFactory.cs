@@ -68,7 +68,8 @@ namespace IPCLogger.Core.Loggers.LFactory
                 {
                     types.AddRange(assembly.
                         GetTypes().
-                        Where(t => Helpers.IsAssignableTo(t, typeof(BaseLogger<>)) && !t.IsAbstract));
+                        Where(t => Helpers.IsAssignableTo(t, typeof(BaseLogger<>)) && !t.IsAbstract &&
+                                   t != typeof(LFactory)));
                 }
                 catch { }
             }

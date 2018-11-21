@@ -171,9 +171,9 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected internal CSProperty[] GetCSProperties()
         {
-            return _properties.Values
-                .Select(p => new CSProperty(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null)))
-                .ToArray();
+            return _properties.Values.
+                Select(p => new CSProperty(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null))).
+                ToArray();
         }
 
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)

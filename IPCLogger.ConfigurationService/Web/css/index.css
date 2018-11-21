@@ -11,6 +11,7 @@
     min-width: 320px;
     font-size: 1rem;
     color: white !important;
+    background-color: #000000;
     background-color: rgba(0, 0, 0, .25);
 }
 
@@ -22,6 +23,7 @@
     min-width: 320px;
     z-index: 100; /* Behind the navbar */
     padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 #000000;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
@@ -40,7 +42,7 @@
     }
 
     .sidebar .nav-link .feather {
-        margin: 0px 7px 2px 0px;
+        margin: 0 7px 2px 0;
         width: 16px;
         height: 16px;
         fill: none;
@@ -79,9 +81,13 @@
     color: #343a40;
 }
 
-button.btn-action {
+button.btn {
     height: 34px;
 }
+
+    button.btn.fa:not(.btn-glyph):before {
+        margin-right: 5px;
+    }
 
 .btn-configure-application {
 }
@@ -99,31 +105,6 @@ input {
         box-shadow: 0 0 0;
         outline: 0 none;
     }
-
-.table {
-    font-size: .875rem;
-    vertical-align: middle;
-}
-
-    .table > tbody > tr > td {
-        vertical-align: middle;
-    }
-
-.td-actions > * {
-    height: 34px;
-    min-width: 35px;
-}
-
-.td-actions .btn-glyph {
-    width: 37px;
-    height: 34px;
-    display: inline-block;
-}
-
-.td-autosize {
-    width: 1px;
-    white-space: nowrap;
-}
 
 .modal.popup {
     text-align: center;
@@ -156,25 +137,31 @@ input {
     margin-bottom: 0 !important;
 }
 
-.ajax-animation {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 100%;
-    margin-top: 52px;
-    margin-left: -48px;
-    height: 48px;
-    width: 48px;
-    /*background: url('http://c564799.r99.cf2.rackcdn.com/indicator.gif') 100% 100% no-repeat;*/
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
 
 body.loading {
     overflow: hidden;
 }
 
-    body.loading .ajax-animation {
-        display: block;
+    body.loading .navbar .navbar-caption img {
+        -webkit-animation: spin 3s linear infinite;
+        -moz-animation: spin 3s linear infinite;
+        animation: spin 3s linear infinite;
     }
 
 .page-lock {
@@ -185,6 +172,7 @@ body.loading {
     left: 0;
     height: 100%;
     width: 100%;
+    background: #ffffff;
     background: rgba(255, 255, 255, 0);
 }
 

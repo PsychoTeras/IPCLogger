@@ -178,10 +178,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
     <Content Include="Web\js\controllers\loggerController.js" />
     <Content Include="Web\js\controllers\applicationController.js" />
+    <Content Include="Web\js\controls\TableList.js" />
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggers.js" />
