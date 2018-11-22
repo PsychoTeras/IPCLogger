@@ -93,6 +93,7 @@
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Entities\DTO\ApplicationRegDTO.cs" />
     <Compile Include="Entities\Models\ApplicationModel.cs" />
+    <Compile Include="Entities\Models\PropertyModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
     <Compile Include="Entities\Models\LoggerModel.cs" />
@@ -172,12 +173,6 @@
     <None Include="Web\js\bootstrap\bootstrap.min.js.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IPCLogger.Core\IPCLogger.Core.csproj">
-      <Project>{8e5b0f61-c2f0-4829-83d0-a123f614497e}</Project>
-      <Name>IPCLogger.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\add-app.png" />
     <Content Include="Resources\delete-app.png" />
     <Content Include="Resources\edit-app.png" />
@@ -220,7 +215,12 @@
     <None Include="Web\views\index.cshtml" />
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IPCLogger.Core\IPCLogger.Core.csproj">
+      <Project>{8E5B0F61-C2F0-4829-83D0-A123F614497E}</Project>
+      <Name>IPCLogger.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nancy">
       <Version>1.4.5</Version>

@@ -8,11 +8,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class DeclaredLoggerModel : LoggerModel
     {
-        public List<KeyValuePair<CSProperty, object>> ChangedValues { get; }
+        public List<KeyValuePair<PropertyModel, object>> ChangedValues { get; }
 
         public DeclaredLoggerModel()
         {
-            ChangedValues = new List<KeyValuePair<CSProperty, object>>();
+            ChangedValues = new List<KeyValuePair<PropertyModel, object>>();
         }
 
         private void SetLoggerType(IEnumerable<Type> availableLoggers)

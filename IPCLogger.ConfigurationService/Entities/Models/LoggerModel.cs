@@ -20,7 +20,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Namespace { get; protected set; }
 
-        public CSProperty[] Properties { get; private set; }
+        public PropertyModel[] Properties { get; private set; }
 
         public LoggerModel()
         {
@@ -41,12 +41,14 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         protected void SetCSProperties(XmlNode cfgNode = null)
         {
             BaseSettings settings = InstLoggerSettings(cfgNode);
-            Properties = settings.GetCSProperties();
+            Properties = settings.Properties.Values.
+                Select(p => new PropertyModel(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null))).
+                ToArray();
         }
 
         protected void CloneCSProperties(LoggerModel source)
         {
-            Properties = new CSProperty[source.Properties.Length];
+            Properties = new PropertyModel[source.Properties.Length];
             Array.Copy(source.Properties, Properties, source.Properties.Length);
         }
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IPCLogger.Core.ConfigurationService
 {
-    public class CSProperty
+    public class PropertyModel
     {
         public string Name { get; private set; }
 
@@ -14,7 +14,7 @@ namespace IPCLogger.Core.ConfigurationService
 
         public object Value { get; private set; }
 
-        public CSProperty(string name, Type type, CustomConversionAttribute extended, object value)
+        public PropertyModel(string name, Type type, CustomConversionAttribute extended, object value)
         {
             Name = name;
             Type = type;
@@ -22,7 +22,7 @@ namespace IPCLogger.Core.ConfigurationService
             Value = value;
         }
 
-        public CSProperty(string name, Type type, object value) 
+        public PropertyModel(string name, Type type, object value) 
             : this(name, type, null, value) { }
 
         public override string ToString()

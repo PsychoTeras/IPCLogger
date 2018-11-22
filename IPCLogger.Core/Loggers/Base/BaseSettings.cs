@@ -1,6 +1,5 @@
 ﻿using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Common;
-using IPCLogger.Core.ConfigurationService;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,9 +27,6 @@ namespace IPCLogger.Core.Loggers.Base
 
         private Type _loggerType;
         private Action _onApplyChanges;
-
-        private Dictionary<string, KeyValuePair<PropertyInfo, CustomConversionAttribute>> _properties;
-
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
 
@@ -45,6 +41,7 @@ namespace IPCLogger.Core.Loggers.Base
 #region Internal fields
 
         internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
+        internal Dictionary<string, KeyValuePair<PropertyInfo, CustomConversionAttribute>> Properties;
 
 #endregion
 
@@ -73,7 +70,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
-            _properties = GetType().
+            Properties = GetType().
                 GetProperties
                 (
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
@@ -169,13 +166,6 @@ namespace IPCLogger.Core.Loggers.Base
             return xmlCfg.SelectSingleNode(loggerXPath);
         }
 
-        protected internal CSProperty[] GetCSProperties()
-        {
-            return _properties.Values.
-                Select(p => new CSProperty(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null))).
-                ToArray();
-        }
-
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
         {
             set = null;
@@ -234,7 +224,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             foreach (XmlNode settingNode in nodes)
             {
-                if (!_properties.ContainsKey(settingNode.Name))
+                if (!Properties.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
@@ -254,7 +244,7 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, string> setting in settingsDict)
             {
-                KeyValuePair<PropertyInfo, CustomConversionAttribute> item = _properties[setting.Key];
+                KeyValuePair<PropertyInfo, CustomConversionAttribute> item = Properties[setting.Key];
                 Type propertyType = item.Key.PropertyType;
                 try
                 {
@@ -307,7 +297,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = _properties[value.Key].Key;
+                PropertyInfo property = Properties[value.Key].Key;
                 property.SetValue(this, value.Value, null);
             }
         }
@@ -329,7 +319,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Save(XmlNode cfgNode)
         {
-            foreach (KeyValuePair<PropertyInfo, CustomConversionAttribute> item in _properties.Values)
+            foreach (KeyValuePair<PropertyInfo, CustomConversionAttribute> item in Properties.Values)
             {
                 PropertyInfo property = item.Key;
                 object value = property.GetValue(this, null);
