@@ -92,12 +92,12 @@
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Entities\DTO\ApplicationRegDTO.cs" />
+    <Compile Include="Entities\Models\ApplicationModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
-    <Compile Include="Entities\Models\ApplicationModel.cs" />
+    <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\ClaimModel.cs" />
     <Compile Include="Entities\DBRecord.cs" />
-    <Compile Include="Entities\Models\LoggerModel.cs" />
     <Compile Include="Entities\Models\RoleModel.cs" />
     <Compile Include="Entities\DTO\RoleClaimDTO.cs" />
     <Compile Include="Entities\UserIdentity.cs" />
@@ -178,19 +178,26 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\add-app.png" />
+    <Content Include="Resources\delete-app.png" />
+    <Content Include="Resources\edit-app.png" />
+    <Content Include="Resources\hide-app.png" />
+    <Content Include="Resources\refresh.png" />
+    <Content Include="Resources\remove-user.png" />
+    <Content Include="Resources\show-app.png" />
     <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
-    <Content Include="Web\js\controllers\loggerController.js" />
     <Content Include="Web\js\controllers\applicationController.js" />
+    <Content Include="Web\js\controllers\loggerController.js" />
     <Content Include="Web\js\controls\TableList.js" />
     <Content Include="Web\js\global.js" />
     <Content Include="Web\js\settings.js" />
-    <Content Include="Web\js\views\loggers.js" />
     <Content Include="Web\js\views\applications.js" />
+    <Content Include="Web\js\views\loggers.js" />
+    <None Include="Web\views\partials\applications.cshtml" />
     <None Include="Web\views\partials\loggerSettings.cshtml" />
     <None Include="Web\views\partials\loggers.cshtml" />
-    <None Include="Web\views\partials\applications.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
