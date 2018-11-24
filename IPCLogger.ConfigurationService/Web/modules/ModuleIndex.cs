@@ -32,6 +32,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     coreService = new CoreService(configurationFile);
                     CoreService = coreService;
                 }
+                else
+                {
+
+                }
                 return coreService;
             }
 
@@ -58,7 +62,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 return View["index", pageModel];
             };
 
-            Get["/applications/{appid:int}/logger/{lid:int}/settings"] = x =>
+            Get["/applications/{appid:int}/loggers/{lid:int}/settings"] = x =>
             {
                 //this.RequiresAuthentication();
 
