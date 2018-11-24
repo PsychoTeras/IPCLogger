@@ -86,7 +86,7 @@ namespace IPCLogger.Core.Loggers.Base
                         (
                             p, 
                             p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute,
-                            p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).FirstOrDefault() != null
+                            p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).Length > 0
                         )
                 );
         }

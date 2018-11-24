@@ -41,8 +41,9 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         {
             BaseSettings settings = InstLoggerSettings(cfgNode);
             Properties = settings.Properties.Values.
-                Select(p => new PropertyModel(p.Item1.Name, p.Item1.PropertyType, p.Item2, p.Item1.GetValue(this, null), p.Item3)).
+                Select(p => new PropertyModel(p.Item1.Name, p.Item1.PropertyType, p.Item2?.GetType().FullName, p.Item1.GetValue(settings, null), p.Item3)).
                 ToArray();
+            //Properties = new PropertyModel[0];
         }
 
         protected void CloneCSProperties(LoggerModel source)

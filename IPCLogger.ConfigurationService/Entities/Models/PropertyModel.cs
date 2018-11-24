@@ -9,17 +9,17 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public Type Type { get; private set; }
 
-        public CustomConversionAttribute Extended { get; private set; }
+        public string Converter { get; private set; }
 
         public object Value { get; private set; }
 
         public bool IsRequired { get; private set; }
 
-        public PropertyModel(string name, Type type, CustomConversionAttribute extended, object value, bool isRequired)
+        public PropertyModel(string name, Type type, string converter, object value, bool isRequired)
         {
             Name = name;
             Type = type;
-            Extended = extended;
+            Converter = converter;
             Value = value;
             IsRequired = isRequired;
         }

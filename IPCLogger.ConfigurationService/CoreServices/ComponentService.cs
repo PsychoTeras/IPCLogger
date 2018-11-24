@@ -15,7 +15,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private const string PROPERTY_ATTR_VALUE = "value";
         private const string PROPERTY_ATTR_REQUIRED = "required";
-        private const string PROPERTY_ATTR_VALIDATOR = "validator";
+        private const string PROPERTY_ATTR_CONVERTER = "converter";
 
         private const string PROPERTY_STRING = "ui-property-string";
         private const string PROPERTY_BOOL = "ui-property-boolean";
@@ -68,9 +68,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
                     html.AddAttribute(PROPERTY_ATTR_REQUIRED, string.Empty);
                 }
 
-                if (propertyModel.Extended != null)
+                if (propertyModel.Converter != null)
                 {
-                    html.AddAttribute(PROPERTY_ATTR_VALIDATOR, propertyModel.Extended.GetType().FullName);
+                    html.AddAttribute(PROPERTY_ATTR_CONVERTER, propertyModel.Converter);
                 }
 
                 html.RenderEndTag();

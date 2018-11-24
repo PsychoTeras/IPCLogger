@@ -26,7 +26,7 @@ namespace IPCLogger.Core.Snippets.Base
         public static SnippetParams Parse(string @params)
         {
             SnippetParams dictParams = new SnippetParams();
-            if (@params.Length != 0)
+            if (@params.Length > 0)
             {
                 string[] paramsList = @params.Split(new[] {_paramSplitter}, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string paramVal in paramsList)
