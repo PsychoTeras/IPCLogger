@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Core.Snippets;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
-using IPCLogger.Core.Loggers.Base;
-using IPCLogger.Core.Snippets;
 
 namespace IPCLogger.Core.Loggers.LMail
 {

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Common;
+using IPCLogger.Core.Loggers.Base;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using IPCLogger.Core.Attributes;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LEventLog
 {

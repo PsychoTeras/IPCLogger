@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LDB.DAL;
 using IPCLogger.Core.Snippets;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace IPCLogger.Core.Loggers.LDB
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Xml;
-using IPCLogger.Core.Caches;
+﻿using IPCLogger.Core.Caches;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Patterns.Base;
 using IPCLogger.Core.Snippets;
 using IPCLogger.Core.Storages;
+using System;
+using System.Xml;
 
 namespace IPCLogger.Core.Loggers.Base
 {

@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Snippets;
+using System;
+using System.IO;
+using System.Text;
 
 namespace IPCLogger.Core.Loggers.LFile
 {

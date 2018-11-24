@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Loggers.Base;
+using System;
 using System.IO;
 using System.Web.Hosting;
-using IPCLogger.Core.Attributes;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LFile
 {
@@ -24,6 +24,7 @@ namespace IPCLogger.Core.Loggers.LFile
 
         public string LogDir { get; set; }
 
+        [RequiredSetting]
         public string LogFile { get; set; }
 
         public bool RecreateFile { get; set; }
@@ -70,17 +71,14 @@ namespace IPCLogger.Core.Loggers.LFile
             RollByFileAge = MaxFileAge.Ticks > 0;
             ExpandedLogFilePathWithMark = $"{Path.GetFileNameWithoutExtension(LogFile)}{IdxPlaceMark}{Path.GetExtension(LogFile)}";
 
-            string logDir = LogDir;
-            if (!string.IsNullOrEmpty(logDir))
+            string logDir = LogDir ?? string.Empty;
+            if (logDir.StartsWith("~\\"))
             {
-                if (logDir.StartsWith("~\\"))
-                {
-                    logDir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, logDir.Remove(0, 2));
-                }
-
-                ExpandedLogFilePathWithMark = Path.Combine(logDir, ExpandedLogFilePathWithMark);
-                ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
+                logDir = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, logDir.Remove(0, 2));
             }
+
+            ExpandedLogFilePathWithMark = Path.Combine(logDir, ExpandedLogFilePathWithMark);
+            ExpandedLogFilePathWithMark = Environment.ExpandEnvironmentVariables(ExpandedLogFilePathWithMark);
 
             ConnectNetShare = !string.IsNullOrWhiteSpace(NetUser);
         }

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IPCLogger.Core.Common;
+using IPCLogger.Core.Loggers.Base;
+using System;
 using System.Collections.Generic;
 using System.Xml;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {

@@ -1,5 +1,4 @@
-﻿using IPCLogger.Core.ConfigurationService;
-using IPCLogger.Core.Loggers.LFactory;
+﻿using IPCLogger.Core.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

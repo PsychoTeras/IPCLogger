@@ -12,6 +12,8 @@ using System.Xml;
 
 namespace IPCLogger.Core.Loggers.Base
 {
+    using PropertyData = Tuple<PropertyInfo, CustomConversionAttribute, bool>;
+
     // ReSharper disable PossibleNullReferenceException
     public abstract class BaseSettings
     {
@@ -41,7 +43,7 @@ namespace IPCLogger.Core.Loggers.Base
 #region Internal fields
 
         internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
-        internal Dictionary<string, KeyValuePair<PropertyInfo, CustomConversionAttribute>> Properties;
+        internal Dictionary<string, PropertyData> Properties;
 
 #endregion
 
@@ -80,10 +82,11 @@ namespace IPCLogger.Core.Loggers.Base
                 ).ToDictionary
                 (
                     p => p.Name, 
-                    p => new KeyValuePair<PropertyInfo, CustomConversionAttribute>
+                    p => new PropertyData
                         (
                             p, 
-                            p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute
+                            p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute,
+                            p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).FirstOrDefault() != null
                         )
                 );
         }
@@ -244,15 +247,15 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, string> setting in settingsDict)
             {
-                KeyValuePair<PropertyInfo, CustomConversionAttribute> item = Properties[setting.Key];
-                Type propertyType = item.Key.PropertyType;
+                PropertyData item = Properties[setting.Key];
+                Type propertyType = item.Item1.PropertyType;
                 try
                 {
                     object value;
                     string sValue = setting.Value.Trim();
-                    if (item.Value != null)
+                    if (item.Item2 != null)
                     {
-                        value = item.Value.ConvertValue(sValue);
+                        value = item.Item2.ConvertValue(sValue);
                     }
                     else
                     {
@@ -297,7 +300,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = Properties[value.Key].Key;
+                PropertyInfo property = Properties[value.Key].Item1;
                 property.SetValue(this, value.Value, null);
             }
         }
@@ -319,14 +322,14 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Save(XmlNode cfgNode)
         {
-            foreach (KeyValuePair<PropertyInfo, CustomConversionAttribute> item in Properties.Values)
+            foreach (PropertyData item in Properties.Values)
             {
-                PropertyInfo property = item.Key;
+                PropertyInfo property = item.Item1;
                 object value = property.GetValue(this, null);
 
-                if (item.Value != null)
+                if (item.Item2 != null)
                 {
-                    value = item.Value.UnconvertValue(value);
+                    value = item.Item2.UnconvertValue(value);
                 }
 
                 SetCfgNodeValue(cfgNode, property.Name, value);

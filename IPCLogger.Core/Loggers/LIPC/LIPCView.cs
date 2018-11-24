@@ -1,10 +1,10 @@
+using IPCLogger.Core.Loggers.LIPC.FileMap;
+using IPCLogger.Core.Proto;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Timers;
-using IPCLogger.Core.Loggers.LIPC.FileMap;
-using IPCLogger.Core.Proto;
 
 namespace IPCLogger.Core.Loggers.LIPC
 {

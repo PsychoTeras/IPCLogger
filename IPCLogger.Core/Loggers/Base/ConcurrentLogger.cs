@@ -1,5 +1,5 @@
-﻿using System;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
+using System;
 
 namespace IPCLogger.Core.Loggers.Base
 {

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IPCLogger.Core.Common;
+using IPCLogger.Core.Proto;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Proto;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {

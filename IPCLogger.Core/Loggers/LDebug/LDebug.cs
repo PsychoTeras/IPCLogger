@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using IPCLogger.Core.Caches;
+﻿using IPCLogger.Core.Caches;
 using IPCLogger.Core.Loggers.Base;
+using System;
+using System.Diagnostics;
 
 namespace IPCLogger.Core.Loggers.LDebug
 {

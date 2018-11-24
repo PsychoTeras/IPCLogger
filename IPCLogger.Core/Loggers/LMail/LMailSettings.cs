@@ -1,6 +1,7 @@
+using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Net.Mail;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LMail
 {
@@ -22,17 +23,32 @@ namespace IPCLogger.Core.Loggers.LMail
 
 #region Properties
 
+        [RequiredSetting]
         public string SmtpServer { get; set; }
+
+        [RequiredSetting]
         public int SmtpPort { get; set; }
+
+        [RequiredSetting]
         public string UserName { get; set; }
+
+        [RequiredSetting]
         public string Password { get; set; }
+
         public bool UseSSL { get; set; }
 
+        [RequiredSetting]
         public string From { get; set; }
+
+        [RequiredSetting]
         public string To { get; set; }
+
         public string CC { get; set; }
+
         public string Bcc { get; set; }
+
         public string Subject { get; set; }
+
         public MailPriority Priority { get; set; }
 
 #endregion

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Snippets;
+using System;
+using System.Diagnostics;
 
 namespace IPCLogger.Core.Loggers.LEventLog
 {

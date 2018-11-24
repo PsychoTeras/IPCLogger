@@ -1,6 +1,6 @@
+using IPCLogger.Core.Common;
 using System;
 using System.Runtime.InteropServices;
-using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.LIPC.FileMap
 {

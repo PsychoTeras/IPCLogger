@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IPCLogger.Core.Common;
+using IPCLogger.Core.Loggers.Base;
+using System;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LSysDebug
 {

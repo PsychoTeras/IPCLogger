@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LIPC.FileMap;
 using IPCLogger.Core.Proto;
+using System;
+using System.Diagnostics;
 
 namespace IPCLogger.Core.Loggers.LIPC
 {

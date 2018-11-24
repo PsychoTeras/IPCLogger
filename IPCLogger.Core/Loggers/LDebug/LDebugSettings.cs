@@ -1,5 +1,5 @@
-using System;
 using IPCLogger.Core.Loggers.Base;
+using System;
 
 namespace IPCLogger.Core.Loggers.LDebug
 {

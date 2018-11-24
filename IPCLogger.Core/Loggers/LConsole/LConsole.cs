@@ -1,6 +1,6 @@
-﻿using System;
-using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Snippets;
+using System;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {

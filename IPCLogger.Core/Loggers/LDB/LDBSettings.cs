@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Core.Loggers.LDB.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using IPCLogger.Core.Loggers.Base;
-using IPCLogger.Core.Loggers.LDB.DAL;
 
 namespace IPCLogger.Core.Loggers.LDB
 {
@@ -26,8 +27,10 @@ namespace IPCLogger.Core.Loggers.LDB
 
 #region Properties
 
+        [RequiredSetting]
         public string ConnectionString { get; set; }
 
+        [RequiredSetting]
         public string TableName { get; set; }
 
 #endregion

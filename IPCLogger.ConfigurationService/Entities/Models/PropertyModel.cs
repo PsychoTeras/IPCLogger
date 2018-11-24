@@ -1,8 +1,7 @@
-﻿using IPCLogger.Core.Attributes;
-using System;
-using System.Text;
+﻿using System;
+using IPCLogger.Core.Attributes;
 
-namespace IPCLogger.Core.ConfigurationService
+namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class PropertyModel
     {
@@ -14,16 +13,19 @@ namespace IPCLogger.Core.ConfigurationService
 
         public object Value { get; private set; }
 
-        public PropertyModel(string name, Type type, CustomConversionAttribute extended, object value)
+        public bool IsRequired { get; private set; }
+
+        public PropertyModel(string name, Type type, CustomConversionAttribute extended, object value, bool isRequired)
         {
             Name = name;
             Type = type;
             Extended = extended;
             Value = value;
+            IsRequired = isRequired;
         }
 
-        public PropertyModel(string name, Type type, object value) 
-            : this(name, type, null, value) { }
+        public PropertyModel(string name, Type type, object value, bool isRequired) 
+            : this(name, type, null, value, isRequired) { }
 
         public override string ToString()
         {

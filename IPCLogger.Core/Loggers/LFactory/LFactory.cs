@@ -1,11 +1,11 @@
-﻿using System;
+﻿using IPCLogger.Core.Common;
+using IPCLogger.Core.Loggers.Base;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Loggers.LFactory
 {

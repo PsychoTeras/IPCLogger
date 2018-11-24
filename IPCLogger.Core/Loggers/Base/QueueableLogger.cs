@@ -1,6 +1,6 @@
-﻿using System;
+﻿using IPCLogger.Core.Common;
+using System;
 using System.Threading;
-using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Loggers.Base
 {

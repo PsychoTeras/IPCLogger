@@ -1,5 +1,4 @@
-﻿using IPCLogger.Core.ConfigurationService;
-using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +41,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         {
             BaseSettings settings = InstLoggerSettings(cfgNode);
             Properties = settings.Properties.Values.
-                Select(p => new PropertyModel(p.Key.Name, p.Key.PropertyType, p.Value, p.Key.GetValue(this, null))).
+                Select(p => new PropertyModel(p.Item1.Name, p.Item1.PropertyType, p.Item2, p.Item1.GetValue(this, null), p.Item3)).
                 ToArray();
         }
 
