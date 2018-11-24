@@ -51,10 +51,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 //this.RequiresAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
-                ApplicationModel application = ApplicationDAL.Instance.GetApplication(applicationId);
-                CoreService coreService = LoadCoreService(application.ConfigurationFile);
+                ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
+                CoreService coreService = LoadCoreService(applicationModel.ConfigurationFile);
 
-                PageModel pageModel = PageModel.Loggers(application, coreService.DeclaredLoggers, PreviousPageModel);
+                PageModel pageModel = PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PreviousPageModel);
                 return View["index", pageModel];
             };
 
@@ -64,10 +64,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 int loggerId = ViewBag.loggerId = int.Parse(x.lid);
-                ApplicationModel application = ApplicationDAL.Instance.GetApplication(applicationId);
-                CoreService coreService = LoadCoreService(application.ConfigurationFile);
+                ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
+                CoreService coreService = LoadCoreService(applicationModel.ConfigurationFile);
 
-                PageModel pageModel = PageModel.Loggers(application, coreService.DeclaredLoggers, PreviousPageModel);
+                PageModel pageModel = PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PreviousPageModel);
                 return View["index", pageModel];
             };
 

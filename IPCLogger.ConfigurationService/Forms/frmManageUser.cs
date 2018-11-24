@@ -92,10 +92,10 @@ namespace IPCLogger.ConfigurationService.Forms
             return Execute(roles, null);
         }
 
-        public bool Execute(IEnumerable<RoleModel> roles, UserModel existingUser)
+        public bool Execute(IEnumerable<RoleModel> roles, UserModel existingUserModel)
         {
             _roles = roles;
-            _userModel = existingUser?.Clone<UserModel>() ?? new UserModel();
+            _userModel = existingUserModel?.Clone<UserModel>() ?? new UserModel();
             BindModels();
             return ShowDialog() == DialogResult.OK;
         }

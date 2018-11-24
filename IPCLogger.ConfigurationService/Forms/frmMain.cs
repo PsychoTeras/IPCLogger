@@ -156,11 +156,11 @@ namespace IPCLogger.ConfigurationService.Forms
 
             lvUsers.Items.Clear();
             List<UserModel> users = UserDAL.Instance.GetUsers();
-            foreach (UserModel user in users)
+            foreach (UserModel model in users)
             {
-                ListViewItem item = new ListViewItem(user.UserName) { Tag = user };
-                item.SubItems.Add(_roles[user.RoleId].ToString());
-                item.SubItems.Add(user.Blocked ? "YES" : "NO");
+                ListViewItem item = new ListViewItem(model.UserName) { Tag = model };
+                item.SubItems.Add(_roles[model.RoleId].ToString());
+                item.SubItems.Add(model.Blocked ? "YES" : "NO");
                 lvUsers.Items.Add(item);
             }
 
@@ -188,8 +188,8 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void ModifyUser()
         {
-            UserModel user = GetSelectedUser();
-            if (user != null && new frmManageUser().Execute(_roles.Values.ToArray(), user))
+            UserModel userModel = GetSelectedUser();
+            if (userModel != null && new frmManageUser().Execute(_roles.Values.ToArray(), userModel))
             {
                 RefreshUsers();
             }
@@ -202,11 +202,11 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void DeleteUser()
         {
-            UserModel user = GetSelectedUser();
-            if (user != null && MessageBox.Show($"Delete user \"{user.UserName}\"?", "Confirmation",
+            UserModel userModel = GetSelectedUser();
+            if (userModel != null && MessageBox.Show($"Delete user \"{userModel.UserName}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                UserDAL.Instance.Delete(user.Id);
+                UserDAL.Instance.Delete(userModel.Id);
                 RefreshUsers();
             }
         }
@@ -218,14 +218,14 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void BlockChangeUser()
         {
-            UserModel user = GetSelectedUser();
-            if (user == null) return;
+            UserModel userModel = GetSelectedUser();
+            if (userModel == null) return;
 
-            string action = user.Blocked ? "Unblock" : "Block";
-            if (MessageBox.Show($"{action} user \"{user.UserName}\"?", "Confirmation",
+            string action = userModel.Blocked ? "Unblock" : "Block";
+            if (MessageBox.Show($"{action} user \"{userModel.UserName}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                UserDAL.Instance.ChangeBlock(user.Id, !user.Blocked);
+                UserDAL.Instance.ChangeBlock(userModel.Id, !userModel.Blocked);
                 RefreshUsers();
             }
         }
@@ -237,9 +237,9 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void UsersSelectedIndexChanged()
         {
-            UserModel user = GetSelectedUser();
-            btnUserModify.Enabled = btnUserDelete.Enabled = btnUserBlockChange.Enabled = user != null;
-            bool userBlocked = user != null && user.Blocked;
+            UserModel userModel = GetSelectedUser();
+            btnUserModify.Enabled = btnUserDelete.Enabled = btnUserBlockChange.Enabled = userModel != null;
+            bool userBlocked = userModel != null && userModel.Blocked;
             btnUserBlockChange.Image = userBlocked
                 ? Properties.Resources.unblock_user
                 : Properties.Resources.block_user;
@@ -267,12 +267,12 @@ namespace IPCLogger.ConfigurationService.Forms
 
             lvApplications.Items.Clear();
             List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications(true);
-            foreach (ApplicationModel application in applications)
+            foreach (ApplicationModel model in applications)
             {
-                ListViewItem item = new ListViewItem(application.Name) { Tag = application };
-                item.SubItems.Add(application.Description);
-                item.SubItems.Add(application.ConfigurationFile);
-                item.SubItems.Add(application.Visible ? "Visible" : "Hidden");
+                ListViewItem item = new ListViewItem(model.Name) { Tag = model };
+                item.SubItems.Add(model.Description);
+                item.SubItems.Add(model.ConfigurationFile);
+                item.SubItems.Add(model.Visible ? "Visible" : "Hidden");
                 lvApplications.Items.Add(item);
             }
 
@@ -300,8 +300,8 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void ModifyApplication()
         {
-            ApplicationModel application = GetSelectedApplication();
-            if (application != null && new frmManageApplication().Execute(application))
+            ApplicationModel applicationModel = GetSelectedApplication();
+            if (applicationModel != null && new frmManageApplication().Execute(applicationModel))
             {
                 RefreshApplications();
             }
@@ -314,11 +314,11 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void UnregisterApplication()
         {
-            ApplicationModel application = GetSelectedApplication();
-            if (application != null && MessageBox.Show($"Unregister application \"{application.Name}\"?", "Confirmation",
+            ApplicationModel applicationModel = GetSelectedApplication();
+            if (applicationModel != null && MessageBox.Show($"Unregister application \"{applicationModel.Name}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                ApplicationDAL.Instance.Delete(application.Id);
+                ApplicationDAL.Instance.Delete(applicationModel.Id);
                 RefreshApplications();
             }
         }
@@ -330,14 +330,14 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void VisibleChangeApplication()
         {
-            ApplicationModel application = GetSelectedApplication();
-            if (application == null) return;
+            ApplicationModel applicationModel = GetSelectedApplication();
+            if (applicationModel == null) return;
 
-            string action = application.Visible ? "Hide" : "Show";
-            if (MessageBox.Show($"{action} application \"{application.Name}\"?", "Confirmation",
+            string action = applicationModel.Visible ? "Hide" : "Show";
+            if (MessageBox.Show($"{action} application \"{applicationModel.Name}\"?", "Confirmation",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                ApplicationDAL.Instance.ChangeVisibility(application.Id, !application.Visible);
+                ApplicationDAL.Instance.ChangeVisibility(applicationModel.Id, !applicationModel.Visible);
                 RefreshApplications();
             }
         }
@@ -349,10 +349,10 @@ namespace IPCLogger.ConfigurationService.Forms
 
         private void ApplicationsSelectedIndexChanged()
         {
-            ApplicationModel application = GetSelectedApplication();
+            ApplicationModel applicationModel = GetSelectedApplication();
             btnApplicationModify.Enabled = btnApplicationUnregister.Enabled = 
-                btnApplicationVisibleChange.Enabled = application != null;
-            bool applicationHidden = application != null && !application.Visible;
+                btnApplicationVisibleChange.Enabled = applicationModel != null;
+            bool applicationHidden = applicationModel != null && !applicationModel.Visible;
             btnApplicationVisibleChange.Image = applicationHidden
                 ? Properties.Resources.show_app
                 : Properties.Resources.hide_app;

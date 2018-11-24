@@ -226,11 +226,4 @@ namespace IPCLogger.TestService
             Console.WriteLine(sb.ToString());
         }
     }
-
-    class X
-    {
-        public string Y;
-        public int Z { get; set; }
-        public Guid G { get; set; }
-    }
 }

@@ -85,9 +85,9 @@ namespace IPCLogger.ConfigurationService.Forms
             return Execute(null);
         }
 
-        public bool Execute(ApplicationModel existingApplication)
+        public bool Execute(ApplicationModel existingApplicationModel)
         {
-            _applicationModel = existingApplication?.Clone<ApplicationModel>() ?? new ApplicationModel();
+            _applicationModel = existingApplicationModel?.Clone<ApplicationModel>() ?? new ApplicationModel();
             BindModels();
             return ShowDialog() == DialogResult.OK;
         }

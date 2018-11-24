@@ -162,7 +162,8 @@ namespace IPCLogger.ConfigurationService.Web
 
                 foreach (string srcFile in srcFiles)
                 {
-                    string targetFile = GetMatchFile(destFolder, destFiles, srcFolder, srcFile, out var targetFileExists);
+                    bool targetFileExists;
+                    string targetFile = GetMatchFile(destFolder, destFiles, srcFolder, srcFile, out targetFileExists);
                     if (!targetFileExists || File.GetLastWriteTime(srcFile) != File.GetLastWriteTime(targetFile))
                     {
                         string targetPath = Path.GetDirectoryName(targetFile);
@@ -193,7 +194,8 @@ namespace IPCLogger.ConfigurationService.Web
 
         private void WatcherFileChanged(object sender, FileSystemEventArgs e)
         {
-            if (_srcDestFilesMatch.TryGetValue(e.FullPath, out var destFile))
+            string destFile;
+            if (_srcDestFilesMatch.TryGetValue(e.FullPath, out destFile))
             {
                 int tryCnt = 0;
                 while (tryCnt < 3)
