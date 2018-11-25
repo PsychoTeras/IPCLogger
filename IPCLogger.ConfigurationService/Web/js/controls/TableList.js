@@ -6,7 +6,7 @@
         me.initialize();
     };
 
-    UI.TableList.CLASS = "ui-table-list table-hover table-striped"; //table-striped
+    UI.TableList.CLASS = "ui-table-list table-hover table-striped";
     UI.TableList.DIV_ACTIONS = "div-actions";
     UI.TableList.CELL_ACTIONS = "cell-actions";
 

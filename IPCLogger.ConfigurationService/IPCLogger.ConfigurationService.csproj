@@ -184,6 +184,7 @@
     <Content Include="Resources\show-app.png" />
     <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
+    <Content Include="Web\css\views\loggerSettings.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
     <Content Include="Web\js\controllers\loggerSettingsControllers.js" />
     <Content Include="Web\js\controllers\applicationController.js" />

@@ -8,9 +8,9 @@
 }
 
 .navbar-caption {
+    font-weight: 500;
     min-width: 320px;
     font-size: 1rem;
-    color: white !important;
     background-color: #000000;
     background-color: rgba(0, 0, 0, .25);
 }
@@ -34,7 +34,7 @@
 
 .sidebar .nav-link {
     font-weight: 500;
-    color: #333;
+    color: #333333;
 }
 
     .sidebar .nav-link.active {
@@ -50,7 +50,7 @@
         stroke-width: 2;
         stroke-linecap: round;
         stroke-linejoin: round;
-        color: #999;
+        color: #999999;
     }
 
     .sidebar .nav-link:hover .feather,
@@ -68,15 +68,18 @@
     box-shadow: none !important;
 }
 
+.breadcrumb-item a {
+    color: #006be0;
+}
+
 .breadcrumb-item.active {
     color: #343a40;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
-    content: "►";
-    font-family: "Arial";
+    content: "●";
     font-size: 0.8rem;
-    padding-bottom: .2rem;
+    padding-bottom: .3rem;
     vertical-align: middle;
     color: #343a40;
 }

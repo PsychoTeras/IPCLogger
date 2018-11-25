@@ -17,7 +17,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_REQUIRED = "required";
         private const string PROPERTY_ATTR_CONVERTER = "converter";
 
-        private const string PROPERTY_CONTROL = "ui-setting-control";
+        private const string PROPERTY_CONTROL = "form-control";
         private const string PROPERTY_STRING = "ui-property-string";
         private const string PROPERTY_BOOL = "ui-property-boolean";
         private const string PROPERTY_ENUM = "ui-property-combo";
@@ -49,8 +49,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public static string ComponentByPropertyModel(PropertyModel propertyModel)
         {
-            string controlType;
-            if (!_types.TryGetValue(propertyModel.Type, out controlType))
+            if (!_types.TryGetValue(propertyModel.Type, out var controlType))
             {
                 throw new Exception($"Unknown property type '{propertyModel.Type.Name}'");
             }
