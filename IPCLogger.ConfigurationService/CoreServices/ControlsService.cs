@@ -6,7 +6,7 @@ using System.Web.UI;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
-    public static class ComponentService
+    public static class ControlsService
     {
 
 #region Constants
@@ -47,7 +47,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-        public static string ComponentByPropertyModel(PropertyModel propertyModel)
+        public static string ControlByPropertyModel(PropertyModel propertyModel)
         {
             Type GetBasePropertyType(Type type)
             {

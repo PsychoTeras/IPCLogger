@@ -88,7 +88,7 @@
     <Compile Include="Controls\TextBoxWithButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CoreServices\ComponentService.cs" />
+    <Compile Include="CoreServices\ControlsService.cs" />
     <Compile Include="CoreServices\CoreService.cs" />
     <Compile Include="DAL\ApplicationDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
@@ -163,16 +163,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Web\css\bootstrap\bootstrap-grid.min.css.map" />
-    <None Include="Web\css\bootstrap\bootstrap-reboot.min.css.map" />
-    <None Include="Web\css\bootstrap\bootstrap.min.css.map" />
     <None Include="Web\fonts\fontawesome-webfont.eot" />
     <None Include="Web\fonts\fontawesome-webfont.ttf" />
     <None Include="Web\fonts\fontawesome-webfont.woff" />
     <None Include="Web\fonts\fontawesome-webfont.woff2" />
     <None Include="Web\fonts\FontAwesome.otf" />
-    <None Include="Web\js\bootstrap\bootstrap.bundle.min.js.map" />
-    <None Include="Web\js\bootstrap\bootstrap.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\add-app.png" />
@@ -182,15 +177,24 @@
     <Content Include="Resources\refresh.png" />
     <Content Include="Resources\remove-user.png" />
     <Content Include="Resources\show-app.png" />
+    <Content Include="Web\css\bootstrap\bootstrap-duration-picker.css" />
+    <Content Include="Web\css\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\css\views\loggerSettings.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
+    <Content Include="Web\js\bootstrap\bootstrap.duration.picker.js" />
+    <Content Include="Web\js\classes\TimeSpan.js" />
     <Content Include="Web\js\controllers\loggerSettingsControllers.js" />
     <Content Include="Web\js\controllers\applicationController.js" />
     <Content Include="Web\js\controllers\loggerController.js" />
+    <Content Include="Web\js\controls\PropertyBase.js" />
+    <Content Include="Web\js\controls\PropertyNumeric.js" />
+    <Content Include="Web\js\controls\PropertyTime.js" />
+    <Content Include="Web\js\controls\PropertyString.js" />
     <Content Include="Web\js\controls\TableList.js" />
     <Content Include="Web\js\global.js" />
+    <Content Include="Web\js\controls\ControlsFactory.js" />
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggerSettings.js" />
     <Content Include="Web\js\views\applications.js" />
@@ -200,6 +204,7 @@
     <None Include="Web\views\partials\loggers.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />
+    <None Include="Web\views\partials\_refs.cshtml" />
     <None Include="Web\views\partials\_header.cshtml" />
     <None Include="Resources\add-user.png" />
     <Content Include="Resources\application.ico" />
@@ -209,14 +214,11 @@
     <None Include="Resources\unblock-user.png" />
     <Content Include="Web\assets\application.png" />
     <Content Include="Web\css\bootstrap\bootstrap-grid.min.css" />
-    <Content Include="Web\css\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\bootstrap\bootstrap.min.css" />
     <Content Include="Web\css\index.css" />
     <Content Include="Web\css\signin.css" />
     <Content Include="Web\js\bootstrap\bootstrap.bundle.min.js" />
-    <Content Include="Web\js\bootstrap\bootstrap.min.js" />
     <Content Include="Web\js\jquery\jquery-3.3.1.min.js" />
-    <None Include="Web\js\jquery\jquery-3.3.1.min.map" />
     <None Include="Web\views\index.cshtml" />
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>

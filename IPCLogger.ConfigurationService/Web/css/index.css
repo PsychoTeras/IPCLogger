@@ -2,6 +2,10 @@
     font-size: .875rem;
 }
 
+.form-control {
+    font-size: .875rem;
+}
+
 [role="main"] {
     padding-left: 335px;
     padding-top: 48px; /* Space for fixed navbar */

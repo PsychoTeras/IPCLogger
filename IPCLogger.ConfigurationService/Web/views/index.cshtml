@@ -10,18 +10,7 @@
 
     <title>IPCLogger Configuration Console</title>
 
-    <base href="~/Web">
-
-    <script src="../js/jquery/jquery-3.3.1.min.js" type="text/javascript"></script>
-
-    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/font-awesome/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/index.css" rel="stylesheet">
-    <link href="../css/Controls/TableList.css" rel="stylesheet">
-
-    <script src="../js/settings.js" type="text/javascript"></script>
-    <script src="../js/global.js" type="text/javascript"></script>
-    <script src="../js/controls/TableList.js" type="text/javascript"></script>
+    @Html.Partial("partials/_refs.cshtml", Model)
 </head>
 
 <body class="bg-light">

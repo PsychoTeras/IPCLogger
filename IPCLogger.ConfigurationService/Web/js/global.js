@@ -88,7 +88,7 @@
 
         var url = globalSetting.APP_URL;
         $.each(arguments,
-            function(i, value) {
+            function(_, value) {
                 if (value instanceof Object) {
                     url = url.concat(valueToGetParams(value));
                     return false;
@@ -159,4 +159,17 @@
             popupSourceDiv.empty();
         });
     };
+
+    function applyPatches() {
+        $(window).on("click", function (e) {
+            var $target = $(e.target);
+            var isPopover = $target.closest("[data-toggle=popover]").length > 0;
+            var inPopover = $target.closest(".popover").length > 0;
+            if (!isPopover && !inPopover) {
+                $(".popover").popover("hide");
+            }
+        });
+    }
+
+    applyPatches();
 })();
