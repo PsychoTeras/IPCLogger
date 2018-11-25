@@ -49,9 +49,20 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public static string ComponentByPropertyModel(PropertyModel propertyModel)
         {
-            if (!_types.TryGetValue(propertyModel.Type, out var controlType))
+            Type GetBasePropertyType(Type type)
             {
-                throw new Exception($"Unknown property type '{propertyModel.Type.Name}'");
+                if (type.IsEnum)
+                {
+                    type = typeof(Enum);
+                }
+                return type;
+            }
+
+            Type basePropertyType = GetBasePropertyType(propertyModel.Type);
+
+            if (!_types.TryGetValue(basePropertyType, out var controlType))
+            {
+                throw new Exception($"Unknown property type '{basePropertyType.Name}'");
             }
 
             StringWriter stringWriter = new StringWriter();

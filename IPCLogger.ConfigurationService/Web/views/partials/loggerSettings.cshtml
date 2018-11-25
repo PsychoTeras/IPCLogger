@@ -9,7 +9,13 @@
         @foreach (PropertyModel model in Model.Properties)
         {
             <div class="mt-2">
-                <label>@(model.Name)</label>
+                <label>
+                    @(model.Name)
+                    @if (model.IsRequired)
+                    {
+                        <a style="color: red; font-weight: bold"> * </a>
+                    }
+                </label>
                 @Html.Raw(ComponentService.ComponentByPropertyModel(model))
                 <div class="invalid-feedback"></div>
             </div>
