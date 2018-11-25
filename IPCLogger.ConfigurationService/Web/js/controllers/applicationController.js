@@ -1,9 +1,15 @@
 ﻿function ApplicationController() {
 
     this.manageApplication = function (applicationId) {
+        location.href = getApiUrl("applications", applicationId);
 
-        var url = getApiUrl("applications", applicationId);
-        window.location.assign(url);
+        //asyncQuery(
+        //    url,
+        //    "GET",
+        //    "html",
+        //    function (data) {
+        //        $("#partial-view-area").html(data);
+        //    });
     };
 
 }

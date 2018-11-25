@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.CoreServices;
+﻿using System;
+using IPCLogger.ConfigurationService.CoreServices;
 using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
@@ -6,37 +7,54 @@ using Nancy;
 using Nancy.Responses;
 using Nancy.Security;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
     public class ModuleIndex : NancyModule
     {
-        private PageModel PreviousPageModel
+        private PageModel PageModel
         {
-            get { return Session["PreviousPageModel"] as PageModel; }
+            get { return Context.Request.Session["PageModel"] as PageModel; }
+            set { Context.Request.Session["PageModel"] = value; }
         }
 
         private CoreService CoreService
         {
-            get { return Session["CoreService"] as CoreService; }
-            set { Session["CoreService"] = value; }
+            get { return Context.Request.Session["CoreService"] as CoreService; }
+            set { Context.Request.Session["CoreService"] = value; }
         }
 
         public ModuleIndex()
         {
-            CoreService LoadCoreService(string configurationFile)
+            CoreService LoadCoreService(int applicationId, ApplicationModel applicationModel = null)
             {
                 CoreService coreService = CoreService;
                 if (CoreService == null)
                 {
-                    coreService = new CoreService(configurationFile);
+                    applicationModel = applicationModel ?? ApplicationDAL.Instance.GetApplication(applicationId);
+                    coreService = new CoreService(applicationModel.ConfigurationFile);
                     CoreService = coreService;
                 }
-                else
-                {
 
-                }
                 return coreService;
+            }
+
+            PageModel SetPageModel(Func<PageModel> funcPageModel)
+            {
+                PageModel previousPageModel = PageModel;
+                PageModel currentPageModel = funcPageModel();
+                if (currentPageModel != null && previousPageModel != null)
+                {
+                    PageModel model = currentPageModel;
+                    PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == model.PageType);
+                    if (existingPageModel != null)
+                    {
+                        currentPageModel = existingPageModel;
+                    }
+                }
+                PageModel = currentPageModel;
+                return currentPageModel;
             }
 
             Get["/"] = x => Response.AsRedirect("/applications", RedirectResponse.RedirectType.Temporary);
@@ -46,7 +64,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 //this.RequiresAuthentication();
 
                 List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
-                PageModel pageModel = PageModel.Applications(applications);
+                PageModel pageModel = SetPageModel(() => PageModel.Applications(applications));
                 return View["index", pageModel];
             };
 
@@ -56,9 +74,9 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
-                CoreService coreService = LoadCoreService(applicationModel.ConfigurationFile);
+                CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);
 
-                PageModel pageModel = PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PreviousPageModel);
+                PageModel pageModel = SetPageModel(() => PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PageModel));
                 return View["index", pageModel];
             };
 
@@ -68,10 +86,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 int loggerId = ViewBag.loggerId = int.Parse(x.lid);
-                ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
-                CoreService coreService = LoadCoreService(applicationModel.ConfigurationFile);
 
-                PageModel pageModel = PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PreviousPageModel);
+                CoreService coreService = LoadCoreService(applicationId);
+                DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
+                PageModel pageModel = SetPageModel(() => PageModel.LoggerSettings(applicationId, loggerModel, PageModel));
                 return View["index", pageModel];
             };
 

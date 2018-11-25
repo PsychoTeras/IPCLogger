@@ -30,7 +30,7 @@ namespace IPCLogger.ConfigurationService.DAL
         }
     }
 
-    internal abstract class BaseDAL<TParentType>
+    public abstract class BaseDAL<TParentType>
         where TParentType : class, new()
     {
         protected SQLiteConnection Connection => SQLiteHost.Connection;

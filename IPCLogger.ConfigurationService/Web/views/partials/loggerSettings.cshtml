@@ -1,2 +1,16 @@
 ﻿@using IPCLogger.ConfigurationService.Entities.Models;
+@using IPCLogger.ConfigurationService.CoreServices;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<DeclaredLoggerModel>
+
+<form id="form-logger-settings" class="py-5 text-center">
+    @foreach (PropertyModel model in Model.Properties)
+    {
+        <div class="mb-3">
+            <label>@(model.Name)</label>
+            @Html.Raw(ComponentService.ComponentByPropertyModel(model))
+        </div>
+    }
+</form>
+
+<script src="../../js/controllers/loggerSettingsControllers.js" type="text/javascript"></script>
+<script src="../../js/views/loggerSettings.js" type="text/javascript"></script>

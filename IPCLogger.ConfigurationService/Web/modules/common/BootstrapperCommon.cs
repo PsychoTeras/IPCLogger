@@ -1,21 +1,21 @@
-﻿using Nancy;
-using Nancy.Conventions;
-using System.Collections.Generic;
-using IPCLogger.ConfigurationService.DAL;
+﻿using IPCLogger.ConfigurationService.DAL;
+using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
+using Nancy.Conventions;
+using Nancy.Session.InProc;
 using Nancy.TinyIoc;
-using Nancy.Session;
+using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.Web.modules.common
 {
     public class BootstrapperCommon : DefaultNancyBootstrapper
     {
-        private static readonly CookieBasedSessionsConfiguration _cookieBasedSessionsConfiguration = new CookieBasedSessionsConfiguration
-        {
-            CryptographyConfiguration = Nancy.Cryptography.CryptographyConfiguration.Default,
-            Serializer = new CookieSerializer()
-        };
+        //private static readonly CookieBasedSessionsConfiguration _cookieBasedSessionsConfiguration = new CookieBasedSessionsConfiguration
+        //{
+        //    CryptographyConfiguration = CryptographyConfiguration.Default,
+        //    Serializer = new CookieSerializer()
+        //};
 
         private static readonly FormsAuthenticationConfiguration _formsAuthConfiguration = new FormsAuthenticationConfiguration
         {
@@ -36,6 +36,13 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             base.ApplicationStartup(container, pipelines);
 
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
+
+            //InProcSessionsConfiguration sessionConfig = new InProcSessionsConfiguration
+            //{
+            //    SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default)
+            //};
+            //pipelines.EnableInProcSessions(sessionConfig);
+            pipelines.EnableInProcSessions(InProcSessionsConfiguration.Default);
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
@@ -63,7 +70,8 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
         {
             base.RequestStartup(requestContainer, pipelines, context);
 
-            CookieBasedSessions.Enable(pipelines, _cookieBasedSessionsConfiguration);
+            //CookieBasedSessions.Enable(pipelines, _cookieBasedSessionsConfiguration);
+            //InProcSessions.Enable(pipelines, InProcSessionsConfiguration.Default);
 
             _formsAuthConfiguration.UserMapper = requestContainer.Resolve<IUserMapper>();
             FormsAuthentication.Enable(pipelines, _formsAuthConfiguration);

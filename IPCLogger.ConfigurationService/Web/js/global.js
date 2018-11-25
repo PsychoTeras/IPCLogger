@@ -100,7 +100,7 @@
         return url;
     };
 
-    window.asyncQuery = function(url, method, success, error, data, dataType) {
+    window.asyncQuery = function (url, method, dataType, success, error, data) {
 
         success = success || function() {};
         var objToGetStack = new Error();
@@ -120,8 +120,6 @@
 
             showDialog.error(callerName + thrownError, message);
         };
-
-        dataType = dataType || "json";
 
         return $.ajax({
             url: url,

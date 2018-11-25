@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace IPCLogger.ConfigurationService.Web
 {
-    internal class SelfHosted
+    public class SelfHosted
     {
 
 #region Private fields
@@ -114,7 +114,7 @@ namespace IPCLogger.ConfigurationService.Web
 
     }
 
-    internal class HostAssetsWatcher : IDisposable
+    public class HostAssetsWatcher : IDisposable
     {
         private string[] _srcFolders;
         private string[] _destFolders;
@@ -162,8 +162,7 @@ namespace IPCLogger.ConfigurationService.Web
 
                 foreach (string srcFile in srcFiles)
                 {
-                    bool targetFileExists;
-                    string targetFile = GetMatchFile(destFolder, destFiles, srcFolder, srcFile, out targetFileExists);
+                    string targetFile = GetMatchFile(destFolder, destFiles, srcFolder, srcFile, out var targetFileExists);
                     if (!targetFileExists || File.GetLastWriteTime(srcFile) != File.GetLastWriteTime(targetFile))
                     {
                         string targetPath = Path.GetDirectoryName(targetFile);
@@ -194,8 +193,7 @@ namespace IPCLogger.ConfigurationService.Web
 
         private void WatcherFileChanged(object sender, FileSystemEventArgs e)
         {
-            string destFile;
-            if (_srcDestFilesMatch.TryGetValue(e.FullPath, out destFile))
+            if (_srcDestFilesMatch.TryGetValue(e.FullPath, out var destFile))
             {
                 int tryCnt = 0;
                 while (tryCnt < 3)

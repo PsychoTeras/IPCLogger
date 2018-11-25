@@ -7,7 +7,7 @@ using System.Data.SQLite;
 
 namespace IPCLogger.ConfigurationService.DAL
 {
-    internal class ApplicationDAL : BaseDAL<ApplicationDAL>
+    public class ApplicationDAL : BaseDAL<ApplicationDAL>
     {
         private ApplicationModel ApplicationModelFromReader(SQLiteDataReader reader)
         {

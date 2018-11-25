@@ -6,7 +6,7 @@ using System.Web.UI;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
-    internal static class ComponentService
+    public static class ComponentService
     {
 
 #region Constants
@@ -17,6 +17,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_REQUIRED = "required";
         private const string PROPERTY_ATTR_CONVERTER = "converter";
 
+        private const string PROPERTY_CONTROL = "ui-setting-control";
         private const string PROPERTY_STRING = "ui-property-string";
         private const string PROPERTY_BOOL = "ui-property-boolean";
         private const string PROPERTY_ENUM = "ui-property-combo";
@@ -51,21 +52,19 @@ namespace IPCLogger.ConfigurationService.CoreServices
             string controlType;
             if (!_types.TryGetValue(propertyModel.Type, out controlType))
             {
-                throw new Exception(string.Format("Unknown property type '{0}'", propertyModel.Type.Name));
+                throw new Exception($"Unknown property type '{propertyModel.Type.Name}'");
             }
 
             StringWriter stringWriter = new StringWriter();
             using (HtmlTextWriter html = new HtmlTextWriter(stringWriter))
             {
-                html.RenderBeginTag(BASE_CLASS);
-
-                html.AddAttribute(HtmlTextWriterAttribute.Class, controlType);
+                html.AddAttribute(HtmlTextWriterAttribute.Class, $"{PROPERTY_CONTROL} {controlType}");
 
                 html.AddAttribute(PROPERTY_ATTR_VALUE, (propertyModel.Value ?? string.Empty).ToString());
 
                 if (propertyModel.IsRequired)
                 {
-                    html.AddAttribute(PROPERTY_ATTR_REQUIRED, string.Empty);
+                    html.AddAttribute(PROPERTY_ATTR_REQUIRED, null);
                 }
 
                 if (propertyModel.Converter != null)
@@ -73,8 +72,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
                     html.AddAttribute(PROPERTY_ATTR_CONVERTER, propertyModel.Converter);
                 }
 
-                html.RenderEndTag();
+                html.RenderBeginTag(BASE_CLASS);
 
+                html.RenderEndTag();
             }
             return stringWriter.ToString();
         }

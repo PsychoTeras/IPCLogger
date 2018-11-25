@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IPCLogger.ConfigurationService.Helpers
 {
-    internal static class BaseHelpers
+    public static class BaseHelpers
     {
         public static string CreateMD5(string input)
         {

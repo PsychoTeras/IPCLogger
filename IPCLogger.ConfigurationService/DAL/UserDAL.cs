@@ -10,7 +10,7 @@ using System.Data.SQLite;
 
 namespace IPCLogger.ConfigurationService.DAL
 {
-    internal class UserDAL : BaseDAL<UserDAL>, IUserMapper
+    public class UserDAL : BaseDAL<UserDAL>, IUserMapper
     {
         class DefaultUserRole
         {

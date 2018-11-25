@@ -32,8 +32,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Ctor
 
-        public CoreService() { }
-
         public CoreService(string configurationFile)
         {
             LoadConfiguration(configurationFile);

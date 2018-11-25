@@ -1,4 +1,4 @@
 ﻿globalSetting = {
-    APP_URL: "http://localhost:8080",
+    APP_URL: window.location.origin,
     CACHE_AJAX_RESULT: true
 };

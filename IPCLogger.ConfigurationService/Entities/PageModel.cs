@@ -16,7 +16,6 @@ namespace IPCLogger.ConfigurationService.Entities
         Users,        
     }
 
-    [JsonObject]
     public class PageModel : IEnumerable<PageModel>
     {
         private object _model;
@@ -49,8 +48,6 @@ namespace IPCLogger.ConfigurationService.Entities
         public string ModelType;
 
         public PageModel PreviousPageModel;
-
-        private PageModel() { }
 
         private PageModel(PageType pageType, string pageName, string pagePath, string caption, 
             object model, PageModel previousPageModel)
@@ -94,14 +91,13 @@ namespace IPCLogger.ConfigurationService.Entities
             PageModel previousPageModel)
         {
             string pagePath = $"/applications/{application.Id}";
-            return GetPageModel(PageType.Loggers, pagePath, application.Name, declaredLoggers, previousPageModel);
+            return GetPageModel(PageType.Loggers, pagePath, application.ToString(), declaredLoggers, previousPageModel);
         }
 
-        public static PageModel LoggerSettings(int applicationId, List<DeclaredLoggerModel> declaredLoggers,
-            PageModel previousPageModel)
+        public static PageModel LoggerSettings(int applicationId, DeclaredLoggerModel logger, PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{applicationId}";
-            return GetPageModel(PageType.LoggerSettings, pagePath, "", declaredLoggers, previousPageModel);
+            string pagePath = $"/applications/{applicationId}/loggers/{logger.Id}/settings";
+            return GetPageModel(PageType.LoggerSettings, pagePath, logger.ToString(), logger, previousPageModel);
         }
 
         public static PageModel Users(List<UserModel> users)
