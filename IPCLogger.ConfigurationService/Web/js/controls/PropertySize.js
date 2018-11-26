@@ -9,7 +9,7 @@
     UI.PropertySize.prototype.constructor = UI.PropertySize;
 
     UI.PropertySize.prototype.getPropertyType = function () {
-        return "ui-property-timespan";
+        return "ui-property-size";
     };
 
     UI.PropertySize.prototype.getNodeType = function () {

@@ -135,7 +135,7 @@
             return result;
         };
 
-        // Return a Fraction of the TimeSpan
+        // Return a Fraction of the Size
         this.bytes = function () {
             return bytesTotal % 1024;
         };
@@ -171,7 +171,7 @@
 
     // "Static Constructors"
     Size.FromBytes = function (bytes) {
-        return new Size(kbytes, 0, 0, 0);
+        return new Size(bytes, 0, 0, 0);
     };
     Size.FromKBytes = function (kbytes) {
         return new Size(0, kbytes, 0, 0);

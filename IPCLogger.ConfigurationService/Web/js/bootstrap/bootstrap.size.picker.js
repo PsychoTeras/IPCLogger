@@ -2,16 +2,16 @@
 
     var langs = {
         en: {
-            byte: "B",
-            kbyte: "KB",
-            mbyte: "MB",
-            gbyte: "GB"
+            bytes: "B",
+            kbytes: "KB",
+            mbytes: "MB",
+            gbytes: "GB"
         }
     };
 
     $.fn.sizePicker = function (options) {
 
-        var totalBytes = 0;
+        var totalSize = 0;
 
         var defaults = {
             lang: "en",
@@ -42,10 +42,10 @@
             $mainInputReplacer = $('<div class="bsp-input"></div>');
             $mainInputReplacer.append('<div class="bsp-container" data-toggle="popover"></div>');
             $mainInputContainer = $mainInputReplacer.children();
-            $mainInputContainer.append(buildDisplayBlock("bytes", !settings.showBytes));
-            $mainInputContainer.append(buildDisplayBlock("kbytes"));
-            $mainInputContainer.append(buildDisplayBlock("mbytes"));
             $mainInputContainer.append(buildDisplayBlock("gbytes", !settings.showGBytes));
+            $mainInputContainer.append(buildDisplayBlock("mbytes"));
+            $mainInputContainer.append(buildDisplayBlock("kbytes"));
+            $mainInputContainer.append(buildDisplayBlock("bytes", !settings.showBytes));
 
             $mainInput.after($mainInputReplacer).hide().data("bsp", "1");
 
@@ -58,28 +58,28 @@
             }
 
             function updateMainInput() {
-                $mainInput.val(totalBytes.totalSeconds());
+                $mainInput.val(totalSize.totalBytes());
                 $mainInput.change();
             }
 
             function updateMainInputReplacer() {
-                $mainInputReplacer.find("#bsp-bytes").text(totalBytes.bytes());
-                $mainInputReplacer.find("#bsp-kbytes").text(totalBytes.kbytes());
-                $mainInputReplacer.find("#bsp-mbytes").text(totalBytes.mbytes());
-                $mainInputReplacer.find("#bsp-gbytes").text(totalBytes.gbytes());
+                $mainInputReplacer.find("#bsp-bytes").text(totalSize.bytes());
+                $mainInputReplacer.find("#bsp-kbytes").text(totalSize.kbytes());
+                $mainInputReplacer.find("#bsp-mbytes").text(totalSize.mbytes());
+                $mainInputReplacer.find("#bsp-gbytes").text(totalSize.gbytes());
 
-                $mainInputReplacer.find("#bytes_label").text(langs[settings.lang]["B"]);
-                $mainInputReplacer.find("#kbytes_label").text(langs[settings.lang]["KB"]);
-                $mainInputReplacer.find("#mbytes_label").text(langs[settings.lang]["MB"]);
-                $mainInputReplacer.find("#gbytes_label").text(langs[settings.lang]["GB"]);
+                $mainInputReplacer.find("#bytes_label").text(langs[settings.lang]["bytes"]);
+                $mainInputReplacer.find("#kbytes_label").text(langs[settings.lang]["kbytes"]);
+                $mainInputReplacer.find("#mbytes_label").text(langs[settings.lang]["mbytes"]);
+                $mainInputReplacer.find("#gbytes_label").text(langs[settings.lang]["gbytes"]);
             }
 
             function updatePicker() {
                 if (!disabled) {
-                    inputs.bytes.val(totalBytes.bytes());
-                    inputs.kbytes.val(totalBytes.kbytes());
-                    inputs.mbytes.val(totalBytes.mbytes());
-                    inputs.gbytes.val(totalBytes.gbytes());
+                    inputs.bytes.val(totalSize.bytes());
+                    inputs.kbytes.val(totalSize.kbytes());
+                    inputs.mbytes.val(totalSize.mbytes());
+                    inputs.gbytes.val(totalSize.gbytes());
                 }
             }
 
@@ -88,7 +88,7 @@
                     $mainInput.val(0);
                 }
 
-                totalBytes = Time.FromBytes(parseInt($mainInput.val(), 10));
+                totalSize = Size.FromBytes(parseInt($mainInput.val(), 10));
                 updateMainInputReplacer();
                 updatePicker();
             }
@@ -111,7 +111,7 @@
                     return value;
                 }
 
-                totalBytes = new Size({
+                totalSize = new Size({
                     bytes: getInputValue(inputs.bytes),
                     kbytes: getInputValue(inputs.kbytes),
                     mbytes: getInputValue(inputs.mbytes),
@@ -136,10 +136,10 @@
 
             if (!disabled) {
                 var $picker = $('<div class="bsp-popover"></div>');
-                buildNumericInput("bytes", !settings.showBytes, 1024).appendTo($picker);
-                buildNumericInput("kbytes", false, 1000).appendTo($picker);
-                buildNumericInput("mbytes", false, 1000).appendTo($picker);
                 buildNumericInput("gbytes", !settings.showGBytes, 1000).appendTo($picker);
+                buildNumericInput("mbytes", false, 1023).appendTo($picker);
+                buildNumericInput("kbytes", false, 1023).appendTo($picker);
+                buildNumericInput("bytes", !settings.showBytes, 1023).appendTo($picker);
 
                 $mainInputContainer.popover({
                     placement: "auto",

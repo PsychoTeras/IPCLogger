@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
+using IPCLogger.Core.Attributes;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
@@ -23,6 +24,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ENUM = "ui-property-combobox";
         private const string PROPERTY_NUMERIC = "ui-property-numeric";
         private const string PROPERTY_TIMESPAN = "ui-property-timespan";
+        private const string PROPERTY_SIZE = "ui-property-size";
 
 #endregion
 
@@ -42,7 +44,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(uint), PROPERTY_NUMERIC },
             { typeof(long), PROPERTY_NUMERIC },
             { typeof(ulong), PROPERTY_NUMERIC },
-            { typeof(TimeSpan), PROPERTY_TIMESPAN }
+            { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
+            { typeof(SizeStringConversionAttribute), PROPERTY_SIZE }
         };
 
 #endregion
@@ -58,7 +61,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 return type;
             }
 
-            Type basePropertyType = GetBasePropertyType(propertyModel.Type);
+            Type basePropertyType = GetBasePropertyType(propertyModel.Converter ?? propertyModel.Type);
 
             if (!_types.TryGetValue(basePropertyType, out var controlType))
             {
@@ -79,7 +82,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
                 if (propertyModel.Converter != null)
                 {
-                    html.AddAttribute(PROPERTY_ATTR_CONVERTER, propertyModel.Converter);
+                    html.AddAttribute(PROPERTY_ATTR_CONVERTER, propertyModel.Converter.FullName);
                 }
 
                 html.RenderBeginTag(BASE_CLASS);

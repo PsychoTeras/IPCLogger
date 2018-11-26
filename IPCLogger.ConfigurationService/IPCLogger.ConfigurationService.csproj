@@ -177,6 +177,7 @@
     <Content Include="Resources\refresh.png" />
     <Content Include="Resources\remove-user.png" />
     <Content Include="Resources\show-app.png" />
+    <Content Include="Web\css\bootstrap\bootstrap-size-picker.css" />
     <Content Include="Web\css\bootstrap\bootstrap-duration-picker.css" />
     <Content Include="Web\css\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\controls\TableList.css" />

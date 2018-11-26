@@ -161,11 +161,10 @@
     };
 
     function applyPatches() {
-        $(window).on("click", function (e) {
+        $(window).on("mousedown", function (e) {
             var $target = $(e.target);
-            var isPopover = $target.closest("[data-toggle=popover]").length > 0;
             var inPopover = $target.closest(".popover").length > 0;
-            if (!isPopover && !inPopover) {
+            if (!inPopover) {
                 $(".popover").popover("hide");
             }
         });

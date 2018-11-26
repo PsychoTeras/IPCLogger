@@ -8,13 +8,13 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public Type Type { get; private set; }
 
-        public string Converter { get; private set; }
+        public Type Converter { get; private set; }
 
         public object Value { get; private set; }
 
         public bool IsRequired { get; private set; }
 
-        public PropertyModel(string name, Type type, string converter, object value, bool isRequired)
+        public PropertyModel(string name, Type type, Type converter, object value, bool isRequired)
         {
             Name = name;
             Type = type;
