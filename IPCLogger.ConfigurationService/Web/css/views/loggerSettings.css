@@ -2,6 +2,6 @@
     margin: 0;
 }
 
-/*#form-logger-settings .mb-3:last-child {
-    margin-bottom: 0 !important;
-}*/
+#form-logger-settings div.custom-checkbox label {
+    margin-left: 10px;
+}

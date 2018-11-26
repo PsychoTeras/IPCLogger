@@ -1,5 +1,4 @@
 ﻿using System;
-using IPCLogger.Core.Attributes;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {

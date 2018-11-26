@@ -17,7 +17,7 @@
     };
 
     UI.PropertyBase.prototype.getNodeType = function() {
-        ThrowIsAbstractError();
+        return null;
     };
 
     UI.PropertyBase.prototype.getControlType = function () {
@@ -31,6 +31,10 @@
     UI.PropertyBase.prototype.initialize = function ($control) {
 
         function changeControlType($control, nodeType, controlType) {
+            if (!nodeType) {
+                return $control;
+            }
+
             var attrs = {};
             $.each($control[0].attributes, function (_, attr) {
                 attrs[attr.nodeName] = attr.nodeValue;
@@ -42,6 +46,7 @@
             $control.replaceWith(function () {
                 return $("<" + nodeType + "/>", attrs).append($control.contents());
             });
+
             return $controlParent.children(nodeType);
         }
 
