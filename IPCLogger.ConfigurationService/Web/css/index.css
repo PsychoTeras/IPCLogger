@@ -90,6 +90,11 @@
 
 button.btn {
     height: 34px;
+    font-family: "Segoe UI"
+}
+
+button.btn.fa:before {
+    font-family: "FontAwesome"
 }
 
     button.btn.fa:not(.btn-glyph):before {
