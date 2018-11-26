@@ -10,21 +10,21 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public Type Converter { get; private set; }
 
-        public object Value { get; private set; }
+        public string Value { get; private set; }
+
+        public string Values { get; private set; }
 
         public bool IsRequired { get; private set; }
 
-        public PropertyModel(string name, Type type, Type converter, object value, bool isRequired)
+        public PropertyModel(string name, Type type, Type converter, string value, string values, bool isRequired)
         {
             Name = name;
             Type = type;
             Converter = converter;
             Value = value;
+            Values = values;
             IsRequired = isRequired;
         }
-
-        public PropertyModel(string name, Type type, object value, bool isRequired) 
-            : this(name, type, null, value, isRequired) { }
 
         public override string ToString()
         {

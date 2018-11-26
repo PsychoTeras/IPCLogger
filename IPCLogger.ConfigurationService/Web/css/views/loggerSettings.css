@@ -13,11 +13,21 @@
         margin-left: 3px;
     }
 
+#form-logger-settings div.custom-checkbox {
+    padding-top: 3px;
+    height: 32px;
+}
+
 #form-logger-settings div.custom-checkbox label {
-    margin-left: 10px;
+    margin-left: 8px;
     cursor: pointer;
     -moz-user-select: -moz-none;
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#form-logger-settings select {
+    height: 32px;
+    padding-top: 1px;
 }

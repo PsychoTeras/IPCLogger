@@ -40,10 +40,18 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         protected void SetCSProperties(XmlNode cfgNode = null)
         {
             BaseSettings settings = InstLoggerSettings(cfgNode);
-            Properties = settings.Properties.Values.
-                Select(p => new PropertyModel(p.Item1.Name, p.Item1.PropertyType, p.Item2?.GetType(), p.Item1.GetValue(settings, null), p.Item3)).
-                ToArray();
-            //Properties = new PropertyModel[0];
+            Properties = settings.GetProperties().Select
+            (
+                p => new PropertyModel
+                (
+                    p.Item1.Name,
+                    p.Item1.PropertyType,
+                    p.Item2?.GetType(),
+                    settings.GetPropertyValue(p.Item1),
+                    settings.GetPropertyValues(p.Item1),
+                    p.Item3
+                )
+            ).ToArray();
         }
 
         protected void CloneCSProperties(LoggerModel source)

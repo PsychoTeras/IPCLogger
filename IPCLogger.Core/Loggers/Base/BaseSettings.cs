@@ -31,6 +31,7 @@ namespace IPCLogger.Core.Loggers.Base
         private Action _onApplyChanges;
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
+        private Dictionary<string, PropertyData> _properties;
 
 #endregion
 
@@ -43,7 +44,6 @@ namespace IPCLogger.Core.Loggers.Base
 #region Internal fields
 
         internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
-        internal Dictionary<string, PropertyData> Properties;
 
 #endregion
 
@@ -72,7 +72,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
-            Properties = GetType().
+            _properties = GetType().
                 GetProperties
                 (
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
@@ -227,7 +227,7 @@ namespace IPCLogger.Core.Loggers.Base
             }
             foreach (XmlNode settingNode in nodes)
             {
-                if (!Properties.ContainsKey(settingNode.Name))
+                if (!_properties.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
@@ -247,7 +247,7 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, string> setting in settingsDict)
             {
-                PropertyData item = Properties[setting.Key];
+                PropertyData item = _properties[setting.Key];
                 Type propertyType = item.Item1.PropertyType;
                 try
                 {
@@ -300,7 +300,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = Properties[value.Key].Item1;
+                PropertyInfo property = _properties[value.Key].Item1;
                 property.SetValue(this, value.Value, null);
             }
         }
@@ -322,7 +322,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public virtual void Save(XmlNode cfgNode)
         {
-            foreach (PropertyData item in Properties.Values)
+            foreach (PropertyData item in _properties.Values)
             {
                 PropertyInfo property = item.Item1;
                 object value = property.GetValue(this, null);
@@ -334,6 +334,27 @@ namespace IPCLogger.Core.Loggers.Base
 
                 SetCfgNodeValue(cfgNode, property.Name, value);
             }
+        }
+
+        internal virtual IEnumerable<PropertyData> GetProperties()
+        {
+            return _properties.Values;
+        }
+
+        internal virtual string GetPropertyValue(PropertyInfo property)
+        {
+            return property.GetValue(this, null)?.ToString() ?? string.Empty;
+        }
+
+        internal virtual string GetPropertyValues(PropertyInfo property)
+        {
+            Type type = property.PropertyType;
+            if (type.IsEnum)
+            {
+                return Enum.GetNames(type).Aggregate((current, next) => current + "," + next);
+            }
+
+            return null;
         }
 
 #endregion

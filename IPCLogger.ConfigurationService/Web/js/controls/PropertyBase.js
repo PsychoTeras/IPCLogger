@@ -28,6 +28,9 @@
         return $control;
     };
 
+    UI.PropertyBase.prototype.populateValues = function () {
+    };
+
     UI.PropertyBase.prototype.initialize = function ($control) {
 
         function changeControlType($control, nodeType, controlType) {
@@ -54,7 +57,14 @@
         var nodeType = me.getNodeType();
         var controlType = me.getControlType();
         $control = changeControlType($control, nodeType, controlType);
-        $control = me.afterChangeControlType($control);
+        $control = me.afterChangeControlType($control) || $control;
+        if ($control.attr("values")) {
+            var values = CSVToArray($control.attr("values"));
+            if (values.length) {
+                me.populateValues($control, values[0]);
+            }
+            $control.removeAttr("values");
+        }
     };
 
 })(window.UI = window.UI || {});

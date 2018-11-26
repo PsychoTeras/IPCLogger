@@ -8,7 +8,20 @@
 
 [role="main"] {
     padding-left: 335px;
-    padding-top: 48px; /* Space for fixed navbar */
+    padding-top: 48px;
+}
+
+input, select, textarea {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
+    -webkit-box-shadow: 0 0 0;
+    -ms-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+    outline: 0 none;
 }
 
 .navbar-caption {
@@ -25,8 +38,8 @@
     bottom: 0;
     left: 0;
     min-width: 320px;
-    z-index: 100; /* Behind the navbar */
-    padding: 48px 0 0; /* Height of navbar */
+    z-index: 100;
+    padding: 48px 0 0;
     box-shadow: inset -1px 0 0 #000000;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
@@ -110,13 +123,6 @@ button.btn.fa:before {
 input {
     height: 32px !important;
 }
-
-    textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
-        -webkit-box-shadow: 0 0 0;
-        -ms-box-shadow: 0 0 0;
-        box-shadow: 0 0 0;
-        outline: 0 none;
-    }
 
 .modal.popup {
     text-align: center;

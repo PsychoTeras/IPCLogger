@@ -1,9 +1,9 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
-using IPCLogger.Core.Attributes;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
@@ -15,6 +15,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string BASE_CLASS = "div";
 
         private const string PROPERTY_ATTR_VALUE = "value";
+        private const string PROPERTY_ATTR_VALUES = "values";
         private const string PROPERTY_ATTR_REQUIRED = "required";
         private const string PROPERTY_ATTR_CONVERTER = "converter";
 
@@ -73,7 +74,12 @@ namespace IPCLogger.ConfigurationService.CoreServices
             {
                 html.AddAttribute(HtmlTextWriterAttribute.Class, $"{PROPERTY_CONTROL} {controlType}");
 
-                html.AddAttribute(PROPERTY_ATTR_VALUE, (propertyModel.Value ?? string.Empty).ToString());
+                html.AddAttribute(PROPERTY_ATTR_VALUE, propertyModel.Value ?? string.Empty);
+
+                if (!string.IsNullOrEmpty(propertyModel.Values))
+                {
+                    html.AddAttribute(PROPERTY_ATTR_VALUES, propertyModel.Values);
+                }
 
                 if (propertyModel.IsRequired)
                 {

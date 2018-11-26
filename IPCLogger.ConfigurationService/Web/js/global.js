@@ -160,6 +160,40 @@
         });
     };
 
+    window.CSVToArray = function(strData) {
+        var strDelimiter = ",";
+        var objPattern = new RegExp("(\\" +
+            strDelimiter +
+            "|\\r?\\n|\\r|^)" +
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+            "([^\"\\" +
+            strDelimiter +
+            "\\r\\n]*))",
+            "gi"
+        );
+
+        var arrData = [[]];
+
+        var arrMatches;
+        while ((arrMatches = objPattern.exec(strData)) !== null) {
+            var strMatchedDelimiter = arrMatches[1];
+            if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+                arrData.push([]);
+            }
+
+            var strMatchedValue;
+            if (arrMatches[2]) {
+                strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"");
+            } else {
+                strMatchedValue = arrMatches[3];
+            }
+
+            arrData[arrData.length - 1].push(strMatchedValue);
+        }
+
+        return arrData;
+    };
+
     function applyPatches() {
         $(window).on("mousedown", function (e) {
             var $target = $(e.target);

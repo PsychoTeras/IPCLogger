@@ -15,7 +15,7 @@
     UI.PropertyBoolean.prototype.afterChangeControlType = function ($control) {
         var cbId = "id-" + Math.random().toString(36).substr(2, 9);
 
-        $control.addClass("custom-control custom-checkbox").removeClass("");
+        $control.addClass("custom-control custom-checkbox");
         $control.append('<input type="checkbox" class="custom-control-input" id="' + cbId + '">');
         $control.append('<label class="custom-control-label" for="' + cbId + '">YES/NO</label>');
     };
