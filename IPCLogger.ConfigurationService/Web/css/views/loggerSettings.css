@@ -6,3 +6,14 @@
     margin-left: 10px;
     cursor: pointer;
 }
+
+#p-save-cancel {
+    padding-top: 5px;
+    text-align: right;
+}
+
+    #p-save-cancel button {
+        width: 95px;
+        height: 34px;
+        margin-left: 3px;
+    }
