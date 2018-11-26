@@ -19,7 +19,7 @@
             days = obj.days;
         }
 
-        // Constructor Logic
+        // Ctor
         if (isNumeric(days)) {
             msecs += days * msecPerDay;
         }
@@ -36,7 +36,7 @@
             msecs += milliseconds;
         }
 
-        // Addition Functions
+        // Addition
         this.addMilliseconds = function (milliseconds) {
             if (!isNumeric(milliseconds)) {
                 return;
@@ -68,7 +68,7 @@
             msecs += (days * msecPerDay);
         };
 
-        // Subtraction Functions
+        // Subtraction
         this.subtractMilliseconds = function (milliseconds) {
             if (!isNumeric(milliseconds)) {
                 return;
@@ -100,7 +100,7 @@
             msecs -= days * msecPerDay;
         };
 
-        // Functions to interact with other TimeSpans
+        // Interact with other instance
         this.isTimeSpan = true;
         this.add = function (otherTimeSpan) {
             if (!otherTimeSpan.isTimeSpan) {
@@ -157,6 +157,7 @@
             }
             return result;
         };
+
         // Return a Fraction of the TimeSpan
         this.milliseconds = function () {
             return msecs % 1000;
