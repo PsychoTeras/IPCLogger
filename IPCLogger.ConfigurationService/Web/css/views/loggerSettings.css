@@ -4,4 +4,5 @@
 
 #form-logger-settings div.custom-checkbox label {
     margin-left: 10px;
+    cursor: pointer;
 }

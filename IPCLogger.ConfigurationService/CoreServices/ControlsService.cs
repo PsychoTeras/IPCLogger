@@ -20,9 +20,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_CONTROL = "form-control";
         private const string PROPERTY_STRING = "ui-property-string";
         private const string PROPERTY_BOOL = "ui-property-boolean";
-        private const string PROPERTY_ENUM = "ui-property-combo";
+        private const string PROPERTY_ENUM = "ui-property-combobox";
         private const string PROPERTY_NUMERIC = "ui-property-numeric";
-        private const string PROPERTY_TIME = "ui-property-time";
+        private const string PROPERTY_TIMESPAN = "ui-property-timespan";
 
 #endregion
 
@@ -42,7 +42,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(uint), PROPERTY_NUMERIC },
             { typeof(long), PROPERTY_NUMERIC },
             { typeof(ulong), PROPERTY_NUMERIC },
-            { typeof(TimeSpan), PROPERTY_TIME }
+            { typeof(TimeSpan), PROPERTY_TIMESPAN }
         };
 
 #endregion

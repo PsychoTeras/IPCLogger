@@ -32,7 +32,7 @@ namespace IPCLogger.Core.Loggers.LFile
         [SizeStringConversion]
         public long MaxFileSize { get; set; }
 
-        [TimeStringConversion]
+        [TimeSpanStringConversion]
         public TimeSpan MaxFileAge { get; set; }
 
         public string NetUser { get; set; }

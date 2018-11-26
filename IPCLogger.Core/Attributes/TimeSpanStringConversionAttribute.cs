@@ -3,7 +3,7 @@ using System;
 
 namespace IPCLogger.Core.Attributes
 {
-    public sealed class TimeStringConversionAttribute : CustomConversionAttribute
+    public sealed class TimeSpanStringConversionAttribute : CustomConversionAttribute
     {
         public override object ConvertValue(string sValue)
         {

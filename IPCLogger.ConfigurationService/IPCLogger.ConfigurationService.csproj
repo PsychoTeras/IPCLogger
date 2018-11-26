@@ -191,7 +191,7 @@
     <Content Include="Web\js\controls\PropertyBase.js" />
     <Content Include="Web\js\controls\PropertyBoolean.js" />
     <Content Include="Web\js\controls\PropertyNumeric.js" />
-    <Content Include="Web\js\controls\PropertyTime.js" />
+    <Content Include="Web\js\controls\PropertyTimeSpan.js" />
     <Content Include="Web\js\controls\PropertyString.js" />
     <Content Include="Web\js\controls\TableList.js" />
     <Content Include="Web\js\global.js" />
