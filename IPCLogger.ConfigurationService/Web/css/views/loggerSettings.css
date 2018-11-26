@@ -5,4 +5,8 @@
 #form-logger-settings div.custom-checkbox label {
     margin-left: 10px;
     cursor: pointer;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

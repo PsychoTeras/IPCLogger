@@ -183,7 +183,9 @@
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\css\views\loggerSettings.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
+    <Content Include="Web\js\bootstrap\bootstrap.size.picker.js" />
     <Content Include="Web\js\bootstrap\bootstrap.duration.picker.js" />
+    <Content Include="Web\js\classes\Size.js" />
     <Content Include="Web\js\classes\TimeSpan.js" />
     <Content Include="Web\js\controllers\loggerSettingsControllers.js" />
     <Content Include="Web\js\controllers\applicationController.js" />
@@ -191,6 +193,7 @@
     <Content Include="Web\js\controls\PropertyBase.js" />
     <Content Include="Web\js\controls\PropertyBoolean.js" />
     <Content Include="Web\js\controls\PropertyNumeric.js" />
+    <Content Include="Web\js\controls\PropertySize.js" />
     <Content Include="Web\js\controls\PropertyTimeSpan.js" />
     <Content Include="Web\js\controls\PropertyString.js" />
     <Content Include="Web\js\controls\TableList.js" />
