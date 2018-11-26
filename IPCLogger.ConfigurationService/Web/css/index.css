@@ -11,7 +11,7 @@
     padding-top: 48px;
 }
 
-input, select, textarea {
+input, select, textarea, .custom-checkbox>label:before {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;

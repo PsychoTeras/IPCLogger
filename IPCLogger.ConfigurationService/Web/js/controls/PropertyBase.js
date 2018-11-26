@@ -58,8 +58,10 @@
         var controlType = me.getControlType();
         $control = changeControlType($control, nodeType, controlType);
         $control = me.afterChangeControlType($control) || $control;
-        if ($control.attr("values")) {
-            var values = CSVToArray($control.attr("values"));
+
+        var $values = $control.attr("values");
+        if ($values) {
+            var values = CSVToArray($values);
             if (values.length) {
                 me.populateValues($control, values[0]);
             }
