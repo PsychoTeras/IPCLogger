@@ -104,14 +104,11 @@
                     return;
                 }
 
-                function getInputValue(input) {
-                    var value = parseInt(input.val());
-                    if (input[0].min !== undefined) {
-                        value = Math.max(value, parseInt(input[0].min));
-                    }
-                    if (input[0].max !== undefined) {
-                        value = Math.min(value, parseInt(input[0].max));
-                    }
+                function getInputValue($input) {
+                    var input = $input[0];
+                    var value = parseInt(input.value);
+                    value = Math.max(value, parseInt(input.min || 0));
+                    value = Math.min(value, parseInt(input.max || value));
                     return value;
                 }
 
@@ -135,6 +132,8 @@
                 if (hidden) {
                     $ctrl.addClass("hidden");
                 }
+                bindMouseWheelIncrement($input);
+                $input.bind("mousewheel", pickerChanged);
                 return $ctrl.prepend($input);
             }
 

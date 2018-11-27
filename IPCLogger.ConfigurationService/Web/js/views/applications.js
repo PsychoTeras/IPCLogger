@@ -13,7 +13,7 @@
     function initialize() {
         this.tableList = new UI.TableList("#table-applications");
 
-        $(".btn-configure-application").on("click", applicationConfigure);
+        $("#table-applications button[id^='btn-configure-application']").on("click", applicationConfigure);
     }
 
     initialize();

@@ -1,6 +1,19 @@
 ﻿(function() {
     var regexStackGetCaller = new RegExp("\\s+at\\s(.*?)\\s");
 
+    //Patches
+    $(function () {
+        $(window).on("mousedown", function (e) {
+            var $target = $(e.target);
+            var inPopover = $target.closest(".popover").length > 0;
+            if (!inPopover) {
+                $(".popover").popover("hide");
+            }
+        });
+
+        bindMouseWheelIncrement($("input[type='number']"));
+    });
+
     $(document).on({
         ajaxStart: function() {
             $("body").addClass("loading");
@@ -13,6 +26,30 @@
             sessionStorage.setItem("mouseY", e.clientY + document.body.scrollTop + document.documentElement.scrollTop);
         }
     });
+
+    window.bindMouseWheelIncrement = function($input) {
+        $input.bind("mousewheel", function (e) {
+            if (!$(this).is(":focus")) {
+                return true;
+            }
+
+            function validateInputValue(input, value) {
+                value = Math.max(value, parseInt(input.min || 0));
+                value = Math.min(value, parseInt(input.max || value));
+                return value;
+            }
+
+            var delta = e.originalEvent.wheelDelta, value;
+            if (delta > 0) {
+                value = parseInt(this.value) + 1;
+            } else {
+                value = parseInt(this.value) - 1;
+            }
+            this.value = validateInputValue(this, value);
+
+            return false;
+        });
+    };
 
     window.mouseX = function () {
         return sessionStorage.getItem("mouseX");
@@ -193,16 +230,4 @@
 
         return arrData;
     };
-
-    function applyPatches() {
-        $(window).on("mousedown", function (e) {
-            var $target = $(e.target);
-            var inPopover = $target.closest(".popover").length > 0;
-            if (!inPopover) {
-                $(".popover").popover("hide");
-            }
-        });
-    }
-
-    applyPatches();
 })();

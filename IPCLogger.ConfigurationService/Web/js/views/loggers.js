@@ -18,7 +18,7 @@
     function initialize() {
         this.tableList = new UI.TableList("#table-loggers");
 
-        $(".btn-logger-settings").on("click", loggerSettings);
+        $("#table-loggers button[id^='btn-logger-settings']").on("click", loggerSettings);
     }
 
     initialize();
