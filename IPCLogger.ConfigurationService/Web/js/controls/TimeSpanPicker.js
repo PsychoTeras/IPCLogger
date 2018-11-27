@@ -62,7 +62,7 @@
             }
 
             function updateMainInput() {
-                $mainInput.val(totalDuration.totalSeconds());
+                $mainInput.val(totalDuration.toString());
                 $mainInput.change();
             }
 
@@ -89,10 +89,10 @@
 
             function init() {
                 if (!$mainInput.val()) {
-                    $mainInput.val(0);
+                    $mainInput.val("00:00:00");
                 }
 
-                totalDuration = TimeSpan.FromSeconds(parseInt($mainInput.val(), 10));
+                totalDuration = TimeSpan.Parse($mainInput.val());
                 updateMainInputReplacer();
                 updatePicker();
             }
@@ -111,14 +111,13 @@
                     value = Math.min(value, parseInt(input.max || value));
                     return value;
                 }
-
                 totalDuration = new TimeSpan({
                     seconds: getInputValue(inputs.seconds),
                     minutes: getInputValue(inputs.minutes),
                     hours: getInputValue(inputs.hours),
                     days: getInputValue(inputs.days)
                 });
-                updateMainInputReplacer();
+
                 updateMainInput();
             }
 
@@ -132,8 +131,7 @@
                 if (hidden) {
                     $ctrl.addClass("hidden");
                 }
-                bindMouseWheelIncrement($input);
-                $input.bind("mousewheel", pickerChanged);
+                bindMouseWheelIncrement($input, pickerChanged);
                 return $ctrl.prepend($input);
             }
 

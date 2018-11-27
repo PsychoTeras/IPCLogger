@@ -1,5 +1,5 @@
-﻿(function () {
-    var Size = window.Size = function (bytes, kbytes, mbytes, gbytes) {
+﻿(function() {
+    var Size = window.Size = function(bytes, kbytes, mbytes, gbytes) {
 
         var bytesTotal = 0;
         var bytesPerKb = 1024;
@@ -33,25 +33,25 @@
         }
 
         // Addition
-        this.addBytes = function (bytes) {
+        this.addBytes = function(bytes) {
             if (!isNumeric(bytes)) {
                 return;
             }
             bytesTotal += bytes;
         };
-        this.addKBytes = function (kbytes) {
+        this.addKBytes = function(kbytes) {
             if (!isNumeric(kbytes)) {
                 return;
             }
             bytesTotal += (kbytes * bytesPerKb);
         };
-        this.addMBytes = function (mbytes) {
+        this.addMBytes = function(mbytes) {
             if (!isNumeric(mbytes)) {
                 return;
             }
             bytesTotal += (mbytes * bytesPerMb);
         };
-        this.addGBytes = function (gbytes) {
+        this.addGBytes = function(gbytes) {
             if (!isNumeric(gbytes)) {
                 return;
             }
@@ -59,25 +59,25 @@
         };
 
         // Subtraction
-        this.subtractBytes = function (bytes) {
+        this.subtractBytes = function(bytes) {
             if (!isNumeric(bytes)) {
                 return;
             }
             bytesTotal -= bytes;
         };
-        this.subtractKBytes = function (kbytes) {
+        this.subtractKBytes = function(kbytes) {
             if (!isNumeric(kbytes)) {
                 return;
             }
             bytesTotal -= kbytes * bytesPerKb;
         };
-        this.subtractMBytes = function (mbytes) {
+        this.subtractMBytes = function(mbytes) {
             if (!isNumeric(mbytes)) {
                 return;
             }
             bytesTotal -= mbytes * bytesPerMb;
         };
-        this.subtractGBytes = function (gbytes) {
+        this.subtractGBytes = function(gbytes) {
             if (!isNumeric(gbytes)) {
                 return;
             }
@@ -86,19 +86,19 @@
 
         // Interact with other instance
         this.isSize = true;
-        this.add = function (otherSize) {
+        this.add = function(otherSize) {
             if (!otherSize.isSize) {
                 return;
             }
             bytesTotal += otherSize.totalBytes();
         };
-        this.subtract = function (otherSize) {
+        this.subtract = function(otherSize) {
             if (!otherSize.isSize) {
                 return;
             }
             bytesTotal -= otherSize.totalBytes();
         };
-        this.equals = function (otherSize) {
+        this.equals = function(otherSize) {
             if (!otherSize.isSize) {
                 return false;
             }
@@ -106,28 +106,28 @@
         };
 
         // Getters
-        this.totalBytes = function (roundDown) {
+        this.totalBytes = function(roundDown) {
             var result = bytesTotal;
             if (roundDown === true) {
                 result = Math.floor(result);
             }
             return result;
         };
-        this.totalKBytes = function (roundDown) {
+        this.totalKBytes = function(roundDown) {
             var result = bytesTotal / bytesPerKb;
             if (roundDown === true) {
                 result = Math.floor(result);
             }
             return result;
         };
-        this.totalMBytes = function (roundDown) {
+        this.totalMBytes = function(roundDown) {
             var result = bytesTotal / bytesPerMb;
             if (roundDown === true) {
                 result = Math.floor(result);
             }
             return result;
         };
-        this.totalGBytes = function (roundDown) {
+        this.totalGBytes = function(roundDown) {
             var result = bytesTotal / bytesPerGb;
             if (roundDown === true) {
                 result = Math.floor(result);
@@ -136,16 +136,16 @@
         };
 
         // Return a Fraction of the Size
-        this.bytes = function () {
+        this.bytes = function() {
             return bytesTotal % 1024;
         };
-        this.kbytes = function () {
+        this.kbytes = function() {
             return Math.floor(bytesTotal / bytesPerKb) % 1024;
         };
-        this.mbytes = function () {
+        this.mbytes = function() {
             return Math.floor(bytesTotal / bytesPerMb) % 1024;
         };
-        this.gbytes = function () {
+        this.gbytes = function() {
             return Math.floor(bytesTotal / bytesPerGb);
         };
 
@@ -170,25 +170,16 @@
     };
 
     // "Static Constructors"
-    Size.FromBytes = function (bytes) {
+    Size.FromBytes = function(bytes) {
         return new Size(bytes, 0, 0, 0);
     };
-    Size.FromKBytes = function (kbytes) {
+    Size.FromKBytes = function(kbytes) {
         return new Size(0, kbytes, 0, 0);
     };
-    Size.FromMBytes = function (mbytes) {
+    Size.FromMBytes = function(mbytes) {
         return new Size(0, 0, mbytes, 0);
     };
-    Size.FromGBytes = function (gbytes) {
+    Size.FromGBytes = function(gbytes) {
         return new Size(0, 0, 0, gbytes);
     };
-
-    //Size.Parse = function(timespanText) {
-    //    var tokens = timespanText.split(":");
-    //    var kbytes = tokens[0].split(".");
-    //    if (kbytes.length === 2)
-    //        return new TimeSpan(0, tokens[2], tokens[1], kbytes[1], kbytes[0]);
-
-    //    return new TimeSpan(0, tokens[2], tokens[1], tokens[0], 0);
-    //};
-}())
+}());

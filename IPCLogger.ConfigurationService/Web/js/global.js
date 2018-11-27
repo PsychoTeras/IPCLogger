@@ -27,7 +27,7 @@
         }
     });
 
-    window.bindMouseWheelIncrement = function($input) {
+    window.bindMouseWheelIncrement = function($input, onChange) {
         $input.bind("mousewheel", function (e) {
             if (!$(this).is(":focus")) {
                 return true;
@@ -45,7 +45,15 @@
             } else {
                 value = parseInt(this.value) - 1;
             }
-            this.value = validateInputValue(this, value);
+
+            value = validateInputValue(this, value);
+
+            if (value !== this.value) {
+                this.value = validateInputValue(this, value);
+                if (onChange) {
+                    onChange($input);
+                }
+            }
 
             return false;
         });

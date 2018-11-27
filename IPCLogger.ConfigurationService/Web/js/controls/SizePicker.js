@@ -107,14 +107,13 @@
                     value = Math.min(value, parseInt(input.max || value));
                     return value;
                 }
-
                 totalSize = new Size({
                     bytes: getInputValue(inputs.bytes),
                     kbytes: getInputValue(inputs.kbytes),
                     mbytes: getInputValue(inputs.mbytes),
                     gbytes: getInputValue(inputs.gbytes)
                 });
-                updateMainInputReplacer();
+
                 updateMainInput();
             }
 
@@ -128,8 +127,7 @@
                 if (hidden) {
                     $ctrl.addClass("hidden");
                 }
-                bindMouseWheelIncrement($input);
-                $input.bind("mousewheel", pickerChanged);
+                bindMouseWheelIncrement($input, pickerChanged);
                 return $ctrl.prepend($input);
             }
 
@@ -147,6 +145,7 @@
                     content: $picker
                 });
             }
+
             init();
             $mainInput.change(init);
         });
