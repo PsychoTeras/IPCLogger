@@ -17,21 +17,20 @@
         me.Table.addClass(vars.CLASS);
 
         $.each(me.Table.find("tbody>tr #" + vars.CELL_ACTIONS), function () {
-            var $cell = this;
+            var cell = this;
             var $div = $("<div/>").
                 addClass(vars.DIV_ACTIONS).
-                attr("id", vars.DIV_ACTIONS).
-                prepend($cell.children);
-            $cell.append($div[0]);
+                prepend(cell.children);
+            $(cell).append($div);
             return true;
         });
 
         me.Table.find("tbody>tr").mouseover(function () {
-            $(this).find("#" + vars.DIV_ACTIONS).addClass("mouseover");
+            $(this).find("." + vars.DIV_ACTIONS).addClass("mouseover");
         });
 
         me.Table.find("tbody>tr").mouseleave(function () {
-            $(this).find("#" + vars.DIV_ACTIONS).removeClass("mouseover");
+            $(this).find("." + vars.DIV_ACTIONS).removeClass("mouseover");
         });
 
         var mouseX = window.mouseX(), mouseY = window.mouseY();
@@ -41,7 +40,7 @@
                 $el = $el.closest('#' + vars.CELL_ACTIONS);
             }
             if ($el.length) {
-                $el.children("#" + vars.DIV_ACTIONS).addClass("mouseover");
+                $el.children("." + vars.DIV_ACTIONS).addClass("mouseover");
             }
         }
     };

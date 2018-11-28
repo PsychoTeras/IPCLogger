@@ -26,6 +26,15 @@
             $control.append(new Option(value, value));
             return true;
         });
+        $control.val($control.attr("value"));
+    };
+
+    UI.PropertyCombo.prototype.value = function (val) {
+        var me = this;
+        if (val) {
+            me.Control.val(val);
+        }
+        return me.Control.val();
     };
 
 })(window.UI = window.UI || {});
