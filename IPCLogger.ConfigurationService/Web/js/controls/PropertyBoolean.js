@@ -1,8 +1,8 @@
 ﻿(function (UI) {
 
-    UI.PropertyBoolean = function (selector) {
+    UI.PropertyBoolean = function () {
         var me = this;
-        UI.PropertyBase.call(me, selector);
+        UI.PropertyBase.call(me);
     };
 
     UI.PropertyBoolean.prototype = Object.create(UI.PropertyBase.prototype);
@@ -13,11 +13,27 @@
     };
 
     UI.PropertyBoolean.prototype.afterChangeControlType = function ($control) {
-        var cbId = "id-" + Math.random().toString(36).substr(2, 9);
+        var me = this;
 
+        var cbId = "id-" + Math.random().toString(36).substr(2, 9);
         $control.addClass("custom-control custom-checkbox");
         $control.append('<input type="checkbox" class="custom-control-input" id="' + cbId + '">');
         $control.append('<label class="custom-control-label" for="' + cbId + '">YES/NO</label>');
+
+        me.value($control.attr("value"));
+    };
+
+    UI.PropertyBoolean.prototype.value = function (val) {
+        var $input = this.Control.find("input");
+        if (val) {
+            val = val.toLowerCase();
+            if (val === "true") {
+                $input.attr("checked", "checked");
+            } else {
+                $input.removeAttr("checked");
+            }
+        }
+        return $input[0].checked;
     };
 
 })(window.UI = window.UI || {});

@@ -1,8 +1,8 @@
 ﻿(function (UI) {
 
-    UI.PropertySize = function (selector) {
+    UI.PropertySize = function () {
         var me = this;
-        UI.PropertyBase.call(me, selector);
+        UI.PropertyBase.call(me);
     };
 
     UI.PropertySize.prototype = Object.create(UI.PropertyBase.prototype);

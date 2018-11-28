@@ -183,9 +183,9 @@
             }
 
             return appendFormat(this.days(), ".") +
-                appendFormat(this.hours(), ":") +
-                appendFormat(this.minutes(), ":") +
-                appendFormat(this.seconds(), ":");
+                   appendFormat(this.hours(), ":") +
+                   appendFormat(this.minutes(), ":") +
+                   appendFormat(this.seconds());
         };
     };
 

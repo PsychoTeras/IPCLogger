@@ -1,8 +1,8 @@
 ﻿(function (UI) {
 
-    UI.PropertyTimeSpan = function (selector) {
+    UI.PropertyTimeSpan = function () {
         var me = this;
-        UI.PropertyBase.call(me, selector);
+        UI.PropertyBase.call(me);
     };
 
     UI.PropertyTimeSpan.prototype = Object.create(UI.PropertyBase.prototype);

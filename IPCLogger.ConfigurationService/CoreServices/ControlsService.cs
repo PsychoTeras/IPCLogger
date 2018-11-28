@@ -14,6 +14,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private const string BASE_CLASS = "div";
 
+        private const string PROPERTY_ATTR_NAME = "name";
         private const string PROPERTY_ATTR_VALUE = "value";
         private const string PROPERTY_ATTR_VALUES = "values";
         private const string PROPERTY_ATTR_REQUIRED = "required";
@@ -73,6 +74,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
             using (HtmlTextWriter html = new HtmlTextWriter(stringWriter))
             {
                 html.AddAttribute(HtmlTextWriterAttribute.Class, $"{PROPERTY_CONTROL} {controlType}");
+
+                html.AddAttribute(PROPERTY_ATTR_NAME, propertyModel.Name);
 
                 html.AddAttribute(PROPERTY_ATTR_VALUE, propertyModel.Value ?? string.Empty);
 

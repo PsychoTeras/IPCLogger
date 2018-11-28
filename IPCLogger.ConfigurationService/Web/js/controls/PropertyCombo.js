@@ -1,8 +1,8 @@
 ﻿(function (UI) {
 
-    UI.PropertyCombo = function (selector) {
+    UI.PropertyCombo = function () {
         var me = this;
-        UI.PropertyBase.call(me, selector);
+        UI.PropertyBase.call(me);
     };
 
     UI.PropertyCombo.prototype = Object.create(UI.PropertyBase.prototype);

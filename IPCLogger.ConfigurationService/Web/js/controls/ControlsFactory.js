@@ -6,10 +6,9 @@
     };
 
     UI.ControlsFactory.prototype.initializeControls = function (selector) {
-        var me = this;
-        me.$Controls = $(selector);
+        var result = [];
 
-        $.each(me.$Controls,
+        $.each($(selector),
             function (_, control) {
                 $.each(control.classList, function (_, className) {
 
@@ -19,11 +18,15 @@
                     var uiControl = Object.create(value.prototype);
                     uiControl.initialize($(control));
 
+                    result.push({ name: control.getAttribute("name"), uiControl: uiControl });
+
                     return true;
                 });
 
                 return true;
             });
+
+        return result;
     };
 
     function initialize() {

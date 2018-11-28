@@ -4,12 +4,11 @@
         throw "PropertyBase is abstract class";
     }
 
-    UI.PropertyBase = function (selector) {
+    UI.PropertyBase = function () {
         var me = this;
         if (me.constructor === UI.PropertyBase) {
             ThrowIsAbstractError();
         }
-        me.Control = $(selector);
     };
 
     UI.PropertyBase.prototype.getPropertyType = function () {
@@ -29,6 +28,14 @@
     };
 
     UI.PropertyBase.prototype.populateValues = function () {
+    };
+
+    UI.PropertyBase.prototype.value = function (val) {
+        var me = this;
+        if (val) {
+            me.Control.val(val);
+        }
+        return me.Control.val();
     };
 
     UI.PropertyBase.prototype.initialize = function ($control) {
@@ -56,7 +63,9 @@
         var me = this;
         var nodeType = me.getNodeType();
         var controlType = me.getControlType();
-        $control = changeControlType($control, nodeType, controlType);
+
+        this.Control = $control = changeControlType($control, nodeType, controlType);
+
         $control = me.afterChangeControlType($control) || $control;
 
         var $values = $control.attr("values");
