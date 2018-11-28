@@ -26,7 +26,7 @@
     UI.PropertyBoolean.prototype.value = function (val) {
         var $input = this.Control.find("input");
         if (val !== null && val !== undefined) {
-            val = val.toLowerCase();
+            val = val.toString().toLowerCase();
             if (val === "true") {
                 $input.attr("checked", "checked");
             } else {
