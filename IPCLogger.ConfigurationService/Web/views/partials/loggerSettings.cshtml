@@ -4,29 +4,27 @@
 
 <hr>
 
-<div class="bg-light">
-    <form id="form-logger-settings">
-        @foreach (PropertyModel model in Model.Properties)
-        {
-            <div class="mt-2">
-                <label>
-                    @(model.Name)
-                    @if (model.IsRequired)
-                    {
-                        <a style="color: red; font-weight: bold"> * </a>
-                    }
-                </label>
-                @Html.Raw(ControlsService.ControlByPropertyModel(model))
-                <div class="invalid-feedback"></div>
-            </div>
-        }
-    </form>
-    
-    <p id="p-save-cancel">
-        <button id="btn-save" class="btn btn-sm btn-success">Save</button>
-        <button id="btn-cancel" class="btn btn-sm btn-secondary">Cancel</button>
-    </p>
-</div>
+<form id="form-logger-settings">
+    @foreach (PropertyModel model in Model.Properties)
+    {
+        <div class="mt-2">
+            <label>
+                @(model.Name)
+                @if (model.IsRequired)
+                {
+                    <a style="color: red; font-weight: bold"> * </a>
+                }
+            </label>
+            @Html.Raw(ControlsService.ControlByPropertyModel(model))
+            <div class="invalid-feedback"></div>
+        </div>
+    }
+</form>
+
+<p id="p-save-cancel">
+    <button id="btn-save" class="btn btn-sm btn-success">Save</button>
+    <button id="btn-cancel" class="btn btn-sm btn-secondary">Cancel</button>
+</p>
 
 <link href="../../css/views/loggerSettings.css" rel="stylesheet">
 <script src="../../js/controllers/loggerSettingsControllers.js" type="text/javascript"></script>
