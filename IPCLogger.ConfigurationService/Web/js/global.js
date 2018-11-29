@@ -124,7 +124,7 @@
             var params = "", first = true;
             for (var key in value) {
                 if (value.hasOwnProperty(key)) {
-                    params = (first ? "?" : "&") + key + "=" + value[key];
+                    params += (first ? "?" : "&") + key + "=" + value[key];
                     first = false;
                 }
             }

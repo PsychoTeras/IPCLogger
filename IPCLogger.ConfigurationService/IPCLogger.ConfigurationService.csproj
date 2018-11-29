@@ -94,6 +94,8 @@
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="Entities\DTO\ApplicationRegDTO.cs" />
+    <Compile Include="Entities\DTO\PropertyObjectDTO.cs" />
+    <Compile Include="Entities\DTO\InvalidPropertyValueDTO.cs" />
     <Compile Include="Entities\Models\ApplicationModel.cs" />
     <Compile Include="Entities\Models\PropertyModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
@@ -133,6 +135,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\modules\common\RequestStartupCommon.cs" />
+    <Compile Include="Web\modules\ModuleValidation.cs" />
     <Compile Include="Web\SelfHosted.cs" />
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

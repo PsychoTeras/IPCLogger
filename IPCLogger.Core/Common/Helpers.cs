@@ -71,6 +71,11 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
+            if (long.TryParse(sBytes, out var value))
+            {
+                return value;
+            }
+
             MatchCollection matches = _regexBytesString.Matches(sBytes);
             if (matches.Count == 0)
             {
@@ -78,7 +83,6 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            long value = 0;
             foreach (Match match in matches)
             {
                 string sSize = match.Groups["SIZE"].Value;
@@ -153,7 +157,7 @@ namespace IPCLogger.Core.Common
             {
                 sSize = $"{sizeLeft} B";
             }
-            else if (sizeLeft != 0)
+            else if (Math.Abs(sizeLeft) > float.Epsilon)
             {
                 sSize += $"{sizeLeft} B";
             }
@@ -167,6 +171,11 @@ namespace IPCLogger.Core.Common
             {
                 string msg = "Time string cannot be empty";
                 throw new Exception(msg);
+            }
+
+            if (TimeSpan.TryParse(sTime, out var timeSpan))
+            {
+                return timeSpan;
             }
 
             MatchCollection matches = _regexTimeString.Matches(sTime);

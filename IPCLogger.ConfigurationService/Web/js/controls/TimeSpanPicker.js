@@ -28,7 +28,7 @@
         var $mainInputReplacer;
         var $mainInputContainer;
 
-        this.each(function (_, mainInput) {
+        return this.each(function (_, mainInput) {
 
             var $mainInput = $(mainInput);
 

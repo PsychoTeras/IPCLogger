@@ -7,10 +7,20 @@
     text-align: right;
 }
 
-    #p-save-cancel button {
+    #p-save-cancel > button {
         width: 100px;
         height: 34px;
-        margin-left: 3px;
+    }
+
+    #p-save-cancel > div > button:first-child {
+        width: 75px;
+    }
+
+    #p-save-cancel .dropdown-menu {
+        min-width: 0 !important;
+        width: auto !important;
+        font-size: 14px;
+        margin: 0;
     }
 
 #form-logger-settings div.custom-checkbox {
@@ -30,4 +40,12 @@
 #form-logger-settings select {
     height: 32px;
     padding: 0 0 2px 12px;
+}
+
+#form-logger-settings *[invalid] {
+    border-color: #dc3545;
+}
+
+#form-logger-settings .invalid-feedback.visible {
+    display: block;
 }

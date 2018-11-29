@@ -1,11 +1,10 @@
-﻿using System;
-using IPCLogger.ConfigurationService.CoreServices;
+﻿using IPCLogger.ConfigurationService.CoreServices;
 using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
 using Nancy;
 using Nancy.Responses;
-using Nancy.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

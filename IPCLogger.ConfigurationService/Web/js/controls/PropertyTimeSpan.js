@@ -21,7 +21,7 @@
     };
 
     UI.PropertyTimeSpan.prototype.afterChangeControlType = function ($control) {
-        return $control.durationPicker();
+        return $control.durationPicker().next();
     };
 
 })(window.UI = window.UI || {});

@@ -22,6 +22,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
         protected const string RootLoggersCfgPath = Constants.RootLoggerCfgPath + "/Loggers";
+        private const string ValidationErrorMessage = "{0} is required";
 
 #endregion
 
@@ -349,12 +350,38 @@ namespace IPCLogger.Core.Loggers.Base
         internal virtual string GetPropertyValues(PropertyInfo property)
         {
             Type type = property.PropertyType;
-            if (type.IsEnum)
+            return type.IsEnum ? Enum.GetNames(type).Aggregate((current, next) => current + "," + next) : null;
+        }
+
+        internal virtual bool ValidatePropertyValue(string propertyName, string sValue, out string errorMessage)
+        {
+            object Default(Type t)
             {
-                return Enum.GetNames(type).Aggregate((current, next) => current + "," + next);
+                return t.IsValueType ? Activator.CreateInstance(t) : null;
             }
 
-            return null;
+            errorMessage = string.Format(ValidationErrorMessage, propertyName);
+
+            try
+            {
+                if (_properties.TryGetValue(propertyName, out var data))
+                {
+                    if (data.Item3 && string.IsNullOrWhiteSpace(sValue))
+                    {
+                        return false;
+                    }
+
+                    object value = data.Item2 != null
+                        ? data.Item2.ConvertValue(sValue)
+                        : Convert.ChangeType(sValue, data.Item1.PropertyType, CultureInfo.InvariantCulture);
+                    return value != null && (!data.Item3 || !value.Equals(Default(data.Item1.PropertyType)));
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+            }
+            return false;
         }
 
 #endregion

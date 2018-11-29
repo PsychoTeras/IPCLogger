@@ -4,12 +4,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using IPCLogger.ConfigurationService.Entities.DTO;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class LoggerModel
     {
         private static int _refId;
+
+        private BaseSettings _baseSettings;
 
         public int Id { get; }
 
@@ -32,23 +35,23 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             Type bsType = ((TypeInfo) Type).ImplementedInterfaces
                 .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
                 .First(i => i != null);
-            BaseSettings settings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
-            settings.Setup(cfgNode);
-            return settings;
+            _baseSettings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
+            _baseSettings.Setup(cfgNode);
+            return _baseSettings;
         }
 
         protected void SetCSProperties(XmlNode cfgNode = null)
         {
-            BaseSettings settings = InstLoggerSettings(cfgNode);
-            Properties = settings.GetProperties().Select
+            _baseSettings = InstLoggerSettings(cfgNode);
+            Properties = _baseSettings.GetProperties().Select
             (
                 p => new PropertyModel
                 (
                     p.Item1.Name,
                     p.Item1.PropertyType,
                     p.Item2?.GetType(),
-                    settings.GetPropertyValue(p.Item1),
-                    settings.GetPropertyValues(p.Item1),
+                    _baseSettings.GetPropertyValue(p.Item1),
+                    _baseSettings.GetPropertyValues(p.Item1),
                     p.Item3
                 )
             ).ToArray();
@@ -71,6 +74,14 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             }
             model.SetCSProperties();
             return model;
+        }
+
+        public InvalidPropertyValueDTO[] ValidateProperties(PropertyObjectDTO[] properties)
+        {
+            return properties.Select(p =>
+                !_baseSettings.ValidatePropertyValue(p.Name, p.Value, out var errorMessage)
+                    ? new InvalidPropertyValueDTO(p.Name, errorMessage)
+                    : null).Where(p => p != null).ToArray();
         }
 
         public override string ToString()

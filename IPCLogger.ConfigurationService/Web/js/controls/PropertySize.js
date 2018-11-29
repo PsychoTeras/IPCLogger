@@ -21,7 +21,7 @@
     };
 
     UI.PropertySize.prototype.afterChangeControlType = function ($control) {
-        return $control.sizePicker();
+        return $control.sizePicker().next();
     };
 
 })(window.UI = window.UI || {});

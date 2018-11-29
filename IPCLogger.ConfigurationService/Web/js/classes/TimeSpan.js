@@ -179,7 +179,7 @@
         this.toString = function() {
 
             function appendFormat(value, separator) {
-                return (value < 10 ? "0" + value : value) + separator;
+                return (value < 10 ? "0" + value : value) + (separator || "");
             }
 
             return appendFormat(this.days(), ".") +

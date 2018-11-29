@@ -18,7 +18,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_VALUE = "value";
         private const string PROPERTY_ATTR_VALUES = "values";
         private const string PROPERTY_ATTR_REQUIRED = "required";
-        private const string PROPERTY_ATTR_CONVERTER = "converter";
 
         private const string PROPERTY_CONTROL = "form-control";
         private const string PROPERTY_STRING = "ui-property-string";
@@ -86,12 +85,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
                 if (propertyModel.IsRequired)
                 {
-                    html.AddAttribute(PROPERTY_ATTR_REQUIRED, null);
-                }
-
-                if (propertyModel.Converter != null)
-                {
-                    html.AddAttribute(PROPERTY_ATTR_CONVERTER, propertyModel.Converter.FullName);
+                    html.AddAttribute(PROPERTY_ATTR_REQUIRED, string.Empty);
                 }
 
                 html.RenderBeginTag(BASE_CLASS);

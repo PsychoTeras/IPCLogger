@@ -30,12 +30,48 @@
     UI.PropertyBase.prototype.populateValues = function () {
     };
 
+    UI.PropertyBase.prototype.name = function () {
+        var me = this;
+        return me.Control.attr("name");
+    };
+
     UI.PropertyBase.prototype.value = function (val) {
         var me = this;
-        if (val) {
-            me.Control.val(val);
+        if (val || val === "" || val === 0) {
+            me.Control.val(val).change();
         }
         return me.Control.val();
+    };
+
+    UI.PropertyBase.prototype.resetValue = function () {
+        var me = this;
+        me.value(me.OrigValue);
+    };
+
+    UI.PropertyBase.prototype.getPropertyObject = function() {
+        var me = this;
+        var name = me.name();
+        var value = me.value();
+        return {
+            name: name,
+            value: value
+        };
+    };
+
+    UI.PropertyBase.prototype.setValidity = function (valid, errorMessage) {
+        var me = this;
+        var $invalidFeedback = me.VisibleControl.next(".invalid-feedback");
+        if (valid === true) {
+            me.VisibleControl.removeAttr("invalid");
+            $invalidFeedback.text("").removeClass("visible");
+        } else if (valid === false) {
+            me.VisibleControl.attr("invalid", "");
+            if (errorMessage) {
+                $invalidFeedback.text(errorMessage).addClass("visible");
+            }
+        } else {
+            throw "Valid is not specified";
+        }
     };
 
     UI.PropertyBase.prototype.initialize = function ($control) {
@@ -64,9 +100,9 @@
         var nodeType = me.getNodeType();
         var controlType = me.getControlType();
 
-        this.Control = $control = changeControlType($control, nodeType, controlType);
+        me.Control = $control = changeControlType($control, nodeType, controlType);
 
-        $control = me.afterChangeControlType($control) || $control;
+        me.VisibleControl = me.afterChangeControlType($control) || $control;
 
         var $values = $control.attr("values");
         if ($values) {
@@ -76,6 +112,8 @@
             }
             $control.removeAttr("values");
         }
+
+        me.OrigValue = me.value();
     };
 
 })(window.UI = window.UI || {});

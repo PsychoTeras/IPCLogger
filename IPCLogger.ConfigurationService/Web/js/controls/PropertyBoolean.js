@@ -24,16 +24,12 @@
     };
 
     UI.PropertyBoolean.prototype.value = function (val) {
-        var $input = this.Control.find("input");
+        var input = this.Control.find("input")[0];
         if (val !== null && val !== undefined) {
             val = val.toString().toLowerCase();
-            if (val === "true") {
-                $input.attr("checked", "checked");
-            } else {
-                $input.removeAttr("checked");
-            }
+            input.checked = val === "true";
         }
-        return $input[0].checked;
+        return input.checked;
     };
 
 })(window.UI = window.UI || {});
