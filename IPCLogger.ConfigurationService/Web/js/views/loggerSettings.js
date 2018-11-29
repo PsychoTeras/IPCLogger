@@ -93,9 +93,9 @@
         $("#p-save-cancel #btn-cancel").on("click", cancel);
         $("#p-save-cancel #btn-reset").on("click", reset);
 
-        $(window).bind("beforeunload", function () {
+        window.onbeforeunload = function () {
             return hasChanges() ? "Your changes will be lost. Continue?" : undefined;
-        });
+        };
     }
 
     initialize();
