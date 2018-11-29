@@ -10,6 +10,16 @@
         return $("#logger-id").val();
     }
 
+    function hasChanges() {
+        var result = false;
+        $.each(controls,
+            function(_, control) {
+                result = control.uiControl.isChanged();
+                return !result;
+            });
+        return result;
+    }
+
     function getPropertyObjs() {
         var propertyObjs = [];
         $.each(controls,
@@ -77,10 +87,15 @@
     }
 
     function initialize() {
-        window.controls = controls = new UI.ControlsFactory().initializeControls("#form-logger-settings div.form-control");
+        controls = new UI.ControlsFactory("#form-logger-settings div.form-control");
+
         $("#p-save-cancel #btn-save").on("click", save);
         $("#p-save-cancel #btn-cancel").on("click", cancel);
         $("#p-save-cancel #btn-reset").on("click", reset);
+
+        $(window).bind("beforeunload", function () {
+            return hasChanges() ? "Your changes will be lost. Continue?" : undefined;
+        });
     }
 
     initialize();

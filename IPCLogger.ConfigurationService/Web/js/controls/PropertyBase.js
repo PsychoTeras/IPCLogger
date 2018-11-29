@@ -48,6 +48,11 @@
         me.value(me.OrigValue);
     };
 
+    UI.PropertyBase.prototype.isChanged = function () {
+        var me = this;
+        return me.value() !== me.OrigValue;
+    };
+
     UI.PropertyBase.prototype.getPropertyObject = function() {
         var me = this;
         var name = me.name();

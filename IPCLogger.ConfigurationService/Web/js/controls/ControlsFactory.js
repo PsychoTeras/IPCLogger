@@ -2,10 +2,7 @@
 
     var dictUIControls;
 
-    UI.ControlsFactory = function () {
-    };
-
-    UI.ControlsFactory.prototype.initializeControls = function (selector) {
+    UI.ControlsFactory = function (selector) {
         var result = [];
 
         $.each($(selector),
