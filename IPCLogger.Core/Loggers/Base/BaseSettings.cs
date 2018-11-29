@@ -360,6 +360,13 @@ namespace IPCLogger.Core.Loggers.Base
                 return t.IsValueType ? Activator.CreateInstance(t) : null;
             }
 
+            object ConvertValue(string value, Type type)
+            {
+                return type.IsEnum
+                    ? Enum.Parse(type, value)
+                    : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+            }
+
             errorMessage = string.Format(ValidationErrorMessage, propertyName);
 
             try
@@ -373,7 +380,7 @@ namespace IPCLogger.Core.Loggers.Base
 
                     object value = data.Item2 != null
                         ? data.Item2.ConvertValue(sValue)
-                        : Convert.ChangeType(sValue, data.Item1.PropertyType, CultureInfo.InvariantCulture);
+                        : ConvertValue(sValue, data.Item1.PropertyType);
                     return value != null && (!data.Item3 || !value.Equals(Default(data.Item1.PropertyType)));
                 }
             }
