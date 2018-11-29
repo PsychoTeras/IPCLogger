@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
-    public class ModuleValidation : NancyModule
+    public class ModuleSettings : NancyModule
     {
         private CoreService CoreService
         {
@@ -18,7 +18,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
             set { Context.Request.Session["CoreService"] = value; }
         }
 
-        public ModuleValidation()
+        public ModuleSettings()
         {
             CoreService LoadCoreService(int applicationId, ApplicationModel applicationModel = null)
             {
@@ -33,9 +33,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 return coreService;
             }
 
-            Post["/validate/properties"] = x =>
+            Post["/settings/save"] = x =>
             {
                 //this.RequiresAuthentication();
+
                 string jsonPropertyObjs = Request.Body.AsString();
                 if (string.IsNullOrEmpty(jsonPropertyObjs))
                 {
@@ -60,6 +61,10 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 CoreService coreService = LoadCoreService(applicationId);
                 DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
                 InvalidPropertyValueDTO[] validationResult = loggerModel.ValidateProperties(propertyObjs);
+                if (!validationResult.Any())
+                {
+
+                }
                 return Response.AsJson(validationResult);
             };
         }

@@ -23,8 +23,8 @@
         return null;
     };
 
-    UI.PropertyBase.prototype.afterChangeControlType = function ($control) {
-        return $control;
+    UI.PropertyBase.prototype.afterChangeType = function ($element) {
+        return $element;
     };
 
     UI.PropertyBase.prototype.populateValues = function () {
@@ -32,15 +32,15 @@
 
     UI.PropertyBase.prototype.name = function () {
         var me = this;
-        return me.Control.attr("name");
+        return me.Element.attr("name");
     };
 
     UI.PropertyBase.prototype.value = function (val) {
         var me = this;
         if (val || val === "" || val === 0) {
-            me.Control.val(val).change();
+            me.Element.val(val).change();
         }
-        return me.Control.val();
+        return me.Element.val();
     };
 
     UI.PropertyBase.prototype.resetValue = function () {
@@ -65,12 +65,12 @@
 
     UI.PropertyBase.prototype.setValidity = function (valid, errorMessage) {
         var me = this;
-        var $invalidFeedback = me.VisibleControl.next(".invalid-feedback");
+        var $invalidFeedback = me.VisibleElement.next(".invalid-feedback");
         if (valid === true) {
-            me.VisibleControl.removeAttr("invalid");
+            me.VisibleElement.removeAttr("invalid");
             $invalidFeedback.text("").removeClass("visible");
         } else if (valid === false) {
-            me.VisibleControl.attr("invalid", "");
+            me.VisibleElement.attr("invalid", "");
             if (errorMessage) {
                 $invalidFeedback.text(errorMessage).addClass("visible");
             }
@@ -79,43 +79,43 @@
         }
     };
 
-    UI.PropertyBase.prototype.initialize = function ($control) {
+    UI.PropertyBase.prototype.initialize = function ($element) {
 
-        function changeControlType($control, nodeType, controlType) {
+        function changeType($element, nodeType, controlType) {
             if (!nodeType) {
-                return $control;
+                return $element;
             }
 
             var attrs = {};
-            $.each($control[0].attributes, function (_, attr) {
+            $.each($element[0].attributes, function (_, attr) {
                 attrs[attr.nodeName] = attr.nodeValue;
             });
             if (controlType) {
                 attrs["type"] = controlType;
             }
-            var $controlParent = $control.parent();
-            $control.replaceWith(function () {
-                return $("<" + nodeType + "/>", attrs).append($control.contents());
+            var $parentElement = $element.parent();
+            $element.replaceWith(function () {
+                return $("<" + nodeType + "/>", attrs).append($element.contents());
             });
 
-            return $controlParent.children(nodeType);
+            return $parentElement.children(nodeType);
         }
 
         var me = this;
         var nodeType = me.getNodeType();
         var controlType = me.getControlType();
 
-        me.Control = $control = changeControlType($control, nodeType, controlType);
+        me.Element = $element = changeType($element, nodeType, controlType);
 
-        me.VisibleControl = me.afterChangeControlType($control) || $control;
+        me.VisibleElement = me.afterChangeType($element) || $element;
 
-        var $values = $control.attr("values");
+        var $values = $element.attr("values");
         if ($values) {
             var values = CSVToArray($values);
             if (values.length) {
-                me.populateValues($control, values[0]);
+                me.populateValues($element, values[0]);
             }
-            $control.removeAttr("values");
+            $element.removeAttr("values");
         }
 
         me.OrigValue = me.value();

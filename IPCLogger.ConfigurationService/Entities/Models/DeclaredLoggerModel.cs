@@ -7,13 +7,6 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class DeclaredLoggerModel : LoggerModel
     {
-        public List<KeyValuePair<PropertyModel, object>> ChangedValues { get; }
-
-        public DeclaredLoggerModel()
-        {
-            ChangedValues = new List<KeyValuePair<PropertyModel, object>>();
-        }
-
         private void SetLoggerType(IEnumerable<Type> availableLoggers)
         {
             Type = availableLoggers.FirstOrDefault

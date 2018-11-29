@@ -1,6 +1,6 @@
 ﻿(function () {
 
-    var controls;
+    var dictControls;
 
     function getApplicationId() {
         return $("#application-id").val();
@@ -12,9 +12,9 @@
 
     function hasChanges() {
         var result = false;
-        $.each(controls,
-            function(_, control) {
-                result = control.uiControl.isChanged();
+        $.each(dictControls,
+            function(_, item) {
+                result = item.control.isChanged();
                 return !result;
             });
         return result;
@@ -22,16 +22,18 @@
 
     function getPropertyObjs() {
         var propertyObjs = [];
-        $.each(controls,
-            function (_, control) {
+        $.each(dictControls,
+            function (_, item) {
 
-                var uiControl = control.uiControl;
-                var propertyObj = uiControl.getPropertyObject();
-                if (!propertyObj) {
-                    throw "PropertyObject is undefined, control " + uiControl.name();
+                var control = item.control;
+                if (control.isChanged()) {
+                    var propertyObj = control.getPropertyObject();
+                    if (!propertyObj) {
+                        throw "PropertyObject is undefined, control " + control.name();
+                    }
+
+                    propertyObjs.push(propertyObj);
                 }
-
-                propertyObjs.push(propertyObj);
             });
         return propertyObjs;
     }
@@ -39,55 +41,59 @@
     function highlightValidationErroredControls(failedProps) {
         $.each(failedProps,
             function(_, p) {
-                var uiControl = $.grep(controls, function(c) { return c.name === p.propertyName; })[0].uiControl;
-                uiControl.setValidity(false, p.errorMessage);
+                var control = $.grep(dictControls, function(c) { return c.name === p.propertyName; })[0].control;
+                control.setValidity(false, p.errorMessage);
             });
     }
 
-    function processValidationResult(failedProps, propertyObjs) {
+    function processSaveResult(failedProps) {
         if (failedProps) {
             highlightValidationErroredControls(failedProps);
         } else {
-            savePropertyObjs(propertyObjs);
+            cancel(true);
         }
     }
 
     function savePropertyObjs(propertyObjs) {
-    }
-
-    function validatePropertyObjs(propertyObjs) {
         var applicationId = getApplicationId();
         var loggerId = getLoggerId();
-        LoggerSettingsController.validate(applicationId, loggerId, propertyObjs, processValidationResult);
+        LoggerSettingsController.save(applicationId, loggerId, propertyObjs, processSaveResult);
     }
 
     function prepareForSave() {
-        $.each(controls,
-            function(_, control) {
-                control.uiControl.setValidity(true);
+        $.each(dictControls,
+            function (_, item) {
+                item.control.setValidity(true);
             });
     }
 
     function save() {
         prepareForSave();
         var propertyObjs = getPropertyObjs();
-        validatePropertyObjs(propertyObjs);
+        if (propertyObjs.length) {
+            savePropertyObjs(propertyObjs);
+        } else {
+            cancel(true);
+        }
     }
 
-    function cancel() {
+    function cancel(force) {
+        if (force) {
+            window.onbeforeunload = undefined;
+        }
         var applicationId = getApplicationId();
         ApplicationController.manageApplication(applicationId);
     }
 
     function reset() {
-        $.each(controls,
-            function (_, control) {
-                control.uiControl.resetValue();
+        $.each(dictControls,
+            function (_, item) {
+                item.control.resetValue();
             });
     }
 
     function initialize() {
-        controls = new UI.ControlsFactory("#form-logger-settings div.form-control");
+        dictControls = new UI.ControlsFactory("#form-logger-settings div.form-control");
 
         $("#p-save-cancel #btn-save").on("click", save);
         $("#p-save-cancel #btn-cancel").on("click", cancel);

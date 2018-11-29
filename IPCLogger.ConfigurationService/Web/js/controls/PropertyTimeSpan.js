@@ -20,8 +20,8 @@
         return "text";
     };
 
-    UI.PropertyTimeSpan.prototype.afterChangeControlType = function ($control) {
-        return $control.durationPicker().next();
+    UI.PropertyTimeSpan.prototype.afterChangeType = function ($element) {
+        return $element.durationPicker().next();
     };
 
 })(window.UI = window.UI || {});

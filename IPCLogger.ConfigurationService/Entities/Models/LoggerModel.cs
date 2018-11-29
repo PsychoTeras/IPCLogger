@@ -1,10 +1,10 @@
-﻿using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.ConfigurationService.Entities.DTO;
+using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
-using IPCLogger.ConfigurationService.Entities.DTO;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {

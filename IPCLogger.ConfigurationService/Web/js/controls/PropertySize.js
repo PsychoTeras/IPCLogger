@@ -20,8 +20,8 @@
         return "text";
     };
 
-    UI.PropertySize.prototype.afterChangeControlType = function ($control) {
-        return $control.sizePicker().next();
+    UI.PropertySize.prototype.afterChangeType = function ($element) {
+        return $element.sizePicker().next();
     };
 
 })(window.UI = window.UI || {});

@@ -1,21 +1,21 @@
 ﻿(function (UI) {
 
-    var dictUIControls;
+    var dictControls;
 
     UI.ControlsFactory = function (selector) {
         var result = [];
 
         $.each($(selector),
-            function (_, control) {
-                $.each(control.classList, function (_, className) {
+            function (_, element) {
+                $.each(element.classList, function (_, className) {
 
-                    var value = dictUIControls[className];
+                    var value = dictControls[className];
                     if (!value) return true;
 
-                    var uiControl = Object.create(value.prototype);
-                    uiControl.initialize($(control));
+                    var control = Object.create(value.prototype);
+                    control.initialize($(element));
 
-                    result.push({ name: control.getAttribute("name"), uiControl: uiControl });
+                    result.push({ name: element.getAttribute("name"), control: control });
 
                     return true;
                 });
@@ -27,14 +27,14 @@
     };
 
     function initialize() {
-        dictUIControls = {};
+        dictControls = {};
 
         for (var prop in UI) {
             if (!UI.hasOwnProperty(prop)) continue;
 
             var value = UI[prop];
             if (UI.PropertyBase.prototype.isPrototypeOf(value.prototype)) {
-                dictUIControls[value.prototype.getPropertyType()] = value;
+                dictControls[value.prototype.getPropertyType()] = value;
             }
         }
     }

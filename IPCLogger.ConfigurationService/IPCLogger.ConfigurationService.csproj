@@ -135,7 +135,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\modules\common\RequestStartupCommon.cs" />
-    <Compile Include="Web\modules\ModuleValidation.cs" />
+    <Compile Include="Web\modules\ModuleSettings.cs" />
     <Compile Include="Web\SelfHosted.cs" />
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

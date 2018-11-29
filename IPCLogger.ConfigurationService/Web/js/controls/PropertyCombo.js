@@ -1,7 +1,7 @@
 ﻿(function (UI) {
 
     UI.PropertyCombo = function () {
-        var me = this;
+        var me = this;  
         UI.PropertyBase.call(me);
     };
 
@@ -16,25 +16,24 @@
         return "select";
     };
 
-    UI.PropertyCombo.prototype.afterChangeControlType = function ($control) {
-        $control.addClass("custom-select");
+    UI.PropertyCombo.prototype.afterChangeType = function ($element) {
+        $element.addClass("custom-select");
     };
 
-    UI.PropertyCombo.prototype.populateValues = function ($control, values) {
-        $control.append(new Option("", ""));
+    UI.PropertyCombo.prototype.populateValues = function ($element, values) {
         $.each(values, function (_, value) {
-            $control.append(new Option(value, value));
+            $element.append(new Option(value, value));
             return true;
         });
-        $control.val($control.attr("value"));
+        $element.val($element.attr("value"));
     };
 
     UI.PropertyCombo.prototype.value = function (val) {
         var me = this;
         if (val) {
-            me.Control.val(val);
+            me.Element.val(val);
         }
-        return me.Control.val();
+        return me.Element.val();
     };
 
 })(window.UI = window.UI || {});
