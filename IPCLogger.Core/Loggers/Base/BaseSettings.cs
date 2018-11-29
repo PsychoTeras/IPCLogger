@@ -373,9 +373,9 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 if (_properties.TryGetValue(propertyName, out var data))
                 {
-                    if (data.Item3 && string.IsNullOrWhiteSpace(sValue))
+                    if (string.IsNullOrWhiteSpace(sValue))
                     {
-                        return false;
+                        return !data.Item3;
                     }
 
                     object value = data.Item2 != null
