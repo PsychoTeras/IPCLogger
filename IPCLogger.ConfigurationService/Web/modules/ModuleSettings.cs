@@ -11,6 +11,8 @@ using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
+    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
+
     public class ModuleSettings : NancyModule
     {
         private CoreService CoreService
@@ -71,7 +73,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     if (!invalidProperties.Any())
                     {
                         loggerModel.UpdateSettings(validationResult, propertyObjs);
-                        coreService.SaveConfiguration();
+                        //coreService.SaveConfiguration();
                     }
                     return Response.AsJson(invalidProperties);
                 }

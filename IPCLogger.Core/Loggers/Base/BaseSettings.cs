@@ -18,6 +18,37 @@ namespace IPCLogger.Core.Loggers.Base
     public abstract class BaseSettings
     {
 
+#region Definitions
+
+        protected internal struct PropertyValidationResult
+        {
+            public string Name;
+            public object Value;
+            public bool IsValid;
+            public string ErrorMessage;
+
+            public static PropertyValidationResult Valid(string name, object value)
+            {
+                return new PropertyValidationResult
+                {
+                    Name = name,
+                    Value = value,
+                    IsValid = true
+                };
+            }
+
+            public static PropertyValidationResult Invalid(string name, string errorMessage)
+            {
+                return new PropertyValidationResult
+                {
+                    Name = name,
+                    ErrorMessage = errorMessage
+                };
+            }
+        }
+
+#endregion
+
 #region Constants
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
@@ -338,24 +369,23 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Configuration Service
 
-
-        internal virtual IEnumerable<PropertyData> GetProperties()
+        protected internal virtual IEnumerable<PropertyData> GetProperties()
         {
             return _properties.Values;
         }
 
-        internal virtual string GetPropertyValue(PropertyInfo property)
+        protected internal virtual string GetPropertyValue(PropertyInfo property)
         {
             return property.GetValue(this, null)?.ToString() ?? string.Empty;
         }
 
-        internal virtual string GetPropertyValues(PropertyInfo property)
+        protected internal virtual string GetPropertyValues(PropertyInfo property)
         {
             Type type = property.PropertyType;
             return type.IsEnum ? Enum.GetNames(type).Aggregate((current, next) => current + "," + next) : null;
         }
 
-        internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue)
+        protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue)
         {
             object Default(Type t)
             {
@@ -394,7 +424,7 @@ namespace IPCLogger.Core.Loggers.Base
             throw new Exception($"Invalid property name '{propertyName}'");
         }
 
-        internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value)
+        protected internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value)
         {
             if (_properties.TryGetValue(propertyName, out var data))
             {
@@ -438,33 +468,6 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-    }
-
-    internal struct PropertyValidationResult
-    {
-        public string Name;
-        public object Value;
-        public bool IsValid;
-        public string ErrorMessage;
-
-        public static PropertyValidationResult Valid(string name, object value)
-        {
-            return new PropertyValidationResult
-            {
-                Name = name,
-                Value = value,
-                IsValid = true
-            };
-        }
-
-        public static PropertyValidationResult Invalid(string name, string errorMessage)
-        {
-            return new PropertyValidationResult
-            {
-                Name = name,
-                ErrorMessage = errorMessage
-            };
-        }
     }
 
     // ReSharper restore PossibleNullReferenceException
