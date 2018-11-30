@@ -1,5 +1,4 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
@@ -18,8 +17,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Properties
 
-        public string ConfigurationFile { get; set; }
-
         public XmlDocument ConfigurationXml { get; set; }
 
         public LFactorySettings FactorySettings { get; set; }
@@ -36,7 +33,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             LoadConfiguration(configurationFile);
             ReadLoggers(configurationFile);
-            ConfigurationFile = configurationFile;
         }
 
 #endregion
@@ -64,7 +60,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public void SaveConfiguration()
         {
-            ConfigurationXml.Save(ConfigurationFile);
+            ConfigurationXml.Save(new Uri(ConfigurationXml.BaseURI).LocalPath);
         }
 
 #endregion
@@ -94,15 +90,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             ReadAvailableLoggers(configurationFile);
             ReadDeclaredLoggers(configurationFile);
-        }
-
-#endregion
-
-#region Application methods
-
-        public BaseSettings ReadLoggerSettings(LoggerModel loggerModel)
-        {
-            return null;
         }
 
 #endregion

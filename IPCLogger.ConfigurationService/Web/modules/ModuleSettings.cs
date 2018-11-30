@@ -2,6 +2,7 @@
 using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Core.Loggers.Base;
 using Nancy;
 using Nancy.Extensions;
 using Newtonsoft.Json;
@@ -58,14 +59,26 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     return null;
                 }
 
-                CoreService coreService = LoadCoreService(applicationId);
-                DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
-                InvalidPropertyValueDTO[] validationResult = loggerModel.ValidateProperties(propertyObjs);
-                if (!validationResult.Any())
+                try
                 {
-
+                    CoreService coreService = LoadCoreService(applicationId);
+                    DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
+                    PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
+                    InvalidPropertyValueDTO[] invalidProperties = validationResult.
+                        Where(r => !r.IsValid).
+                        Select(r => new InvalidPropertyValueDTO(r.Name, r.ErrorMessage)).
+                        ToArray();
+                    if (!invalidProperties.Any())
+                    {
+                        loggerModel.UpdateSettings(validationResult, propertyObjs);
+                        coreService.SaveConfiguration();
+                    }
+                    return Response.AsJson(invalidProperties);
                 }
-                return Response.AsJson(validationResult);
+                catch (Exception ex)
+                {
+                    return ex;
+                }
             };
         }
     }

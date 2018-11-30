@@ -22,9 +22,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public PropertyModel[] Properties { get; private set; }
 
+        public XmlNode RootXmlNode { get; private set; }
+
         protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
         {
-            cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
+            RootXmlNode = cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
             Type bsType = ((TypeInfo) Type).ImplementedInterfaces
                 .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
                 .First(i => i != null);
@@ -36,7 +38,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         protected void InitializeSettings(XmlNode cfgNode = null)
         {
             _baseSettings = InstLoggerSettings(cfgNode);
-            Id = BaseHelpers.CalculateMD5(_baseSettings.GetHash());
+            Id = BaseHelpers.CalculateMD5(_baseSettings.Hash);
             Properties = _baseSettings.GetProperties().Select
             (
                 p => new PropertyModel
@@ -70,12 +72,21 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return model;
         }
 
-        public InvalidPropertyValueDTO[] ValidateProperties(PropertyObjectDTO[] properties)
+        internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
         {
-            return properties.Select(p =>
-                !_baseSettings.ValidatePropertyValue(p.Name, p.Value, out var errorMessage)
-                    ? new InvalidPropertyValueDTO(p.Name, errorMessage)
-                    : null).Where(p => p != null).ToArray();
+            return properties.
+                Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value)).
+                ToArray();
+        }
+
+        internal void UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
+        {
+            foreach (PropertyValidationResult result in validationResult)
+            {
+                _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value);
+                string newValue = propertyObjs.First(p => p.Name == result.Name).Value;
+                Properties.First(p => p.Name == result.Name).UpdateValue(newValue);
+            }
         }
 
         public override string ToString()

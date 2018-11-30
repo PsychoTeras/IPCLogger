@@ -36,12 +36,6 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-#region Protected fields
-
-        protected byte[] SettingsHash;
-
-#endregion
-
 #region Internal fields
 
         internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
@@ -52,6 +46,9 @@ namespace IPCLogger.Core.Loggers.Base
 
         [NonSetting]
         public string Name { get; set; }
+
+        [NonSetting]
+        public byte[] Hash { get; private set; }
 
         [NonSetting]
         public HashSet<string> AllowEvents
@@ -134,7 +131,7 @@ namespace IPCLogger.Core.Loggers.Base
         public virtual void Setup(XmlNode cfgNode)
         {
             byte[] newHash = CalculateHash(cfgNode);
-            if (newHash != null && !Helpers.ByteArrayEquals(newHash, SettingsHash)) //Setup if changed
+            if (newHash != null && !Helpers.ByteArrayEquals(newHash, Hash)) //Setup if changed
             {
                 BeginSetup();
 
@@ -316,7 +313,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void RecalculateHash(XmlNode cfgNode)
         {
-            SettingsHash = CalculateHash(cfgNode);
+            Hash = CalculateHash(cfgNode);
         }
 
         protected virtual void FinalizeSetup() { }
@@ -337,6 +334,11 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
+#endregion
+
+#region Configuration Service
+
+
         internal virtual IEnumerable<PropertyData> GetProperties()
         {
             return _properties.Values;
@@ -353,7 +355,7 @@ namespace IPCLogger.Core.Loggers.Base
             return type.IsEnum ? Enum.GetNames(type).Aggregate((current, next) => current + "," + next) : null;
         }
 
-        internal virtual bool ValidatePropertyValue(string propertyName, string sValue, out string errorMessage)
+        internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue)
         {
             object Default(Type t)
             {
@@ -367,34 +369,41 @@ namespace IPCLogger.Core.Loggers.Base
                     : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
             }
 
-            errorMessage = string.Format(ValidationErrorMessage, propertyName);
-
             try
             {
-                PropertyData data;
-                if (_properties.TryGetValue(propertyName, out data))
+                if (_properties.TryGetValue(propertyName, out var data))
                 {
-                    if (string.IsNullOrWhiteSpace(sValue))
-                    {
-                        return !data.Item3;
-                    }
-
                     object value = data.Item2 != null
                         ? data.Item2.ConvertValue(sValue)
                         : ConvertValue(sValue, data.Item1.PropertyType);
-                    return value != null && (!data.Item3 || !value.Equals(Default(data.Item1.PropertyType)));
+
+                    if (value == null || data.Item3 && value.Equals(Default(data.Item1.PropertyType)))
+                    {
+                        string errorMessage = string.Format(ValidationErrorMessage, propertyName);
+                        return PropertyValidationResult.Invalid(propertyName, errorMessage);
+                    }
+
+                    return PropertyValidationResult.Valid(propertyName, value);
                 }
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
+                return PropertyValidationResult.Invalid(propertyName, ex.Message);
             }
-            return false;
+
+            throw new Exception($"Invalid property name '{propertyName}'");
         }
 
-        internal byte[] GetHash()
+        internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value)
         {
-            return SettingsHash;
+            if (_properties.TryGetValue(propertyName, out var data))
+            {
+                data.Item1.SetValue(this, value, null);
+                string formattedValue = data.Item2 != null
+                    ? data.Item2.UnconvertValue(value)
+                    : value.ToString();
+                SetCfgNodeValue(cfgNode, propertyName, formattedValue);
+            }
         }
 
 #endregion
@@ -429,6 +438,33 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
+    }
+
+    internal struct PropertyValidationResult
+    {
+        public string Name;
+        public object Value;
+        public bool IsValid;
+        public string ErrorMessage;
+
+        public static PropertyValidationResult Valid(string name, object value)
+        {
+            return new PropertyValidationResult
+            {
+                Name = name,
+                Value = value,
+                IsValid = true
+            };
+        }
+
+        public static PropertyValidationResult Invalid(string name, string errorMessage)
+        {
+            return new PropertyValidationResult
+            {
+                Name = name,
+                ErrorMessage = errorMessage
+            };
+        }
     }
 
     // ReSharper restore PossibleNullReferenceException

@@ -26,6 +26,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             IsRequired = isRequired;
         }
 
+        public void UpdateValue(string newValue)
+        {
+            Value = newValue;
+        }
+
         public override string ToString()
         {
             return $"{Name} [{Type.Name}] = {Value ?? "NULL"}";
