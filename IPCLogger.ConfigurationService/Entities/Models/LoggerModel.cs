@@ -89,9 +89,6 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 string newValue = propertyObjs.First(p => p.Name == result.Name).Value;
                 Properties.First(p => p.Name == result.Name).UpdateValue(newValue);
             }
-
-            XmlDocument xml = RootXmlNode.OwnerDocument;
-            xml?.Save(new Uri(xml.BaseURI).LocalPath);
         }
 
         public override string ToString()

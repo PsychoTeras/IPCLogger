@@ -78,6 +78,13 @@ namespace IPCLogger.Core.Loggers.LFactory
                 return loggers;
             }
 
+            return GetDeclaredLoggers(xmlCfg, includeDisabled);
+        }
+
+        internal static List<DeclaredLogger> GetDeclaredLoggers(XmlDocument xmlCfg, bool includeDisabled = false)
+        {
+            List<DeclaredLogger> loggers = new List<DeclaredLogger>();
+
             string loggersXPath = $"{RootLoggersCfgPath}/*";
             XmlNodeList cfgNodes = xmlCfg.SelectNodes(loggersXPath);
             foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())

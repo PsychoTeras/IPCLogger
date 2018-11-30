@@ -19,8 +19,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public XmlDocument ConfigurationXml { get; set; }
 
-        public LFactorySettings FactorySettings { get; set; }
-
         public List<LoggerModel> AvailableLoggers { get; set; }
 
         public List<DeclaredLoggerModel> DeclaredLoggers { get; set; }
@@ -51,11 +49,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
             //Load XML
             ConfigurationXml = new XmlDocument();
             ConfigurationXml.Load(configurationFile);
-
-            //Load factory settings
-            FactorySettings = new LFactorySettings(typeof(LFactory), null);
-            XmlNode cfgNode = FactorySettings.GetLoggerSettingsNode(ConfigurationXml);
-            FactorySettings.Setup(cfgNode);
         }
 
         public void SaveConfiguration()
@@ -80,7 +73,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
-                GetDeclaredLoggers(configurationFile, true).
+                GetDeclaredLoggers(ConfigurationXml, true).
                 Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
                 OrderBy(t => t.TypeName).
                 ToList();
