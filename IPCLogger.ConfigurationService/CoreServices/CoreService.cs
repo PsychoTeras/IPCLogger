@@ -11,10 +11,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
     internal class CoreService
     {
 
-#region Private fields
-
-#endregion
-
 #region Properties
 
         public XmlDocument ConfigurationXml { get; set; }
@@ -58,7 +54,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-#region Applications methods
+#region Application methods
 
         private void ReadAvailableLoggers(string configurationFile)
         {

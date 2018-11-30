@@ -123,7 +123,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             return new Dictionary<string, string>();
         }
 
-        public override void Save(XmlNode cfgNode)
+        protected override void Save(XmlNode cfgNode)
         {
             SetCfgAttributeValue(cfgNode, "no-lock", _noLock);
             SetCfgAttributeValue(cfgNode, "enabled", _enabled);

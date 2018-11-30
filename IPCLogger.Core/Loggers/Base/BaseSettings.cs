@@ -122,12 +122,7 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-#region Class methods
-
-        public void ApplyChanges()
-        {
-            _onApplyChanges?.Invoke();
-        }
+#region Public methods
 
         public virtual void Setup()
         {
@@ -184,6 +179,10 @@ namespace IPCLogger.Core.Loggers.Base
             }
         }
 
+#endregion
+
+#region Common protected methods
+
         protected virtual void BeginSetup() { }
 
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
@@ -196,27 +195,6 @@ namespace IPCLogger.Core.Loggers.Base
         {
             string loggerXPath = GetLoggerSettingsNodeName(loggerName);
             return xmlCfg.SelectSingleNode(loggerXPath);
-        }
-
-        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
-        {
-            set = null;
-            XmlAttribute aAllowEvents = cfgNode.Attributes[attributeName];
-            if (aAllowEvents != null)
-            {
-                string[] allowedEvents = aAllowEvents.InnerText.Split
-                    (
-                        new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries
-                    );
-                set = new HashSet<string>
-                    (
-                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty).Distinct()
-                    );
-                if (set.Count == 0)
-                {
-                    set = null;
-                }
-            }
         }
 
         protected virtual void ApplyCommonSettings(XmlNode cfgNode)
@@ -336,20 +314,9 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void VerifySettingsValues(Dictionary<string, object> valuesDict) { }
 
-        protected virtual byte[] CalculateHash(XmlNode cfgNode)
-        {
-            byte[] bXmlData = Encoding.ASCII.GetBytes(cfgNode.OuterXml);
-            return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
-        }
-
-        private void RecalculateHash(XmlNode cfgNode)
-        {
-            Hash = CalculateHash(cfgNode);
-        }
-
         protected virtual void FinalizeSetup() { }
 
-        public virtual void Save(XmlNode cfgNode)
+        protected virtual void Save(XmlNode cfgNode)
         {
             foreach (PropertyData item in _properties.Values)
             {
@@ -438,7 +405,47 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
+#region Private methods
+
+        private void ApplyChanges()
+        {
+            _onApplyChanges?.Invoke();
+        }
+
+        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
+        {
+            set = null;
+            XmlAttribute aAllowEvents = cfgNode.Attributes[attributeName];
+            if (aAllowEvents != null)
+            {
+                string[] allowedEvents = aAllowEvents.InnerText.Split
+                    (
+                        new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries
+                    );
+                set = new HashSet<string>
+                    (
+                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty).Distinct()
+                    );
+                if (set.Count == 0)
+                {
+                    set = null;
+                }
+            }
+        }
+        private void RecalculateHash(XmlNode cfgNode)
+        {
+            Hash = CalculateHash(cfgNode);
+        }
+
+#endregion
+
 #region Helpers
+
+        protected byte[] CalculateHash(XmlNode cfgNode)
+        {
+            byte[] bXmlData = Encoding.ASCII.GetBytes(cfgNode.OuterXml);
+            return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
+        }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
         {
