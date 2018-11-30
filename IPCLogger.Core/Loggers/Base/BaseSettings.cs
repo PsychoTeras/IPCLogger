@@ -110,7 +110,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
-                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exists";
+                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exist";
                 throw new ArgumentException(msg);
             }
 
@@ -371,7 +371,8 @@ namespace IPCLogger.Core.Loggers.Base
 
             try
             {
-                if (_properties.TryGetValue(propertyName, out var data))
+                PropertyData data;
+                if (_properties.TryGetValue(propertyName, out data))
                 {
                     if (string.IsNullOrWhiteSpace(sValue))
                     {
@@ -389,6 +390,11 @@ namespace IPCLogger.Core.Loggers.Base
                 errorMessage = ex.Message;
             }
             return false;
+        }
+
+        internal byte[] GetHash()
+        {
+            return SettingsHash;
         }
 
 #endregion

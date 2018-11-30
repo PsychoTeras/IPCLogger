@@ -10,7 +10,7 @@ namespace IPCLogger.ConfigurationService.Entities.DTO
 
         public string PasswordHash
         {
-            get => BaseHelpers.CreateMD5(Password);
+            get => BaseHelpers.CalculateMD5(Password);
         }
 
         public int RoleId { get; set; }

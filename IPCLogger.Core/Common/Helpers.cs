@@ -71,7 +71,8 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            if (long.TryParse(sBytes, out var value))
+            long value;
+            if (long.TryParse(sBytes, out value))
             {
                 return value;
             }
@@ -173,7 +174,8 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            if (TimeSpan.TryParse(sTime, out var timeSpan))
+            TimeSpan timeSpan;
+            if (TimeSpan.TryParse(sTime, out timeSpan))
             {
                 return timeSpan;
             }

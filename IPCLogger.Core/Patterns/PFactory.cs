@@ -174,7 +174,7 @@ get_generic_pattern:
         {
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
-                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exists";
+                string msg = $"Configuration file '{configurationFile}' is invalid or doesn't exist";
                 throw new ArgumentException(msg);
             }
 

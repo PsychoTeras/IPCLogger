@@ -79,12 +79,12 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 return View["index", pageModel];
             };
 
-            Get["/applications/{appid:int}/loggers/{lid:int}/settings"] = x =>
+            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
             {
                 //this.RequiresAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
-                int loggerId = ViewBag.loggerId = int.Parse(x.lid);
+                string loggerId = ViewBag.loggerId = x.lid;
 
                 CoreService coreService = LoadCoreService(applicationId);
                 DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);

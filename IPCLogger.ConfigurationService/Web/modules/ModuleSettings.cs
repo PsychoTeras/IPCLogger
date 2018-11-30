@@ -43,12 +43,12 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     return null;
                 }
 
-                int loggerId;
+                string loggerId;
                 int applicationId;
                 PropertyObjectDTO[] propertyObjs;
                 try
                 {
-                    loggerId = int.Parse(Request.Query["lid"]);
+                    loggerId = Request.Query["lid"];
                     applicationId = int.Parse(Request.Query["appid"]);
                     propertyObjs = JsonConvert.DeserializeObject<PropertyObjectDTO[]>(jsonPropertyObjs);
                     if (propertyObjs == null) throw new Exception();

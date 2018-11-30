@@ -1,20 +1,18 @@
 ﻿using IPCLogger.ConfigurationService.Entities.DTO;
+using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class LoggerModel
     {
-        private static int _refId;
-
         private BaseSettings _baseSettings;
 
-        public int Id { get; }
+        public string Id { get; protected set; }
 
         public Type Type { get; protected set; }
 
@@ -23,11 +21,6 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         public string Namespace { get; protected set; }
 
         public PropertyModel[] Properties { get; private set; }
-
-        public LoggerModel()
-        {
-            Id = Interlocked.Increment(ref _refId);
-        }
 
         protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
         {
@@ -40,9 +33,10 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return _baseSettings;
         }
 
-        protected void SetCSProperties(XmlNode cfgNode = null)
+        protected void InitializeSettings(XmlNode cfgNode = null)
         {
             _baseSettings = InstLoggerSettings(cfgNode);
+            Id = BaseHelpers.CalculateMD5(_baseSettings.GetHash());
             Properties = _baseSettings.GetProperties().Select
             (
                 p => new PropertyModel
@@ -72,7 +66,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             {
                 model.Namespace = loggerType.Namespace;
             }
-            model.SetCSProperties();
+            model.InitializeSettings();
             return model;
         }
 

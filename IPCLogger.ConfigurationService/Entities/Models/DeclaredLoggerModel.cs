@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
@@ -20,6 +21,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         internal static DeclaredLoggerModel FromLogger(LoggerModel source)
         {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
+            model.Id = source.Id; //BUG: ID needs to be generated
             model.TypeName = source.TypeName;
             model.Namespace = source.Namespace;
             model.Type = source.Type;
@@ -33,7 +35,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             model.TypeName = source.TypeName;
             model.Namespace = source.Namespace;
             model.SetLoggerType(availableLoggers);
-            model.SetCSProperties(source.CfgNode);
+            model.InitializeSettings(source.CfgNode);
             return model;
         }
     }
