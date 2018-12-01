@@ -432,6 +432,7 @@ namespace IPCLogger.Core.Loggers.Base
                 }
             }
         }
+
         private void RecalculateHash(XmlNode cfgNode)
         {
             Hash = CalculateHash(cfgNode);
