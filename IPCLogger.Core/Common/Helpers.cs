@@ -11,9 +11,9 @@ namespace IPCLogger.Core.Common
 {
     internal static class Helpers
     {
-        private const int ONE_GBYTE = 1073741824;
-        private const int ONE_MBYTE = 1048576;
-        private const int ONE_KBYTE = 1024;
+        private const long ONE_KBYTE = 1024;
+        private const long ONE_MBYTE = ONE_KBYTE * ONE_KBYTE;
+        private const long ONE_GBYTE = ONE_MBYTE * ONE_MBYTE;
 
         [DllImport("shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool PathFileExists(string path);
@@ -101,7 +101,7 @@ namespace IPCLogger.Core.Common
                     throw new Exception(msg);
                 }
 
-                int multiplier = 1;
+                long multiplier = 1;
                 string sUnit = match.Groups["UNIT"].Value.ToUpper();
                 if (sUnit != string.Empty)
                 {
@@ -135,34 +135,34 @@ namespace IPCLogger.Core.Common
             double sizeLeft = size;
             while (sizeLeft >= ONE_KBYTE)
             {
-                int value = 0;
+                long value = 0;
                 if (sizeLeft >= ONE_GBYTE)
                 {
-                    value = (int)Math.Floor(sizeLeft / ONE_GBYTE);
-                    sSize += $"{value} GB ";
+                    value = (long)Math.Floor(sizeLeft / ONE_GBYTE);
+                    sSize += $"{value}GB ";
                     sizeLeft -= value * ONE_GBYTE;
                 }
                 else if (sizeLeft >= ONE_MBYTE)
                 {
-                    value = (int)Math.Floor(sizeLeft / ONE_MBYTE);
-                    sSize += $"{value} MB ";
+                    value = (long)Math.Floor(sizeLeft / ONE_MBYTE);
+                    sSize += $"{value}MB ";
                     sizeLeft -= value * ONE_MBYTE;
                 }
                 else if (sizeLeft >= ONE_KBYTE)
                 {
-                    value = (int)Math.Floor(sizeLeft / ONE_KBYTE);
-                    sSize += $"{value} KB ";
+                    value = (long)Math.Floor(sizeLeft / ONE_KBYTE);
+                    sSize += $"{value}KB ";
                     sizeLeft -= value * ONE_KBYTE;
                 }
             }
 
             if (sSize == string.Empty)
             {
-                sSize = $"{sizeLeft} B";
+                sSize = $"{sizeLeft}B";
             }
             else if (Math.Abs(sizeLeft) > float.Epsilon)
             {
-                sSize += $"{sizeLeft} B";
+                sSize += $"{sizeLeft}B";
             }
 
             return sSize.TrimEnd();
@@ -279,7 +279,7 @@ namespace IPCLogger.Core.Common
             }
 
             StringSplitOptions sso = removeEmpty ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None;
-            string[] value = sValue.Split(new[] {separator}, sso);
+            string[] value = sValue.Split(new[] {separator}, sso).Select(s => s.Trim()).ToArray();
 
             object result = null;
 
@@ -305,6 +305,7 @@ namespace IPCLogger.Core.Common
 
         public static string StringListToString(IEnumerable<string> value, string separator)
         {
+            separator += " ";
             return value != null
                 ? value.Aggregate((current, next) => current + separator + next)
                 : null;

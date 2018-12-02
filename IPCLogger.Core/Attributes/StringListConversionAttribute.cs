@@ -17,12 +17,12 @@ namespace IPCLogger.Core.Attributes
             _separator = separator;
         }
 
-        public override object ConvertValue(string sValue)
+        public override object StringToValue(string sValue)
         {
             return Helpers.StringToStringList(_listType, sValue, _removeEmpty, _separator);
         }
 
-        public override string UnconvertValue(object value)
+        public override string ValueToString(object value)
         {
             return Helpers.StringListToString(value as IEnumerable<string>, _separator);
         }

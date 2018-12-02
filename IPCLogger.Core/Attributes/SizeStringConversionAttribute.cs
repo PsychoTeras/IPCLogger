@@ -4,14 +4,19 @@ namespace IPCLogger.Core.Attributes
 {
     public sealed class SizeStringConversionAttribute : CustomConversionAttribute
     {
-        public override object ConvertValue(string sValue)
+        public override object StringToValue(string sValue)
         {
             return Helpers.BytesStringToSize(sValue);
         }
 
-        public override string UnconvertValue(object value)
+        public override string ValueToString(object value)
         {
             return value is long size ? Helpers.SizeToBytesString(size) : string.Empty;
+        }
+
+        public override string ValueToCSString(object value)
+        {
+            return value?.ToString();
         }
     }
 }

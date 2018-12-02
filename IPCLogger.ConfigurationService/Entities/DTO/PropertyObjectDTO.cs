@@ -2,18 +2,13 @@
 {
     public class PropertyObjectDTO
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string  Value { get; }
+        public string  Value { get; set; }
 
-        public bool IsCommon { get; }
+        public bool IsCommon { get; set; }
 
-        public PropertyObjectDTO(string name, string value, bool isCommon)
-        {
-            Name = name;
-            Value = value;
-            IsCommon = isCommon;
-        }
+        public bool IsChanged { get; set; }
 
         public override string ToString()
         {

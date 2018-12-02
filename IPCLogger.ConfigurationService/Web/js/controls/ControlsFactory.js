@@ -16,7 +16,7 @@
                     control.initialize($(element));
 
                     var controlName = element.getAttribute("name");
-                    if (element.getAttribute("common") !== undefined) {
+                    if (element.getAttribute("common") !== null) {
                         controlName = "#" + controlName;
                     }
 

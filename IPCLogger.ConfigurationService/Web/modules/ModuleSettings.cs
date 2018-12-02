@@ -7,6 +7,7 @@ using Nancy;
 using Nancy.Extensions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
@@ -65,17 +66,16 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 {
                     CoreService coreService = LoadCoreService(applicationId);
                     DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
-                    PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
-                    InvalidPropertyValueDTO[] invalidProperties = validationResult.
+                    IEnumerable<PropertyValidationResult> validationResult = loggerModel.ValidateProperties(propertyObjs);
+                    IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
-                        Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage)).
-                        ToArray();
-                    if (!invalidProperties.Any())
+                        Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
+                    if (!invalidProperties.Any() && loggerModel.UpdateSettings(validationResult, propertyObjs))
                     {
-                        loggerModel.UpdateSettings(validationResult, propertyObjs);
                         coreService.SaveConfiguration();
                     }
-                    return Response.AsJson(invalidProperties);
+
+                    return Response.AsJson(invalidProperties.ToArray());
                 }
                 catch (Exception ex)
                 {

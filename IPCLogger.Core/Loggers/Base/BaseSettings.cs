@@ -28,23 +28,23 @@ namespace IPCLogger.Core.Loggers.Base
             public bool IsValid;
             public string ErrorMessage;
 
-            public static PropertyValidationResult Valid(string name, object value, bool isCommonProperty)
+            public static PropertyValidationResult Valid(string name, object value, bool isCommon)
             {
                 return new PropertyValidationResult
                 {
                     Name = name,
                     Value = value,
-                    IsCommon = isCommonProperty,
+                    IsCommon = isCommon,
                     IsValid = true
                 };
             }
 
-            public static PropertyValidationResult Invalid(string name, bool isCommonProperty, string errorMessage)
+            public static PropertyValidationResult Invalid(string name, bool isCommon, string errorMessage)
             {
                 return new PropertyValidationResult
                 {
                     Name = name,
-                    IsCommon = isCommonProperty,
+                    IsCommon = isCommon,
                     ErrorMessage = errorMessage
                 };
             }
@@ -295,7 +295,7 @@ namespace IPCLogger.Core.Loggers.Base
                     string sValue = setting.Value.Trim();
                     if (item.Item2 != null)
                     {
-                        value = item.Item2.ConvertValue(sValue);
+                        value = item.Item2.StringToValue(sValue);
                     }
                     else
                     {
@@ -358,7 +358,7 @@ namespace IPCLogger.Core.Loggers.Base
 
                 if (item.Item2 != null)
                 {
-                    value = item.Item2.UnconvertValue(value);
+                    value = item.Item2.ValueToString(value);
                 }
 
                 SetCfgNodeValue(cfgNode, property.Name, value);
@@ -382,7 +382,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected internal virtual string GetPropertyValue(PropertyInfo property, CustomConversionAttribute converter)
         {
             return converter != null
-                ? converter.UnconvertValue(property.GetValue(this, null)) ?? string.Empty
+                ? converter.ValueToCSString(property.GetValue(this, null)) ?? string.Empty
                 : property.GetValue(this, null)?.ToString() ?? string.Empty;
         }
 
@@ -393,7 +393,7 @@ namespace IPCLogger.Core.Loggers.Base
         }
 
         protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,
-            bool isCommonProperty)
+            bool isCommon, bool isChanged)
         {
             object ConvertValue(string value, Type type)
             {
@@ -410,37 +410,37 @@ namespace IPCLogger.Core.Loggers.Base
 
             try
             {
-                Dictionary<string, PropertyData> dictProps = isCommonProperty
+                Dictionary<string, PropertyData> dictProps = isCommon
                     ? _commonProperties
                     : _properties;
 
                 if (dictProps.TryGetValue(propertyName, out var data))
                 {
                     object value = data.Item2 != null
-                        ? data.Item2.ConvertValue(sValue)
+                        ? data.Item2.StringToValue(sValue)
                         : ConvertValue(sValue, data.Item1.PropertyType);
 
                     if (value == null || data.Item3 && IsDefaultValue(value, data.Item1.PropertyType))
                     {
                         string errorMessage = string.Format(ValidationErrorMessage, propertyName);
-                        return PropertyValidationResult.Invalid(propertyName, isCommonProperty, errorMessage);
+                        return PropertyValidationResult.Invalid(propertyName, isCommon, errorMessage);
                     }
 
-                    return PropertyValidationResult.Valid(propertyName, value, isCommonProperty);
+                    return PropertyValidationResult.Valid(propertyName, value, isCommon);
                 }
             }
             catch (Exception ex)
             {
-                return PropertyValidationResult.Invalid(propertyName, isCommonProperty, ex.Message);
+                return PropertyValidationResult.Invalid(propertyName, isCommon, ex.Message);
             }
 
             throw new Exception($"Invalid property name '{propertyName}'");
         }
 
         protected internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value,
-            bool isCommonProperty)
+            bool isCommon)
         {
-            Dictionary<string, PropertyData> dictProps = isCommonProperty
+            Dictionary<string, PropertyData> dictProps = isCommon
                 ? _commonProperties
                 : _properties;
 
@@ -448,9 +448,9 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 data.Item1.SetValue(this, value, null);
                 string formattedValue = data.Item2 != null
-                    ? data.Item2.UnconvertValue(value)
+                    ? data.Item2.ValueToString(value)
                     : value.ToString();
-                if (isCommonProperty)
+                if (isCommon)
                 {
                     string attrName = CommonPropertiesSet[propertyName];
                     SetCfgAttributeValue(cfgNode, attrName, formattedValue);

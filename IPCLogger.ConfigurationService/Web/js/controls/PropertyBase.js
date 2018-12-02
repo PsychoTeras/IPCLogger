@@ -72,10 +72,12 @@
         var name = me.Element.attr("name");
         var value = me.value();
         var isCommon = me.isCommon();
+        var isChanged = me.isChanged();
         return {
             name: name,
             value: value,
-            isCommon: isCommon
+            isCommon: isCommon,
+            isChanged: isChanged
         };
     };
 

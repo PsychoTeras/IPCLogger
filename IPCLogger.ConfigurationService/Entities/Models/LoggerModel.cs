@@ -51,7 +51,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         protected void InitializeSettings(XmlNode cfgNode = null)
         {
-            PropertyModel PropertyDataToModel(PropertyData data, bool isCommonProperty)
+            PropertyModel PropertyDataToModel(PropertyData data, bool isCommon)
             {
                 return new PropertyModel
                 (
@@ -60,7 +60,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                     data.Item2?.GetType(),
                     _baseSettings.GetPropertyValue(data.Item1, data.Item2),
                     _baseSettings.GetPropertyValues(data.Item1),
-                    isCommonProperty,
+                    isCommon,
                     data.Item3
                 );
             }
@@ -94,21 +94,26 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return model;
         }
 
-        internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
+        internal IEnumerable<PropertyValidationResult> ValidateProperties(PropertyObjectDTO[] properties)
         {
-            return properties.
-                Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon)).
-                ToArray();
+            return properties.Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged));
         }
 
-        internal void UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
+        internal bool UpdateSettings(IEnumerable<PropertyValidationResult> validationResult, PropertyObjectDTO[] propertyObjs)
         {
+            bool wereUpdated = false;
             foreach (PropertyValidationResult result in validationResult)
             {
-                _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
-                string newValue = propertyObjs.First(p => p.Name == result.Name).Value;
-                _properties.First(p => p.Name == result.Name && p.IsCommon == result.IsCommon).UpdateValue(newValue);
+                PropertyObjectDTO dtoPropObj = propertyObjs.First(p => p.Name == result.Name);
+                if (dtoPropObj.IsChanged)
+                {
+                    _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
+                    _properties.First(p => p.Name == result.Name && p.IsCommon == result.IsCommon).UpdateValue(dtoPropObj.Value);
+                    wereUpdated = true;
+                }
             }
+
+            return wereUpdated;
         }
 
         public override string ToString()
