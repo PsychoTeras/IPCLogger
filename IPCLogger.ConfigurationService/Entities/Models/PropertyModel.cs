@@ -5,7 +5,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class PropertyModel
     {
-        private static readonly Regex _regexMakeDisplayName = new Regex(@"(?<WORD>(^|[A-Z]|_)([a-z\d]+?)+)");
+        private static readonly Regex _regexMakeDisplayName = new Regex(@"(?<WORD>(^|[A-Z]|_)+(([a-z]|\d|$)+))");
 
         public string Name { get; private set; }
 
