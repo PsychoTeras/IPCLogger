@@ -7,7 +7,6 @@
     };
 
     UI.TableList.TABLE_CLASSES = "table-hover";
-    UI.TableList.DIV_ACTIONS = "div-actions";
     UI.TableList.CELL_ACTIONS = "cell-actions";
 
     UI.TableList.prototype.initialize = function() {
@@ -16,31 +15,22 @@
 
         me.Table.addClass(vars.TABLE_CLASSES);
 
-        $.each(me.Table.find("tbody>tr #" + vars.CELL_ACTIONS), function () {
-            var cell = this;
-            var $div = $("<div/>").
-                addClass(vars.DIV_ACTIONS).
-                prepend(cell.children);
-            $(cell).append($div);
-            return true;
-        });
-
         me.Table.find("tbody>tr").mouseover(function () {
-            $(this).find("." + vars.DIV_ACTIONS).addClass("mouseover");
+            $(this).find("#" + vars.CELL_ACTIONS).addClass("mouseover");
         });
 
         me.Table.find("tbody>tr").mouseleave(function () {
-            $(this).find("." + vars.DIV_ACTIONS).removeClass("mouseover");
+            $(this).find("#" + vars.CELL_ACTIONS).removeClass("mouseover");
         });
 
         var mouseX = window.mouseX(), mouseY = window.mouseY();
         if (mouseX !== undefined && mouseY !== undefined) {
             var $el = $(document.elementFromPoint(mouseX, mouseY));
             if ($el[0] && $el[0].id !== vars.CELL_ACTIONS) {
-                $el = $el.closest('#' + vars.CELL_ACTIONS);
+                $el = $el.closest("#" + vars.CELL_ACTIONS);
             }
             if ($el.length) {
-                $el.children("." + vars.DIV_ACTIONS).addClass("mouseover");
+                $el.addClass("mouseover");
             }
         }
     };
