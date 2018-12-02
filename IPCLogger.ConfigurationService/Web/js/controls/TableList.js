@@ -16,6 +16,7 @@
         me.Table.addClass(vars.TABLE_CLASSES);
 
         me.Table.find("tbody>tr").mouseover(function () {
+            me.Table.find("tbody>tr>td").removeClass("mouseover");
             $(this).find("#" + vars.CELL_ACTIONS).addClass("mouseover");
         });
 
