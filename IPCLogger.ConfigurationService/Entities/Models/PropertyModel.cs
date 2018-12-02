@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class PropertyModel
     {
+        private static readonly Regex _regexMakeDisplayName = new Regex(@"(?<WORD>(^|[A-Z]|_)([a-z\d]+?)+)");
+
         public string Name { get; private set; }
+
+        public string DisplayName { get; private set; }
 
         public Type Type { get; private set; }
 
@@ -27,6 +32,14 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             Values = values;
             IsCommon = isCommon;
             IsRequired = isRequired;
+
+            DisplayName = string.Empty;
+            MatchCollection matches = _regexMakeDisplayName.Matches(Name);
+            foreach (Match match in matches)
+            {
+                DisplayName += match.Value[0].ToString().ToUpper() + match.Value.Substring(1) + " ";
+            }
+            DisplayName = DisplayName.TrimEnd();
         }
 
         public void UpdateValue(string newValue)
