@@ -13,12 +13,12 @@
 }
 
 #form-logger-settings .card .card-container {
-    height: calc(100% - 180px);
+    max-height: calc(100% - 170px);
     overflow: auto;
 }
 
 #form-logger-settings div.custom-checkbox {
-    padding-top: 3px;
+    padding-top: 5px;
     height: 32px;
 }
 
@@ -30,6 +30,12 @@
         -ms-user-select: none;
         user-select: none;
     }
+
+        #form-logger-settings div.custom-checkbox label,
+        #form-logger-settings div.custom-checkbox label:before,
+        #form-logger-settings div.custom-checkbox label:after {
+            margin-top: -1px;
+        }
 
 #form-logger-settings select {
     height: 32px;
@@ -45,7 +51,7 @@
 }
 
 #p-save-cancel {
-    padding-top: 5px;
+    padding-top: 0;
     text-align: right;
 }
 

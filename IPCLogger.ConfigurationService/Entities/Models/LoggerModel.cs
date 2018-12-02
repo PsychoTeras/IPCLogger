@@ -36,6 +36,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return _properties.Where(p => !p.IsCommon); }
         }
 
+        public bool HasProperties
+        {
+            get { return _properties.Any(p => !p.IsCommon); }
+        }
+
         public XmlNode RootXmlNode { get; private set; }
 
         protected BaseSettings InstLoggerSettings(XmlNode cfgNode)

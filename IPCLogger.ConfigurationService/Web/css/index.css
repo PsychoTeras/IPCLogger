@@ -77,6 +77,10 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     text-transform: uppercase;
 }
 
+table thead tr th {
+    font-weight: 500;
+}
+
 .btn.focus, .btn:focus {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
