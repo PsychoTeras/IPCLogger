@@ -1,7 +1,20 @@
-﻿.ui-table-list {
-    font-size: .875rem;
-    vertical-align: middle;
+﻿.ui-table-wrap {
+    max-height: calc(100% - 120px);
+    overflow: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
 }
+
+.ui-table-list {
+    font-size: .875rem;
+    margin-bottom: 0;
+}
+
+    .ui-table-list thead > tr > th {
+        vertical-align: middle;
+        padding-left: .4rem;
+        border: none;
+        font-weight: 500;
+    }
 
     .ui-table-list tbody > tr {
         height: 44px;
@@ -11,27 +24,17 @@
             vertical-align: middle;
         }
 
-            /*.ui-table-list tbody > tr > td[id='cell-actions'] {
-                background-color: #ECECEC;
-            }*/
+            .ui-table-list tbody > tr > td .div-actions {
+                text-align: right;
+                opacity: 0.05;
+            }
 
-.div-actions {
-    text-align: right;
-    opacity: 0.05;
-    /*display: none;*/
-}
+                .ui-table-list tbody > tr > td .div-actions.mouseover {
+                    opacity: 1;
+                    display: block;
+                }
 
-    .div-actions.mouseover {
-        opacity: 1;
-        display: block;
-    }
-
-    .div-actions .btn-glyph {
-        width: 37px;
-        display: inline-block;
-    }
-
-.td-autosize {
-    width: 1px;
-    white-space: nowrap;
-}
+                .ui-table-list tbody > tr > td .div-actions .btn-glyph {
+                    width: 37px;
+                    display: inline-block;
+                }

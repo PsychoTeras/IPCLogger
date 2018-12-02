@@ -1,12 +1,7 @@
-﻿#form-logger-settings .card .card-header {
-    font-weight: 500;
-    padding: .5rem;
+﻿#form-logger-settings .card .card-header:not(:first-child) {
+    border-top: 1px solid #000000;
+    border-top: 1px solid rgba(0, 0, 0, .125);
 }
-
-    #form-logger-settings .card .card-header:not(:first-child) {
-        border-top: 1px solid #000000;
-        border-top: 1px solid rgba(0, 0, 0, .125);
-    }
 
 #form-logger-settings .card .card-body {
     padding: 0 1rem 1rem 1rem !important;

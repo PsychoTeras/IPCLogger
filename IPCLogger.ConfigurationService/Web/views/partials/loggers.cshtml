@@ -7,19 +7,22 @@
     <button id="btn-add-rule" class="btn btn-outline-secondary btn-sm fa fa-plus" style="position: absolute; bottom: 12px; right: 0">Add logger</button>
 </div>
 
-<table id="table-loggers" class="table table-sm">
-    <thead>
+<div class="card bg-light ui-table-wrap">
+    <table id="table-loggers" class="table table-sm ui-table-list">
+        <thead class="card-header">
         <tr>
-            <th style="width: 35%">Logger type</th>
+            <th style="width: 25%">Logger type</th>
+            <th style="width: 25%">Logger name</th>
             <th style="width: auto">Namespace</th>
             <th style="width: 130px">Actions</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (DeclaredLoggerModel model in Model)
         {
             <tr id="row-logger" modelId="@(model.Id)">
                 <td id="cell-logger-type">@(model.TypeName)</td>
+                <td id="cell-logger-type">@(model.Name)</td>
                 <td id="cell-desciption">@(model.Namespace)</td>
                 <td id="cell-actions">
                     <div class="btn-group" role="group">
@@ -28,8 +31,9 @@
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
 <script src="../../js/controllers/loggerController.js" type="text/javascript"></script>
 <script src="../../js/views/loggers.js" type="text/javascript"></script>

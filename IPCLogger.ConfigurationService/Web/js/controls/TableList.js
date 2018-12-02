@@ -6,7 +6,7 @@
         me.initialize();
     };
 
-    UI.TableList.CLASS = "ui-table-list table-hover table-striped";
+    UI.TableList.TABLE_CLASSES = "table-hover";
     UI.TableList.DIV_ACTIONS = "div-actions";
     UI.TableList.CELL_ACTIONS = "cell-actions";
 
@@ -14,7 +14,7 @@
         var me = this;
         var vars = UI.TableList;
 
-        me.Table.addClass(vars.CLASS);
+        me.Table.addClass(vars.TABLE_CLASSES);
 
         $.each(me.Table.find("tbody>tr #" + vars.CELL_ACTIONS), function () {
             var cell = this;

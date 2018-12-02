@@ -7,6 +7,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class DeclaredLoggerModel : LoggerModel
     {
+        public string Name
+        {
+            get { return CommonProperties.FirstOrDefault(p => p.Name == "Name")?.Value; }
+        }
+
         private void SetLoggerType(IEnumerable<Type> availableLoggers)
         {
             Type = availableLoggers.FirstOrDefault
