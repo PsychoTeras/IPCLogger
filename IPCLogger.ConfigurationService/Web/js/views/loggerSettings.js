@@ -90,6 +90,7 @@
         $.each(dictControls,
             function (_, item) {
                 item.control.resetValue();
+                item.control.setValidity(true);
             });
     }
 
