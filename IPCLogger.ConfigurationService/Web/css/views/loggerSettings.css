@@ -1,10 +1,51 @@
-﻿hr {
-    margin: 0;
+﻿#form-logger-settings .card .card-header {
+    font-weight: 500;
+    padding: .5rem;
+}
+
+    #form-logger-settings .card .card-header:not(:first-child) {
+        border-top: 1px solid #000000;
+        border-top: 1px solid rgba(0, 0, 0, .125);
+    }
+
+#form-logger-settings .card .card-body {
+    padding: 0 1rem 1rem 1rem !important;
+}
+
+#form-logger-settings .card .card-container {
+    height: calc(100% - 180px);
+    overflow: auto;
+}
+
+#form-logger-settings div.custom-checkbox {
+    padding-top: 3px;
+    height: 32px;
+}
+
+    #form-logger-settings div.custom-checkbox label {
+        margin-left: 8px;
+        cursor: pointer;
+        -moz-user-select: -moz-none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+#form-logger-settings select {
+    height: 32px;
+    padding: 0 0 2px 12px;
+}
+
+#form-logger-settings *[invalid] {
+    border-color: #dc3545;
+}
+
+#form-logger-settings .invalid-feedback.visible {
+    display: block;
 }
 
 #p-save-cancel {
     padding-top: 5px;
-    padding-bottom: 20px;
     text-align: right;
 }
 
@@ -21,33 +62,6 @@
     #p-save-cancel .dropdown-menu {
         min-width: 0 !important;
         width: auto !important;
-        font-size: 14px;
+        font-size: .875rem;
         margin: 0;
     }
-
-#form-logger-settings div.custom-checkbox {
-    padding-top: 3px;
-    height: 32px;
-}
-
-#form-logger-settings div.custom-checkbox label {
-    margin-left: 8px;
-    cursor: pointer;
-    -moz-user-select: -moz-none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-#form-logger-settings select {
-    height: 32px;
-    padding: 0 0 2px 12px;
-}
-
-#form-logger-settings *[invalid] {
-    border-color: #dc3545;
-}
-
-#form-logger-settings .invalid-feedback.visible {
-    display: block;
-}

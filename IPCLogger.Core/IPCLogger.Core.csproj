@@ -71,6 +71,7 @@
     <Compile Include="Attributes\RequiredSettingAttribute.cs" />
     <Compile Include="Attributes\SizeStringConversionAttribute.cs" />
     <Compile Include="Attributes\CustomConversionAttribute.cs" />
+    <Compile Include="Attributes\StringListConversionAttribute.cs" />
     <Compile Include="Attributes\TimeSpanStringConversionAttribute.cs" />
     <Compile Include="Caches\CallerTypesCache.cs" />
     <Compile Include="Caches\DictionaryCache.cs" />

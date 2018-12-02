@@ -88,6 +88,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 CoreService coreService = LoadCoreService(applicationId);
                 DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
+                ViewBag.typeName = loggerModel.TypeName;
+
                 PageModel pageModel = SetPageModel(() => PageModel.LoggerSettings(applicationId, loggerModel, PageModel));
                 return View["index", pageModel];
             };

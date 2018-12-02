@@ -6,15 +6,18 @@
 
         public string  Value { get; }
 
-        public PropertyObjectDTO(string name, string value)
+        public bool IsCommon { get; }
+
+        public PropertyObjectDTO(string name, string value, bool isCommon)
         {
             Name = name;
             Value = value;
+            IsCommon = isCommon;
         }
 
         public override string ToString()
         {
-            return $"{Name} = {Value}";
+            return (IsCommon ? "#" : "") + $"{Name} = {Value}";
         }
     }
 }

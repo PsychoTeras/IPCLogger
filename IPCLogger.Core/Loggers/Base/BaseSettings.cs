@@ -24,24 +24,27 @@ namespace IPCLogger.Core.Loggers.Base
         {
             public string Name;
             public object Value;
+            public bool IsCommon;
             public bool IsValid;
             public string ErrorMessage;
 
-            public static PropertyValidationResult Valid(string name, object value)
+            public static PropertyValidationResult Valid(string name, object value, bool isCommonProperty)
             {
                 return new PropertyValidationResult
                 {
                     Name = name,
                     Value = value,
+                    IsCommon = isCommonProperty,
                     IsValid = true
                 };
             }
 
-            public static PropertyValidationResult Invalid(string name, string errorMessage)
+            public static PropertyValidationResult Invalid(string name, bool isCommonProperty, string errorMessage)
             {
                 return new PropertyValidationResult
                 {
                     Name = name,
+                    IsCommon = isCommonProperty,
                     ErrorMessage = errorMessage
                 };
             }
@@ -53,7 +56,14 @@ namespace IPCLogger.Core.Loggers.Base
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
         protected const string RootLoggersCfgPath = Constants.RootLoggerCfgPath + "/Loggers";
-        private const string ValidationErrorMessage = "{0} is required";
+        protected const string ValidationErrorMessage = "{0} is required";
+
+        private static readonly Dictionary<string, string> CommonPropertiesSet = new Dictionary<string, string>
+        {
+            { "Name", "name" },
+            { "AllowEvents", "allow-events" },
+            { "DenyEvents", "deny-events" }
+        };
 
 #endregion
 
@@ -63,6 +73,8 @@ namespace IPCLogger.Core.Loggers.Base
         private Action _onApplyChanges;
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
+
+        private Dictionary<string, PropertyData> _commonProperties;
         private Dictionary<string, PropertyData> _properties;
 
 #endregion
@@ -79,18 +91,20 @@ namespace IPCLogger.Core.Loggers.Base
         public string Name { get; set; }
 
         [NonSetting]
-        public byte[] Hash { get; private set; }
+        public byte[] Hash { get; protected set; }
 
-        [NonSetting]
+        [NonSetting, StringListConversion(typeof(HashSet<string>))]
         public HashSet<string> AllowEvents
         {
             get { return _allowEvents; }
+            protected set { _allowEvents = value; }
         }
 
-        [NonSetting]
+        [NonSetting, StringListConversion(typeof(HashSet<string>))]
         public HashSet<string> DenyEvents
         {
             get { return _denyEvents; }
+            protected set { _denyEvents = value; }
         }
 
 #endregion
@@ -101,6 +115,25 @@ namespace IPCLogger.Core.Loggers.Base
         {
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
+
+            _commonProperties = GetType().
+                GetProperties
+                (
+                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
+                ).Where
+                (
+                    p => CommonPropertiesSet.ContainsKey(p.Name)
+                ).ToDictionary
+                (
+                    p => p.Name,
+                    p => new PropertyData
+                    (
+                        p,
+                        p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute,
+                        p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).Length > 0
+                    )
+                );
+
             _properties = GetType().
                 GetProperties
                 (
@@ -181,7 +214,7 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-#region Common protected methods
+#region Initialization methods
 
         protected virtual void BeginSetup() { }
 
@@ -334,16 +367,23 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-#region Configuration Service
+#region Configuration Service methods
+
+        protected internal virtual IEnumerable<PropertyData> GetCommonProperties()
+        {
+            return _commonProperties.Values;
+        }
 
         protected internal virtual IEnumerable<PropertyData> GetProperties()
         {
             return _properties.Values;
         }
 
-        protected internal virtual string GetPropertyValue(PropertyInfo property)
+        protected internal virtual string GetPropertyValue(PropertyInfo property, CustomConversionAttribute converter)
         {
-            return property.GetValue(this, null)?.ToString() ?? string.Empty;
+            return converter != null
+                ? converter.UnconvertValue(property.GetValue(this, null)) ?? string.Empty
+                : property.GetValue(this, null)?.ToString() ?? string.Empty;
         }
 
         protected internal virtual string GetPropertyValues(PropertyInfo property)
@@ -352,13 +392,9 @@ namespace IPCLogger.Core.Loggers.Base
             return type.IsEnum ? Enum.GetNames(type).Aggregate((current, next) => current + "," + next) : null;
         }
 
-        protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue)
+        protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,
+            bool isCommonProperty)
         {
-            object Default(Type t)
-            {
-                return t.IsValueType ? Activator.CreateInstance(t) : null;
-            }
-
             object ConvertValue(string value, Type type)
             {
                 return type.IsEnum
@@ -366,40 +402,63 @@ namespace IPCLogger.Core.Loggers.Base
                     : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
             }
 
+            bool IsDefaultValue(object value, Type type)
+            {
+                object defValue = type.IsValueType ? Activator.CreateInstance(type) : null;
+                return type == typeof(string) ? string.IsNullOrEmpty((string) value) : value.Equals(defValue);
+            }
+
             try
             {
-                if (_properties.TryGetValue(propertyName, out var data))
+                Dictionary<string, PropertyData> dictProps = isCommonProperty
+                    ? _commonProperties
+                    : _properties;
+
+                if (dictProps.TryGetValue(propertyName, out var data))
                 {
                     object value = data.Item2 != null
                         ? data.Item2.ConvertValue(sValue)
                         : ConvertValue(sValue, data.Item1.PropertyType);
 
-                    if (value == null || data.Item3 && value.Equals(Default(data.Item1.PropertyType)))
+                    if (value == null || data.Item3 && IsDefaultValue(value, data.Item1.PropertyType))
                     {
                         string errorMessage = string.Format(ValidationErrorMessage, propertyName);
-                        return PropertyValidationResult.Invalid(propertyName, errorMessage);
+                        return PropertyValidationResult.Invalid(propertyName, isCommonProperty, errorMessage);
                     }
 
-                    return PropertyValidationResult.Valid(propertyName, value);
+                    return PropertyValidationResult.Valid(propertyName, value, isCommonProperty);
                 }
             }
             catch (Exception ex)
             {
-                return PropertyValidationResult.Invalid(propertyName, ex.Message);
+                return PropertyValidationResult.Invalid(propertyName, isCommonProperty, ex.Message);
             }
 
             throw new Exception($"Invalid property name '{propertyName}'");
         }
 
-        protected internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value)
+        protected internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value,
+            bool isCommonProperty)
         {
-            if (_properties.TryGetValue(propertyName, out var data))
+            Dictionary<string, PropertyData> dictProps = isCommonProperty
+                ? _commonProperties
+                : _properties;
+
+            if (dictProps.TryGetValue(propertyName, out var data))
             {
                 data.Item1.SetValue(this, value, null);
                 string formattedValue = data.Item2 != null
                     ? data.Item2.UnconvertValue(value)
                     : value.ToString();
-                SetCfgNodeValue(cfgNode, propertyName, formattedValue);
+                if (isCommonProperty)
+                {
+                    string attrName = CommonPropertiesSet[propertyName];
+                    SetCfgAttributeValue(cfgNode, attrName, formattedValue);
+                }
+                else
+                {
+                    SetCfgNodeValue(cfgNode, propertyName, formattedValue);
+                }
             }
         }
 

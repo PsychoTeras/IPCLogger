@@ -1,9 +1,11 @@
-﻿using System;
+﻿using IPCLogger.Core.Loggers.Base;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using IPCLogger.Core.Loggers.Base;
 
 namespace IPCLogger.Core.Common
 {
@@ -65,7 +67,7 @@ namespace IPCLogger.Core.Common
 
         public static long BytesStringToSize(string sBytes)
         {
-            if (sBytes == string.Empty)
+            if (string.IsNullOrEmpty(sBytes))
             {
                 string msg = "Value cannot be empty";
                 throw new Exception(msg);
@@ -168,7 +170,7 @@ namespace IPCLogger.Core.Common
 
         public static TimeSpan TimeStringToTimeSpan(string sTime)
         {
-            if (sTime == string.Empty)
+            if (string.IsNullOrEmpty(sTime))
             {
                 string msg = "Time string cannot be empty";
                 throw new Exception(msg);
@@ -261,6 +263,51 @@ namespace IPCLogger.Core.Common
                 }
             }
             return hex.ToString();
+        }
+
+        public static object StringToStringList(Type listType, string sValue, bool removeEmpty, string separator)
+        {
+            if (sValue == null)
+            {
+                string msg = "Value cannot be empty";
+                throw new Exception(msg);
+            }
+
+            if (sValue == string.Empty)
+            {
+                return null;
+            }
+
+            StringSplitOptions sso = removeEmpty ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None;
+            string[] value = sValue.Split(new[] {separator}, sso);
+
+            object result = null;
+
+            if (value.Any())
+            {
+                result = Activator.CreateInstance(listType);
+                switch (result)
+                {
+                    case HashSet<string> hsString:
+                        Array.ForEach(value, s => hsString.Add(s));
+                        break;
+                    case List<string> lsString:
+                        Array.ForEach(value, s => lsString.Add(s));
+                        break;
+                    case string[] _:
+                        result = value;
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        public static string StringListToString(IEnumerable<string> value, string separator)
+        {
+            return value != null
+                ? value.Aggregate((current, next) => current + separator + next)
+                : null;
         }
     }
 }

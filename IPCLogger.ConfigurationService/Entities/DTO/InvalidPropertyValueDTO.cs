@@ -2,19 +2,22 @@
 {
     public class InvalidPropertyValueDTO
     {
-        public string PropertyName { get; }
+        public string Name { get; }
+
+        public bool IsCommon { get; }
 
         public string ErrorMessage { get; }
 
-        public InvalidPropertyValueDTO(string propertyName, string errorMessage)
+        public InvalidPropertyValueDTO(string name, bool isCommon, string errorMessage)
         {
-            PropertyName = propertyName;
+            Name = name;
+            IsCommon = isCommon;
             ErrorMessage = errorMessage;
         }
 
         public override string ToString()
         {
-            return PropertyName;
+            return IsCommon ? "#" + Name : Name;
         }
     }
 }

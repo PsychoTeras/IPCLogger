@@ -68,7 +68,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
                     InvalidPropertyValueDTO[] invalidProperties = validationResult.
                         Where(r => !r.IsValid).
-                        Select(r => new InvalidPropertyValueDTO(r.Name, r.ErrorMessage)).
+                        Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage)).
                         ToArray();
                     if (!invalidProperties.Any())
                     {

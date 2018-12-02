@@ -17,6 +17,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_NAME = "name";
         private const string PROPERTY_ATTR_VALUE = "value";
         private const string PROPERTY_ATTR_VALUES = "values";
+        private const string PROPERTY_ATTR_COMMON = "common";
         private const string PROPERTY_ATTR_REQUIRED = "required";
 
         private const string PROPERTY_CONTROL = "form-control";
@@ -46,7 +47,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(long), PROPERTY_NUMERIC },
             { typeof(ulong), PROPERTY_NUMERIC },
             { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
-            { typeof(SizeStringConversionAttribute), PROPERTY_SIZE }
+            { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
+            { typeof(StringListConversionAttribute), PROPERTY_STRING }
         };
 
 #endregion
@@ -81,6 +83,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 if (!string.IsNullOrEmpty(propertyModel.Values))
                 {
                     html.AddAttribute(PROPERTY_ATTR_VALUES, propertyModel.Values);
+                }
+
+                if (propertyModel.IsCommon)
+                {
+                    html.AddAttribute(PROPERTY_ATTR_COMMON, string.Empty);
                 }
 
                 if (propertyModel.IsRequired)

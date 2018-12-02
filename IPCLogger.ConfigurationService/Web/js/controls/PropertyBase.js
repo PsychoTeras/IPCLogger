@@ -32,7 +32,11 @@
 
     UI.PropertyBase.prototype.name = function () {
         var me = this;
-        return me.Element.attr("name");
+        var name = me.Element.attr("name");
+        if (me.Element.attr("common")) {
+            name = "#" + name;
+        }
+        return name;
     };
 
     UI.PropertyBase.prototype.value = function (val) {
@@ -48,6 +52,16 @@
         me.value(me.OrigValue);
     };
 
+    UI.PropertyBase.prototype.isRequired = function () {
+        var me = this;
+        return me.Element.attr("required") !== undefined;
+    };
+
+    UI.PropertyBase.prototype.isCommon = function () {
+        var me = this;
+        return me.Element.attr("common") !== undefined;
+    };
+
     UI.PropertyBase.prototype.isChanged = function () {
         var me = this;
         return me.value() !== me.OrigValue;
@@ -55,11 +69,13 @@
 
     UI.PropertyBase.prototype.getPropertyObject = function() {
         var me = this;
-        var name = me.name();
+        var name = me.Element.attr("name");
         var value = me.value();
+        var isCommon = me.isCommon();
         return {
             name: name,
-            value: value
+            value: value,
+            isCommon: isCommon
         };
     };
 

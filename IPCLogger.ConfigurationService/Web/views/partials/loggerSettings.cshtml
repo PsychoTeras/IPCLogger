@@ -5,23 +5,54 @@
 <input type="hidden" id="application-id" value="@ViewBag.applicationId" />
 <input type="hidden" id="logger-id" value="@ViewBag.loggerId" />
 
-<hr>
-
 <form id="form-logger-settings">
-    @foreach (PropertyModel model in Model.Properties)
-    {
-        <div class="mt-2">
-            <label>
-                @(model.Name)
-                @if (model.IsRequired)
+
+    <div class="rounded card">
+
+        <div class="card-container">
+
+            <div class="card-header">Common settings</div>
+
+            <div class="card-body">
+                @foreach (PropertyModel model in Model.CommonProperties)
                 {
-                    <a style="color: red; font-weight: bold"> * </a>
+                    <div class="mt-2">
+                        <label>
+                            @(model.Name)
+                            @if (model.IsRequired)
+                            {
+                                <a style="color: red; font-weight: bold"> * </a>
+                            }
+                        </label>
+                        @Html.Raw(ControlsService.ControlByPropertyModel(model))
+                        <div class="invalid-feedback"></div>
+                    </div>
                 }
-            </label>
-            @Html.Raw(ControlsService.ControlByPropertyModel(model))
-            <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="card-header">@ViewBag.typeName settings</div>
+
+            <div class="card-body">
+
+                @foreach (PropertyModel model in Model.Properties)
+                {
+                    <div class="mt-2">
+                        <label>
+                            @(model.Name)
+                            @if (model.IsRequired)
+                            {
+                                <a style="color: red; font-weight: bold"> * </a>
+                            }
+                        </label>
+                        @Html.Raw(ControlsService.ControlByPropertyModel(model))
+                        <div class="invalid-feedback"></div>
+                    </div>
+                }
+            </div>
         </div>
-    }
+
+    </div>
+
 </form>
 
 <div id="p-save-cancel">

@@ -14,15 +14,18 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Values { get; private set; }
 
+        public bool IsCommon { get; private set; }
+
         public bool IsRequired { get; private set; }
 
-        public PropertyModel(string name, Type type, Type converter, string value, string values, bool isRequired)
+        public PropertyModel(string name, Type type, Type converter, string value, string values, bool isCommon, bool isRequired)
         {
             Name = name;
             Type = type;
             Converter = converter;
             Value = value;
             Values = values;
+            IsCommon = isCommon;
             IsRequired = isRequired;
         }
 

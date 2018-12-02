@@ -15,7 +15,12 @@
                     var control = Object.create(value.prototype);
                     control.initialize($(element));
 
-                    result.push({ name: element.getAttribute("name"), control: control });
+                    var controlName = element.getAttribute("name");
+                    if (element.getAttribute("common") !== undefined) {
+                        controlName = "#" + controlName;
+                    }
+
+                    result.push({ name: controlName, control: control });
 
                     return true;
                 });

@@ -26,7 +26,7 @@
             function (_, item) {
 
                 var control = item.control;
-                if (control.isChanged()) {
+                if (control.isChanged() || control.isRequired()) {
                     var propertyObj = control.getPropertyObject();
                     if (!propertyObj) {
                         throw "PropertyObject is undefined, control " + control.name();
@@ -41,7 +41,8 @@
     function highlightValidationErroredControls(failedProps) {
         $.each(failedProps,
             function(_, p) {
-                var control = $.grep(dictControls, function(c) { return c.name === p.propertyName; })[0].control;
+                var pName = p.isCommon ? "#" + p.name : p.name;
+                var control = $.grep(dictControls, function(c) { return c.name === pName; })[0].control;
                 control.setValidity(false, p.errorMessage);
             });
     }
