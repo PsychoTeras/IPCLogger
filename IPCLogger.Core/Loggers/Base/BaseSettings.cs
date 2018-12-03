@@ -357,13 +357,22 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 PropertyInfo property = item.Item1;
                 object value = property.GetValue(this, null);
-
-                if (item.Item2 != null)
+                if (item.Item2 == null)
                 {
-                    value = item.Item2.ValueToString(value);
+                    SetCfgNodeValue(cfgNode, property.Name, value);
                 }
-
-                SetCfgNodeValue(cfgNode, property.Name, value);
+                else
+                {
+                    if (item.Item2.SourceType == ConversionSource.Value)
+                    {
+                        value = item.Item2.ValueToString(value);
+                        SetCfgNodeValue(cfgNode, property.Name, value);
+                    }
+                    else
+                    {
+                        SetCfgNodeData(cfgNode, property.Name, value, item.Item2);
+                    }
+                }
             }
         }
 
@@ -419,7 +428,7 @@ namespace IPCLogger.Core.Loggers.Base
                 if (dictProps.TryGetValue(propertyName, out var data))
                 {
                     object value = data.Item2 != null
-                        ? data.Item2.StringToValue(sValue)
+                        ? data.Item2.CSStringToValue(sValue)
                         : ConvertValue(sValue, data.Item1.PropertyType);
 
                     if (value == null || data.Item3 && IsDefaultValue(value, data.Item1.PropertyType))
@@ -449,17 +458,30 @@ namespace IPCLogger.Core.Loggers.Base
             if (dictProps.TryGetValue(propertyName, out var data))
             {
                 data.Item1.SetValue(this, value, null);
-                string formattedValue = data.Item2 != null
-                    ? data.Item2.ValueToString(value)
-                    : value.ToString();
-                if (isCommon)
+
+                if (data.Item2 != null)
                 {
-                    string attrName = CommonPropertiesSet[propertyName];
-                    SetCfgAttributeValue(cfgNode, attrName, formattedValue);
+                    if (data.Item2.SourceType == ConversionSource.Value)
+                    {
+                        value = data.Item2.ValueToString(value);
+                        SetCfgNodeValue(cfgNode, propertyName, value);
+                    }
+                    else
+                    {
+                        SetCfgNodeData(cfgNode, propertyName, value, data.Item2);
+                    }
                 }
                 else
                 {
-                    SetCfgNodeValue(cfgNode, propertyName, formattedValue);
+                    if (isCommon)
+                    {
+                        string attrName = CommonPropertiesSet[propertyName];
+                        SetCfgAttributeValue(cfgNode, attrName, value);
+                    }
+                    else
+                    {
+                        SetCfgNodeValue(cfgNode, propertyName, value);
+                    }
                 }
             }
         }
@@ -507,6 +529,20 @@ namespace IPCLogger.Core.Loggers.Base
         {
             byte[] bXmlData = Encoding.ASCII.GetBytes(cfgNode.OuterXml);
             return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
+        }
+
+        protected void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
+            CustomConversionAttribute cc)
+        {
+            XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
+            if (valNode == null)
+            {
+                XmlDocument xmlDoc = cfgNode.OwnerDocument;
+                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
+                cfgNode.AppendChild(valNode);
+            }
+
+            cc.ValueToXmlNode(value, valNode);
         }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)

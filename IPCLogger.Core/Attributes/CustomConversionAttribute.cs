@@ -44,5 +44,10 @@ namespace IPCLogger.Core.Attributes
         {
             return ValueToString(value);
         }
+
+        public virtual object CSStringToValue(string sValue)
+        {
+            return StringToValue(sValue);
+        }
     }
 }
