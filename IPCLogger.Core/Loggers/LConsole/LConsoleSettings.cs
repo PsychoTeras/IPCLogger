@@ -105,7 +105,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
         }
 
-        protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
+        protected override Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode)
         {
             ReadHighlightSettings(cfgNode);
             return GetSettingsDictionary(cfgNode, new[] { HIGHLIGHT_NODE_NAME });

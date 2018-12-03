@@ -5,6 +5,11 @@ namespace IPCLogger.Core.Attributes
 {
     public sealed class TimeSpanStringConversionAttribute : CustomConversionAttribute
     {
+        public TimeSpanStringConversionAttribute()
+            : base(ConversionSource.Value)
+        {
+        }
+
         public override object StringToValue(string sValue)
         {
             return Helpers.TimeStringToTimeSpan(sValue);

@@ -64,9 +64,8 @@ namespace IPCLogger.Core.Loggers.LDB
             foreach (string columnName in Settings.Params)
             {
                 object value;
-                string pattern;
                 ColumnInfo ci = Settings.TableSchema[columnName];
-                if (!Settings.ParamValues.TryGetValue(columnName, out pattern))
+                if (!Settings.Parameters.TryGetValue(columnName, out var pattern))
                 {
                     value = DBNull.Value;
                 }

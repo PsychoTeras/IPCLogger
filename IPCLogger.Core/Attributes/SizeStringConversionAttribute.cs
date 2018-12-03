@@ -4,6 +4,11 @@ namespace IPCLogger.Core.Attributes
 {
     public sealed class SizeStringConversionAttribute : CustomConversionAttribute
     {
+        public SizeStringConversionAttribute()
+            : base(ConversionSource.Value)
+        {
+        }
+
         public override object StringToValue(string sValue)
         {
             return Helpers.BytesStringToSize(sValue);

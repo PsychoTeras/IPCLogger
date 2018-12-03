@@ -25,6 +25,7 @@ namespace IPCLogger.Core.Loggers.Base
             get { return _maxQueueAge; }
             set { _maxQueueAge = value*1000; }
         }
+
         public virtual int QueueSize { get; set; }
 
 #endregion

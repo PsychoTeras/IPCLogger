@@ -27,6 +27,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_NUMERIC = "ui-property-numeric";
         private const string PROPERTY_TIMESPAN = "ui-property-timespan";
         private const string PROPERTY_SIZE = "ui-property-size";
+        private const string PROPERTY_KEYVALUE = "ui-property-keyvalue";
 
 #endregion
 
@@ -48,7 +49,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(ulong), PROPERTY_NUMERIC },
             { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
             { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
-            { typeof(StringListConversionAttribute), PROPERTY_STRING }
+            { typeof(StringListConversionAttribute), PROPERTY_STRING },
+            { typeof(DictionaryConversionAttribute), PROPERTY_KEYVALUE }
         };
 
 #endregion

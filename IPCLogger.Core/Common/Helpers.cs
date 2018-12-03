@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace IPCLogger.Core.Common
 {
@@ -310,5 +311,53 @@ namespace IPCLogger.Core.Common
                 ? value.Aggregate((current, next) => current + separator + next)
                 : null;
         }
+
+        public static Dictionary<string, string> XmlNodeToDictionary(XmlNode node)
+        {
+            if (node == null)
+            {
+                string msg = "Value cannot be empty";
+                throw new Exception(msg);
+            }
+
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            XmlNodeList paramNodes = node.ChildNodes;
+            foreach (XmlNode paramNode in paramNodes)
+            {
+                if (result.ContainsKey(paramNode.Name))
+                {
+                    string msg = $"Duplicated dictionary key '{paramNode.Name}'";
+                    throw new Exception(msg);
+                }
+                result.Add(paramNode.Name, paramNode.InnerText);
+            }
+
+            return result;
+        }
+
+        public static void DictionaryToXmlNode(Dictionary<string, string> value, XmlNode node)
+        {
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, string> pair in value)
+            {
+            }
+        }
+
+        public static string DictionaryToJson(Dictionary<string, string> dict)
+        {
+            if (dict == null)
+            {
+                return null;
+            }
+
+            IEnumerable<string> entries = dict.Select(d => $"\"{d.Key}\": [{string.Join(",", d.Value)}]");
+            return "{" + string.Join(",", entries) + "}";
+        }
+
     }
 }

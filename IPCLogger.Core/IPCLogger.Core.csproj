@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\DictionaryConversionAttribute.cs" />
     <Compile Include="Attributes\RequiredSettingAttribute.cs" />
     <Compile Include="Attributes\SizeStringConversionAttribute.cs" />
     <Compile Include="Attributes\CustomConversionAttribute.cs" />

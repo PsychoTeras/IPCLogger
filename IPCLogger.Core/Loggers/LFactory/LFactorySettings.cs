@@ -118,9 +118,9 @@ namespace IPCLogger.Core.Loggers.LFactory
             _autoReload = aAutoReload != null && bool.TryParse(aAutoReload.Value, out _autoReload) && _autoReload;
         }
 
-        protected override Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
+        protected override Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode)
         {
-            return new Dictionary<string, string>();
+            return new Dictionary<string, XmlNode>();
         }
 
         protected override void Save(XmlNode cfgNode)

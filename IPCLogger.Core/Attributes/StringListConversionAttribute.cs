@@ -11,6 +11,7 @@ namespace IPCLogger.Core.Attributes
         private string _separator;
 
         public StringListConversionAttribute(Type listType, bool removeEmpty = true, string separator = ",")
+            : base(ConversionSource.Value)
         {
             _listType = listType;
             _removeEmpty = removeEmpty;

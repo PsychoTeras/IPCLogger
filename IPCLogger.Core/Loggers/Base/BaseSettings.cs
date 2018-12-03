@@ -196,7 +196,7 @@ namespace IPCLogger.Core.Loggers.Base
 
                 ApplyCommonSettings(cfgNode);
 
-                Dictionary<string, string> settingsDict = GetSettingsDictionary(cfgNode);
+                Dictionary<string, XmlNode> settingsDict = GetSettingsDictionary(cfgNode);
 
                 Dictionary<string, object> valuesDict = GetSettingsValues(settingsDict);
 
@@ -252,14 +252,14 @@ namespace IPCLogger.Core.Loggers.Base
             CheckApplicableEvent = _defCheckApplicableEvent;
         }
 
-        protected virtual Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode)
+        protected virtual Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode)
         {
             return GetSettingsDictionary(cfgNode, null);
         }
 
-        protected virtual Dictionary<string, string> GetSettingsDictionary(XmlNode cfgNode, ICollection<string> excludes)
+        protected virtual Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode, ICollection<string> excludes)
         {
-            Dictionary<string, string> settingsDict = new Dictionary<string, string>();
+            Dictionary<string, XmlNode> settingsDict = new Dictionary<string, XmlNode>();
             IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);
             if (excludes != null)
             {
@@ -277,28 +277,30 @@ namespace IPCLogger.Core.Loggers.Base
                     string msg = $"Duplicated settings definition '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
-                settingsDict.Add(settingNode.Name, settingNode.InnerText);
+                settingsDict.Add(settingNode.Name, settingNode);
             }
             return settingsDict;
         }
 
-        protected virtual Dictionary<string, object> GetSettingsValues(Dictionary<string, string> settingsDict)
+        protected virtual Dictionary<string, object> GetSettingsValues(Dictionary<string, XmlNode> settingsDict)
         {
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
-            foreach (KeyValuePair<string, string> setting in settingsDict)
+            foreach (KeyValuePair<string, XmlNode> setting in settingsDict)
             {
                 PropertyData item = _properties[setting.Key];
                 Type propertyType = item.Item1.PropertyType;
                 try
                 {
                     object value;
-                    string sValue = setting.Value.Trim();
                     if (item.Item2 != null)
                     {
-                        value = item.Item2.StringToValue(sValue);
+                        value = item.Item2.SourceType == ConversionSource.Value
+                            ? item.Item2.StringToValue(setting.Value.InnerText.Trim())
+                            : item.Item2.XmlNodeToValue(setting.Value);
                     }
                     else
                     {
+                        string sValue = setting.Value.InnerText.Trim();
                         if (propertyType.IsEnum)
                         {
                             try
