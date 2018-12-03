@@ -187,6 +187,7 @@
     <Content Include="Web\css\font-awesome\font-awesome.min.css" />
     <Content Include="Web\css\views\loggerSettings.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
+    <Content Include="Web\js\controls\PropertyTable.js" />
     <Content Include="Web\js\controls\SizePicker.js" />
     <Content Include="Web\js\controls\TimeSpanPicker.js" />
     <Content Include="Web\js\classes\Size.js" />

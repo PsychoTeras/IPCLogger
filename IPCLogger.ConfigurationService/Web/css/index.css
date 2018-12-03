@@ -8,7 +8,7 @@
     padding-top: 48px;
 }
 
-input, select, textarea, .custom-checkbox>label:before {
+input, select, textarea, .custom-checkbox > label:before {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;
@@ -112,6 +112,10 @@ button.btn.fa:before {
         margin-right: 5px;
     }
 
+button.dropdown-toggle:after {
+    margin-top: 4px;
+}
+
 .card-header {
     font-weight: 500;
     padding: .2rem .4rem .2rem .4rem;
@@ -197,4 +201,9 @@ body.locked .page-lock {
 
 .input-group-addon {
     padding: 6px 10px 3px;
+}
+
+.td-autosize {
+    width: 1px;
+    white-space: nowrap;
 }

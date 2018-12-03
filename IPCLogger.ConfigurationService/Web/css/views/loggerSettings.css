@@ -12,6 +12,27 @@
     overflow: auto;
 }
 
+#form-logger-settings .settings-table-wrap {
+    /*max-height: calc(100% - 170px);*/
+    /*height: calc(2.25rem + 2px);*/
+    overflow: auto;
+    padding: 0;
+    height: auto;
+}
+
+    #form-logger-settings .settings-table-wrap table {
+        font-size: .875rem;
+        margin-bottom: 0;
+    }
+
+        #form-logger-settings .settings-table-wrap table > thead > tr > td {
+            border-top-width: 0;
+        }
+
+        #form-logger-settings .settings-table-wrap table thead.card-header {
+            background-color: rgba(0, 107, 224, .1);
+        }
+
 #form-logger-settings div.custom-checkbox {
     padding-top: 5px;
     height: 32px;
