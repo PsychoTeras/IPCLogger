@@ -1,5 +1,6 @@
 ﻿using IPCLogger.Core.Loggers.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -266,7 +267,7 @@ namespace IPCLogger.Core.Common
             return hex.ToString();
         }
 
-        public static object StringToStringList(Type listType, string sValue, bool removeEmpty, string separator)
+        public static object StringToStringList(Type dataType, string sValue, bool removeEmpty, string separator)
         {
             if (sValue == null)
             {
@@ -286,7 +287,7 @@ namespace IPCLogger.Core.Common
 
             if (value.Any())
             {
-                result = Activator.CreateInstance(listType);
+                result = Activator.CreateInstance(dataType);
                 switch (result)
                 {
                     case HashSet<string> hsString:
@@ -312,7 +313,7 @@ namespace IPCLogger.Core.Common
                 : null;
         }
 
-        public static Dictionary<string, string> XmlNodeToDictionary(XmlNode node)
+        public static object XmlNodeToKeyValue(Type dataType, XmlNode node)
         {
             if (node == null)
             {
@@ -320,44 +321,75 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            Dictionary<string, string> result = new Dictionary<string, string>();
-
             XmlNodeList paramNodes = node.ChildNodes;
+            if (paramNodes.Count == 0)
+            {
+                return null;
+            }
+
+            object result = Activator.CreateInstance(dataType);
+            Type dictValueType = null;
+
             foreach (XmlNode paramNode in paramNodes)
             {
-                if (result.ContainsKey(paramNode.Name))
+                try
                 {
-                    string msg = $"Duplicated dictionary key '{paramNode.Name}'";
+                    switch (result)
+                    {
+                        case IDictionary dictPair:
+                            if (dictValueType == null)
+                            {
+                                Type[] arguments = result.GetType().GetGenericArguments();
+                                dictValueType = arguments[1];
+                            }
+
+                            object value = Convert.ChangeType(paramNode.InnerText, dictValueType);
+                            dictPair.Add(paramNode.Name, value);
+                            break;
+                    }
+                }
+                catch
+                {
+                    string msg = $"Duplicate key '{paramNode.Name}'";
                     throw new Exception(msg);
                 }
-                result.Add(paramNode.Name, paramNode.InnerText);
             }
 
             return result;
         }
 
-        public static void DictionaryToXmlNode(Dictionary<string, string> value, XmlNode node)
+        public static void KeyValueToXmlNode(Type dataType, object value, XmlNode node)
         {
             if (value == null)
             {
                 return;
             }
+        }
 
-            foreach (KeyValuePair<string, string> pair in value)
+        public static string KeyValueToJson(Type dataType, object value)
+        {
+            switch (value)
             {
+                case IDictionary dictPair:
+                    return DictionaryToJson(dictPair);
+                default:
+                    return null;
             }
         }
 
-        public static string DictionaryToJson(Dictionary<string, string> dict)
+        public static string DictionaryToJson(IDictionary dict)
         {
             if (dict == null)
             {
                 return null;
             }
 
-            IEnumerable<string> entries = dict.Select(d => $"\"{d.Key}\": [{string.Join(",", d.Value)}]");
+            List<string> entries = new List<string>();
+            foreach (DictionaryEntry d in dict)
+            {
+                entries.Add($"\"{d.Key}\": [{string.Join(",", d.Value)}]");
+            }
             return "{" + string.Join(",", entries) + "}";
         }
-
     }
 }

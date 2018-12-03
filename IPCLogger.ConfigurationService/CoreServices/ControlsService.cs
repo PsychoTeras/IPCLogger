@@ -50,7 +50,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
             { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
             { typeof(StringListConversionAttribute), PROPERTY_STRING },
-            { typeof(DictionaryConversionAttribute), PROPERTY_KEYVALUE }
+            { typeof(KeyValueConversionAttribute), PROPERTY_KEYVALUE }
         };
 
 #endregion
