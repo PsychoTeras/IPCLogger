@@ -25,7 +25,7 @@ namespace IPCLogger.Core.Loggers.LDB
         [RequiredSetting]
         public string TableName { get; set; }
 
-        [KeyValueConversion(typeof(Dictionary<string, string>)), RequiredSetting]
+        [KeyValueConversion(typeof(Dictionary<string, string>), "Column name"), RequiredSetting]
         public Dictionary<string, string> Parameters { get; set; }
 
 #endregion

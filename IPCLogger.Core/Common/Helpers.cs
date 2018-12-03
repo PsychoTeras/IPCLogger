@@ -366,30 +366,30 @@ namespace IPCLogger.Core.Common
             }
         }
 
-        public static string KeyValueToJson(Type dataType, object value)
+        public static string KeyValueToJson(Type dataType, string keyName, string valueName, object value)
         {
             switch (value)
             {
                 case IDictionary dictPair:
-                    return DictionaryToJson(dictPair);
+                    return DictionaryToJson(keyName, valueName, dictPair);
                 default:
                     return null;
             }
         }
 
-        public static string DictionaryToJson(IDictionary dict)
+        private static string DictionaryToJson(string keyName, string valueName, IDictionary dict)
         {
-            if (dict == null)
-            {
-                return null;
-            }
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{{ \"colNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
 
             List<string> entries = new List<string>();
             foreach (DictionaryEntry d in dict)
             {
-                entries.Add($"\"{d.Key}\": [{string.Join(",", d.Value)}]");
+                entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
             }
-            return "{" + string.Join(",", entries) + "}";
+
+            sb.Append($", \"values\":[ {string.Join(",", entries)}] }}");
+            return sb.ToString();
         }
     }
 }
