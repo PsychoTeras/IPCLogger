@@ -23,7 +23,7 @@ namespace IPCLogger.Core.Common
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int memcmp(byte[] b1, byte[] b2, long count);
 
-        private static readonly Regex _regexBytesString = new Regex(@"\s*(?<SIZE>\d+)+[ ]*(?<UNIT>[a-z]+)*", 
+        private static readonly Regex _regexBytesString = new Regex(@"\s*(?<SIZE>\d+)+[ ]*(?<UNIT>[a-z]+)*",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
         private static readonly Regex _regexTimeString = new Regex(@"(?<COUNT>\d+)+[ ]*(?<UNIT>[a-z]+)+",
@@ -32,10 +32,10 @@ namespace IPCLogger.Core.Common
         public static bool ByteArrayEquals(byte[] b1, byte[] b2)
         {
             return b1 == null && b2 == null ||
-                   b1 != null && b2 != null && 
+                   b1 != null && b2 != null &&
                    b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
-        
+
         public static string CalculateUniqueId(string name, string type, string nameSpace)
         {
             return $"^{name}${type}%{type}^";
@@ -64,6 +64,7 @@ namespace IPCLogger.Core.Common
                     break;
                 }
             }
+
             return frame + 1;
         }
 
@@ -75,8 +76,7 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            long value;
-            if (long.TryParse(sBytes, out value))
+            if (long.TryParse(sBytes, out long value))
             {
                 return value;
             }
@@ -125,8 +125,10 @@ namespace IPCLogger.Core.Common
                             throw new Exception(msg);
                     }
                 }
+
                 value += size * multiplier;
             }
+
             return value;
         }
 
@@ -140,19 +142,19 @@ namespace IPCLogger.Core.Common
                 long value = 0;
                 if (sizeLeft >= ONE_GBYTE)
                 {
-                    value = (long)Math.Floor(sizeLeft / ONE_GBYTE);
+                    value = (long) Math.Floor(sizeLeft / ONE_GBYTE);
                     sSize += $"{value}GB ";
                     sizeLeft -= value * ONE_GBYTE;
                 }
                 else if (sizeLeft >= ONE_MBYTE)
                 {
-                    value = (long)Math.Floor(sizeLeft / ONE_MBYTE);
+                    value = (long) Math.Floor(sizeLeft / ONE_MBYTE);
                     sSize += $"{value}MB ";
                     sizeLeft -= value * ONE_MBYTE;
                 }
                 else if (sizeLeft >= ONE_KBYTE)
                 {
-                    value = (long)Math.Floor(sizeLeft / ONE_KBYTE);
+                    value = (long) Math.Floor(sizeLeft / ONE_KBYTE);
                     sSize += $"{value}KB ";
                     sizeLeft -= value * ONE_KBYTE;
                 }
@@ -178,8 +180,7 @@ namespace IPCLogger.Core.Common
                 throw new Exception(msg);
             }
 
-            TimeSpan timeSpan;
-            if (TimeSpan.TryParse(sTime, out timeSpan))
+            if (TimeSpan.TryParse(sTime, out TimeSpan timeSpan))
             {
                 return timeSpan;
             }
@@ -217,7 +218,8 @@ namespace IPCLogger.Core.Common
                         seconds += count;
                         break;
                     default:
-                        string msg = $"Unit '{sUnit}' is invalid. Use d (=days), h (=hours), m (=minutes), s (=seconds) instead (case-insensitive)";
+                        string msg =
+                            $"Unit '{sUnit}' is invalid. Use d (=days), h (=hours), m (=minutes), s (=seconds) instead (case-insensitive)";
                         throw new Exception(msg);
                 }
             }
@@ -233,14 +235,17 @@ namespace IPCLogger.Core.Common
             {
                 sTime += $"{timeSpan.Days}d ";
             }
+
             if (timeSpan.Hours > 0)
             {
                 sTime += $"{timeSpan.Hours}h ";
             }
+
             if (timeSpan.Minutes > 0)
             {
                 sTime += $"{timeSpan.Minutes}m ";
             }
+
             if (timeSpan.Seconds > 0)
             {
                 sTime += $"{timeSpan.Seconds}s";
@@ -264,6 +269,7 @@ namespace IPCLogger.Core.Common
                     hex.AppendLine();
                 }
             }
+
             return hex.ToString();
         }
 
@@ -271,23 +277,22 @@ namespace IPCLogger.Core.Common
         {
             if (sValue == null)
             {
-                string msg = "Value cannot be empty";
+                string msg = "Comma-separated string cannot be null";
                 throw new Exception(msg);
             }
 
+            object result = Activator.CreateInstance(dataType);
+
             if (sValue == string.Empty)
             {
-                return null;
+                return result;
             }
 
             StringSplitOptions sso = removeEmpty ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None;
             string[] value = sValue.Split(new[] {separator}, sso).Select(s => s.Trim()).ToArray();
 
-            object result = null;
-
             if (value.Any())
             {
-                result = Activator.CreateInstance(dataType);
                 switch (result)
                 {
                     case HashSet<string> hsString:
@@ -299,6 +304,9 @@ namespace IPCLogger.Core.Common
                     case string[] _:
                         result = value;
                         break;
+                    default:
+                        string msg = $"Type {dataType.Name} is not supported";
+                        throw new Exception(msg);
                 }
             }
 
@@ -308,9 +316,7 @@ namespace IPCLogger.Core.Common
         public static string StringListToString(IEnumerable<string> value, string separator)
         {
             separator += " ";
-            return value != null
-                ? value.Aggregate((current, next) => current + separator + next)
-                : null;
+            return value?.Aggregate((current, next) => current + separator + next);
         }
 
         private static void AddKeyValueToDictionary(IDictionary dict, string key, object value, Type valueType)
@@ -335,45 +341,47 @@ namespace IPCLogger.Core.Common
             dict.Add(key, dictValue);
         }
 
-        public static object XmlNodeToKeyValue(Type dataType, XmlNode node)
+        public static object XmlNodeToKeyValue(Type dataType, XmlNode xmlNode)
         {
-            if (node == null)
+            if (xmlNode == null)
             {
-                string msg = "Value cannot be empty";
+                string msg = "XmlNode cannot be null";
                 throw new Exception(msg);
             }
 
-            XmlNodeList paramNodes = node.ChildNodes;
+            object result = Activator.CreateInstance(dataType);
+            XmlNodeList paramNodes = xmlNode.ChildNodes;
             if (paramNodes.Count == 0)
             {
-                return null;
+                return result;
             }
 
-            object result = Activator.CreateInstance(dataType);
             Type dictValueType = null;
 
             foreach (XmlNode paramNode in paramNodes)
             {
                 switch (result)
                 {
-                    case IDictionary dictPair:
+                    case IDictionary dict:
                         if (dictValueType == null)
                         {
                             Type[] arguments = result.GetType().GetGenericArguments();
                             dictValueType = arguments[1];
                         }
-
-                        AddKeyValueToDictionary(dictPair, paramNode.Name, paramNode.InnerText, dictValueType);
+                        AddKeyValueToDictionary(dict, paramNode.Name, paramNode.InnerText, dictValueType);
                         break;
+                    default:
+                        string msg = $"Type {dataType.Name} is not supported";
+                        throw new Exception(msg);
                 }
             }
 
             return result;
         }
 
-        public static void KeyValueToXmlNode(Type dataType, object value, XmlNode node)
+        public static void KeyValueToXmlNode(Type dataType, object value, XmlNode xmlNode)
         {
-            node.InnerXml = string.Empty;
+            xmlNode.InnerXml = string.Empty;
 
             if (value == null)
             {
@@ -382,19 +390,24 @@ namespace IPCLogger.Core.Common
 
             switch (value)
             {
-                case IDictionary dictPair:
-                    XmlDocument xmlDoc = node.OwnerDocument;
-                    foreach (object key in dictPair.Keys)
-                    {
-                        object dictValue = dictPair[key];
-                        XmlNode valNode = xmlDoc.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
-                        node.AppendChild(valNode);
-                        valNode.InnerText = dictValue?.ToString() ?? string.Empty;
-                    }
+                case IDictionary dict:
+                    DictionaryToXmlNode(dict, xmlNode);
                     break;
                 default:
-                    string msg = $"Invalid value of data type {dataType.Name}";
+                    string msg = $"Type {dataType.Name} is not supported";
                     throw new Exception(msg);
+            }
+        }
+
+        private static void DictionaryToXmlNode(IDictionary dict, XmlNode xmlNode)
+        {
+            XmlDocument xmlDoc = xmlNode.OwnerDocument;
+            foreach (object key in dict.Keys)
+            {
+                object dictValue = dict[key];
+                XmlNode valNode = xmlDoc?.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
+                xmlNode.AppendChild(valNode);
+                valNode.InnerText = dictValue?.ToString() ?? string.Empty;
             }
         }
 
@@ -402,7 +415,7 @@ namespace IPCLogger.Core.Common
         {
             if (value == null)
             {
-                return string.Empty;
+                return "{}";
             }
 
             switch (value)
@@ -410,15 +423,15 @@ namespace IPCLogger.Core.Common
                 case IDictionary dictPair:
                     return DictionaryToJson(keyName, valueName, dictPair);
                 default:
-                    string msg = $"Invalid value of data type {dataType.Name}";
+                    string msg = $"Type {dataType.Name} is not supported";
                     throw new Exception(msg);
             }
         }
 
         private static string DictionaryToJson(string keyName, string valueName, IDictionary dict)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{{ \"colNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
+            StringBuilder sbJson = new StringBuilder();
+            sbJson.Append($"{{ \"colNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
 
             List<string> entries = new List<string>();
             foreach (DictionaryEntry d in dict)
@@ -426,19 +439,18 @@ namespace IPCLogger.Core.Common
                 entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
             }
 
-            sb.Append($", \"values\":[ {string.Join(",", entries)}] }}");
-            return sb.ToString();
+            sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
+            return sbJson.ToString();
         }
 
         public static object JsonToKeyValue(Type dataType, string sJson)
         {
-            bool isDict = dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Dictionary<,>);
-            if (isDict)
+            if (dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 return JsonToDictionary(dataType, sJson);
             }
 
-            string msg = $"Unknown data type {dataType.Name}";
+            string msg = $"Type {dataType.Name} is not supported";
             throw new Exception(msg);
         }
 
@@ -448,13 +460,13 @@ namespace IPCLogger.Core.Common
             Type dictType = typeof(Dictionary<,>).MakeGenericType(typeof(string), arguments[1]);
             Type listType = typeof(List<>).MakeGenericType(dictType);
 
-            IList jsonObject = (IList)JSONParser.FromJson(sJson, listType);
+            IList jsonObject = (IList) sJson?.FromJson(listType);
             if (jsonObject == null)
             {
                 throw new Exception("Invalid JSON string");
             }
 
-            IDictionary result = (IDictionary)Activator.CreateInstance(dictType);
+            IDictionary result = (IDictionary) Activator.CreateInstance(dictType);
             foreach (IDictionary dict in jsonObject)
             {
                 AddKeyValueToDictionary(result, (string) dict["col1"], dict["col2"], arguments[1]);
