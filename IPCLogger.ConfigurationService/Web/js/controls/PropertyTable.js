@@ -242,7 +242,7 @@
     UI.PropertyBase.prototype.value = function (val) {
         var me = this;
         if (val || val === "" || val === 0) {
-            me.Element.val(val).change();
+            me.Element.attr("value", val);
         }
         return me.Element.attr("value");
     };
