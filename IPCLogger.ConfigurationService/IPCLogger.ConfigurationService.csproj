@@ -125,6 +125,7 @@
     <Compile Include="Web\modules\common\BootstrapperCommon.cs" />
     <Compile Include="Web\modules\common\CookieSerializer.cs" />
     <Compile Include="Web\modules\ModuleAuth.cs" />
+    <Compile Include="Web\modules\ModuleBase.cs" />
     <Compile Include="Web\modules\ModuleIndex.cs" />
     <Compile Include="Web\modules\ModuleLogin.cs" />
     <Compile Include="Forms\frmMain.cs">
@@ -171,6 +172,7 @@
     <None Include="Web\fonts\fontawesome-webfont.woff" />
     <None Include="Web\fonts\fontawesome-webfont.woff2" />
     <None Include="Web\fonts\FontAwesome.otf" />
+    <Content Include="Web\js\bootstrap\bootbox.min.js" />
     <Content Include="Web\js\jquery\jquery-ui.min.js" />
     <Content Include="_cutted_off\PropertyTable.js.txt" />
   </ItemGroup>

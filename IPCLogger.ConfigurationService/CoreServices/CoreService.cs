@@ -5,11 +5,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using IPCLogger.ConfigurationService.Common.Exceptions;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
-    internal class CoreService
+    public class CoreService
     {
+
+#region Private fields
+
+        private int _applicationId;
+
+        private string _configurationFile;
+
+#endregion
 
 #region Properties
 
@@ -23,9 +32,10 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Ctor
 
-        public CoreService(string configurationFile)
+        public CoreService(int applicationId, string configurationFile)
         {
-            LoadConfiguration(configurationFile);
+            _applicationId = applicationId;
+            LoadConfiguration(_configurationFile = configurationFile);
             ReadLoggers(configurationFile);
         }
 
@@ -49,7 +59,16 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public void SaveConfiguration()
         {
-            ConfigurationXml.Save(new Uri(ConfigurationXml.BaseURI).LocalPath);
+            ConfigurationXml.Save(_configurationFile);
+        }
+        public bool IsSameApplication(int applicationId)
+        {
+            return _applicationId == applicationId;
+        }
+
+        public bool IsSameConfiguration(string configurationFile)
+        {
+            return configurationFile.Equals(_configurationFile, StringComparison.InvariantCultureIgnoreCase);
         }
 
 #endregion
@@ -79,6 +98,17 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             ReadAvailableLoggers(configurationFile);
             ReadDeclaredLoggers(configurationFile);
+        }
+
+        public DeclaredLoggerModel GetDeclaredLogger(string loggerId)
+        {
+            DeclaredLoggerModel loggerModel = DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
+            if (loggerModel == null)
+            {
+                throw new InvalidRequestException();
+            }
+
+            return loggerModel;
         }
 
 #endregion

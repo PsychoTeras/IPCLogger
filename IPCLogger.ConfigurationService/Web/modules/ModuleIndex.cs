@@ -4,63 +4,19 @@ using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
 using Nancy;
 using Nancy.Responses;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
-    public class ModuleIndex : NancyModule
+    public class ModuleIndex : ModuleBase
     {
-        private PageModel PageModel
-        {
-            get { return Context.Request.Session["PageModel"] as PageModel; }
-            set { Context.Request.Session["PageModel"] = value; }
-        }
-
-        private CoreService CoreService
-        {
-            get { return Context.Request.Session["CoreService"] as CoreService; }
-            set { Context.Request.Session["CoreService"] = value; }
-        }
-
         public ModuleIndex()
         {
-            CoreService LoadCoreService(int applicationId, ApplicationModel applicationModel = null)
-            {
-                CoreService coreService = CoreService;
-                if (CoreService == null)
-                {
-                    applicationModel = applicationModel ?? ApplicationDAL.Instance.GetApplication(applicationId);
-                    coreService = new CoreService(applicationModel.ConfigurationFile);
-                    CoreService = coreService;
-                }
-
-                return coreService;
-            }
-
-            PageModel SetPageModel(Func<PageModel> funcPageModel)
-            {
-                PageModel previousPageModel = PageModel;
-                PageModel currentPageModel = funcPageModel();
-                if (currentPageModel != null && previousPageModel != null)
-                {
-                    PageModel model = currentPageModel;
-                    PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == model.PageType);
-                    if (existingPageModel != null)
-                    {
-                        currentPageModel = existingPageModel;
-                    }
-                }
-                PageModel = currentPageModel;
-                return currentPageModel;
-            }
-
             Get["/"] = x => Response.AsRedirect("/applications", RedirectResponse.RedirectType.Temporary);
 
             Get["/applications"] = x =>
             {
-                //this.RequiresAuthentication();
+                VerifyAuthentication();
 
                 List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
                 PageModel pageModel = SetPageModel(() => PageModel.Applications(applications));
@@ -69,7 +25,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
             Get["/applications/{appid:int}"] = x =>
             {
-                //this.RequiresAuthentication();
+                VerifyAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
@@ -81,13 +37,13 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
             Get["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
             {
-                //this.RequiresAuthentication();
+                VerifyAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 string loggerId = ViewBag.loggerId = x.lid;
 
                 CoreService coreService = LoadCoreService(applicationId);
-                DeclaredLoggerModel loggerModel = coreService.DeclaredLoggers.First(l => l.Id == loggerId);
+                DeclaredLoggerModel loggerModel = coreService.GetDeclaredLogger(loggerId);
                 ViewBag.typeName = loggerModel.TypeName;
 
                 PageModel pageModel = SetPageModel(() => PageModel.LoggerSettings(applicationId, loggerModel, PageModel));
@@ -96,7 +52,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
             Get["/users"] = x =>
             {
-                //this.RequiresAuthentication();
+                VerifyAuthentication();
 
                 List<UserModel> users = UserDAL.Instance.GetUsers();
                 return View["index", PageModel.Users(users)];

@@ -22,8 +22,12 @@
             $("body").removeClass("loading"); 
         },
         mousemove: function (e) {
-            sessionStorage.setItem("mouseX", e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
-            sessionStorage.setItem("mouseY", e.clientY + document.body.scrollTop + document.documentElement.scrollTop);
+            if (document.body) {
+                sessionStorage.setItem("mouseX",
+                    e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+                sessionStorage.setItem("mouseY",
+                    e.clientY + document.body.scrollTop + document.documentElement.scrollTop);
+            }
         }
     });
 
@@ -159,11 +163,13 @@
             }
 
             var message = "";
-            if (xhr.responseJSON) {
+            if (xhr.responseText) {
+                message = xhr.responseText;
+            } else if (xhr.responseJSON) {
                 message = xhr.responseJSON.Message;
             }
 
-            showDialog.error(callerName + thrownError, message);
+            showDialog.error(callerName + thrownError, JSON.parse(message));
         };
 
         return $.ajax({

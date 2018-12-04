@@ -2,7 +2,7 @@
 
     var $Table = null;
     var $RowEditing = null;
-    var $ColNumber = null;
+    var $ColsNumber = null;
 
     UI.PropertyTable = function () {
         var me = this;
@@ -18,7 +18,7 @@
         e.stopPropagation();
     }
 
-    function captureKey(e) {
+    function captureKeys(e) {
         if (e.which === 13) {
             saveChanges();
         } else if (e.which === 27) {
@@ -26,15 +26,15 @@
         }
     }
 
-    function beginEditing() {
+    function beginEditing($currentCell) {
         $Table.addClass("editing");
         $RowEditing.addClass("editing");
         $RowEditing.find(".td-actions .btn-edit").removeClass("fa-pencil").addClass("fa-save");
         $RowEditing.find(".td-actions .btn-remove").removeClass("fa-trash").addClass("fa-remove");
-        $RowEditing.find("input:first").focus();
+        $($currentCell && $currentCell.children("input")[0] || $RowEditing.find("input:first")[0]).focus();
     }
 
-    function editRow($tr) {
+    function editRow($tr, $currentCell) {
         $("td[data-field]", $RowEditing = $tr).each(function () {
             var me = this;
             var $me = $(this);
@@ -50,10 +50,10 @@
                 .dblclick(captureEvent);
 
             input.appendTo(me);
-            input.keydown(captureKey);
+            input.keydown(captureKeys);
         });
 
-        beginEditing();
+        beginEditing($currentCell);
     }
 
     function endEditing() {
@@ -97,7 +97,8 @@
         }
 
         if (!$RowEditing) {
-            editRow($tr);
+            var $currentCell = $(document.elementFromPoint(e.clientX, e.clientY));
+            editRow($tr, $currentCell);
         } else {
             saveChanges();
         }
@@ -133,8 +134,9 @@
         var $buttonsGroup = $actionsRow.append($("<div class='btn-group'>")).children("div");
 
         function addButton($parent, classes) {
-            var $actionButton = $parent.append("<button>").children("button:last");
-            return $actionButton.addClass("btn btn-sm btn-glyph fa " + classes);
+            return $parent.append("<button>").children("button:last").
+                addClass("btn btn-sm btn-glyph fa " + classes).
+                on("keydown", captureKeys);
         }
 
         addButton($buttonsGroup, "btn-edit btn-outline-secondary fa-pencil").on("click", function (e) {
@@ -151,14 +153,14 @@
         });
     }
 
-    function addRow($body, colNumber, rowData, isNewRow) {
+    function addRow($body, colsNumber, rowData, isNewRow) {
         hideNoRowMessage($body);
 
         var $bodyRow = $body.append("<tr>").children("tr:last");
         if (isNewRow) {
             $bodyRow.attr("is-new-row", "yes");
         }
-        for (var colIdx = 1; colIdx <= colNumber; colIdx++) {
+        for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
             var cellValue = rowData ? rowData[colKey] : "";
             $bodyRow.append($("<td>").attr("data-field", colKey).text(cellValue));
@@ -182,24 +184,24 @@
             cursor: "move"
         });
 
-        var colNumber = jsonValue.colNumber;
+        var colsNumber = jsonValue.colsNumber;
         var rowNumber = jsonValue.values.length;
         for (var rowIdx = 0; rowIdx < rowNumber; rowIdx++) {
             var rowData = jsonValue.values[rowIdx];
-            addRow($body, colNumber, rowData);
+            addRow($body, colsNumber, rowData);
         }
 
         displayNoRowMessage($body);
     }
 
-    function setRows($table, jsonValue, colNumber) {
+    function setRows($table, jsonValue, colsNumber) {
         var $body = $table.children("tbody");
         $body.empty();
 
         var rowNumber = jsonValue.length;
         for (var rowIdx = 0; rowIdx < rowNumber; rowIdx++) {
             var rowData = jsonValue[rowIdx];
-            addRow($body, colNumber, rowData);
+            addRow($body, colsNumber, rowData);
         }
 
         displayNoRowMessage($body);
@@ -214,8 +216,8 @@
     function buildHeaders($table, jsonValue) {
         var $headRow = $table.append("<thead class='card-header'><tr>").find("tr");
 
-        var colNumber = jsonValue.colNumber;
-        for (var colIdx = 1; colIdx <= colNumber; colIdx++) {
+        var colsNumber = jsonValue.colsNumber;
+        for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
             var colName = jsonValue[colKey];
             $headRow.append($("<td>").text(colName));
@@ -235,11 +237,11 @@
                 }
 
                 var $body = $table.children("tbody");
-                var $bodyRow = addRow($body, colNumber, null, true);
+                var $bodyRow = addRow($body, colsNumber, null, true);
                 editRow($bodyRow);
             });
 
-        return colNumber;
+        return colsNumber;
     }
 
     function initTable($table) {
@@ -272,7 +274,7 @@
     function setValue(value) {
         var jsonValue = JSON.parse(value);
         if (jsonValue) {
-            setRows($Table, jsonValue, $ColNumber);
+            setRows($Table, jsonValue, $ColsNumber);
         }
     }
 
@@ -297,7 +299,7 @@
         me.Element.removeAttr("value");
 
         $Table = buildTable($element);
-        $ColNumber = buildHeaders($Table, jsonValue);
+        $ColsNumber = buildHeaders($Table, jsonValue);
         buildRows($Table, jsonValue);
         initTable($Table);
     };

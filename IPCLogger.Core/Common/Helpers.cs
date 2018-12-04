@@ -305,7 +305,7 @@ namespace IPCLogger.Core.Common
                         result = value;
                         break;
                     default:
-                        string msg = $"Type {dataType.Name} is not supported";
+                        string msg = $"Type '{dataType.Name}' is not supported";
                         throw new Exception(msg);
                 }
             }
@@ -328,7 +328,7 @@ namespace IPCLogger.Core.Common
             }
             catch
             {
-                string msg = $"Wrong value {value} of type {valueType.Name}";
+                string msg = $"Wrong value '{value}' of type '{valueType.Name}'";
                 throw new Exception(msg);
             }
 
@@ -371,7 +371,7 @@ namespace IPCLogger.Core.Common
                         AddKeyValueToDictionary(dict, paramNode.Name, paramNode.InnerText, dictValueType);
                         break;
                     default:
-                        string msg = $"Type {dataType.Name} is not supported";
+                        string msg = $"Type '{dataType.Name}' is not supported";
                         throw new Exception(msg);
                 }
             }
@@ -394,7 +394,7 @@ namespace IPCLogger.Core.Common
                     DictionaryToXmlNode(dict, xmlNode);
                     break;
                 default:
-                    string msg = $"Type {dataType.Name} is not supported";
+                    string msg = $"Type '{dataType.Name}' is not supported";
                     throw new Exception(msg);
             }
         }
@@ -404,8 +404,17 @@ namespace IPCLogger.Core.Common
             XmlDocument xmlDoc = xmlNode.OwnerDocument;
             foreach (object key in dict.Keys)
             {
+                XmlNode valNode;
                 object dictValue = dict[key];
-                XmlNode valNode = xmlDoc?.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
+                try
+                {
+                    valNode = xmlDoc?.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
+                }
+                catch (XmlException ex)
+                {
+                    string msg = $"Error while saving XML node '{key}': {ex.Message}";
+                    throw new Exception(msg);
+                }
                 xmlNode.AppendChild(valNode);
                 valNode.InnerText = dictValue?.ToString() ?? string.Empty;
             }
@@ -423,7 +432,7 @@ namespace IPCLogger.Core.Common
                 case IDictionary dictPair:
                     return DictionaryToJson(keyName, valueName, dictPair);
                 default:
-                    string msg = $"Type {dataType.Name} is not supported";
+                    string msg = $"Type '{dataType.Name}' is not supported";
                     throw new Exception(msg);
             }
         }
@@ -431,7 +440,7 @@ namespace IPCLogger.Core.Common
         private static string DictionaryToJson(string keyName, string valueName, IDictionary dict)
         {
             StringBuilder sbJson = new StringBuilder();
-            sbJson.Append($"{{ \"colNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
+            sbJson.Append($"{{ \"colsNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
 
             List<string> entries = new List<string>();
             foreach (DictionaryEntry d in dict)
@@ -450,7 +459,7 @@ namespace IPCLogger.Core.Common
                 return JsonToDictionary(dataType, sJson);
             }
 
-            string msg = $"Type {dataType.Name} is not supported";
+            string msg = $"Type '{dataType.Name}' is not supported";
             throw new Exception(msg);
         }
 
