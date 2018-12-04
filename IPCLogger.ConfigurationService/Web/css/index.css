@@ -117,7 +117,7 @@ button.btn.fa:before {
     }
 
 button.dropdown-toggle:after {
-    margin-top: 4px;
+    vertical-align: middle;
 }
 
 .card-header {
