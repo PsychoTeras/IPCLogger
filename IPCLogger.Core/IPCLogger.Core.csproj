@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Attributes\KeyValueConversionAttribute.cs" />
     <Compile Include="Attributes\RequiredSettingAttribute.cs" />
+    <Compile Include="Attributes\ConsoleColorConversionAttribute.cs" />
     <Compile Include="Attributes\SizeStringConversionAttribute.cs" />
     <Compile Include="Attributes\CustomConversionAttribute.cs" />
     <Compile Include="Attributes\StringListConversionAttribute.cs" />
