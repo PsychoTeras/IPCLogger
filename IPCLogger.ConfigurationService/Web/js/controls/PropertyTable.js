@@ -227,7 +227,7 @@
                 e.preventDefault();
 
                 if ($RowEditing) {
-                    if ($RowEditing.attr("is-new-row")) {
+                    if ($RowEditing.attr("is-new-row") && !$RowEditing.find("input").filter(function () {return this.value;}).length) {
                         $RowEditing.find("input:first").focus();
                         return;
                     }
@@ -249,6 +249,10 @@
     //=========== PropertyTable base methods ===========\\
 
     function getValue() {
+        if ($RowEditing) {
+            saveChanges();
+        }
+
         var result = [];
         $Table.find("tbody tr").each(function () {
             var $tr = $(this);
@@ -261,6 +265,7 @@
             });
             result.push(item);
         });
+
         return JSON.stringify(result);
     }
 
