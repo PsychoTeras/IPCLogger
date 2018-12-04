@@ -104,10 +104,29 @@
     }
 
     function deleteRow($tr) {
+        var $body = $tr.parent();
         $tr.remove();
+        displayNoRowMessage($body);
     }
 
     //=========== Build table methods ===========\\
+
+    function displayNoRowMessage($body) {
+        if (!$body.children().length) {
+            $body.append($("<tr>")).children("tr").
+                append($("<td class='no-records'>")).
+                append($("<td class='no-records'>")).children("td:last").
+                text("No records");
+            $Table.children("tbody").sortable("option", "disabled", true);
+        }
+    }
+
+    function hideNoRowMessage($body) {
+        if ($body.find(".no-records").length) {
+            $body.empty();
+            $Table.children("tbody").sortable("option", "disabled", false);
+        }
+    }
 
     function addActionsCell($bodyRow) {
         var $actionsRow = $bodyRow.append($("<td class='td-actions'>")).children("td:last");
@@ -133,6 +152,8 @@
     }
 
     function addRow($body, colNumber, rowData, isNewRow) {
+        hideNoRowMessage($body);
+
         var $bodyRow = $body.append("<tr>").children("tr:last");
         if (isNewRow) {
             $bodyRow.attr("is-new-row", "yes");
@@ -143,6 +164,14 @@
             $bodyRow.append($("<td>").attr("data-field", colKey).text(cellValue));
         }
         addActionsCell($bodyRow);
+
+        $bodyRow.mouseover(function () {
+            $body.find("tr td").removeClass("mouseover");
+            $(this).find(".td-actions").addClass("mouseover");
+        }).mouseleave(function () {
+            $(this).find(".td-actions").removeClass("mouseover");
+        });
+
         return $bodyRow;
     }
 
@@ -159,6 +188,8 @@
             var rowData = jsonValue.values[rowIdx];
             addRow($body, colNumber, rowData);
         }
+
+        displayNoRowMessage($body);
     }
 
     function buildTable($element) {
@@ -179,10 +210,14 @@
 
         $headRow.append($("<td>")).children("td:last").
             addClass("th-actions").append($("<button>")).children("button").
-            addClass("btn btn-link").text("Add new row").on("click", function (e) {
+            addClass("btn btn-link").text("Add new record").on("click", function (e) {
                 e.preventDefault();
 
                 if ($RowEditing) {
+                    if ($RowEditing.attr("is-new-row")) {
+                        $RowEditing.find("input:first").focus();
+                        return;
+                    }
                     saveChanges();
                 }
 
@@ -195,13 +230,6 @@
     }
 
     function initTable($table) {
-        $table.find("tbody>tr").mouseover(function () {
-            $table.find("tbody>tr>td").removeClass("mouseover");
-            $(this).find(".td-actions").addClass("mouseover");
-        });
-        $table.find("tbody>tr").mouseleave(function () {
-            $(this).find(".td-actions").removeClass("mouseover");
-        });
         $table.bind("dblclick", toggle);
     }
 

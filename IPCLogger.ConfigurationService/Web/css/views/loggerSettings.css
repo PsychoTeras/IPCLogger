@@ -13,10 +13,10 @@
 }
 
 #form-logger-settings .settings-table-wrap {
-    max-height: 194px;
+    height: auto;
+    /*max-height: 194px;*/
     overflow: auto;
     padding: 0;
-    height: auto;
 }
 
     #form-logger-settings .settings-table-wrap table {
@@ -24,31 +24,20 @@
         margin-bottom: 0;
     }
 
-        #form-logger-settings .settings-table-wrap table > thead > tr > td {
+        #form-logger-settings .settings-table-wrap table thead td {
             border-top-width: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table thead.card-header {
-            /*background-color: #006be0;
-            background-color: rgba(0, 107, 224, .1);*/
+        #form-logger-settings .settings-table-wrap table thead td:not(.th-actions) {
+            width: 50%;
+            border-top-width: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table tbody tr td {
-            vertical-align: middle;
-            cursor: pointer;
-            padding: 1px 1px 1px 5px;
-        }
-
-            #form-logger-settings .settings-table-wrap table tbody tr td option,
-            #form-logger-settings .settings-table-wrap table tbody tr td input {
-                height: auto !important;
-            }
-
-        #form-logger-settings .settings-table-wrap table thead tr .th-actions {
+        #form-logger-settings .settings-table-wrap table thead .th-actions {
             text-align: right;
         }
 
-            #form-logger-settings .settings-table-wrap table thead tr .th-actions button {
+            #form-logger-settings .settings-table-wrap table thead .th-actions button {
                 font-size: .875rem;
                 font-weight: 500;
                 padding: 0;
@@ -57,22 +46,45 @@
                 line-height: normal;
             }
 
-        #form-logger-settings .settings-table-wrap table tbody tr .td-actions {
+        #form-logger-settings .settings-table-wrap table thead.card-header {
+            /*background-color: #006be0;
+            background-color: rgba(0, 107, 224, .1);*/
+        }
+
+        #form-logger-settings .settings-table-wrap table tbody .no-records {
+            height: 33px;
+            font-style: italic;
+            background-color: white !important;
+            cursor: auto;
+        }
+
+        #form-logger-settings .settings-table-wrap table tbody td {
+            vertical-align: middle;
+            cursor: pointer;
+            padding: 1px 1px 1px 5px;
+        }
+
+            #form-logger-settings .settings-table-wrap table tbody td option,
+            #form-logger-settings .settings-table-wrap table tbody td input {
+                height: auto !important;
+            }
+
+        #form-logger-settings .settings-table-wrap table tbody .td-actions {
             opacity: 0.05;
             text-align: right;
             width: 62px;
         }
 
-        #form-logger-settings .settings-table-wrap table tbody tr .td-actions.mouseover,
-        #form-logger-settings .settings-table-wrap table.editing tbody tr.editing .td-actions {
-            opacity: 1;
-        }
+            #form-logger-settings .settings-table-wrap table tbody .td-actions.mouseover,
+            #form-logger-settings .settings-table-wrap table.editing tbody tr.editing .td-actions {
+                opacity: 1;
+            }
 
-        #form-logger-settings .settings-table-wrap table tbody tr .td-actions button {
-            padding-top: 4px;
-            height: 30px;
-            width: 31px;
-        }
+            #form-logger-settings .settings-table-wrap table tbody .td-actions button {
+                padding-top: 4px;
+                height: 30px;
+                width: 31px;
+            }
 
         #form-logger-settings .settings-table-wrap table.editing tbody tr:not(.editing) .td-actions {
             opacity: 0;
