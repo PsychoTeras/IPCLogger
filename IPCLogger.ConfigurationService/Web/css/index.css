@@ -1,6 +1,10 @@
 ﻿body,
 .form-control {
     font-size: .875rem;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 [role="main"] {

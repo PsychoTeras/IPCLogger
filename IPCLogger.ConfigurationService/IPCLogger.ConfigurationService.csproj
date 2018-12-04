@@ -171,6 +171,8 @@
     <None Include="Web\fonts\fontawesome-webfont.woff" />
     <None Include="Web\fonts\fontawesome-webfont.woff2" />
     <None Include="Web\fonts\FontAwesome.otf" />
+    <Content Include="Web\js\jquery\jquery-ui.min.js" />
+    <Content Include="_cutted_off\PropertyTable.js.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\add-app.png" />

@@ -1,0 +1,21 @@
+﻿			var field = $me.data("field"),
+
+
+            if (field in instance.options.dropdowns) {
+                input = $("<select></select>");
+
+                for (var i = 0; i < instance.options.dropdowns[field].length; i++) {
+                    $("<option></option>")
+                        .text(instance.options.dropdowns[field][i])
+                        .appendTo(input);
+                }
+
+                input.val(value)
+                    .data("old-value", value)
+                    .dblclick(instance._captureEvent);
+            } else {
+                input = $('<input type="text" />')
+                    .val(value)
+                    .data("old-value", value)
+                    .dblclick(instance._captureEvent);
+            }
