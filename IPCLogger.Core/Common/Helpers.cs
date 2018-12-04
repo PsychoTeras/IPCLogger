@@ -379,10 +379,32 @@ namespace IPCLogger.Core.Common
             {
                 return;
             }
+
+            switch (value)
+            {
+                case IDictionary dictPair:
+                    XmlDocument xmlDoc = node.OwnerDocument;
+                    foreach (object key in dictPair.Keys)
+                    {
+                        object dictValue = dictPair[key];
+                        XmlNode valNode = xmlDoc.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
+                        node.AppendChild(valNode);
+                        valNode.InnerText = dictValue?.ToString() ?? string.Empty;
+                    }
+                    break;
+                default:
+                    string msg = $"Invalid value of data type {dataType.Name}";
+                    throw new Exception(msg);
+            }
         }
 
         public static string KeyValueToJson(Type dataType, string keyName, string valueName, object value)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
             switch (value)
             {
                 case IDictionary dictPair:
@@ -415,7 +437,9 @@ namespace IPCLogger.Core.Common
             {
                 return JsonToDictionary(dataType, sJson);
             }
-            return null;
+
+            string msg = $"Unknown data type {dataType.Name}";
+            throw new Exception(msg);
         }
 
         private static object JsonToDictionary(Type dataType, string sJson)
