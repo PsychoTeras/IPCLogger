@@ -192,6 +192,19 @@
         displayNoRowMessage($body);
     }
 
+    function setRows($table, jsonValue, colNumber) {
+        var $body = $table.children("tbody");
+        $body.empty();
+
+        var rowNumber = jsonValue.length;
+        for (var rowIdx = 0; rowIdx < rowNumber; rowIdx++) {
+            var rowData = jsonValue[rowIdx];
+            addRow($body, colNumber, rowData);
+        }
+
+        displayNoRowMessage($body);
+    }
+
     function buildTable($element) {
         var $table = $element.append("<table>").children("table");
         $table.addClass("table table-sm table-hover");
@@ -235,16 +248,39 @@
 
     //=========== PropertyTable base methods ===========\\
 
+    function getValue() {
+        var result = [];
+        $Table.find("tbody tr").each(function () {
+            var $tr = $(this);
+            var item = {};
+            $tr.find("td:not(.td-actions)").each(function (colIdx) {
+                var $div = $(this);
+                var cellValue = $div.text();
+                var colKey = "col" + (colIdx + 1);
+                item[colKey] = cellValue;
+            });
+            result.push(item);
+        });
+        return JSON.stringify(result);
+    }
+
+    function setValue(value) {
+        var jsonValue = JSON.parse(value);
+        if (jsonValue) {
+            setRows($Table, jsonValue, $ColNumber);
+        }
+    }
+
     UI.PropertyTable.prototype.getPropertyType = function () {
         return "ui-property-table";
     };
 
-    UI.PropertyBase.prototype.value = function (val) {
+    UI.PropertyTable.prototype.value = function (val) {
         var me = this;
-        if (val || val === "" || val === 0) {
-            me.Element.attr("value", val);
+        if (val || val === "") {
+            setValue(val);
         }
-        return me.Element.attr("value");
+        return getValue();
     };
 
     UI.PropertyTable.prototype.afterChangeType = function ($element) {
