@@ -43,18 +43,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public XmlNode RootXmlNode { get; private set; }
 
-        protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
-        {
-            RootXmlNode = cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
-            Type bsType = ((TypeInfo) Type).ImplementedInterfaces
-                .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
-                .First(i => i != null);
-            _baseSettings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
-            _baseSettings.Setup(cfgNode);
-            return _baseSettings;
-        }
-
-        protected void InitializeSettings(XmlNode cfgNode = null)
+        public void ReloadProperties()
         {
             PropertyModel PropertyDataToModel(PropertyData data, bool isCommon)
             {
@@ -70,14 +59,30 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 );
             }
 
-            _baseSettings = InstLoggerSettings(cfgNode);
-            Id = BaseHelpers.CalculateMD5(_baseSettings.Hash);
             var commonProperties = _baseSettings.GetCommonProperties().
                 Select(data => PropertyDataToModel(data, true));
             _properties = _baseSettings.GetProperties().
                 Select(data => PropertyDataToModel(data, false)).
                 Concat(commonProperties).
                 ToArray();
+        }
+
+        protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
+        {
+            RootXmlNode = cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
+            Type bsType = ((TypeInfo) Type).ImplementedInterfaces
+                .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
+                .First(i => i != null);
+            _baseSettings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
+            _baseSettings.Setup(cfgNode);
+            return _baseSettings;
+        }
+
+        protected void InitializeSettings(XmlNode cfgNode = null)
+        {
+            _baseSettings = InstLoggerSettings(cfgNode);
+            Id = BaseHelpers.CalculateMD5(_baseSettings.Hash);
+            ReloadProperties();
         }
 
         protected void CloneCSProperties(LoggerModel source)
@@ -106,19 +111,17 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal bool UpdateSettings(IEnumerable<PropertyValidationResult> validationResult, PropertyObjectDTO[] propertyObjs)
         {
-            bool wereUpdated = false;
+            bool wasUpdated = false;
             foreach (PropertyValidationResult result in validationResult)
             {
                 PropertyObjectDTO dtoPropObj = propertyObjs.First(p => p.Name == result.Name);
                 if (dtoPropObj.IsChanged)
                 {
                     _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
-                    _properties.First(p => p.Name == result.Name && p.IsCommon == result.IsCommon).UpdateValue(dtoPropObj.Value);
-                    wereUpdated = true;
+                    wasUpdated = true;
                 }
             }
-
-            return wereUpdated;
+            return wasUpdated;
         }
 
         public override string ToString()

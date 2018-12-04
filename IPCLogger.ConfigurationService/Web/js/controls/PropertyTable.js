@@ -281,7 +281,6 @@
     };
 
     UI.PropertyTable.prototype.value = function (val) {
-        var me = this;
         if (val || val === "") {
             setValue(val);
         }

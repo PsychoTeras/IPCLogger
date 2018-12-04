@@ -17,8 +17,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             Type = availableLoggers.FirstOrDefault
             (
                 t => t.Name == TypeName &&
-                     (string.IsNullOrEmpty(Namespace) ||
-                      t.Namespace != null && t.Namespace.Equals(Namespace, StringComparison.InvariantCultureIgnoreCase))
+                     (string.IsNullOrEmpty(Namespace) || t.Namespace != null && t.Namespace.Equals(Namespace))
             );
         }
 

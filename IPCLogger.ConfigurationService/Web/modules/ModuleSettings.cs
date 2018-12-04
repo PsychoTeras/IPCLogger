@@ -73,6 +73,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     if (!invalidProperties.Any() && loggerModel.UpdateSettings(validationResult, propertyObjs))
                     {
                         coreService.SaveConfiguration();
+                        loggerModel.ReloadProperties();
                     }
 
                     return Response.AsJson(invalidProperties.ToArray());

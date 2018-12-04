@@ -129,8 +129,8 @@ namespace IPCLogger.Core.Loggers.Base
                     p => new PropertyData
                     (
                         p,
-                        p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute,
-                        p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).Length > 0
+                        p.GetAttribute<CustomConversionAttribute>(),
+                        p.IsDefined<RequiredSettingAttribute>()
                     )
                 );
 
@@ -140,15 +140,15 @@ namespace IPCLogger.Core.Loggers.Base
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
                 ).Where
                 (
-                    p => p.CanRead && p.CanWrite && p.GetCustomAttributes(typeof(NonSettingAttribute), true).Length == 0
+                    p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()
                 ).ToDictionary
                 (
                     p => p.Name, 
                     p => new PropertyData
                         (
                             p, 
-                            p.GetCustomAttributes(typeof(CustomConversionAttribute), true).FirstOrDefault() as CustomConversionAttribute,
-                            p.GetCustomAttributes(typeof(RequiredSettingAttribute), true).Length > 0
+                            p.GetAttribute<CustomConversionAttribute>(),
+                            p.IsDefined<RequiredSettingAttribute>()
                         )
                 );
         }
@@ -180,7 +180,7 @@ namespace IPCLogger.Core.Loggers.Base
             XmlNode cfgNode = GetLoggerSettingsNode(xmlCfg, loggerName);
             if (cfgNode == null)
             {
-                string msg = $"Settings for logger '{_loggerType.Name}', name '{loggerName}' haven't found";
+                string msg = $"Settings for logger '{_loggerType.Name}', name '{loggerName}' not found";
                 throw new Exception(msg);
             }
 

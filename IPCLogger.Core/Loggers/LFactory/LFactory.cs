@@ -388,8 +388,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             Type loggerType = _registeredLoggers.FirstOrDefault
                 (
                     t => t.Name == declaredLogger.TypeName &&
-                         (string.IsNullOrEmpty(declaredLogger.Namespace) ||
-                          t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace, StringComparison.InvariantCultureIgnoreCase))
+                         (string.IsNullOrEmpty(declaredLogger.Namespace) || t.Namespace != null && t.Namespace.Equals(declaredLogger.Namespace))
                 );
 
             BaseLoggerInt logger = loggerType != null
