@@ -32,5 +32,10 @@ namespace IPCLogger.Core.Attributes
         {
             return Helpers.KeyValueToJson(_dataType, _keyName, _valueName, value);
         }
+
+        public override object CSStringToValue(string sValue)
+        {
+            return Helpers.JsonToKeyValue(_dataType, sValue);
+        }
     }
 }

@@ -79,6 +79,8 @@
     <Compile Include="Caches\TypeNamesCache.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Caches\EventNamesCache.cs" />
+    <Compile Include="Common\JSONParser.cs" />
+    <Compile Include="Common\JSONWriter.cs" />
     <Compile Include="Common\LightLock.cs" />
     <Compile Include="Common\LogEvent.cs" />
     <Compile Include="Loggers\Base\BaseLogger.cs" />

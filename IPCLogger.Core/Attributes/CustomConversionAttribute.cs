@@ -14,7 +14,6 @@ namespace IPCLogger.Core.Attributes
     {
         public ConversionSource SourceType { get; }
 
-
         protected CustomConversionAttribute(ConversionSource sourceType)
         {
             SourceType = sourceType;
@@ -22,22 +21,22 @@ namespace IPCLogger.Core.Attributes
 
         public virtual object StringToValue(string sValue)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Method {nameof(StringToValue)} needs to be implemented for source type {SourceType}");
         }
 
         public virtual string ValueToString(object value)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Method {nameof(ValueToString)} needs to be implemented for source type {SourceType}");
         }
 
         public virtual object XmlNodeToValue(XmlNode node)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Method {nameof(XmlNodeToValue)} needs to be implemented for source type {SourceType}");
         }
 
         public virtual void ValueToXmlNode(object value, XmlNode node)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Method {nameof(ValueToXmlNode)} needs to be implemented for source type {SourceType}");
         }
 
         public virtual string ValueToCSString(object value)

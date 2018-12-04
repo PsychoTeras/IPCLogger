@@ -313,6 +313,28 @@ namespace IPCLogger.Core.Common
                 : null;
         }
 
+        private static void AddKeyValueToDictionary(IDictionary dict, string key, object value, Type valueType)
+        {
+            object dictValue;
+            try
+            {
+                dictValue = Convert.ChangeType(value, valueType);
+            }
+            catch
+            {
+                string msg = $"Wrong value {value} of type {valueType.Name}";
+                throw new Exception(msg);
+            }
+
+            if (dict.Contains(key))
+            {
+                string msg = $"Duplicate dictionary key '{key}'";
+                throw new Exception(msg);
+            }
+
+            dict.Add(key, dictValue);
+        }
+
         public static object XmlNodeToKeyValue(Type dataType, XmlNode node)
         {
             if (node == null)
@@ -332,26 +354,17 @@ namespace IPCLogger.Core.Common
 
             foreach (XmlNode paramNode in paramNodes)
             {
-                try
+                switch (result)
                 {
-                    switch (result)
-                    {
-                        case IDictionary dictPair:
-                            if (dictValueType == null)
-                            {
-                                Type[] arguments = result.GetType().GetGenericArguments();
-                                dictValueType = arguments[1];
-                            }
+                    case IDictionary dictPair:
+                        if (dictValueType == null)
+                        {
+                            Type[] arguments = result.GetType().GetGenericArguments();
+                            dictValueType = arguments[1];
+                        }
 
-                            object value = Convert.ChangeType(paramNode.InnerText, dictValueType);
-                            dictPair.Add(paramNode.Name, value);
-                            break;
-                    }
-                }
-                catch
-                {
-                    string msg = $"Duplicate key '{paramNode.Name}'";
-                    throw new Exception(msg);
+                        AddKeyValueToDictionary(dictPair, paramNode.Name, paramNode.InnerText, dictValueType);
+                        break;
                 }
             }
 
@@ -360,6 +373,8 @@ namespace IPCLogger.Core.Common
 
         public static void KeyValueToXmlNode(Type dataType, object value, XmlNode node)
         {
+            node.InnerXml = string.Empty;
+
             if (value == null)
             {
                 return;
@@ -373,7 +388,8 @@ namespace IPCLogger.Core.Common
                 case IDictionary dictPair:
                     return DictionaryToJson(keyName, valueName, dictPair);
                 default:
-                    return null;
+                    string msg = $"Invalid value of data type {dataType.Name}";
+                    throw new Exception(msg);
             }
         }
 
@@ -390,6 +406,37 @@ namespace IPCLogger.Core.Common
 
             sb.Append($", \"values\":[ {string.Join(",", entries)}] }}");
             return sb.ToString();
+        }
+
+        public static object JsonToKeyValue(Type dataType, string sJson)
+        {
+            bool isDict = dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+            if (isDict)
+            {
+                return JsonToDictionary(dataType, sJson);
+            }
+            return null;
+        }
+
+        private static object JsonToDictionary(Type dataType, string sJson)
+        {
+            Type[] arguments = dataType.GetGenericArguments();
+            Type dictType = typeof(Dictionary<,>).MakeGenericType(typeof(string), arguments[1]);
+            Type listType = typeof(List<>).MakeGenericType(dictType);
+
+            IList jsonObject = (IList)JSONParser.FromJson(sJson, listType);
+            if (jsonObject == null)
+            {
+                throw new Exception("Invalid JSON string");
+            }
+
+            IDictionary result = (IDictionary)Activator.CreateInstance(dictType);
+            foreach (IDictionary dict in jsonObject)
+            {
+                AddKeyValueToDictionary(result, (string) dict["col1"], dict["col2"], arguments[1]);
+            }
+
+            return result;
         }
     }
 }
