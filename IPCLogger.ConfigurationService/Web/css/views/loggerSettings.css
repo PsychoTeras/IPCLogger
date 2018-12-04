@@ -47,8 +47,8 @@
             }
 
         #form-logger-settings .settings-table-wrap table thead.card-header {
-            /*background-color: #006be0;
-            background-color: rgba(0, 107, 224, .1);*/
+            background-color: #006be0;
+            background-color: rgba(0, 107, 224, .05);
         }
 
         #form-logger-settings .settings-table-wrap table tbody .no-records {
