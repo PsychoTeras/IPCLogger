@@ -252,8 +252,9 @@
 
         $element.addClass("settings-table-wrap");
 
-        var value = me.value();
-        var jsonValue = JSON.parse(value);   
+        var value = me.Element.attr("value");
+        var jsonValue = JSON.parse(value);
+        me.Element.removeAttr("value");
 
         $Table = buildTable($element);
         $ColNumber = buildHeaders($Table, jsonValue);
