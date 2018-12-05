@@ -20,13 +20,20 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Definitions
 
-        protected internal struct PropertyValidationResult
+        protected internal class PropertyValidationResult
         {
             public string Name;
             public object Value;
             public bool IsCommon;
             public bool IsValid;
             public string ErrorMessage;
+
+            public void SetInvalid(string errorMessage)
+            {
+                Value = null;
+                IsValid = false;
+                ErrorMessage = errorMessage;
+            }
 
             public static PropertyValidationResult Valid(string name, object value, bool isCommon)
             {

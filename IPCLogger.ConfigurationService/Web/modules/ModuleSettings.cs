@@ -46,14 +46,23 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 {
                     CoreService coreService = LoadCoreService(applicationId);
                     DeclaredLoggerModel loggerModel = coreService.GetDeclaredLogger(loggerId);
-                    IEnumerable<PropertyValidationResult> validationResult = loggerModel.ValidateProperties(propertyObjs);
+                    PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
                         Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
-                    if (!invalidProperties.Any() && loggerModel.UpdateSettings(validationResult, propertyObjs))
+                    if (!invalidProperties.Any())
                     {
-                        coreService.SaveConfiguration();
-                        loggerModel.ReloadProperties();
+                        if (loggerModel.UpdateSettings(validationResult, propertyObjs))
+                        {
+                            coreService.SaveConfiguration();
+                            loggerModel.ReloadProperties();
+                        }
+                        else
+                        {
+                            invalidProperties = validationResult.
+                                Where(r => !r.IsValid).
+                                Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
+                        }
                     }
 
                     return Response.AsJson(invalidProperties.ToArray());

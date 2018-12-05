@@ -25,7 +25,7 @@ namespace IPCLogger.Core.Attributes
 
         public override void ValueToXmlNode(object value, XmlNode node)
         {
-            Helpers.KeyValueToXmlNode(_dataType, value, node);
+            Helpers.KeyValueToXmlNode(_dataType, _keyName, _valueName, value, node);
         }
 
         public override string ValueToCSString(object value)

@@ -379,7 +379,8 @@ namespace IPCLogger.Core.Common
             return result;
         }
 
-        public static void KeyValueToXmlNode(Type dataType, object value, XmlNode xmlNode)
+        public static void KeyValueToXmlNode(Type dataType, string keyName, string valueName, 
+            object value, XmlNode xmlNode)
         {
             xmlNode.InnerXml = string.Empty;
 
@@ -391,7 +392,7 @@ namespace IPCLogger.Core.Common
             switch (value)
             {
                 case IDictionary dict:
-                    DictionaryToXmlNode(dict, xmlNode);
+                    DictionaryToXmlNode(dict, keyName, valueName, xmlNode);
                     break;
                 default:
                     string msg = $"Type '{dataType.Name}' is not supported";
@@ -399,22 +400,30 @@ namespace IPCLogger.Core.Common
             }
         }
 
-        private static void DictionaryToXmlNode(IDictionary dict, XmlNode xmlNode)
+        private static void DictionaryToXmlNode(IDictionary dict, string keyName, string valueName, XmlNode xmlNode)
         {
             XmlDocument xmlDoc = xmlNode.OwnerDocument;
-            foreach (object key in dict.Keys)
+            foreach (string key in dict.Keys.Cast<string>())
             {
-                XmlNode valNode;
+                if (string.IsNullOrEmpty(key))
+                {
+                    string msg = $"{keyName} cannot be empty";
+                    throw new Exception(msg);
+                }
+
                 object dictValue = dict[key];
+
+                XmlNode valNode;
                 try
                 {
-                    valNode = xmlDoc?.CreateNode(XmlNodeType.Element, key.ToString(), xmlDoc.NamespaceURI);
+                    valNode = xmlDoc?.CreateNode(XmlNodeType.Element, key, xmlDoc.NamespaceURI);
                 }
                 catch (XmlException ex)
                 {
-                    string msg = $"Error while saving XML node '{key}': {ex.Message}";
+                    string msg = $"{keyName} '{key}'. {ex.Message}";
                     throw new Exception(msg);
                 }
+
                 xmlNode.AppendChild(valNode);
                 valNode.InnerText = dictValue?.ToString() ?? string.Empty;
             }

@@ -104,24 +104,39 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return model;
         }
 
-        internal IEnumerable<PropertyValidationResult> ValidateProperties(PropertyObjectDTO[] properties)
+        internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
         {
-            return properties.Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged));
+            return properties.Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged)).ToArray();
         }
 
-        internal bool UpdateSettings(IEnumerable<PropertyValidationResult> validationResult, PropertyObjectDTO[] propertyObjs)
+        internal bool UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
         {
-            bool wasUpdated = false;
+            bool wasUpdated = false, hasError = false;
+            string bakRootXmlNode = RootXmlNode.InnerXml;
             foreach (PropertyValidationResult result in validationResult)
             {
                 PropertyObjectDTO dtoPropObj = propertyObjs.First(p => p.Name == result.Name);
                 if (dtoPropObj.IsChanged)
                 {
-                    _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
+                    try
+                    {
+                        _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.SetInvalid(ex.Message);
+                        hasError = true;
+                    }
                     wasUpdated = true;
                 }
             }
-            return wasUpdated;
+
+            if (hasError)
+            {
+                RootXmlNode.InnerXml = bakRootXmlNode;
+            }
+
+            return wasUpdated && !hasError;
         }
 
         public override string ToString()
