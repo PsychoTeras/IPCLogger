@@ -12,6 +12,20 @@
     padding-top: 48px;
 }
 
+table thead .th-actions {
+    text-align: right;
+}
+
+    table thead .th-actions button {
+        font-size: .875rem;
+        font-weight: 500;
+        padding: 0;
+        border: 0;
+        height: auto;
+        line-height: normal;
+        color: #006be0;
+    }
+
 input, select, textarea, .custom-checkbox > label:before {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
@@ -205,9 +219,4 @@ body.locked .page-lock {
 
 .input-group-addon {
     padding: 6px 10px 3px;
-}
-
-.td-autosize {
-    width: 1px;
-    white-space: nowrap;
 }

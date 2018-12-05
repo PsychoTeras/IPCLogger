@@ -3,10 +3,6 @@
 
 <input type="hidden" id="application-id" value="@ViewBag.applicationId" />
 
-<div style="position: relative">
-    <button id="btn-add-rule" class="btn btn-outline-secondary btn-sm fa fa-plus" style="position: absolute; bottom: 12px; right: 0">Add logger</button>
-</div>
-
 <div class="card bg-light ui-table-wrap">
     <table id="table-loggers" class="table table-sm ui-table-list">
         <thead class="card-header">
@@ -14,7 +10,7 @@
             <th style="width: 25%">Logger type</th>
             <th style="width: 25%">Logger name</th>
             <th style="width: auto">Namespace</th>
-            <th style="width: 130px">Actions</th>
+            <th style="width: 130px" class="th-actions"><button id="btn-add-rule" class="btn btn-link">Add new logger</button></th>
         </tr>
         </thead>
         <tbody>

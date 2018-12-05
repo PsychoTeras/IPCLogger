@@ -33,19 +33,6 @@
             border-top-width: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table thead .th-actions {
-            text-align: right;
-        }
-
-            #form-logger-settings .settings-table-wrap table thead .th-actions button {
-                font-size: .875rem;
-                font-weight: 500;
-                padding: 0;
-                border: 0;
-                height: auto;
-                line-height: normal;
-            }
-
         #form-logger-settings .settings-table-wrap table thead.card-header {
             background-color: #006be0;
             background-color: rgba(0, 107, 224, .05);
@@ -124,7 +111,6 @@
 }
 
 #p-save-cancel {
-    padding-top: 15px;
     text-align: right;
 }
 

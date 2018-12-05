@@ -1,4 +1,5 @@
-﻿<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<IPCLogger.ConfigurationService.Entities.DTO.UserAuthDTO>
 
@@ -25,7 +26,7 @@
         {
             <label class="alert alert-danger">Invalid User name or Password</label>
         }
-        
+
         @if (Model.WrongSession)
         {
             <label class="alert alert-danger">Wrong session</label>
