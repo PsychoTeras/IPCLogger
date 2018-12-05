@@ -131,7 +131,7 @@ button.btn.fa:before {
     }
 
 button.dropdown-toggle:after {
-    vertical-align: middle;
+    margin-top: 5px;
 }
 
 .card-header {
