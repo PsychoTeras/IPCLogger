@@ -11,11 +11,18 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 {
     public class BootstrapperCommon : DefaultNancyBootstrapper
     {
-        //private static readonly CookieBasedSessionsConfiguration _cookieBasedSessionsConfiguration = new CookieBasedSessionsConfiguration
+        //class DisableViewCache : IViewCache
         //{
-        //    CryptographyConfiguration = CryptographyConfiguration.Default,
-        //    Serializer = new CookieSerializer()
-        //};
+        //    public TCompiledView GetOrAdd<TCompiledView>(ViewLocationResult viewLocationResult, Func<ViewLocationResult, TCompiledView> valueFactory)
+        //    {
+        //        return valueFactory(viewLocationResult);
+        //    }
+        //}
+
+        //protected override NancyInternalConfiguration InternalConfiguration
+        //{
+        //    get => NancyInternalConfiguration.WithOverrides(x => { x.ViewCache = typeof(DisableViewCache); });
+        //}
 
         private static readonly FormsAuthenticationConfiguration _formsAuthConfiguration = new FormsAuthenticationConfiguration
         {
@@ -36,12 +43,6 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             base.ApplicationStartup(container, pipelines);
 
             Conventions.ViewLocationConventions.Add((viewName, model, context) => "Web/views/" + viewName);
-
-            //InProcSessionsConfiguration sessionConfig = new InProcSessionsConfiguration
-            //{
-            //    SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default)
-            //};
-            //pipelines.EnableInProcSessions(sessionConfig);
             pipelines.EnableInProcSessions(InProcSessionsConfiguration.Default);
         }
 
@@ -69,9 +70,6 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
         {
             base.RequestStartup(requestContainer, pipelines, context);
-
-            //CookieBasedSessions.Enable(pipelines, _cookieBasedSessionsConfiguration);
-            //InProcSessions.Enable(pipelines, InProcSessionsConfiguration.Default);
 
             _formsAuthConfiguration.UserMapper = requestContainer.Resolve<IUserMapper>();
             FormsAuthentication.Enable(pipelines, _formsAuthConfiguration);
