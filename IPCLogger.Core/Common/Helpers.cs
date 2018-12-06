@@ -273,7 +273,7 @@ namespace IPCLogger.Core.Common
             return hex.ToString();
         }
 
-        public static object StringToStringList(Type dataType, string sValue, bool removeEmpty, string separator)
+        public static object StringToStringList(Type dataType, string sValue, bool removeEmpty, char splitter)
         {
             if (sValue == null)
             {
@@ -289,7 +289,7 @@ namespace IPCLogger.Core.Common
             }
 
             StringSplitOptions sso = removeEmpty ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None;
-            string[] value = sValue.Split(new[] {separator}, sso).Select(s => s.Trim()).ToArray();
+            string[] value = sValue.Split(new[] { splitter }, sso).Select(s => s.Trim()).ToArray();
 
             if (value.Any())
             {
@@ -313,9 +313,9 @@ namespace IPCLogger.Core.Common
             return result;
         }
 
-        public static string StringListToString(IEnumerable<string> value, string separator)
+        public static string StringListToString(IEnumerable<string> value, char splitter)
         {
-            separator += " ";
+            string separator = splitter + " ";
             return value?.Aggregate((current, next) => current + separator + next);
         }
 

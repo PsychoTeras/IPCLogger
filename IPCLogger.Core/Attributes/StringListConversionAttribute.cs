@@ -8,24 +8,22 @@ namespace IPCLogger.Core.Attributes
     {
         private Type _dataType;
         private bool _removeEmpty;
-        private string _separator;
 
-        public StringListConversionAttribute(Type dataType, bool removeEmpty = true, string separator = ",")
+        public StringListConversionAttribute(Type dataType, bool removeEmpty = true)
             : base(ConversionSource.Value)
         {
             _dataType = dataType;
             _removeEmpty = removeEmpty;
-            _separator = separator;
         }
 
         public override object StringToValue(string sValue)
         {
-            return Helpers.StringToStringList(_dataType, sValue, _removeEmpty, _separator);
+            return Helpers.StringToStringList(_dataType, sValue, _removeEmpty, Constants.Splitter);
         }
 
         public override string ValueToString(object value)
         {
-            return Helpers.StringListToString(value as IEnumerable<string>, _separator);
+            return Helpers.StringListToString(value as IEnumerable<string>, Constants.Splitter);
         }
     }
 }

@@ -83,6 +83,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private Dictionary<string, PropertyData> _commonProperties;
         private Dictionary<string, PropertyData> _properties;
+        private HashSet<string> _exclusivePropertyNodeNames;
 
 #endregion
 
@@ -158,6 +159,14 @@ namespace IPCLogger.Core.Loggers.Base
                             p.IsDefined<RequiredSettingAttribute>()
                         )
                 );
+
+            _exclusivePropertyNodeNames = new HashSet<string>
+                (
+                    _properties.Concat(_commonProperties).
+                    Where(p => p.Value.Item2?.ExclusiveNodeName != null).
+                    Select(p => p.Value.Item2.ExclusiveNodeName).
+                    Distinct()
+            );
         }
 
 #endregion
@@ -274,7 +283,8 @@ namespace IPCLogger.Core.Loggers.Base
             }
             foreach (XmlNode settingNode in nodes)
             {
-                if (!_properties.ContainsKey(settingNode.Name))
+                bool isExclusivePropertyNodeName = _exclusivePropertyNodeNames.Contains(settingNode.Name);
+                if (!_properties.ContainsKey(settingNode.Name) && !isExclusivePropertyNodeName)
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
@@ -284,6 +294,7 @@ namespace IPCLogger.Core.Loggers.Base
                     string msg = $"Duplicated settings definition '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
+                if ()
                 settingsDict.Add(settingNode.Name, settingNode);
             }
             return settingsDict;

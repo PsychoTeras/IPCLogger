@@ -72,24 +72,26 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
             ConsoleColor color;
             bool isSet = false;
-            if (Settings.ConsoleForeColors != null && eventName != null && Settings.ConsoleForeColors.TryGetValue(eventName, out color))
+            LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
+
+            if (highlights.ConsoleForeColors != null && eventName != null && highlights.ConsoleForeColors.TryGetValue(eventName, out color))
             {
                 Console.ForegroundColor = color;
                 isSet = true;
             }
-            else if (Settings.DefConsoleForeColor.HasValue)
+            else if (highlights.DefConsoleForeColor.HasValue)
             {
-                Console.ForegroundColor = Settings.DefConsoleForeColor.Value;
+                Console.ForegroundColor = highlights.DefConsoleForeColor.Value;
                 isSet = true;
             }
-            if (Settings.ConsoleBackColors != null && eventName != null && Settings.ConsoleBackColors.TryGetValue(eventName, out color))
+            if (highlights.ConsoleBackColors != null && eventName != null && highlights.ConsoleBackColors.TryGetValue(eventName, out color))
             {
                 Console.BackgroundColor = color;
                 isSet = true;
             }
-            else if (Settings.DefConsoleBackColor.HasValue)
+            else if (highlights.DefConsoleBackColor.HasValue)
             {
-                Console.BackgroundColor = Settings.DefConsoleBackColor.Value;
+                Console.BackgroundColor = highlights.DefConsoleBackColor.Value;
                 isSet = true;
             }
             return isSet;

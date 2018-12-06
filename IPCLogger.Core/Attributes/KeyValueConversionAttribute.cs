@@ -18,14 +18,14 @@ namespace IPCLogger.Core.Attributes
             _valueName = valueName;
         }
 
-        public override object XmlNodeToValue(XmlNode node)
+        public override object XmlNodeToValue(XmlNode xmlNode)
         {
-            return Helpers.XmlNodeToKeyValue(_dataType, node);
+            return Helpers.XmlNodeToKeyValue(_dataType, xmlNode);
         }
 
-        public override void ValueToXmlNode(object value, XmlNode node)
+        public override void ValueToXmlNode(object value, XmlNode xmlNode)
         {
-            Helpers.KeyValueToXmlNode(_dataType, _keyName, _valueName, value, node);
+            Helpers.KeyValueToXmlNode(_dataType, _keyName, _valueName, value, xmlNode);
         }
 
         public override string ValueToCSString(object value)
