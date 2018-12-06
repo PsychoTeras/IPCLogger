@@ -63,7 +63,7 @@ namespace IPCLogger.Core.Loggers.LConsole
 
             foreach (XmlNode highlightNode in highlightNodes)
             {
-                XmlAttribute aEvents = highlightNode.Attributes["events"];
+                XmlAttribute aEvents = highlightNode.Attributes?["events"];
                 string sEvents = aEvents?.Value;
                 string[] events = string.IsNullOrWhiteSpace(sEvents)
                     ? new[] { Constants.ApplicableForAllMark }

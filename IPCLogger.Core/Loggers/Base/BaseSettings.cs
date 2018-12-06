@@ -294,7 +294,6 @@ namespace IPCLogger.Core.Loggers.Base
                     string msg = $"Duplicated settings definition '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
-                if ()
                 settingsDict.Add(settingNode.Name, settingNode);
             }
             return settingsDict;

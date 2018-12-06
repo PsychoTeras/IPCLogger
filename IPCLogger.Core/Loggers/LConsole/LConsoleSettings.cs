@@ -20,14 +20,6 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #endregion
 
-#region Constants
-
-        private const string HIGHLIGHT_NODE_NAME = "Highlight";
-        private const string FORECOLOR_NODE_NAME = "ForeColor";
-        private const string BACKCOLOR_NODE_NAME = "BackColor";
-
-#endregion
-
 #region Properties
 
         public string Title { get; set; }
