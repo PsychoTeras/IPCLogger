@@ -83,7 +83,7 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         public override object XmlNodesToValue(XmlNode[] xmlNodes)
         {
-            if (xmlNodes?.Length == 0)
+            if (xmlNodes == null)
             {
                 string msg = "XmlNodes cannot be null or empty";
                 throw new Exception(msg);
