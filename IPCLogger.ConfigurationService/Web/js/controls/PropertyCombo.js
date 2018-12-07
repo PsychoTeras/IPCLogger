@@ -21,10 +21,15 @@
     };
 
     UI.PropertyCombo.prototype.populateValues = function ($element, values) {
+        //if (!isRequired()) {
+        //    $element.append(new Option("", ""));
+        //}
+
         $.each(values, function (_, value) {
             $element.append(new Option(value, value));
             return true;
         });
+
         $element.val($element.attr("value"));
     };
 

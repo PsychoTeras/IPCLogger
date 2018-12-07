@@ -1,5 +1,6 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Loggers.LConsole;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +51,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
             { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
             { typeof(StringListConversionAttribute), PROPERTY_STRING },
-            { typeof(KeyValueConversionAttribute), PROPERTY_TABLE }
+            { typeof(KeyValueConversionAttribute), PROPERTY_TABLE },
+            { typeof(ConsoleHighlightsConversionAttribute), PROPERTY_TABLE }
         };
 
 #endregion
@@ -101,6 +103,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
                 html.RenderEndTag();
             }
+
             return stringWriter.ToString();
         }
     }

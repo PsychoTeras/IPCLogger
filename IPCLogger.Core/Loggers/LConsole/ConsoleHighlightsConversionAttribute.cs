@@ -2,6 +2,7 @@
 using IPCLogger.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 
 namespace IPCLogger.Core.Loggers.LConsole
@@ -29,6 +30,7 @@ namespace IPCLogger.Core.Loggers.LConsole
                     string msg = $"Invalid {colorType} value '{sColor}'";
                     throw new Exception(msg);
                 }
+
                 ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), sColor);
                 if (Constants.ApplicableForAllMark == @event)
                 {
@@ -53,29 +55,30 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         private LConsoleSettings.HighlightSettings ReadHighlightSettings(XmlNode[] highlightNodes)
         {
-            LConsoleSettings.HighlightSettings colors = new LConsoleSettings.HighlightSettings();
+            LConsoleSettings.HighlightSettings settings = new LConsoleSettings.HighlightSettings();
 
-            colors.ConsoleForeColors = new Dictionary<string, ConsoleColor>();
-            colors.ConsoleBackColors = new Dictionary<string, ConsoleColor>();
+            settings.ConsoleForeColors = new Dictionary<string, ConsoleColor>();
+            settings.ConsoleBackColors = new Dictionary<string, ConsoleColor>();
 
             foreach (XmlNode highlightNode in highlightNodes)
             {
                 XmlAttribute aEvents = highlightNode.Attributes?["events"];
                 string sEvents = aEvents?.Value;
-                string[] events = string.IsNullOrWhiteSpace(sEvents)
-                    ? new[] { Constants.ApplicableForAllMark }
+                string[] events = string.IsNullOrWhiteSpace(sEvents) 
+                    ? new[] { Constants.ApplicableForAllMark } 
                     : sEvents.Split(Constants.Splitter);
+
                 foreach (string s in events)
                 {
                     string @event = s.Trim();
                     if (string.IsNullOrEmpty(@event)) continue;
 
-                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref colors.DefConsoleForeColor, colors.ConsoleForeColors);
-                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref colors.DefConsoleBackColor, colors.ConsoleBackColors);
+                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor, settings.ConsoleForeColors);
+                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor, settings.ConsoleBackColors);
                 }
             }
 
-            return colors;
+            return settings;
         }
 
         public override object XmlNodesToValue(XmlNode[] xmlNodes)
@@ -91,6 +94,27 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         public override void ValueToXmlNodes(object value, XmlNode[] xmlNodes)
         {
+        }
+
+        public override string ValueToCSString(object value)
+        {
+            if (!(value is LConsoleSettings.HighlightSettings settings))
+            {
+                string msg = "HighlightSettings object is null or has wrong type";
+                throw new Exception(msg);
+            }
+
+            StringBuilder sbJson = new StringBuilder();
+            sbJson.Append("{{ \"colsNumber\": 3, \"col1\": \"Applicable for events\", \"col2\": \"ForeColor\", \"col3\": \"BackColor\"");
+
+            List<string> entries = new List<string>();
+            //foreach (settings.)
+            //{
+            //    entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
+            //}
+
+            sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
+            return sbJson.ToString();
         }
     }
 }
