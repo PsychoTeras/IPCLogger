@@ -398,6 +398,7 @@ namespace IPCLogger.Core.Loggers.Base
                         SetCfgNodeData(cfgNode, property.Name, value, xmlnAttr);
                         break;
                     case XmlNodesConversionAttribute xmlnsAttr:
+                        SetRootCfgNodeData(cfgNode, value, xmlnsAttr);
                         break;
                     default:
                         SetCfgNodeValue(cfgNode, property.Name, value);
@@ -499,6 +500,7 @@ namespace IPCLogger.Core.Loggers.Base
                         SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
                         break;
                     case XmlNodesConversionAttribute xmlnsAttr:
+                        SetRootCfgNodeData(cfgNode, value, xmlnsAttr);
                         break;
                     default:
                         if (isCommon)
@@ -560,8 +562,7 @@ namespace IPCLogger.Core.Loggers.Base
             return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
         }
 
-        protected void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
-            XmlNodeConversionAttribute xmlnAttr)
+        private XmlNode AppendCfgXmlNode(XmlNode cfgNode, string nodeName)
         {
             XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
             if (valNode == null)
@@ -570,8 +571,24 @@ namespace IPCLogger.Core.Loggers.Base
                 valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
                 cfgNode.AppendChild(valNode);
             }
+            return valNode;
+        }
 
+        protected void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
+            XmlNodeConversionAttribute xmlnAttr)
+        {
+            XmlNode valNode = AppendCfgXmlNode(cfgNode, nodeName);
             xmlnAttr.ValueToXmlNode(value, valNode);
+        }
+
+        protected void SetRootCfgNodeData(XmlNode cfgNode, object value,
+            XmlNodesConversionAttribute xmlnsAttr)
+        {
+            foreach (string nodeName in xmlnsAttr.ExclusiveNodeNames)
+            {
+                AppendCfgXmlNode(cfgNode, nodeName);
+            }
+            xmlnsAttr.ValueToRootXmlNode(value, cfgNode);
         }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
