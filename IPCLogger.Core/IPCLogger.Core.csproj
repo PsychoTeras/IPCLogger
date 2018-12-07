@@ -68,13 +68,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\KeyValueConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\KeyValueConversionAttribute.cs" />
     <Compile Include="Attributes\RequiredSettingAttribute.cs" />
-    <Compile Include="Attributes\ConsoleColorConversionAttribute.cs" />
-    <Compile Include="Attributes\SizeStringConversionAttribute.cs" />
-    <Compile Include="Attributes\CustomConversionAttribute.cs" />
-    <Compile Include="Attributes\StringListConversionAttribute.cs" />
-    <Compile Include="Attributes\TimeSpanStringConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\SizeStringConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\Base\CustomConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\StringListConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\TimeSpanStringConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\Base\ValueConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\Base\XmlNodeConversionAttribute.cs" />
+    <Compile Include="Attributes\CustomConversionAttributes\Base\XmlNodesConversionAttribute.cs" />
     <Compile Include="Caches\CallerTypesCache.cs" />
     <Compile Include="Caches\DictionaryCache.cs" />
     <Compile Include="Caches\TypeNamesCache.cs" />

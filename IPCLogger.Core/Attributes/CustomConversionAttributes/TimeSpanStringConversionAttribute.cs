@@ -3,13 +3,8 @@ using System;
 
 namespace IPCLogger.Core.Attributes
 {
-    public sealed class TimeSpanStringConversionAttribute : CustomConversionAttribute
+    public sealed class TimeSpanStringConversionAttribute : ValueConversionAttribute
     {
-        public TimeSpanStringConversionAttribute()
-            : base(ConversionSource.Value)
-        {
-        }
-
         public override object StringToValue(string sValue)
         {
             return Helpers.TimeStringToTimeSpan(sValue);

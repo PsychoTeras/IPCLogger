@@ -4,14 +4,13 @@ using System.Xml;
 
 namespace IPCLogger.Core.Attributes
 {
-    public sealed class KeyValueConversionAttribute : CustomConversionAttribute
+    public sealed class KeyValueConversionAttribute : XmlNodeConversionAttribute
     {
         private Type _dataType;
         private string _keyName;
         private string _valueName;
 
-        public KeyValueConversionAttribute(Type dataType, string keyName = "Key", string valueName = "Value") 
-            : base(ConversionSource.XmlNode)
+        public KeyValueConversionAttribute(Type dataType, string keyName = "Key", string valueName = "Value")
         {
             _dataType = dataType;
             _keyName = keyName;

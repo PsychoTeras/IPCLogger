@@ -306,40 +306,48 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 PropertyData item = _properties[setting.Key];
                 Type propertyType = item.Item1.PropertyType;
+
                 try
                 {
                     object value;
-                    if (item.Item2 != null)
+                    switch (item.Item2)
                     {
-                        value = item.Item2.SourceType == ConversionSource.Value
-                            ? item.Item2.StringToValue(setting.Value.InnerText.Trim())
-                            : item.Item2.XmlNodeToValue(setting.Value);
-                    }
-                    else
-                    {
-                        string sValue = setting.Value.InnerText.Trim();
-                        if (propertyType.IsEnum)
-                        {
-                            try
+                        case ValueConversionAttribute vcAttr:
+                            value = vcAttr.StringToValue(setting.Value.InnerText.Trim());
+                            break;
+                        case XmlNodeConversionAttribute xmlnAttr:
+                            value = xmlnAttr.XmlNodeToValue(setting.Value);
+                            break;
+                        case XmlNodesConversionAttribute xmlnsAttr:
+                            value = xmlnsAttr.RootXmlNodeToValue(setting.Value);
+                            break;
+                        default:
+                            string sValue = setting.Value.InnerText.Trim();
+                            if (propertyType.IsEnum)
                             {
-                                value = Enum.Parse(propertyType, sValue);
+                                try
+                                {
+                                    value = Enum.Parse(propertyType, sValue);
+                                }
+                                catch
+                                {
+                                    string names = string.Join(", ", Enum.GetNames(propertyType));
+                                    string msg = $"Possible values: {names}";
+                                    throw new Exception(msg);
+                                }
                             }
-                            catch
+                            else
                             {
-                                string names = string.Join(", ", Enum.GetNames(propertyType));
-                                string msg = $"Possible values: {names}";
-                                throw new Exception(msg);
+                                value = Convert.ChangeType(sValue, propertyType, CultureInfo.InvariantCulture);
                             }
-                        }
-                        else
-                        {
-                            value = Convert.ChangeType(sValue, propertyType, CultureInfo.InvariantCulture);
-                        }
+                            break;
                     }
+
                     if (value == null)
                     {
                         throw new Exception();
                     }
+
                     valuesDict.Add(setting.Key, value);
                 }
                 catch (Exception ex)
@@ -374,21 +382,21 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 PropertyInfo property = item.Item1;
                 object value = property.GetValue(this, null);
-                if (item.Item2 == null)
+
+                switch (item.Item2)
                 {
-                    SetCfgNodeValue(cfgNode, property.Name, value);
-                }
-                else
-                {
-                    if (item.Item2.SourceType == ConversionSource.Value)
-                    {
-                        value = item.Item2.ValueToString(value);
+                    case ValueConversionAttribute vcAttr:
+                        value = vcAttr.ValueToString(value);
                         SetCfgNodeValue(cfgNode, property.Name, value);
-                    }
-                    else
-                    {
-                        SetCfgNodeData(cfgNode, property.Name, value, item.Item2);
-                    }
+                        break;
+                    case XmlNodeConversionAttribute xmlnAttr:
+                        SetCfgNodeData(cfgNode, property.Name, value, xmlnAttr);
+                        break;
+                    case XmlNodesConversionAttribute xmlnsAttr:
+                        break;
+                    default:
+                        SetCfgNodeValue(cfgNode, property.Name, value);
+                        break;
                 }
             }
         }
@@ -476,29 +484,28 @@ namespace IPCLogger.Core.Loggers.Base
             {
                 data.Item1.SetValue(this, value, null);
 
-                if (data.Item2 != null)
+                switch (data.Item2)
                 {
-                    if (data.Item2.SourceType == ConversionSource.Value)
-                    {
-                        value = data.Item2.ValueToString(value);
+                    case ValueConversionAttribute vcAttr:
+                        value = vcAttr.ValueToString(value);
                         SetCfgNodeValue(cfgNode, propertyName, value);
-                    }
-                    else
-                    {
-                        SetCfgNodeData(cfgNode, propertyName, value, data.Item2);
-                    }
-                }
-                else
-                {
-                    if (isCommon)
-                    {
-                        string attrName = CommonPropertiesSet[propertyName];
-                        SetCfgAttributeValue(cfgNode, attrName, value);
-                    }
-                    else
-                    {
-                        SetCfgNodeValue(cfgNode, propertyName, value);
-                    }
+                        break;
+                    case XmlNodeConversionAttribute xmlnAttr:
+                        SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
+                        break;
+                    case XmlNodesConversionAttribute xmlnsAttr:
+                        break;
+                    default:
+                        if (isCommon)
+                        {
+                            string attrName = CommonPropertiesSet[propertyName];
+                            SetCfgAttributeValue(cfgNode, attrName, value);
+                        }
+                        else
+                        {
+                            SetCfgNodeValue(cfgNode, propertyName, value);
+                        }
+                        break;
                 }
             }
         }
@@ -549,7 +556,7 @@ namespace IPCLogger.Core.Loggers.Base
         }
 
         protected void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
-            CustomConversionAttribute cc)
+            XmlNodeConversionAttribute xmlnAttr)
         {
             XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
             if (valNode == null)
@@ -559,7 +566,7 @@ namespace IPCLogger.Core.Loggers.Base
                 cfgNode.AppendChild(valNode);
             }
 
-            cc.ValueToXmlNode(value, valNode);
+            xmlnAttr.ValueToXmlNode(value, valNode);
         }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)

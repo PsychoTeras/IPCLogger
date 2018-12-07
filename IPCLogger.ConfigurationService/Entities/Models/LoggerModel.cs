@@ -69,7 +69,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
         {
-            RootXmlNode = cfgNode = cfgNode ?? new Func<XmlNode>(() => new XmlDocument().CreateElement("_"))();
+            RootXmlNode = cfgNode = cfgNode ?? new XmlDocument().CreateElement("_");
             Type bsType = ((TypeInfo) Type).ImplementedInterfaces
                 .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
                 .First(i => i != null);

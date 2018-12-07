@@ -1,16 +1,15 @@
-﻿using System;
-using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Common;
+using System;
 using System.Collections.Generic;
 
 namespace IPCLogger.Core.Attributes
 {
-    public sealed class StringListConversionAttribute : CustomConversionAttribute
+    public sealed class StringListConversionAttribute : ValueConversionAttribute
     {
         private Type _dataType;
         private bool _removeEmpty;
 
         public StringListConversionAttribute(Type dataType, bool removeEmpty = true)
-            : base(ConversionSource.Value)
         {
             _dataType = dataType;
             _removeEmpty = removeEmpty;

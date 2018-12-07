@@ -6,14 +6,14 @@ using System.Xml;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {
-    public sealed class ConsoleHighlightsConversionAttribute : CustomConversionAttribute
+    public sealed class ConsoleHighlightsConversionAttribute : XmlNodesConversionAttribute
     {
         private const string HIGHLIGHT_NODE_NAME = "Highlight";
         private const string FORECOLOR_NODE_NAME = "ForeColor";
         private const string BACKCOLOR_NODE_NAME = "BackColor";
 
         public ConsoleHighlightsConversionAttribute() 
-            : base(ConversionSource.XmlNode, HIGHLIGHT_NODE_NAME)
+            : base(HIGHLIGHT_NODE_NAME)
         {
         }
 
@@ -81,7 +81,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             return colors;
         }
 
-        public override object XmlNodeToValue(XmlNode xmlNode)
+        public override object RootXmlNodeToValue(XmlNode xmlNode)
         {
             if (xmlNode == null)
             {
@@ -93,7 +93,7 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         }
 
-        public override void ValueToXmlNode(object value, XmlNode xmlNode)
+        public override void ValueToRootXmlNode(object value, XmlNode xmlNode)
         {
         }
     }
