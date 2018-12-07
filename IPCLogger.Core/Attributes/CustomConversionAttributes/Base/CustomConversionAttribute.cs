@@ -14,8 +14,6 @@ namespace IPCLogger.Core.Attributes
 
         public abstract ConversionSource SourceType { get; }
 
-        public string ExclusiveNodeName { get; }
-
         public abstract string ValueToCSString(object value);
 
         public abstract object CSStringToValue(string sValue);

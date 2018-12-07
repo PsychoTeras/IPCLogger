@@ -163,10 +163,11 @@ namespace IPCLogger.Core.Loggers.Base
             _exclusivePropertyNodeNames = new HashSet<string>
                 (
                     _properties.Concat(_commonProperties).
-                    Where(p => p.Value.Item2?.ExclusiveNodeName != null).
-                    Select(p => p.Value.Item2.ExclusiveNodeName).
+                    Select(d => d.Value.Item2).
+                    OfType<XmlNodesConversionAttribute>().
+                    SelectMany(p => p.ExclusiveNodeNames).
                     Distinct()
-            );
+                );
         }
 
 #endregion
@@ -284,7 +285,11 @@ namespace IPCLogger.Core.Loggers.Base
             foreach (XmlNode settingNode in nodes)
             {
                 bool isExclusivePropertyNodeName = _exclusivePropertyNodeNames.Contains(settingNode.Name);
-                if (!_properties.ContainsKey(settingNode.Name) && !isExclusivePropertyNodeName)
+                if (isExclusivePropertyNodeName)
+                {
+                    continue;
+                }
+                if (!_properties.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
