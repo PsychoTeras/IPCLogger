@@ -35,22 +35,23 @@ namespace IPCLogger.Core.Attributes
             ExclusiveNodeNames = exclusiveNodeNames;
         }
 
-        public abstract object RootXmlNodeToValue(XmlNode rootXmlNode);
+        public abstract object XmlNodesToValue(XmlNode[] xmlNodes);
 
-        public abstract void ValueToRootXmlNode(object value, XmlNode rootXmlNode);
+        public abstract void ValueToXmlNodes(object value, XmlNode[] xmlNodes);
 
         public override string ValueToCSString(object value)
         {
-            XmlNode xmlNode = new XmlDocument().CreateElement("_");
-            ValueToRootXmlNode(value, xmlNode);
-            return xmlNode.InnerXml;
+            XmlDocument xml = new XmlDocument();
+            XmlNode[] xmlNodes = ExclusiveNodeNames.Select(s => xml.CreateElement(s)).OfType<XmlNode>().ToArray();
+            ValueToXmlNodes(value, xmlNodes);
+            return xml.InnerXml;
         }
 
         public override object CSStringToValue(string sValue)
         {
-            XmlNode xmlNode = new XmlDocument().CreateElement("_");
-            xmlNode.InnerXml = sValue;
-            return RootXmlNodeToValue(xmlNode);
+            XmlDocument xml = new XmlDocument();
+            xml.InnerXml = sValue;
+            return XmlNodesToValue(xml.ChildNodes.OfType<XmlNode>().ToArray());
         }
     }
 }

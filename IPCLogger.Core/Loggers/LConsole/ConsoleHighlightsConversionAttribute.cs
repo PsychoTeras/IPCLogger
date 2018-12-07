@@ -51,12 +51,9 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
         }
 
-        private LConsoleSettings.HighlightSettings ReadHighlightSettings(XmlNode cfgNode)
+        private LConsoleSettings.HighlightSettings ReadHighlightSettings(XmlNode[] highlightNodes)
         {
             LConsoleSettings.HighlightSettings colors = new LConsoleSettings.HighlightSettings();
-
-            XmlNodeList highlightNodes = cfgNode.SelectNodes(HIGHLIGHT_NODE_NAME);
-            if (highlightNodes == null) return colors;
 
             colors.ConsoleForeColors = new Dictionary<string, ConsoleColor>();
             colors.ConsoleBackColors = new Dictionary<string, ConsoleColor>();
@@ -81,19 +78,18 @@ namespace IPCLogger.Core.Loggers.LConsole
             return colors;
         }
 
-        public override object RootXmlNodeToValue(XmlNode xmlNode)
+        public override object XmlNodesToValue(XmlNode[] xmlNodes)
         {
-            if (xmlNode == null)
+            if (xmlNodes?.Length == 0)
             {
-                string msg = "XmlNode cannot be null";
+                string msg = "XmlNodes cannot be null or empty";
                 throw new Exception(msg);
             }
 
-            return ReadHighlightSettings(xmlNode);
-
+            return ReadHighlightSettings(xmlNodes);
         }
 
-        public override void ValueToRootXmlNode(object value, XmlNode xmlNode)
+        public override void ValueToXmlNodes(object value, XmlNode[] xmlNodes)
         {
         }
     }

@@ -61,11 +61,12 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Constants
 
-        private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
         protected const string RootLoggersCfgPath = Constants.RootLoggerCfgPath + "/Loggers";
         protected const string ValidationErrorMessage = "{0} is required";
 
-        private static readonly Dictionary<string, string> CommonPropertiesSet = new Dictionary<string, string>
+        private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
+
+        private static readonly Dictionary<string, string> _commonPropertiesSet = new Dictionary<string, string>
         {
             { "Name", "name" },
             { "AllowEvents", "allow-events" },
@@ -130,7 +131,7 @@ namespace IPCLogger.Core.Loggers.Base
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
                 ).Where
                 (
-                    p => CommonPropertiesSet.ContainsKey(p.Name)
+                    p => _commonPropertiesSet.ContainsKey(p.Name)
                 ).ToDictionary
                 (
                     p => p.Name,
@@ -217,9 +218,13 @@ namespace IPCLogger.Core.Loggers.Base
 
                 Dictionary<string, object> valuesDict = GetSettingsValues(settingsDict);
 
-                VerifySettingsValues(valuesDict);
+                Dictionary<string, object> exclusiveValuesDict = GetExclusiveSettingsValues(cfgNode);
 
-                ApplySettingsValues(valuesDict);
+                Dictionary<string, object> mergedValuesDict = MergeDictionaries(valuesDict, exclusiveValuesDict);
+
+                VerifySettingsValues(mergedValuesDict);
+
+                ApplySettingsValues(mergedValuesDict);
 
                 RecalculateHash(cfgNode);
 
@@ -277,30 +282,35 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode, ICollection<string> excludes)
         {
             Dictionary<string, XmlNode> settingsDict = new Dictionary<string, XmlNode>();
+
             IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);
             if (excludes != null)
             {
                 nodes = nodes.Where(n => !excludes.Contains(n.Name, StringComparer.InvariantCultureIgnoreCase));
             }
+
             foreach (XmlNode settingNode in nodes)
             {
-                bool isExclusivePropertyNodeName = _exclusivePropertyNodeNames.Contains(settingNode.Name);
-                if (isExclusivePropertyNodeName)
+                if (_exclusivePropertyNodeNames.Contains(settingNode.Name))
                 {
                     continue;
                 }
+
                 if (!_properties.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
+
                 if (settingsDict.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Duplicated settings definition '{settingNode.Name}'";
                     throw new Exception(msg);
                 }
+
                 settingsDict.Add(settingNode.Name, settingNode);
             }
+
             return settingsDict;
         }
 
@@ -309,22 +319,19 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, XmlNode> setting in settingsDict)
             {
-                PropertyData item = _properties[setting.Key];
-                Type propertyType = item.Item1.PropertyType;
+                PropertyData data = _properties[setting.Key];
+                Type propertyType = data.Item1.PropertyType;
 
                 try
                 {
                     object value;
-                    switch (item.Item2)
+                    switch (data.Item2)
                     {
                         case ValueConversionAttribute vcAttr:
                             value = vcAttr.StringToValue(setting.Value.InnerText.Trim());
                             break;
                         case XmlNodeConversionAttribute xmlnAttr:
                             value = xmlnAttr.XmlNodeToValue(setting.Value);
-                            break;
-                        case XmlNodesConversionAttribute xmlnsAttr:
-                            value = xmlnsAttr.RootXmlNodeToValue(setting.Value);
                             break;
                         default:
                             string sValue = setting.Value.InnerText.Trim();
@@ -368,6 +375,45 @@ namespace IPCLogger.Core.Loggers.Base
             return valuesDict;
         }
 
+        protected virtual Dictionary<string, object> GetExclusiveSettingsValues(XmlNode cfgNode)
+        {
+            Dictionary<string, object> valuesDict = new Dictionary<string, object>();
+            IEnumerable<PropertyData> exclusiveProperties = _properties.Values.
+                Where(p => p.Item2 as XmlNodesConversionAttribute != null);
+
+            foreach (PropertyData data in exclusiveProperties)
+            {
+                string propertyName = data.Item1.Name;
+                Type propertyType = data.Item1.PropertyType;
+                XmlNodesConversionAttribute xmlnsAttr = data.Item2 as XmlNodesConversionAttribute;
+
+                XmlNode[] xmlNodes = cfgNode.ChildNodes.OfType<XmlNode>().
+                    Where(n => xmlnsAttr.ExclusiveNodeNames.Contains(n.Name)).ToArray();
+
+                try
+                {
+                    object value = xmlnsAttr.XmlNodesToValue(xmlNodes);
+                    if (value == null)
+                    {
+                        throw new Exception();
+                    }
+
+                    valuesDict.Add(data.Item1.Name, value);
+                }
+                catch (Exception ex)
+                {
+                    string msg = $"Invalid exclusive setting value for setting '{propertyName}' type '{propertyType.Name}'";
+                    if (!string.IsNullOrEmpty(ex.Message))
+                    {
+                        msg += $". {ex.Message}";
+                    }
+                    throw new Exception(msg);
+                }
+            }
+
+            return valuesDict;
+        }
+
         protected virtual void ApplySettingsValues(Dictionary<string, object> valuesDict)
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
@@ -383,12 +429,12 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void Save(XmlNode cfgNode)
         {
-            foreach (PropertyData item in _properties.Values)
+            foreach (PropertyData data in _properties.Values)
             {
-                PropertyInfo property = item.Item1;
+                PropertyInfo property = data.Item1;
                 object value = property.GetValue(this, null);
 
-                switch (item.Item2)
+                switch (data.Item2)
                 {
                     case ValueConversionAttribute vcAttr:
                         value = vcAttr.ValueToString(value);
@@ -505,7 +551,7 @@ namespace IPCLogger.Core.Loggers.Base
                     default:
                         if (isCommon)
                         {
-                            string attrName = CommonPropertiesSet[propertyName];
+                            string attrName = _commonPropertiesSet[propertyName];
                             SetCfgAttributeValue(cfgNode, attrName, value);
                         }
                         else
@@ -524,6 +570,11 @@ namespace IPCLogger.Core.Loggers.Base
         private void ApplyChanges()
         {
             _onApplyChanges?.Invoke();
+        }
+
+        private Dictionary<TK, TV> MergeDictionaries<TK, TV>(Dictionary<TK, TV> dict1, Dictionary<TK, TV> dict2)
+        {
+            return dict1.Union(dict2).ToDictionary(k => k.Key, v => v.Value);
         }
 
         private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
@@ -584,11 +635,12 @@ namespace IPCLogger.Core.Loggers.Base
         protected void SetRootCfgNodeData(XmlNode cfgNode, object value,
             XmlNodesConversionAttribute xmlnsAttr)
         {
+            List<XmlNode> nodes = new List<XmlNode>();
             foreach (string nodeName in xmlnsAttr.ExclusiveNodeNames)
             {
-                AppendCfgXmlNode(cfgNode, nodeName);
+                nodes.Add(AppendCfgXmlNode(cfgNode, nodeName));
             }
-            xmlnsAttr.ValueToRootXmlNode(value, cfgNode);
+            xmlnsAttr.ValueToXmlNodes(value, nodes.ToArray());
         }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
