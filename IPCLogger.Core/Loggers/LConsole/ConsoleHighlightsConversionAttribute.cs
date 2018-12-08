@@ -1,7 +1,8 @@
-﻿using IPCLogger.Core.Attributes;
+﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -98,6 +99,16 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         public override string ValueToCSString(object value)
         {
+            string MakeColorSettings(string mark, ConsoleColor? foreColor, ConsoleColor? backColor, bool @fixed)
+            {
+                return "{ " +
+                       $"\"col1\": \"{mark}\", " +
+                       $"\"col2\": \"{(foreColor.HasValue ? foreColor.Value.ToString() : string.Empty)}\", " +
+                       $"\"col3\": \"{(backColor.HasValue ? backColor.Value.ToString() : string.Empty)}\", " +
+                       $"\"fixed\": \"{@fixed}\"" +
+                       " }";
+            }
+
             if (!(value is LConsoleSettings.HighlightSettings settings))
             {
                 string msg = "HighlightSettings object is null or has wrong type";
@@ -105,13 +116,28 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
 
             StringBuilder sbJson = new StringBuilder();
-            sbJson.Append("{{ \"colsNumber\": 3, \"col1\": \"Applicable for events\", \"col2\": \"ForeColor\", \"col3\": \"BackColor\"");
+            sbJson.Append("{ \"colsNumber\": 3, \"col1\": \"Applicable for events\", \"col2\": \"ForeColor\", \"col3\": \"BackColor\"");
 
             List<string> entries = new List<string>();
-            //foreach (settings.)
-            //{
-            //    entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
-            //}
+            string val = MakeColorSettings(Constants.ApplicableForAllMark, 
+                settings.DefConsoleForeColor, 
+                settings.DefConsoleBackColor, 
+                true);
+            entries.Add(val);
+
+            IEnumerable<string> events = settings.ConsoleForeColors.
+                Select(s => s.Key).
+                Concat(settings.ConsoleBackColors.Select(s => s.Key)).
+                Distinct();
+
+            foreach (string @event in events)
+            {
+                val = MakeColorSettings(@event,
+                    settings.ConsoleForeColors.TryGetValue(@event, out var foreColor) ? foreColor : (ConsoleColor?) null,
+                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?) null,
+                    false);
+                entries.Add(val);
+            }
 
             sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
             return sbJson.ToString();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IPCLogger.Core.Attributes
+namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
 {
     [AttributeUsage(AttributeTargets.Property)]
     public abstract class CustomConversionAttribute : Attribute

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {

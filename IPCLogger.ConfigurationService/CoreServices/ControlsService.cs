@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {

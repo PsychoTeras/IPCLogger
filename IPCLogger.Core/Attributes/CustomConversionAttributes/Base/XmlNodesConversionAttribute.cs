@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Xml;
 
-namespace IPCLogger.Core.Attributes
+namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
 {
     public abstract class XmlNodesConversionAttribute : CustomConversionAttribute
     {

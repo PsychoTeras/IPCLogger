@@ -1,6 +1,7 @@
-﻿using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
+using IPCLogger.Core.Common;
 
-namespace IPCLogger.Core.Attributes
+namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 {
     public sealed class SizeStringConversionAttribute : ValueConversionAttribute
     {

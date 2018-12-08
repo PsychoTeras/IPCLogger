@@ -28,11 +28,6 @@
             border-top-width: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table thead td:not(.th-actions) {
-            width: 50%;
-            border-top-width: 0;
-        }
-
         #form-logger-settings .settings-table-wrap table thead.card-header {
             background-color: #006be0;
             background-color: rgba(0, 107, 224, .05);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
 
 namespace IPCLogger.Core.Loggers.LEventLog
 {

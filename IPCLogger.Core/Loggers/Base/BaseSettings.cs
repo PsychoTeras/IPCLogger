@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
+using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.Core.Loggers.Base
 {
@@ -379,7 +381,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             Dictionary<string, object> valuesDict = new Dictionary<string, object>();
             IEnumerable<PropertyData> exclusiveProperties = _properties.Values.
-                Where(p => p.Item2 as XmlNodesConversionAttribute != null);
+                Where(p => p.Item2 is XmlNodesConversionAttribute);
 
             foreach (PropertyData data in exclusiveProperties)
             {

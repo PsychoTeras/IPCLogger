@@ -3,6 +3,7 @@ using IPCLogger.Core.Loggers.Base;
 using System;
 using System.IO;
 using System.Web.Hosting;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
 
 namespace IPCLogger.Core.Loggers.LFile
 {

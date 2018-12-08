@@ -217,10 +217,11 @@
         var $headRow = $table.append("<thead class='card-header'><tr>").find("tr");
 
         var colsNumber = jsonValue.colsNumber;
+        var width = Math.round(100 / colsNumber);
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
             var colName = jsonValue[colKey];
-            $headRow.append($("<td>").text(colName));
+            $headRow.append($("<td>").css("width", width + "%").text(colName));
         }
 
         $headRow.append($("<td>")).children("td:last").
@@ -229,7 +230,8 @@
                 e.preventDefault();
 
                 if ($RowEditing) {
-                    if ($RowEditing.attr("is-new-row") && !$RowEditing.find("input").filter(function () {return this.value;}).length) {
+                    if ($RowEditing.attr("is-new-row") &&
+                        !$RowEditing.find("input").filter(function() { return this.value; }).length) {
                         $RowEditing.find("input:first").focus();
                         return;
                     }
