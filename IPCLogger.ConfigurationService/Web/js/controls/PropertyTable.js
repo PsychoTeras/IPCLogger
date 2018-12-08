@@ -3,6 +3,7 @@
     var $Table = null;
     var $RowEditing = null;
     var $ColsNumber = null;
+    var $ColSettings = [];
 
     UI.PropertyTable = function () {
         var me = this;
@@ -31,24 +32,43 @@
         $RowEditing.addClass("editing");
         $RowEditing.find(".td-actions .btn-edit").removeClass("fa-pencil").addClass("fa-save");
         $RowEditing.find(".td-actions .btn-remove").removeClass("fa-trash").addClass("fa-remove");
-        $($currentCell && $currentCell.children("input")[0] || $RowEditing.find("input:first")[0]).focus();
+        $($currentCell && $currentCell.children(".td-edit")[0] || $RowEditing.find(".td-edit:first")[0]).focus();
     }
 
     function editRow($tr, $currentCell) {
-        $("td[data-field]", $RowEditing = $tr).each(function () {
+        $("td[data-field]", $RowEditing = $tr).each(function (colIdx) {
             var me = this;
             var $me = $(this);
 
             var value = $me.text();
             var width = $me.width();
+            var colKey = "col" + (colIdx + 1);
+            var colSettings = $ColSettings[colKey];
 
             $me.empty().width(width);
 
-            var input = $('<input type="text" />')
-                .val(value)
-                .data("old-value", value)
-                .dblclick(captureEvent);
+            var input;
+            if (!colSettings.values) {
+                input = $('<input type="text" />').
+                    val(value).
+                    data("old-value", value).
+                    dblclick(captureEvent);
+            } else {
+                input = $("<select/>");
 
+                $.each(colSettings.values, function() {
+                    $("<option/>").
+                        text(this).
+                        appendTo(input);
+                });
+
+                input.
+                    val(value).
+                    data("old-value", value).
+                    dblclick(captureEvent);
+            }
+
+            input.addClass("td-edit");
             input.appendTo(me);
             input.keydown(captureKeys);
         });
@@ -67,7 +87,7 @@
 
     function saveChanges() {
         $("td[data-field]", $RowEditing).each(function () {
-            var value = $(":input", this).val();
+            var value = $(".td-edit", this).val();
             $(this).empty().text(value);
         });
         endEditing();
@@ -75,7 +95,7 @@
 
     function cancelChanges() {
         $("td[data-field]", $RowEditing).each(function () {
-            var value = $(":input", this).data("old-value");
+            var value = $(".td-edit", this).data("old-value");
             $(this).empty().text(value);
         });
         if ($RowEditing.attr("is-new-row")) {
@@ -177,30 +197,30 @@
         return $bodyRow;
     }
 
-    function buildRows($table, jsonValue) {
+    function buildRows($table, jsonData) {
         var $body = $table.append("<tbody>").children("tbody").sortable({
             delay: 100,
             distance: 5,
             cursor: "move"
         });
 
-        var colsNumber = jsonValue.colsNumber;
-        var rowNumber = jsonValue.values.length;
-        for (var rowIdx = 0; rowIdx < rowNumber; rowIdx++) {
-            var rowData = jsonValue.values[rowIdx];
+        var colsNumber = jsonData.colsNumber;
+        var rowsNumber = jsonData.values.length;
+        for (var rowIdx = 0; rowIdx < rowsNumber; rowIdx++) {
+            var rowData = jsonData.values[rowIdx];
             addRow($body, colsNumber, rowData);
         }
 
         displayNoRowMessage($body);
     }
 
-    function setRows($table, jsonValue, colsNumber) {
+    function setRows($table, jsonData, colsNumber) {
         var $body = $table.children("tbody");
         $body.empty();
 
-        var rowNumber = jsonValue.length;
-        for (var rowIdx = 0; rowIdx < rowNumber; rowIdx++) {
-            var rowData = jsonValue[rowIdx];
+        var rowsNumber = jsonData.length;
+        for (var rowIdx = 0; rowIdx < rowsNumber; rowIdx++) {
+            var rowData = jsonData[rowIdx];
             addRow($body, colsNumber, rowData);
         }
 
@@ -213,14 +233,14 @@
         return $table;
     }
 
-    function buildHeaders($table, jsonValue) {
+    function buildHeaders($table, jsonData) {
         var $headRow = $table.append("<thead class='card-header'><tr>").find("tr");
 
-        var colsNumber = jsonValue.colsNumber;
+        var colsNumber = jsonData.colsNumber;
         var width = Math.round(100 / colsNumber);
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
-            var colName = jsonValue[colKey];
+            var colName = jsonData[colKey];
             $headRow.append($("<td>").css("width", width + "%").text(colName));
         }
 
@@ -231,8 +251,8 @@
 
                 if ($RowEditing) {
                     if ($RowEditing.attr("is-new-row") &&
-                        !$RowEditing.find("input").filter(function() { return this.value; }).length) {
-                        $RowEditing.find("input:first").focus();
+                        !$RowEditing.find(".td-edit").filter(function() { return this.value; }).length) {
+                        $RowEditing.find(".td-edit:first").focus();
                         return;
                     }
                     saveChanges();
@@ -248,6 +268,30 @@
 
     function initTable($table) {
         $table.bind("dblclick", toggle);
+    }
+
+    function readColSettings(jsonData) {
+        var colSettings = [];
+
+        var colsNumber = jsonData.colsNumber;
+        for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
+
+            var colKey = "col" + colIdx;
+
+            //Expand %col#Values% pattern
+            var colValuesKey = colKey + "Values";
+            var colValues = jsonData[colValuesKey], regexColValues;
+            if (colValues && (regexColValues = /%(col\dValues)%/.exec(colValues))) {
+                colValues = jsonData[regexColValues[1]];
+            }
+
+            //Store row settings
+            colSettings[colKey] = {
+                values: CSVToArray(colValues)
+            };
+        }
+
+        return colSettings;
     }
 
     //=========== PropertyTable base methods ===========\\
@@ -274,9 +318,9 @@
     }
 
     function setValue(value) {
-        var jsonValue = JSON.parse(value);
-        if (jsonValue) {
-            setRows($Table, jsonValue, $ColsNumber);
+        var jsonData = JSON.parse(value);
+        if (jsonData) {
+            setRows($Table, jsonData, $ColsNumber);
         }
     }
 
@@ -297,12 +341,13 @@
         $element.addClass("settings-table-wrap");
 
         var value = me.Element.attr("value");
-        var jsonValue = JSON.parse(value);
+        var jsonData = JSON.parse(value);
         me.Element.removeAttr("value");
 
+        $ColSettings = readColSettings(jsonData);
         $Table = buildTable($element);
-        $ColsNumber = buildHeaders($Table, jsonValue);
-        buildRows($Table, jsonValue);
+        $ColsNumber = buildHeaders($Table, jsonData);
+        buildRows($Table, jsonData);
         initTable($Table);
     };
 

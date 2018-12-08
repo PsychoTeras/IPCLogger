@@ -130,8 +130,8 @@
         var $values = $element.attr("values");
         if ($values) {
             var values = CSVToArray($values);
-            if (values.length) {
-                me.populateValues($element, values[0]);
+            if (values) {
+                me.populateValues($element, values);
             }
             $element.removeAttr("values");
         }

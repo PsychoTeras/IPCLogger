@@ -8,9 +8,9 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
     {
         public string[] ExclusiveNodeNames { get; }
 
-        public override sealed ConversionSource SourceType { get => ConversionSource.XmlNodes; }
+        public sealed override ConversionSource SourceType { get => ConversionSource.XmlNodes; }
 
-        public XmlNodesConversionAttribute(string exclusiveNodeName)
+        protected XmlNodesConversionAttribute(string exclusiveNodeName)
         {
             if (string.IsNullOrWhiteSpace(exclusiveNodeName))
             {
@@ -20,7 +20,7 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
             ExclusiveNodeNames = new[] { exclusiveNodeName };
         }
 
-        public XmlNodesConversionAttribute(string[] exclusiveNodeNames)
+        protected XmlNodesConversionAttribute(string[] exclusiveNodeNames)
         {
             exclusiveNodeNames = exclusiveNodeNames?.Length == 0
                 ? exclusiveNodeNames.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray()

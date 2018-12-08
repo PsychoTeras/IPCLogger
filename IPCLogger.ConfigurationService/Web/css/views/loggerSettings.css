@@ -92,7 +92,7 @@
             margin-top: -1px;
         }
 
-#form-logger-settings select {
+#form-logger-settings select.custom-select {
     height: 32px;
     padding: 0 0 2px 12px;
 }

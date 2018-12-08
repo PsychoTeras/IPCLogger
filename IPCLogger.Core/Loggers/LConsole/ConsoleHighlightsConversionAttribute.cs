@@ -19,63 +19,75 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
         }
 
+        private void SetColor(string sColor, string colorType, string @event,
+            ref ConsoleColor? defConsoleColor, Dictionary<string, ConsoleColor> consoleColors)
+        {
+            if (string.IsNullOrEmpty(sColor))
+            {
+                return;
+            }
+
+            if (!Enum.IsDefined(typeof(ConsoleColor), sColor))
+            {
+                string msg = $"Invalid {colorType} value '{sColor}'";
+                throw new Exception(msg);
+            }
+
+            ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), sColor);
+            if (Constants.ApplicableForAllMark == @event)
+            {
+                if (defConsoleColor.HasValue)
+                {
+                    string msg = $"Duplicated default {colorType} definition";
+                    throw new Exception(msg);
+                }
+                defConsoleColor = color;
+            }
+            else
+            {
+                if (consoleColors.ContainsKey(@event))
+                {
+                    string msg = $"Duplicated {colorType} definition for event '{@event}'";
+                    throw new Exception(msg);
+                }
+                consoleColors.Add(@event, color);
+            }
+        }
+
         private void ReadAndSetColor(XmlNode highlightNode, string colorType, string @event,
             ref ConsoleColor? defConsoleColor, Dictionary<string, ConsoleColor> consoleColors)
         {
-            string sColor;
             XmlNode colorNode = highlightNode.SelectSingleNode(colorType);
-            if (colorNode != null && !string.IsNullOrEmpty(sColor = colorNode.InnerText.Trim()))
+            if (colorNode != null)
             {
-                if (!Enum.IsDefined(typeof(ConsoleColor), sColor))
-                {
-                    string msg = $"Invalid {colorType} value '{sColor}'";
-                    throw new Exception(msg);
-                }
-
-                ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), sColor);
-                if (Constants.ApplicableForAllMark == @event)
-                {
-                    if (defConsoleColor.HasValue)
-                    {
-                        string msg = $"Duplicated default {colorType} definition";
-                        throw new Exception(msg);
-                    }
-                    defConsoleColor = color;
-                }
-                else
-                {
-                    if (consoleColors.ContainsKey(@event))
-                    {
-                        string msg = $"Duplicated {colorType} definition for event '{@event}'";
-                        throw new Exception(msg);
-                    }
-                    consoleColors.Add(@event, color);
-                }
+                SetColor(colorNode.InnerText.Trim(), colorType, @event, ref defConsoleColor, consoleColors);
             }
+        }
+
+        private string[] SplitEvents(string sEvents)
+        {
+            return string.IsNullOrWhiteSpace(sEvents)
+                ? new[] {Constants.ApplicableForAllMark}
+                : sEvents.Split(Constants.Splitter).Select(s => s.Trim()).ToArray();
         }
 
         private LConsoleSettings.HighlightSettings ReadHighlightSettings(XmlNode[] highlightNodes)
         {
             LConsoleSettings.HighlightSettings settings = new LConsoleSettings.HighlightSettings();
 
-            settings.ConsoleForeColors = new Dictionary<string, ConsoleColor>();
-            settings.ConsoleBackColors = new Dictionary<string, ConsoleColor>();
-
             foreach (XmlNode highlightNode in highlightNodes)
             {
                 XmlAttribute aEvents = highlightNode.Attributes?["events"];
-                string sEvents = aEvents?.Value;
-                string[] events = string.IsNullOrWhiteSpace(sEvents) 
-                    ? new[] { Constants.ApplicableForAllMark } 
-                    : sEvents.Split(Constants.Splitter);
+                string[] events = SplitEvents(aEvents?.Value);
 
-                foreach (string s in events)
+                foreach (string @event in events)
                 {
-                    string @event = s.Trim();
                     if (string.IsNullOrEmpty(@event)) continue;
 
-                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor, settings.ConsoleForeColors);
-                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor, settings.ConsoleBackColors);
+                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor,
+                        settings.ConsoleForeColors);
+                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor,
+                        settings.ConsoleBackColors);
                 }
             }
 
@@ -115,8 +127,11 @@ namespace IPCLogger.Core.Loggers.LConsole
                 throw new Exception(msg);
             }
 
+            string values = Helpers.StringListToString(new []{ " " }.Concat(Enum.GetNames(typeof(ConsoleColor))), Constants.Splitter);
+
             StringBuilder sbJson = new StringBuilder();
-            sbJson.Append("{ \"colsNumber\": 3, \"col1\": \"Applicable for events\", \"col2\": \"ForeColor\", \"col3\": \"BackColor\"");
+            sbJson.Append("{ \"colsNumber\": 3, \"col1\": \"Applicable for events\", \"col2\": \"ForeColor\", \"col3\": \"BackColor\", " +
+                          $"\"col2Values\": \"{values}\", \"col3Values\": \"%col2Values%\"");
 
             List<string> entries = new List<string>();
             string val = MakeColorSettings(Constants.ApplicableForAllMark, 
@@ -141,6 +156,34 @@ namespace IPCLogger.Core.Loggers.LConsole
 
             sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
             return sbJson.ToString();
+        }
+
+        public override object CSStringToValue(string sValue)
+        {
+            LConsoleSettings.HighlightSettings settings = new LConsoleSettings.HighlightSettings();
+
+            List<Dictionary<string, string>> jsonObject = sValue?.FromJson<List<Dictionary<string, string>>>();
+
+            foreach (Dictionary<string, string> dict in jsonObject.Select(d => d))
+            {
+                string sEvents = dict["col1"];
+                string[] events = SplitEvents(sEvents);
+
+                foreach (string @event in events)
+                {
+                    if (string.IsNullOrEmpty(@event)) continue;
+
+                    string sForeColor = dict["col2"];
+                    SetColor(sForeColor, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor,
+                        settings.ConsoleForeColors);
+
+                    string sBackColor = dict["col3"];
+                    SetColor(sBackColor, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor,
+                        settings.ConsoleBackColors);
+                }
+            }
+
+            return settings;
         }
     }
 }

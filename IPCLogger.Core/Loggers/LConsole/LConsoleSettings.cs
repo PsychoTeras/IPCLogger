@@ -16,6 +16,12 @@ namespace IPCLogger.Core.Loggers.LConsole
 
             public ConsoleColor? DefConsoleBackColor;
             public Dictionary<string, ConsoleColor> ConsoleBackColors;
+
+            public HighlightSettings()
+            {
+                ConsoleForeColors = new Dictionary<string, ConsoleColor>();
+                ConsoleBackColors = new Dictionary<string, ConsoleColor>();
+            }
         }
 
 #endregion

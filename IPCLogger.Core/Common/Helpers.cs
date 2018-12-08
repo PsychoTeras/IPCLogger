@@ -315,8 +315,12 @@ namespace IPCLogger.Core.Common
 
         public static string StringListToString(IEnumerable<string> value, char splitter)
         {
-            string separator = splitter + " ";
-            return value?.Aggregate((current, next) => current + separator + next);
+            return StringListToString(value, splitter.ToString());
+        }
+
+        public static string StringListToString(IEnumerable<string> value, string splitter)
+        {
+            return value?.Aggregate((current, next) => current + splitter + next);
         }
 
         private static void AddKeyValueToDictionary(IDictionary dict, string key, object value, Type valueType)

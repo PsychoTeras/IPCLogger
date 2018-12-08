@@ -211,35 +211,30 @@
         });
     };
 
-    window.CSVToArray = function(strData) {
+    window.CSVToArray = function (strData) {
+        if (strData === null || strData === undefined) {
+            return null;
+        }
+
         var strDelimiter = ",";
-        var objPattern = new RegExp("(\\" +
-            strDelimiter +
-            "|\\r?\\n|\\r|^)" +
+        var objPattern = new RegExp(
+            "(\\" + strDelimiter + "|^)" +
             "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-            "([^\"\\" +
-            strDelimiter +
-            "\\r\\n]*))",
+            "([^\"\\" + strDelimiter + "]*))",
             "gi"
         );
 
-        var arrData = [[]];
+        var arrData = [];
 
         var arrMatches;
         while ((arrMatches = objPattern.exec(strData)) !== null) {
-            var strMatchedDelimiter = arrMatches[1];
-            if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
-                arrData.push([]);
-            }
-
             var strMatchedValue;
             if (arrMatches[2]) {
                 strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"");
             } else {
                 strMatchedValue = arrMatches[3];
             }
-
-            arrData[arrData.length - 1].push(strMatchedValue);
+            arrData.push(strMatchedValue.trim());
         }
 
         return arrData;
