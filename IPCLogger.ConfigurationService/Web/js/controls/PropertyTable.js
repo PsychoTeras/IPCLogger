@@ -262,7 +262,7 @@
 
         $headRow.append($("<td>")).children("td:last").
             addClass("th-actions").append($("<button>")).children("button").
-            addClass("btn btn-link").text("Add new record").on("click", function (e) {
+            addClass("btn btn-link").text("Add record").on("click", function (e) {
                 e.preventDefault();
 
                 if ($RowEditing) {

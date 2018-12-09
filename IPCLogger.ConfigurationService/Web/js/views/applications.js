@@ -4,11 +4,11 @@
         return $(caller).parentsUntil("tbody", "#row-application").attr("modelId");
     }
 
-    function applicationConfigure(sender) {
-        var caller = sender.target;
+    function applicationConfigure(e) {
+        var caller = e.target;
         var applicationId = getApplicationId(caller);
         ApplicationController.manageApplication(applicationId);
-    };
+    }
 
     function initialize() {
         this.tableList = new UI.TableList("#table-applications");

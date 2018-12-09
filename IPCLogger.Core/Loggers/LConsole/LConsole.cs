@@ -19,7 +19,6 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         private volatile bool _initialized;
 
-
 #endregion
 
 #region Ctor
