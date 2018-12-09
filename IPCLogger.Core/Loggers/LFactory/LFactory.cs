@@ -306,8 +306,7 @@ namespace IPCLogger.Core.Loggers.LFactory
                             ToDictionary(l => l.UniqueId, l => l);
                         foreach (DeclaredLogger declaredLogger in declaredLoggers)
                         {
-                            BaseLoggerInt logger;
-                            if (existings.TryGetValue(declaredLogger.UniqueId, out logger))
+                            if (existings.TryGetValue(declaredLogger.UniqueId, out var logger))
                             {
                                 if (SetupInstantiatedLogger(declaredLogger, logger))
                                 {

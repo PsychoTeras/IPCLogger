@@ -24,6 +24,19 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region ILogger
 
+        private void SetWindowTitle()
+        {
+            if (_initialized && !string.IsNullOrEmpty(Settings.Title))
+            {
+                Console.Title = SFactory.Process(Settings.Title, Patterns);
+            }
+        }
+
+        protected override void OnSetupSettings()
+        {
+            SetWindowTitle();
+        }
+
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
             byte[] data, string text, bool writeLine, bool immediateFlush)
         {
@@ -51,10 +64,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             try
             {
                 _initialized = Console.WindowHeight > 0;
-                if (!string.IsNullOrEmpty(Settings.Title))
-                {
-                    Console.Title = SFactory.Process(Settings.Title, Patterns);
-                }
+                SetWindowTitle();
             }
             catch
             {
