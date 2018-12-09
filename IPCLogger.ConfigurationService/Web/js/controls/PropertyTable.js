@@ -88,7 +88,7 @@
     function setTdValue($td, value) {
         $td.empty().text(value || "empty");
         if (!value) {
-            $td.attr("is-empty", "yes");
+            $td.attr("is-empty", "");
         }
         else {
             $td.removeAttr("is-empty");
@@ -188,7 +188,7 @@
 
         var $bodyRow = $body.append("<tr>").children("tr:last");
         if (isNewRow) {
-            $bodyRow.attr("is-new-row", "yes");
+            $bodyRow.attr("is-new-row", "");
         }
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
