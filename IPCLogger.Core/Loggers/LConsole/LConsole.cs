@@ -26,17 +26,21 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region ILogger
 
-        private void SetWindowTitle()
+        private void SetupSettings()
         {
             if (_initialized && !string.IsNullOrEmpty(Settings.Title))
             {
                 Console.Title = SFactory.Process(Settings.Title, Patterns);
             }
+
+            LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
+            highlights.DefConsoleForeColor = highlights.DefConsoleForeColor ?? _defForeColor;
+            highlights.DefConsoleBackColor = highlights.DefConsoleBackColor ?? _defBackColor;
         }
 
         protected override void OnSetupSettings()
         {
-            SetWindowTitle();
+            SetupSettings();
         }
 
         protected internal override void Write(Type callerType, Enum eventType, string eventName,
@@ -63,7 +67,7 @@ namespace IPCLogger.Core.Loggers.LConsole
                 _initialized = Console.WindowHeight > 0;
                 _defForeColor = Console.ForegroundColor;
                 _defBackColor = Console.BackgroundColor;
-                SetWindowTitle();
+                SetupSettings();
             }
             catch
             {
@@ -87,8 +91,8 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
             else
             {
-                color = highlights.DefConsoleForeColor ?? _defForeColor;
-                if (color != Console.ForegroundColor)
+                color = highlights.DefConsoleForeColor.Value;
+                if (highlights.DefConsoleForeColor != Console.ForegroundColor)
                 {
                     Console.ForegroundColor = color;
                 }
@@ -100,7 +104,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
             else
             {
-                color = highlights.DefConsoleBackColor ?? _defBackColor;
+                color = highlights.DefConsoleBackColor.Value;
                 if (color != Console.BackgroundColor)
                 {
                     Console.BackgroundColor = color;
