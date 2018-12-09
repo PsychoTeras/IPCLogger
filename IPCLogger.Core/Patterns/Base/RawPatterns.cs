@@ -8,7 +8,7 @@ namespace IPCLogger.Core.Patterns.Base
 
 #region Public fields
 
-        public string Event;
+        public string EventName;
         public Dictionary<Regex, Pattern> Masked;
         public Dictionary<string, Pattern> Strong;
 
@@ -31,9 +31,9 @@ namespace IPCLogger.Core.Patterns.Base
             Strong = new Dictionary<string, Pattern>();
         }
 
-        public RawPatterns(string @event) : this()
+        public RawPatterns(string eventName) : this()
         {
-            Event = @event;
+            EventName = eventName;
         }
 
 #endregion

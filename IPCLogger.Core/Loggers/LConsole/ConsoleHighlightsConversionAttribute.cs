@@ -19,7 +19,7 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
         }
 
-        private void SetColor(string sColor, string colorType, string @event,
+        private void SetColor(string sColor, string colorType, string eventName,
             ref ConsoleColor? defConsoleColor, Dictionary<string, ConsoleColor> consoleColors)
         {
             if (string.IsNullOrEmpty(sColor))
@@ -34,7 +34,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
 
             ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), sColor);
-            if (Constants.ApplicableForAllMark == @event)
+            if (Constants.ApplicableForAllMark == eventName)
             {
                 if (defConsoleColor.HasValue)
                 {
@@ -45,22 +45,22 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
             else
             {
-                if (consoleColors.ContainsKey(@event))
+                if (consoleColors.ContainsKey(eventName))
                 {
-                    string msg = $"Duplicated {colorType} definition for event '{@event}'";
+                    string msg = $"Duplicated {colorType} definition for event '{eventName}'";
                     throw new Exception(msg);
                 }
-                consoleColors.Add(@event, color);
+                consoleColors.Add(eventName, color);
             }
         }
 
-        private void ReadAndSetColor(XmlNode highlightNode, string colorType, string @event,
+        private void ReadAndSetColor(XmlNode highlightNode, string colorType, string eventName,
             ref ConsoleColor? defConsoleColor, Dictionary<string, ConsoleColor> consoleColors)
         {
             XmlNode colorNode = highlightNode.SelectSingleNode(colorType);
             if (colorNode != null)
             {
-                SetColor(colorNode.InnerText.Trim(), colorType, @event, ref defConsoleColor, consoleColors);
+                SetColor(colorNode.InnerText.Trim(), colorType, eventName, ref defConsoleColor, consoleColors);
             }
         }
 
@@ -80,13 +80,13 @@ namespace IPCLogger.Core.Loggers.LConsole
                 XmlAttribute aEvents = highlightNode.Attributes?["events"];
                 IEnumerable<string> events = SplitEvents(aEvents?.Value);
 
-                foreach (string @event in events)
+                foreach (string eventName in events)
                 {
-                    if (string.IsNullOrEmpty(@event)) continue;
+                    if (string.IsNullOrEmpty(eventName)) continue;
 
-                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor,
+                    ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, eventName, ref settings.DefConsoleForeColor,
                         settings.ConsoleForeColors);
-                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor,
+                    ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, eventName, ref settings.DefConsoleBackColor,
                         settings.ConsoleBackColors);
                 }
             }
@@ -112,14 +112,14 @@ namespace IPCLogger.Core.Loggers.LConsole
             LConsoleSettings.HighlightSettings settings)
         {
             void AddGroupedEvent(Dictionary<Tuple<ConsoleColor?, ConsoleColor?>, List<string>> dict,
-                Tuple<ConsoleColor?, ConsoleColor?> item, string @event)
+                Tuple<ConsoleColor?, ConsoleColor?> item, string eventName)
             {
                 if (!dict.TryGetValue(item, out var eventList))
                 {
                     eventList = new List<string>();
                     dict.Add(item, eventList);
                 }
-                eventList.Add(@event);
+                eventList.Add(eventName);
             }
 
             Tuple<ConsoleColor?, ConsoleColor?> MakeColorItem(ConsoleColor? foreColor, ConsoleColor? backColor)
@@ -139,12 +139,12 @@ namespace IPCLogger.Core.Loggers.LConsole
                 Select(s => s.Key).
                 Concat(settings.ConsoleBackColors.Select(s => s.Key)).
                 Distinct();
-            foreach (string @event in events)
+            foreach (string eventName in events)
             {
                 var item = MakeColorItem(
-                    settings.ConsoleForeColors.TryGetValue(@event, out var foreColor) ? foreColor : (ConsoleColor?)null,
-                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?)null);
-                AddGroupedEvent(groupedEvents, item, @event);
+                    settings.ConsoleForeColors.TryGetValue(eventName, out var foreColor) ? foreColor : (ConsoleColor?)null,
+                    settings.ConsoleBackColors.TryGetValue(eventName, out var backColor) ? backColor : (ConsoleColor?)null);
+                AddGroupedEvent(groupedEvents, item, eventName);
             }
 
             return groupedEvents;
@@ -240,11 +240,11 @@ namespace IPCLogger.Core.Loggers.LConsole
                 Select(s => s.Key).
                 Concat(settings.ConsoleBackColors.Select(s => s.Key)).
                 Distinct();
-            foreach (string @event in events)
+            foreach (string eventName in events)
             {
-                string val = MakeColorSettings(@event,
-                    settings.ConsoleForeColors.TryGetValue(@event, out var foreColor) ? foreColor : (ConsoleColor?) null,
-                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?) null);
+                string val = MakeColorSettings(eventName,
+                    settings.ConsoleForeColors.TryGetValue(eventName, out var foreColor) ? foreColor : (ConsoleColor?) null,
+                    settings.ConsoleBackColors.TryGetValue(eventName, out var backColor) ? backColor : (ConsoleColor?) null);
                 entries.Add(val);
             }
 
@@ -262,16 +262,16 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 string sEvents = dict["col1"];
                 IEnumerable<string> events = SplitEvents(sEvents);
-                foreach (string @event in events)
+                foreach (string eventName in events)
                 {
-                    if (string.IsNullOrEmpty(@event)) continue;
+                    if (string.IsNullOrEmpty(eventName)) continue;
 
                     string sForeColor = dict["col2"];
-                    SetColor(sForeColor, FORECOLOR_NODE_NAME, @event, ref settings.DefConsoleForeColor,
+                    SetColor(sForeColor, FORECOLOR_NODE_NAME, eventName, ref settings.DefConsoleForeColor,
                         settings.ConsoleForeColors);
 
                     string sBackColor = dict["col3"];
-                    SetColor(sBackColor, BACKCOLOR_NODE_NAME, @event, ref settings.DefConsoleBackColor,
+                    SetColor(sBackColor, BACKCOLOR_NODE_NAME, eventName, ref settings.DefConsoleBackColor,
                         settings.ConsoleBackColors);
                 }
             }

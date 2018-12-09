@@ -9,9 +9,16 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region Private fields
 
-        private volatile bool _initialized;
+        private bool _eventIsHappend;
+        private string _prewEventName;
+        private ConsoleColor _prewForeColor;
+        private ConsoleColor _prewBackColor;
+
         private ConsoleColor _defForeColor;
         private ConsoleColor _defBackColor;
+
+        private volatile bool _initialized;
+
 
 #endregion
 
@@ -28,7 +35,9 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         private void SetupSettings()
         {
-            if (_initialized && !string.IsNullOrEmpty(Settings.Title))
+            if (!_initialized) return;
+
+            if (!string.IsNullOrEmpty(Settings.Title))
             {
                 Console.Title = SFactory.Process(Settings.Title, Patterns);
             }
@@ -36,6 +45,8 @@ namespace IPCLogger.Core.Loggers.LConsole
             LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
             highlights.DefConsoleForeColor = highlights.DefConsoleForeColor ?? _defForeColor;
             highlights.DefConsoleBackColor = highlights.DefConsoleBackColor ?? _defBackColor;
+            _prewEventName = null;
+            _eventIsHappend = false;
         }
 
         protected override void OnSetupSettings()
@@ -83,6 +94,12 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         private void SetColors(string eventName)
         {
+            if (_eventIsHappend && _prewEventName == eventName)
+            {
+                Console.ForegroundColor = _prewForeColor;
+                Console.BackgroundColor = _prewBackColor;
+            }
+
             LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
 
             if (eventName != null && highlights.ConsoleForeColors.TryGetValue(eventName, out var color))
@@ -92,11 +109,9 @@ namespace IPCLogger.Core.Loggers.LConsole
             else
             {
                 color = highlights.DefConsoleForeColor.Value;
-                if (highlights.DefConsoleForeColor != Console.ForegroundColor)
-                {
-                    Console.ForegroundColor = color;
-                }
+                Console.ForegroundColor = color;
             }
+            _prewForeColor = Console.ForegroundColor;
 
             if (eventName != null && highlights.ConsoleBackColors.TryGetValue(eventName, out color))
             {
@@ -105,11 +120,12 @@ namespace IPCLogger.Core.Loggers.LConsole
             else
             {
                 color = highlights.DefConsoleBackColor.Value;
-                if (color != Console.BackgroundColor)
-                {
-                    Console.BackgroundColor = color;
-                }
+                Console.BackgroundColor = color;
             }
+            _prewBackColor = Console.BackgroundColor;
+
+            _eventIsHappend = true;
+            _prewEventName = eventName;
         }
 
         public int Read()

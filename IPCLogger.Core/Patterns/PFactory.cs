@@ -224,18 +224,18 @@ get_generic_pattern:
 
                 foreach (string s in events.Split(Constants.Splitter))
                 {
-                    string @event = s.Trim();
-                    if (string.IsNullOrEmpty(@event)) continue;
+                    string eventName = s.Trim();
+                    if (string.IsNullOrEmpty(eventName)) continue;
 
-                    bool newPattern = !tmpRawPatterns.ContainsKey(@event);
+                    bool newPattern = !tmpRawPatterns.ContainsKey(eventName);
                     RawPatterns rawPattern = newPattern
-                        ? new RawPatterns(@event)
-                        : tmpRawPatterns[@event];
+                        ? new RawPatterns(eventName)
+                        : tmpRawPatterns[eventName];
 
                     SetupContent(rawPattern, contentNodes, tmpCompiledUntypedPatterns, immediateFlush);
                     if (newPattern && !rawPattern.Empty)
                     {
-                        tmpRawPatterns.Add(@event, rawPattern);
+                        tmpRawPatterns.Add(eventName, rawPattern);
                     }
                 }
             }
@@ -264,9 +264,9 @@ get_generic_pattern:
                 foreach (string classMask in applicableFor)
                 {
                     if (ReferenceEquals(classMask, Constants.ApplicableForAllMark) &&
-                        !compiledUntypedPatterns.ContainsKey(rawPattern.Event))
+                        !compiledUntypedPatterns.ContainsKey(rawPattern.EventName))
                     {
-                        compiledUntypedPatterns.Add(rawPattern.Event, new Pattern(content, immediateFlush));
+                        compiledUntypedPatterns.Add(rawPattern.EventName, new Pattern(content, immediateFlush));
                         continue;
                     }
                     
@@ -286,7 +286,7 @@ get_generic_pattern:
                         continue;
                     }
 
-                    string msg = $"Duplicate applicable-for '{classMask}' for pattern '{rawPattern.Event}'";
+                    string msg = $"Duplicate applicable-for '{classMask}' for pattern '{rawPattern.EventName}'";
                     throw new Exception(msg);
                 }
             }
