@@ -1,4 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.CoreServices;
+using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Loggers.Base;
@@ -13,11 +14,26 @@ namespace IPCLogger.ConfigurationService.Web.modules
 {
     using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
-    public class ModuleSettings : ModuleBase
+    public class ModuleLoggerSettings : ModuleBase
     {
-        public ModuleSettings()
+        public ModuleLoggerSettings()
         {
-            Post["/settings/save"] = x =>
+            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
+            {
+                VerifyAuthentication();
+
+                int applicationId = ViewBag.applicationId = int.Parse(x.appid);
+                string loggerId = ViewBag.loggerId = x.lid;
+
+                CoreService coreService = LoadCoreService(applicationId);
+                DeclaredLoggerModel loggerModel = coreService.GetDeclaredLogger(loggerId);
+                ViewBag.typeName = loggerModel.TypeName;
+
+                PageModel pageModel = SetPageModel(() => PageModel.LoggerSettings(applicationId, loggerModel, PageModel));
+                return View["index", pageModel];
+            };
+
+            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
             {
                 VerifyAuthentication();
 
@@ -27,13 +43,12 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     return null;
                 }
 
-                string loggerId;
-                int applicationId;
+                int applicationId = int.Parse(x.appid);
+                string loggerId = x.lid;
+
                 PropertyObjectDTO[] propertyObjs;
                 try
                 {
-                    loggerId = Request.Query["lid"];
-                    applicationId = int.Parse(Request.Query["appid"]);
                     propertyObjs = JsonConvert.DeserializeObject<PropertyObjectDTO[]>(jsonPropertyObjs);
                     if (propertyObjs == null) throw new Exception();
                 }

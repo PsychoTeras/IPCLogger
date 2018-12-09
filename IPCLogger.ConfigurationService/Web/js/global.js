@@ -200,14 +200,13 @@
         });
     };
 
-    window.showModal = function(popupDiv, popupHtmlSourceUrl, options, onClose) {
-        if (!popupDiv || !popupHtmlSourceUrl) return;
+    window.showModal = function(popupDiv, html, options, onClose) {
         options = options || { backdrop: "static" };
 
         var popupSourceDiv = $(popupDiv).children(".modal-dialog");
         if (!popupSourceDiv.length) return;
 
-        popupSourceDiv.load(popupHtmlSourceUrl);
+        popupSourceDiv.html(html);
 
         popupDiv.modal(options).on("hidden.bs.modal", function(e) {
             if (onClose) {

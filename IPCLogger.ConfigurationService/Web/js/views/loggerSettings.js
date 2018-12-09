@@ -97,9 +97,9 @@
     function initialize() {
         dictControls = new UI.ControlsFactory("#form-logger-settings div.form-control");
 
-        $("#p-save-cancel #btn-save").on("click", save);
-        $("#p-save-cancel #btn-cancel").on("click", cancel);
-        $("#p-save-cancel #btn-reset").on("click", reset);
+        $(".div-save-cancel #btn-save").on("click", save);
+        $(".div-save-cancel #btn-cancel").on("click", cancel);
+        $(".div-save-cancel #btn-reset").on("click", reset);
 
         window.onbeforeunload = function () {
             return hasChanges() ? "Your changes will be lost. Continue?" : undefined;

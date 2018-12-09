@@ -15,12 +15,13 @@
         LoggerController.manageSettings(applicationId, loggerId);
     }
 
-    function addLogger(e) {
+    function addLogger() {
         var applicationId = getApplicationId();
+        PopupController.addLogger(applicationId, function (html) {
+            var divAddLogger = $("#popup-add-logger");
+            showModal(divAddLogger, html, null, function (e) {
 
-        var divAddLogger = $("#popup-add-logger");
-        showModal(divAddLogger, "views/popups/popupAddLogger.cshtml", null, function (m) {
-
+            });
         });
     }
 

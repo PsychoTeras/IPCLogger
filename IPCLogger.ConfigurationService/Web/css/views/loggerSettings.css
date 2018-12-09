@@ -109,24 +109,3 @@
 #form-logger-settings .invalid-feedback.visible {
     display: block;
 }
-
-#p-save-cancel {
-    text-align: right;
-}
-
-    #p-save-cancel > button {
-        margin-right: 3px;
-        width: 100px;
-        height: 34px;
-    }
-
-    #p-save-cancel > div > button:first-child {
-        width: 75px;
-    }
-
-    #p-save-cancel .dropdown-menu {
-        min-width: 0 !important;
-        width: auto !important;
-        font-size: .875rem;
-        margin: 0;
-    }

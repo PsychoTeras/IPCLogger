@@ -27,6 +27,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Namespace { get; protected set; }
 
+        public string Description { get; protected set; }
+
         public IEnumerable<PropertyModel> CommonProperties
         {
             get { return _properties.Where(p => p.IsCommon); }

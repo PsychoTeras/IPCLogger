@@ -1,20 +1,42 @@
-﻿<div class="modal-content">
+﻿@using IPCLogger.ConfigurationService.Entities.Models;
+@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<LoggerModel>>
+
+<div class="modal-content">
 
     <div class="modal-header">
+        <h5 class="modal-title">Add a logger</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add a logger</h4>
     </div>
 
     <div class="modal-body">
-        <div class="form-group">
-            <label for="tb-rule">Logger</label>
-        </div>
+        <table id="table-loggers" class="table table-sm">
+            <thead class="card-header">
+                <tr>
+                    <th style="width: 25%">Logger type</th>
+                    <th style="width: 50%">Description</th>
+                    <th style="width: auto">Namespace</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (LoggerModel model in Model)
+                {
+                    <tr id="row-logger" modelId="@(model.Id)">
+                        <td id="cell-logger-type">@(model.TypeName)</td>
+                        <td id="cell-logger-type">@(model.Description)</td>
+                        <td id="cell-desciption">@(model.Namespace)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success disabled" id="btn-add">Add</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    <div class="modal-footer div-save-cancel">
+        <button class="btn btn-sm btn-success disabled" id="btn-add">Add</button>
+        <button class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
     </div>
 
-    <script>initPopupAddRule();</script>
 </div>
+
+<link href="../../css/views/popups/popupAddLogger.css" rel="stylesheet">
+<script src="../../js/controllers/loggerController.js" type="text/javascript"></script>
+<script src="../../js/views/popups/popupAddLogger.js" type="text/javascript"></script>

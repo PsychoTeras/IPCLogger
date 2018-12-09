@@ -12,6 +12,27 @@
     padding-top: 48px;
 }
 
+.div-save-cancel {
+    text-align: right;
+}
+
+    .div-save-cancel > button {
+        margin-right: 3px;
+        width: 100px;
+        height: 34px;
+    }
+
+    .div-save-cancel > div > button:first-child {
+        width: 75px;
+    }
+
+    .div-save-cancel .dropdown-menu {
+        min-width: 0 !important;
+        width: auto !important;
+        font-size: .875rem;
+        margin: 0;
+    }
+
 table thead .th-actions {
     text-align: right;
 }
@@ -143,7 +164,7 @@ input {
     height: 32px !important;
 }
 
-.modal.popup {
+/*.modal.popup {
     text-align: center;
     padding: 0 !important;
 }
@@ -160,7 +181,7 @@ input {
         display: inline-block;
         text-align: left;
         vertical-align: middle;
-    }
+    }*/
 
 .ui-autocomplete {
     z-index: 5000;
