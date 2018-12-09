@@ -199,7 +199,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             foreach (var groupedEvent in groupedEvents)
             {
                 Tuple<ConsoleColor?, ConsoleColor?> colorItem = groupedEvent.Key;
-                string sEvents = Helpers.StringListToString(groupedEvents[colorItem], Constants.Splitter + " ");
+                string sEvents = Helpers.StringListToString(groupedEvents[colorItem], Constants.SplitterString);
                 WriteHighlightSettings(colorItem, sEvents, cfgNode);
             }
         }

@@ -46,6 +46,11 @@
             padding: 1px 1px 1px 5px;
         }
 
+            #form-logger-settings .settings-table-wrap table tbody td[is-empty] {
+                color: rgba(0, 0, 0, .2);
+                font-style: italic;
+            }
+
             #form-logger-settings .settings-table-wrap table tbody td option,
             #form-logger-settings .settings-table-wrap table tbody td input {
                 height: auto !important;

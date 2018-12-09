@@ -23,7 +23,7 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 
         public override string ValueToString(object value)
         {
-            return Helpers.StringListToString(value as IEnumerable<string>, Constants.Splitter + " ");
+            return Helpers.StringListToString(value as IEnumerable<string>, Constants.SplitterString);
         }
     }
 }

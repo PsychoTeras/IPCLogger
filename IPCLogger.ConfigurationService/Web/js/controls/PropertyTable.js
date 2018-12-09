@@ -40,7 +40,7 @@
             var me = this;
             var $me = $(this);
 
-            var value = $me.text();
+            var value = !$me.attr("is-empty") ? $me.text() : "";
             var width = $me.width();
             var colKey = "col" + (colIdx + 1);
             var colSettings = $ColSettings[colKey];
@@ -85,10 +85,20 @@
         $RowEditing = null;
     }
 
+    function setTdValue($td, value) {
+        $td.empty().text(value || "empty");
+        if (!value) {
+            $td.attr("is-empty", "yes");
+        }
+        else {
+            $td.removeAttr("is-empty");
+        }
+    }
+
     function saveChanges() {
         $("td[data-field]", $RowEditing).each(function () {
             var value = $(".td-edit", this).val();
-            $(this).empty().text(value);
+            setTdValue($(this), value);
         });
         endEditing();
     }
@@ -96,7 +106,7 @@
     function cancelChanges() {
         $("td[data-field]", $RowEditing).each(function () {
             var value = $(".td-edit", this).data("old-value");
-            $(this).empty().text(value);
+            setTdValue($(this), value);
         });
         if ($RowEditing.attr("is-new-row")) {
             deleteRow($RowEditing);
@@ -183,7 +193,9 @@
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
             var colKey = "col" + colIdx;
             var cellValue = rowData ? rowData[colKey] : "";
-            $bodyRow.append($("<td>").attr("data-field", colKey).text(cellValue));
+            var $td = $("<td>").attr("data-field", colKey);
+            $bodyRow.append($td);
+            setTdValue($td, cellValue);
         }
         addActionsCell($bodyRow);
 
@@ -306,8 +318,8 @@
             var $tr = $(this);
             var item = {};
             $tr.find("td:not(.td-actions)").each(function (colIdx) {
-                var $div = $(this);
-                var cellValue = $div.text();
+                var $me = $(this);
+                var cellValue = !$me.attr("is-empty") ? $me.text() : "";
                 var colKey = "col" + (colIdx + 1);
                 item[colKey] = cellValue;
             });
