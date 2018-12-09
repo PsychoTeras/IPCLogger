@@ -10,6 +10,8 @@ namespace IPCLogger.Core.Loggers.LConsole
 #region Private fields
 
         private volatile bool _initialized;
+        private ConsoleColor _defForeColor;
+        private ConsoleColor _defBackColor;
 
 #endregion
 
@@ -42,7 +44,7 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
             if (!_initialized) return;
 
-            bool isColorsSet = SetColors(eventName);
+            SetColors(eventName);
 
             if (writeLine)
             {
@@ -52,11 +54,6 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 Console.Write(text);
             }
-
-            if (isColorsSet)
-            {
-                Console.ResetColor();
-            }
         }
 
         public override void Initialize()
@@ -64,6 +61,8 @@ namespace IPCLogger.Core.Loggers.LConsole
             try
             {
                 _initialized = Console.WindowHeight > 0;
+                _defForeColor = Console.ForegroundColor;
+                _defBackColor = Console.BackgroundColor;
                 SetWindowTitle();
             }
             catch
@@ -78,33 +77,35 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region Class methods
 
-        private bool SetColors(string eventName)
+        private void SetColors(string eventName)
         {
-            ConsoleColor color;
-            bool isSet = false;
             LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
 
-            if (highlights.ConsoleForeColors != null && eventName != null && highlights.ConsoleForeColors.TryGetValue(eventName, out color))
+            if (eventName != null && highlights.ConsoleForeColors.TryGetValue(eventName, out var color))
             {
                 Console.ForegroundColor = color;
-                isSet = true;
             }
-            else if (highlights.DefConsoleForeColor.HasValue)
+            else
             {
-                Console.ForegroundColor = highlights.DefConsoleForeColor.Value;
-                isSet = true;
+                color = highlights.DefConsoleForeColor ?? _defForeColor;
+                if (color != Console.ForegroundColor)
+                {
+                    Console.ForegroundColor = color;
+                }
             }
-            if (highlights.ConsoleBackColors != null && eventName != null && highlights.ConsoleBackColors.TryGetValue(eventName, out color))
+
+            if (eventName != null && highlights.ConsoleBackColors.TryGetValue(eventName, out color))
             {
                 Console.BackgroundColor = color;
-                isSet = true;
             }
-            else if (highlights.DefConsoleBackColor.HasValue)
+            else
             {
-                Console.BackgroundColor = highlights.DefConsoleBackColor.Value;
-                isSet = true;
+                color = highlights.DefConsoleBackColor ?? _defBackColor;
+                if (color != Console.BackgroundColor)
+                {
+                    Console.BackgroundColor = color;
+                }
             }
-            return isSet;
         }
 
         public int Read()
