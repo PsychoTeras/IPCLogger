@@ -139,7 +139,6 @@ namespace IPCLogger.Core.Loggers.LConsole
                 Select(s => s.Key).
                 Concat(settings.ConsoleBackColors.Select(s => s.Key)).
                 Distinct();
-
             foreach (string @event in events)
             {
                 var item = MakeColorItem(
@@ -206,13 +205,12 @@ namespace IPCLogger.Core.Loggers.LConsole
 
         public override string ValueToCSString(object value)
         {
-            string MakeColorSettings(string mark, ConsoleColor? foreColor, ConsoleColor? backColor, bool @fixed)
+            string MakeColorSettings(string mark, ConsoleColor? foreColor, ConsoleColor? backColor)
             {
                 return "{ " +
                        $"\"col1\": \"{mark}\", " +
                        $"\"col2\": \"{(foreColor.HasValue ? foreColor.Value.ToString() : string.Empty)}\", " +
-                       $"\"col3\": \"{(backColor.HasValue ? backColor.Value.ToString() : string.Empty)}\", " +
-                       $"\"fixed\": \"{@fixed}\"" +
+                       $"\"col3\": \"{(backColor.HasValue ? backColor.Value.ToString() : string.Empty)}\"" +
                        " }";
             }
 
@@ -229,23 +227,24 @@ namespace IPCLogger.Core.Loggers.LConsole
                           $"\"col2Values\": \"{values}\", \"col3Values\": \"%col2Values%\"");
 
             List<string> entries = new List<string>();
-            string val = MakeColorSettings(Constants.ApplicableForAllMark, 
-                settings.DefConsoleForeColor, 
-                settings.DefConsoleBackColor, 
-                true);
-            entries.Add(val);
+
+            if (settings.DefConsoleForeColor.HasValue || settings.DefConsoleForeColor.HasValue)
+            {
+                string val = MakeColorSettings(Constants.ApplicableForAllMark,
+                    settings.DefConsoleForeColor,
+                    settings.DefConsoleBackColor);
+                entries.Add(val);
+            }
 
             IEnumerable<string> events = settings.ConsoleForeColors.
                 Select(s => s.Key).
                 Concat(settings.ConsoleBackColors.Select(s => s.Key)).
                 Distinct();
-
             foreach (string @event in events)
             {
-                val = MakeColorSettings(@event,
+                string val = MakeColorSettings(@event,
                     settings.ConsoleForeColors.TryGetValue(@event, out var foreColor) ? foreColor : (ConsoleColor?) null,
-                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?) null,
-                    false);
+                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?) null);
                 entries.Add(val);
             }
 
@@ -263,7 +262,6 @@ namespace IPCLogger.Core.Loggers.LConsole
             {
                 string sEvents = dict["col1"];
                 IEnumerable<string> events = SplitEvents(sEvents);
-
                 foreach (string @event in events)
                 {
                     if (string.IsNullOrEmpty(@event)) continue;

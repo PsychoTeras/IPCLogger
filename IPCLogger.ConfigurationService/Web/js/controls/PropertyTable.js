@@ -40,7 +40,7 @@
             var me = this;
             var $me = $(this);
 
-            var value = !$me.attr("is-empty") ? $me.text() : "";
+            var value = !$me.hasAttr("is-empty") ? $me.text() : "";
             var width = $me.width();
             var colKey = "col" + (colIdx + 1);
             var colSettings = $ColSettings[colKey];
@@ -108,7 +108,7 @@
             var value = $(".td-edit", this).data("old-value");
             setTdValue($(this), value);
         });
-        if ($RowEditing.attr("is-new-row")) {
+        if ($RowEditing.hasAttr("is-new-row")) {
             deleteRow($RowEditing);
         }
         endEditing();
@@ -195,7 +195,11 @@
             var cellValue = rowData ? rowData[colKey] : "";
             var $td = $("<td>").attr("data-field", colKey);
             $bodyRow.append($td);
-            setTdValue($td, cellValue);
+            if (isNewRow) {
+                $td.text(cellValue);
+            } else {
+                setTdValue($td, cellValue);
+            }
         }
         addActionsCell($bodyRow);
 
@@ -262,7 +266,7 @@
                 e.preventDefault();
 
                 if ($RowEditing) {
-                    if ($RowEditing.attr("is-new-row") &&
+                    if ($RowEditing.hasAttr("is-new-row") &&
                         !$RowEditing.find(".td-edit").filter(function() { return this.value; }).length) {
                         $RowEditing.find(".td-edit:first").focus();
                         return;
@@ -319,7 +323,7 @@
             var item = {};
             $tr.find("td:not(.td-actions)").each(function (colIdx) {
                 var $me = $(this);
-                var cellValue = !$me.attr("is-empty") ? $me.text() : "";
+                var cellValue = !$me.hasAttr("is-empty") ? $me.text() : "";
                 var colKey = "col" + (colIdx + 1);
                 item[colKey] = cellValue;
             });

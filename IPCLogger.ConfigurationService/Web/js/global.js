@@ -1,7 +1,13 @@
 ﻿(function() {
     var regexStackGetCaller = new RegExp("\\s+at\\s(.*?)\\s");
 
-    //Patches
+    //JQuery patches
+    $.fn.hasAttr = function (name) {
+        var attr = $(this).attr(name);
+        return typeof attr !== typeof undefined && attr !== false;
+    };
+
+    //Window patches
     $(function () {
         $(window).on("mousedown", function (e) {
             var $target = $(e.target);

@@ -51,7 +51,7 @@
                 font-style: italic;
             }
 
-            #form-logger-settings .settings-table-wrap table tbody td option,
+            #form-logger-settings .settings-table-wrap table tbody td select,
             #form-logger-settings .settings-table-wrap table tbody td input {
                 height: auto !important;
             }
