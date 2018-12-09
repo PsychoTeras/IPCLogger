@@ -389,12 +389,9 @@ namespace IPCLogger.Core.Loggers.Base
                 Type propertyType = data.Item1.PropertyType;
                 XmlNodesConversionAttribute xmlnsAttr = data.Item2 as XmlNodesConversionAttribute;
 
-                XmlNode[] xmlNodes = cfgNode.ChildNodes.OfType<XmlNode>().
-                    Where(n => xmlnsAttr.ExclusiveNodeNames.Contains(n.Name)).ToArray();
-
                 try
                 {
-                    object value = xmlnsAttr.XmlNodesToValue(xmlNodes);
+                    object value = xmlnsAttr.XmlNodesToValue(cfgNode);
                     if (value == null)
                     {
                         throw new Exception();
@@ -446,7 +443,7 @@ namespace IPCLogger.Core.Loggers.Base
                         SetCfgNodeData(cfgNode, property.Name, value, xmlnAttr);
                         break;
                     case XmlNodesConversionAttribute xmlnsAttr:
-                        SetRootCfgNodeData(cfgNode, value, xmlnsAttr);
+                        SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
                         break;
                     default:
                         SetCfgNodeValue(cfgNode, property.Name, value);
@@ -548,7 +545,7 @@ namespace IPCLogger.Core.Loggers.Base
                         SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
                         break;
                     case XmlNodesConversionAttribute xmlnsAttr:
-                        SetRootCfgNodeData(cfgNode, value, xmlnsAttr);
+                        SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
                         break;
                     default:
                         if (isCommon)
@@ -634,15 +631,10 @@ namespace IPCLogger.Core.Loggers.Base
             xmlnAttr.ValueToXmlNode(value, valNode);
         }
 
-        protected void SetRootCfgNodeData(XmlNode cfgNode, object value,
+        protected void SetExclusiveCfgNodeData(XmlNode cfgNode, object value,
             XmlNodesConversionAttribute xmlnsAttr)
         {
-            List<XmlNode> nodes = new List<XmlNode>();
-            foreach (string nodeName in xmlnsAttr.ExclusiveNodeNames)
-            {
-                nodes.Add(AppendCfgXmlNode(cfgNode, nodeName));
-            }
-            xmlnsAttr.ValueToXmlNodes(value, nodes.ToArray());
+            xmlnsAttr.ValueToXmlNodes(value, cfgNode);
         }
 
         protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)

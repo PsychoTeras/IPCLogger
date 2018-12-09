@@ -64,21 +64,21 @@ namespace IPCLogger.Core.Loggers.LConsole
             }
         }
 
-        private string[] SplitEvents(string sEvents)
+        private IEnumerable<string> SplitEvents(string sEvents)
         {
             return string.IsNullOrWhiteSpace(sEvents)
                 ? new[] {Constants.ApplicableForAllMark}
-                : sEvents.Split(Constants.Splitter).Select(s => s.Trim()).ToArray();
+                : sEvents.Split(Constants.Splitter).Select(s => s.Trim());
         }
 
-        private LConsoleSettings.HighlightSettings ReadHighlightSettings(XmlNode[] highlightNodes)
+        private LConsoleSettings.HighlightSettings ReadHighlightSettings(IEnumerable<XmlNode> highlightNodes)
         {
             LConsoleSettings.HighlightSettings settings = new LConsoleSettings.HighlightSettings();
 
             foreach (XmlNode highlightNode in highlightNodes)
             {
                 XmlAttribute aEvents = highlightNode.Attributes?["events"];
-                string[] events = SplitEvents(aEvents?.Value);
+                IEnumerable<string> events = SplitEvents(aEvents?.Value);
 
                 foreach (string @event in events)
                 {
@@ -94,19 +94,114 @@ namespace IPCLogger.Core.Loggers.LConsole
             return settings;
         }
 
-        public override object XmlNodesToValue(XmlNode[] xmlNodes)
+        public override object XmlNodesToValue(XmlNode cfgNode)
         {
-            if (xmlNodes == null)
+            if (cfgNode == null)
             {
                 string msg = "XmlNodes cannot be null or empty";
                 throw new Exception(msg);
             }
 
+            IEnumerable<XmlNode> xmlNodes = cfgNode.ChildNodes.OfType<XmlNode>().
+                Where(n => ExclusiveNodeNames.Contains(n.Name));
+
             return ReadHighlightSettings(xmlNodes);
         }
 
-        public override void ValueToXmlNodes(object value, XmlNode[] xmlNodes)
+        private Dictionary<Tuple<ConsoleColor?, ConsoleColor?>, List<string>> GroupEventsAndColors(
+            LConsoleSettings.HighlightSettings settings)
         {
+            void AddGroupedEvent(Dictionary<Tuple<ConsoleColor?, ConsoleColor?>, List<string>> dict,
+                Tuple<ConsoleColor?, ConsoleColor?> item, string @event)
+            {
+                if (!dict.TryGetValue(item, out var eventList))
+                {
+                    eventList = new List<string>();
+                    dict.Add(item, eventList);
+                }
+                eventList.Add(@event);
+            }
+
+            Tuple<ConsoleColor?, ConsoleColor?> MakeColorItem(ConsoleColor? foreColor, ConsoleColor? backColor)
+            {
+                return new Tuple<ConsoleColor?, ConsoleColor?>(foreColor, backColor);
+            }
+
+            var groupedEvents = new Dictionary<Tuple<ConsoleColor?, ConsoleColor?>, List<string>>();
+
+            if (settings.DefConsoleForeColor.HasValue || settings.DefConsoleBackColor.HasValue)
+            {
+                var item = MakeColorItem(settings.DefConsoleForeColor, settings.DefConsoleBackColor);
+                AddGroupedEvent(groupedEvents, item, Constants.ApplicableForAllMark);
+            }
+
+            IEnumerable<string> events = settings.ConsoleForeColors.
+                Select(s => s.Key).
+                Concat(settings.ConsoleBackColors.Select(s => s.Key)).
+                Distinct();
+
+            foreach (string @event in events)
+            {
+                var item = MakeColorItem(
+                    settings.ConsoleForeColors.TryGetValue(@event, out var foreColor) ? foreColor : (ConsoleColor?)null,
+                    settings.ConsoleBackColors.TryGetValue(@event, out var backColor) ? backColor : (ConsoleColor?)null);
+                AddGroupedEvent(groupedEvents, item, @event);
+            }
+
+            return groupedEvents;
+        }
+
+        private void WriteHighlightSettings(Tuple<ConsoleColor?, ConsoleColor?> colorItem, string sEvents, XmlNode cfgNode)
+        {
+            XmlDocument xmlDoc = cfgNode.OwnerDocument;
+
+            void AppendColorNode(string colorType, ConsoleColor? color, XmlNode node)
+            {
+                if (!color.HasValue) return;
+
+                XmlNode colorNode = xmlDoc.CreateNode(XmlNodeType.Element, colorType, xmlDoc.NamespaceURI);
+                colorNode.InnerText = color.Value.ToString();
+                node.AppendChild(colorNode);
+            }
+
+            XmlNode valNode = xmlDoc.CreateNode(XmlNodeType.Element, HIGHLIGHT_NODE_NAME, xmlDoc.NamespaceURI);
+            cfgNode.AppendChild(valNode);
+
+            if (sEvents != Constants.ApplicableForAllMark)
+            {
+                XmlAttribute valAttribute = xmlDoc.CreateAttribute("events");
+                valNode.Attributes.Append(valAttribute);
+                valAttribute.InnerText = sEvents;
+            }
+
+            AppendColorNode(FORECOLOR_NODE_NAME, colorItem.Item1, valNode);
+            AppendColorNode(BACKCOLOR_NODE_NAME, colorItem.Item2, valNode);
+        }
+
+        public override void ValueToXmlNodes(object value, XmlNode cfgNode)
+        {
+            XmlNode[] xmlNodes = cfgNode.ChildNodes.
+                OfType<XmlNode>().
+                Where(n => ExclusiveNodeNames.Contains(n.Name)).
+                ToArray();
+            foreach (XmlNode node in xmlNodes)
+            {
+                cfgNode.RemoveChild(node);
+            }
+
+            if (!(value is LConsoleSettings.HighlightSettings settings))
+            {
+                return;
+            }
+
+            Dictionary<Tuple<ConsoleColor?, ConsoleColor?>, List<string>> groupedEvents = GroupEventsAndColors(settings);
+
+            foreach (var groupedEvent in groupedEvents)
+            {
+                Tuple<ConsoleColor?, ConsoleColor?> colorItem = groupedEvent.Key;
+                string sEvents = Helpers.StringListToString(groupedEvents[colorItem], Constants.Splitter + " ");
+                WriteHighlightSettings(colorItem, sEvents, cfgNode);
+            }
         }
 
         public override string ValueToCSString(object value)
@@ -162,12 +257,12 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
             LConsoleSettings.HighlightSettings settings = new LConsoleSettings.HighlightSettings();
 
-            List<Dictionary<string, string>> jsonObject = sValue?.FromJson<List<Dictionary<string, string>>>();
+            var jsonObject = sValue?.FromJson<List<Dictionary<string, string>>>();
 
             foreach (Dictionary<string, string> dict in jsonObject.Select(d => d))
             {
                 string sEvents = dict["col1"];
-                string[] events = SplitEvents(sEvents);
+                IEnumerable<string> events = SplitEvents(sEvents);
 
                 foreach (string @event in events)
                 {
