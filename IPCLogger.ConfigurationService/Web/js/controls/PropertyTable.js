@@ -354,7 +354,7 @@
     UI.PropertyTable.prototype.afterChangeType = function ($element) {
         var me = this;
 
-        $element.addClass("settings-table-wrap");
+        $element.addClass("table-wrap");
 
         var value = me.Element.attr("value");
         var jsonData = JSON.parse(value);

@@ -1,34 +1,27 @@
-﻿(function (UI) {
+﻿(function ($) {
 
-    UI.TableList = function (selector) {
-        var me = this;
-        me.Table = $(selector);
-        me.initialize();
-    };
+    $.fn.TableList = function () {
+        var $table = this;
 
-    UI.TableList.TABLE_CLASSES = "table-hover";
-    UI.TableList.CELL_ACTIONS = "cell-actions";
+        var TableClasses = "table-hover";
+        var CellActions = "cell-actions";
 
-    UI.TableList.prototype.initialize = function() {
-        var me = this;
-        var vars = UI.TableList;
+        $table.addClass(TableClasses);
 
-        me.Table.addClass(vars.TABLE_CLASSES);
-
-        me.Table.find("tbody>tr").mouseover(function () {
-            me.Table.find("tbody>tr>td").removeClass("mouseover");
-            $(this).find("#" + vars.CELL_ACTIONS).addClass("mouseover");
+        $table.find("tbody>tr").mouseover(function () {
+            $table.find("tbody>tr>td").removeClass("mouseover");
+            $(this).find("#" + CellActions).addClass("mouseover");
         });
 
-        me.Table.find("tbody>tr").mouseleave(function () {
-            $(this).find("#" + vars.CELL_ACTIONS).removeClass("mouseover");
+        $table.find("tbody>tr").mouseleave(function () {
+            $(this).find("#" + CellActions).removeClass("mouseover");
         });
 
         var mouseX = window.mouseX(), mouseY = window.mouseY();
         if (mouseX !== undefined && mouseY !== undefined) {
             var $el = $(document.elementFromPoint(mouseX, mouseY));
-            if ($el[0] && $el[0].id !== vars.CELL_ACTIONS) {
-                $el = $el.closest("#" + vars.CELL_ACTIONS);
+            if ($el[0] && $el[0].id !== CellActions) {
+                $el = $el.closest("#" + CellActions);
             }
             if ($el.length) {
                 $el.addClass("mouseover");
@@ -36,4 +29,4 @@
         }
     };
 
-})(window.UI = window.UI || {});
+}(jQuery));

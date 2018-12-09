@@ -1,0 +1,23 @@
+﻿.ui-table-select {
+    font-size: .875rem;
+    margin-bottom: 0;
+}
+
+    .ui-table-select thead > tr > th {
+        vertical-align: middle;
+        padding-left: .4rem;
+        border: none;
+        font-weight: 500;
+    }
+
+    .ui-table-select tbody > tr {
+        height: 44px;
+    }
+
+        .ui-table-select tbody > tr.selected {
+            background-color: gainsboro;
+        }
+
+        .ui-table-select tbody > tr > td {
+            vertical-align: middle;
+        }

@@ -1,1 +1,9 @@
-﻿
+﻿#popup-add-logger .modal-dialog {
+    max-width: 900px;
+}
+
+#popup-add-logger .table-wrap {
+    overflow: auto;
+    max-height: 500px;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}

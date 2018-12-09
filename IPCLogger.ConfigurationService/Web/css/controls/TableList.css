@@ -1,10 +1,4 @@
-﻿.ui-table-wrap {
-    max-height: calc(100vh - 120px);
-    overflow: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-}
-
-.ui-table-list {
+﻿.ui-table-list {
     font-size: .875rem;
     margin-bottom: 0;
 }

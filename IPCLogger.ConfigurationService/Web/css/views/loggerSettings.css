@@ -12,72 +12,73 @@
     overflow: auto;
 }
 
-#form-logger-settings .settings-table-wrap {
+#form-logger-settings .table-wrap {
     height: auto;
     /*max-height: 194px;*/
     overflow: auto;
     padding: 0;
 }
 
-    #form-logger-settings .settings-table-wrap table {
+    #form-logger-settings .table-wrap table {
         font-size: .875rem;
         margin-bottom: 0;
     }
 
-        #form-logger-settings .settings-table-wrap table thead td {
+        #form-logger-settings .table-wrap table thead td {
             border-top-width: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table thead.card-header {
+        #form-logger-settings .table-wrap table thead.card-header {
             background-color: #006be0;
             background-color: rgba(0, 107, 224, .05);
         }
 
-        #form-logger-settings .settings-table-wrap table tbody .no-records {
+        #form-logger-settings .table-wrap table tbody .no-records {
             height: 33px;
             font-style: italic;
             background-color: white !important;
             cursor: auto;
         }
 
-        #form-logger-settings .settings-table-wrap table tbody td {
+        #form-logger-settings .table-wrap table tbody td {
             vertical-align: middle;
             cursor: pointer;
             padding: 1px 1px 1px 5px;
         }
 
-            #form-logger-settings .settings-table-wrap table tbody td[is-empty] {
+            #form-logger-settings .table-wrap table tbody td[is-empty] {
+                color: #000000;
                 color: rgba(0, 0, 0, .2);
                 font-style: italic;
             }
 
-            #form-logger-settings .settings-table-wrap table tbody td select,
-            #form-logger-settings .settings-table-wrap table tbody td input {
+#form-logger-settings .table-wrap table tbody td select,
+            #form-logger-settings .table-wrap table tbody td input {
                 height: auto !important;
             }
 
-        #form-logger-settings .settings-table-wrap table tbody .td-actions {
+        #form-logger-settings .table-wrap table tbody .td-actions {
             opacity: 0.05;
             text-align: right;
             width: 62px;
         }
 
-            #form-logger-settings .settings-table-wrap table tbody .td-actions.mouseover,
-            #form-logger-settings .settings-table-wrap table.editing tbody tr.editing .td-actions {
+            #form-logger-settings .table-wrap table tbody .td-actions.mouseover,
+            #form-logger-settings .table-wrap table.editing tbody tr.editing .td-actions {
                 opacity: 1;
             }
 
-            #form-logger-settings .settings-table-wrap table tbody .td-actions button {
+            #form-logger-settings .table-wrap table tbody .td-actions button {
                 padding-top: 4px;
                 height: 30px;
                 width: 31px;
             }
 
-        #form-logger-settings .settings-table-wrap table.editing tbody tr:not(.editing) .td-actions {
+        #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions {
             opacity: 0;
         }
 
-        #form-logger-settings .settings-table-wrap table.editing tbody tr.editing {
+        #form-logger-settings .table-wrap table.editing tbody tr.editing {
             background-color: lemonchiffon;
         }
 

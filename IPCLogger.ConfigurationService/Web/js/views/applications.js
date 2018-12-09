@@ -11,7 +11,7 @@
     }
 
     function initialize() {
-        this.tableList = new UI.TableList("#table-applications");
+        $("#table-applications").TableList();
 
         $("#table-applications button[id^='btn-configure-application']").on("click", applicationConfigure);
     }

@@ -172,8 +172,10 @@
     <None Include="Web\fonts\fontawesome-webfont.woff" />
     <None Include="Web\fonts\fontawesome-webfont.woff2" />
     <None Include="Web\fonts\FontAwesome.otf" />
+    <Content Include="Web\css\controls\TableSelect.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
     <Content Include="Web\js\controllers\popupController.js" />
+    <Content Include="Web\js\controls\TableSelect.js" />
     <Content Include="Web\js\libraries\bootstrap\bootbox.min.js" />
     <Content Include="Web\js\libraries\jquery\jquery-ui.min.js" />
     <Content Include="Web\js\views\popups\popupAddLogger.js" />

@@ -9,25 +9,27 @@
     </div>
 
     <div class="modal-body">
-        <table id="table-loggers" class="table table-sm">
-            <thead class="card-header">
+        <div class="card bg-light table-wrap">
+            <table id="table-loggers" class="table table-sm ui-table-select table-hover">
+                <thead class="card-header">
                 <tr>
                     <th style="width: 25%">Logger type</th>
-                    <th style="width: 50%">Description</th>
                     <th style="width: auto">Namespace</th>
+                    <th style="width: auto">Description</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 @foreach (LoggerModel model in Model)
                 {
                     <tr id="row-logger" modelId="@(model.Id)">
                         <td id="cell-logger-type">@(model.TypeName)</td>
-                        <td id="cell-logger-type">@(model.Description)</td>
                         <td id="cell-desciption">@(model.Namespace)</td>
+                        <td id="cell-logger-type">@(model.Description)</td>
                     </tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="modal-footer div-save-cancel">
