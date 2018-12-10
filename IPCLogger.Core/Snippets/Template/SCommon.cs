@@ -23,6 +23,7 @@ namespace IPCLogger.Core.Snippets.Template
 #region Static fields
 
         private static volatile int _lastDateMark;
+        private static readonly List<string> _dateParamStrings = new List<string>();
         private static readonly Dictionary<string, string> _dateStrings = new Dictionary<string, string>();
         private static readonly LightLock _lockDateStrings = new LightLock();
 
@@ -80,8 +81,8 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Class methods
 
-        public override string Process(Type callerType, Enum eventType, string snippetName,
-            byte[] data, string text, string @params, PFactory pFactory)
+        public override string Process(Type callerType, Enum eventType, string snippetName, byte[] data, 
+            string text, string @params, PFactory pFactory)
         {
             switch (snippetName)
             {
@@ -94,49 +95,59 @@ namespace IPCLogger.Core.Snippets.Template
                 case "newline":
                     return Constants.NewLine;
                 case "date":
-                {
-                    string cachedDate;
-                    int ticks = Environment.TickCount;
-                    int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks%_timeMarkMod;
-                    if (currentTimeMark != _lastDateMark || !_dateStrings.TryGetValue(@params, out cachedDate))
                     {
-                        _lockDateStrings.WaitOne();
-                        cachedDate = DateTime.Now.ToString(@params);
-                        if (!_dateStrings.ContainsKey(@params))
+                        int ticks = Environment.TickCount;
+                        int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
+                        bool newCacheItem = !_dateStrings.TryGetValue(@params, out var cachedDate);
+                        if (currentTimeMark != _lastDateMark || newCacheItem)
                         {
-                            _dateStrings.Add(@params, cachedDate);
+                            _lockDateStrings.WaitOne();
+                            DateTime dt = DateTime.Now;
+                            if (newCacheItem)
+                            {
+                                cachedDate = dt.ToString(@params);
+                                _dateStrings.Add(@params, cachedDate);
+                                _dateParamStrings.Add(@params);
+                            }
+                            else
+                            {
+                                foreach (string param in _dateParamStrings)
+                                {
+                                    string dateString = dt.ToString(param);
+                                    _dateStrings[param] = dateString;
+                                    //if (@params == param)
+                                    //{
+                                    //    cachedDate = dateString;
+                                    //}
+                                }
+                                cachedDate = _dateStrings[@params];
+                                _lastDateMark = currentTimeMark;
+                            }
+                            _lockDateStrings.Set();
                         }
-                        else
-                        {
-                            _dateStrings[@params] = cachedDate;
-                        }
-                        _lastDateMark = currentTimeMark;
-                        _lockDateStrings.Set();
+                        return cachedDate;
                     }
-                    return cachedDate;
-                }
                 case "utcdate":
-                {
-                    string cachedDate;
-                    int ticks = Environment.TickCount;
-                    int currentTimeUtcMark = _timeMarkMod == 0 ? ticks : ticks - ticks%_timeMarkMod;
-                    if (currentTimeUtcMark != _lastUtcMark || !_dateUtcStrings.TryGetValue(@params, out cachedDate))
                     {
-                        _lockDateUtcStrings.WaitOne();
-                        cachedDate = DateTime.UtcNow.ToString(@params);
-                        if (currentTimeUtcMark == _lastUtcMark)
+                        int ticks = Environment.TickCount;
+                        int currentTimeUtcMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
+                        if (currentTimeUtcMark != _lastUtcMark || !_dateUtcStrings.TryGetValue(@params, out var cachedDate))
                         {
-                            _dateUtcStrings.Add(@params, cachedDate);
+                            _lockDateUtcStrings.WaitOne();
+                            cachedDate = DateTime.UtcNow.ToString(@params);
+                            if (currentTimeUtcMark == _lastUtcMark)
+                            {
+                                _dateUtcStrings.Add(@params, cachedDate);
+                            }
+                            else
+                            {
+                                _dateUtcStrings[@params] = cachedDate;
+                            }
+                            _lastUtcMark = currentTimeUtcMark;
+                            _lockDateUtcStrings.Set();
                         }
-                        else
-                        {
-                            _dateUtcStrings[@params] = cachedDate;
-                        }
-                        _lastUtcMark = currentTimeUtcMark;
-                        _lockDateUtcStrings.Set();
+                        return cachedDate;
                     }
-                    return cachedDate;
-                }
                 case "ticks":
                     return Environment.TickCount.ToString(@params);
                 case "uptime":
@@ -181,7 +192,7 @@ namespace IPCLogger.Core.Snippets.Template
                     switch (@params)
                     {
                         case "int":
-                            return ((int) (object) eventType).ToString();
+                            return ((int)(object)eventType).ToString();
                         default:
                             return EventNamesCache.GetEventName(eventType);
                     }

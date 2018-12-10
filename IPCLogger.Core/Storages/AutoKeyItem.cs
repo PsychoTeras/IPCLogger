@@ -18,7 +18,7 @@ namespace IPCLogger.Core.Storages
 
         public string GetAndIncrease()
         {
-            int value = Interlocked.Add(ref Value, Increment);
+            int value = Interlocked.Add(ref Value, Increment) - Increment;
             return Format != null ? value.ToString(Format) : value.ToString();
         }
 
