@@ -57,10 +57,16 @@ namespace IPCLogger.ConfigurationService.CoreServices
             ConfigurationXml.Load(configurationFile);
         }
 
+        public XmlNode AppendConfigurationNode(XmlNode cfgNode)
+        {
+            return LFactorySettings.AppendConfigurationNode(ConfigurationXml, cfgNode);
+        }
+
         public void SaveConfiguration()
         {
             ConfigurationXml.Save(_configurationFile);
         }
+
         public bool IsSameApplication(int applicationId)
         {
             return _applicationId == applicationId;
@@ -89,7 +95,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
                 GetDeclaredLoggers(ConfigurationXml, true).
-                Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
+                Select(s => DeclaredLoggerModel.FromCoreDeclaredLogger(s, availableTypes)).
                 OrderBy(t => t.TypeName).
                 ToList();
         }
@@ -98,6 +104,17 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             ReadAvailableLoggers(configurationFile);
             ReadDeclaredLoggers(configurationFile);
+        }
+
+        public LoggerModel GetAvailableLogger(string loggerId)
+        {
+            LoggerModel loggerModel = AvailableLoggers.FirstOrDefault(l => l.Id == loggerId);
+            if (loggerModel == null)
+            {
+                throw new InvalidRequestException();
+            }
+
+            return loggerModel;
         }
 
         public DeclaredLoggerModel GetDeclaredLogger(string loggerId)

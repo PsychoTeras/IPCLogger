@@ -94,6 +94,12 @@ namespace IPCLogger.ConfigurationService.Entities
             return GetPageModel(PageType.Loggers, pagePath, application.ToString(), declaredLoggers, previousPageModel);
         }
 
+        public static PageModel AddLogger(int applicationId, DeclaredLoggerModel logger, PageModel previousPageModel)
+        {
+            string pagePath = $"/applications/{applicationId}/loggers/{logger.Id}";
+            return GetPageModel(PageType.LoggerSettings, pagePath, logger.ToString(), logger, previousPageModel);
+        }
+
         public static PageModel LoggerSettings(int applicationId, DeclaredLoggerModel logger, PageModel previousPageModel)
         {
             string pagePath = $"/applications/{applicationId}/loggers/{logger.Id}/settings";

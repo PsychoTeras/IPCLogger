@@ -19,8 +19,11 @@
         var applicationId = getApplicationId();
         PopupController.addLogger(applicationId, function (html) {
             var divAddLogger = $("#popup-add-logger");
-            showModal(divAddLogger, html, null, function (e) {
-
+            showModal(divAddLogger, html, null, function () {
+                var loggerId = $("#popup-add-logger #logger-id").val();
+                if (loggerId) {
+                    LoggerController.addLogger(applicationId, loggerId);
+                }
             });
         });
     }

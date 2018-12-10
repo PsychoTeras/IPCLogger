@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IPCLogger.ConfigurationService.Helpers;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
@@ -21,17 +22,23 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             );
         }
 
+        protected override void RecalculateId()
+        {
+            Id = BaseHelpers.CalculateMD5(BaseSettings.Hash);
+        }
+
         internal static DeclaredLoggerModel FromLogger(LoggerModel source)
         {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
             model.TypeName = source.TypeName;
             model.Namespace = source.Namespace;
             model.Type = source.Type;
-            model.CloneCSProperties(source);
+            model.InitializeSettings();
+            model.Id = source.Id;
             return model;
         }
 
-        internal static DeclaredLoggerModel FromDeclaredLogger(DeclaredLogger source, IEnumerable<Type> availableLoggers)
+        internal static DeclaredLoggerModel FromCoreDeclaredLogger(DeclaredLogger source, IEnumerable<Type> availableLoggers)
         {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
             model.TypeName = source.TypeName;

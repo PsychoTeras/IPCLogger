@@ -1,11 +1,10 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
 using IPCLogger.Core.Loggers.LConsole;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
-using IPCLogger.Core.Attributes.CustomConversionAttributes;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {

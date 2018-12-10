@@ -1,23 +1,23 @@
 ﻿using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Helpers;
+using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using IPCLogger.Core.Attributes;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
     using PropertyData = Tuple<PropertyInfo, CustomConversionAttribute, bool>;
+    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
     public class LoggerModel
     {
-        private BaseSettings _baseSettings;
-        public PropertyModel[] _properties;
+        private PropertyModel[] _properties;
+
+        protected BaseSettings BaseSettings;
 
         public string Id { get; protected set; }
 
@@ -44,7 +44,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return _properties.Any(p => !p.IsCommon); }
         }
 
-        public XmlNode RootXmlNode { get; private set; }
+        public XmlNode RootXmlNode { get; set; }
 
         public void ReloadProperties()
         {
@@ -55,36 +55,55 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                     data.Item1.Name,
                     data.Item1.PropertyType,
                     data.Item2?.GetType(),
-                    _baseSettings.GetPropertyValue(data.Item1, data.Item2),
-                    _baseSettings.GetPropertyValues(data.Item1),
+                    BaseSettings.GetPropertyValue(data.Item1, data.Item2),
+                    BaseSettings.GetPropertyValues(data.Item1),
                     isCommon,
                     data.Item3
                 );
             }
 
-            var commonProperties = _baseSettings.GetCommonProperties().
+            var commonProperties = BaseSettings.GetCommonProperties().
                 Select(data => PropertyDataToModel(data, true));
-            _properties = _baseSettings.GetProperties().
+            _properties = BaseSettings.GetProperties().
                 Select(data => PropertyDataToModel(data, false)).
                 Concat(commonProperties).
                 ToArray();
         }
 
-        protected BaseSettings InstLoggerSettings(XmlNode cfgNode)
+        // ReSharper disable PossibleNullReferenceException
+        protected void InstLoggerSettings(XmlNode cfgNode)
         {
-            RootXmlNode = cfgNode = cfgNode ?? new XmlDocument().CreateElement("_");
+            bool isNew = cfgNode == null;
+            RootXmlNode = cfgNode = cfgNode ?? new XmlDocument().CreateElement(TypeName);
+            if (isNew && !string.IsNullOrEmpty(Namespace))
+            {
+                XmlDocument xmlDoc = cfgNode.OwnerDocument;
+                XmlAttribute valAttribute = xmlDoc.CreateAttribute("namespace");
+                valAttribute.InnerText = Namespace;
+                cfgNode.Attributes.Append(valAttribute);
+            }
             Type bsType = ((TypeInfo) Type).ImplementedInterfaces
                 .Select(i => i.GenericTypeArguments.FirstOrDefault(gt => gt.IsSubclassOf(typeof(BaseSettings))))
                 .First(i => i != null);
-            _baseSettings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
-            _baseSettings.Setup(cfgNode);
-            return _baseSettings;
+            BaseSettings = (BaseSettings) Activator.CreateInstance(bsType, Type, null);
+            BaseSettings.Setup(cfgNode);
+        }
+        // ReSharper restore PossibleNullReferenceException
+
+        protected virtual void RecalculateId()
+        {
+            Id = BaseHelpers.CalculateMD5($"^{TypeName}%{Namespace}^");
+        }
+
+        public void ReinitializeSettings()
+        {
+            InitializeSettings(RootXmlNode);
         }
 
         protected void InitializeSettings(XmlNode cfgNode = null)
         {
-            _baseSettings = InstLoggerSettings(cfgNode);
-            Id = BaseHelpers.CalculateMD5(_baseSettings.Hash);
+            InstLoggerSettings(cfgNode);
+            RecalculateId();
             ReloadProperties();
         }
 
@@ -109,7 +128,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
         {
-            return properties.Select(p =>_baseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged)).ToArray();
+            return properties.Select(p => BaseSettings.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged)).ToArray();
         }
 
         internal bool UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
@@ -123,7 +142,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 {
                     try
                     {
-                        _baseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
+                        BaseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
                     }
                     catch (Exception ex)
                     {

@@ -99,6 +99,14 @@ namespace IPCLogger.Core.Loggers.LFactory
             return loggers;
         }
 
+        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
+        {
+            XmlNode rootNode = xmlCfg.SelectSingleNode(RootLoggersCfgPath);
+            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
+            rootNode.AppendChild(newNode);
+            return newNode;
+        }
+
 #endregion
 
 #region Class methods

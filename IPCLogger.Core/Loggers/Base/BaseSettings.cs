@@ -260,20 +260,20 @@ namespace IPCLogger.Core.Loggers.Base
             Name = aName?.InnerText.Trim();
 
             LoadEventsApplicableSet(cfgNode, "allow-events", out _allowEvents);
+            LoadEventsApplicableSet(cfgNode, "deny-events", out _denyEvents);
+
             if (_allowEvents != null)
             {
                 CheckApplicableEvent = s => _allowEvents.Contains(s);
-                return;
             }
-
-            LoadEventsApplicableSet(cfgNode, "deny-events", out _denyEvents);
-            if (_denyEvents != null)
+            else if (_denyEvents != null)
             {
                 CheckApplicableEvent = s => !_denyEvents.Contains(s);
-                return;
             }
-
-            CheckApplicableEvent = _defCheckApplicableEvent;
+            else
+            {
+                CheckApplicableEvent = _defCheckApplicableEvent;
+            }
         }
 
         protected virtual Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode)
@@ -539,7 +539,15 @@ namespace IPCLogger.Core.Loggers.Base
                 {
                     case ValueConversionAttribute vcAttr:
                         value = vcAttr.ValueToString(value);
-                        SetCfgNodeValue(cfgNode, propertyName, value);
+                        if (isCommon)
+                        {
+                            string attrName = _commonPropertiesSet[propertyName];
+                            SetCfgAttributeValue(cfgNode, attrName, value);
+                        }
+                        else
+                        {
+                            SetCfgNodeValue(cfgNode, propertyName, value);
+                        }
                         break;
                     case XmlNodeConversionAttribute xmlnAttr:
                         SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);

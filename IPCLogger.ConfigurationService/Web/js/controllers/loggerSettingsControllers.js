@@ -1,10 +1,10 @@
 ﻿function LoggerSettingsController() {
 
-    this.save = function (applicationId, loggerId, propertyObjs, callback) {
+    function createOrUpdate(applicationId, loggerId, propertyObjs, callback, create) {
         var url = getApiUrl("applications", applicationId, "loggers", loggerId, "settings");
         asyncQuery(
             url,
-            "POST",
+            create ? "POST" : "PUT",
             "json",
             function (data) {
                 var failedProps = data.length ? data : null;
@@ -12,6 +12,14 @@
             },
             null,
             JSON.stringify(propertyObjs));
+    }
+
+    this.create = function (applicationId, loggerId, propertyObjs, callback) {
+        createOrUpdate(applicationId, loggerId, propertyObjs, callback, true);
+    };
+
+    this.update = function (applicationId, loggerId, propertyObjs, callback) {
+        createOrUpdate(applicationId, loggerId, propertyObjs, callback, false);
     };
 }
 

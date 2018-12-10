@@ -5,6 +5,7 @@ using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Loggers.Base;
 using Nancy;
 using Nancy.Extensions;
+using Nancy.Responses.Negotiation;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,22 +19,37 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleLoggerSettings()
         {
-            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
+            Negotiator NewOrGet(dynamic x, bool isNew)
             {
                 VerifyAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 string loggerId = ViewBag.loggerId = x.lid;
+                ViewBag.isNew = isNew;
 
                 CoreService coreService = LoadCoreService(applicationId);
-                DeclaredLoggerModel loggerModel = coreService.GetDeclaredLogger(loggerId);
+                DeclaredLoggerModel loggerModel;
+                if (isNew)
+                {
+                    LoggerModel availableLoggerModel = coreService.GetAvailableLogger(loggerId);
+                    loggerModel = DeclaredLoggerModel.FromLogger(availableLoggerModel);
+                }
+                else
+                {
+                    loggerModel = coreService.GetDeclaredLogger(loggerId);
+                }
+
                 ViewBag.typeName = loggerModel.TypeName;
 
-                PageModel pageModel = SetPageModel(() => PageModel.LoggerSettings(applicationId, loggerModel, PageModel));
+                PageModel pageModel = SetPageModel(() => PageModel.AddLogger(applicationId, loggerModel, PageModel));
                 return View["index", pageModel];
-            };
+            }
 
-            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x =>
+            Get["/applications/{appid:int}/loggers/{lid}"] = x => NewOrGet(x, true);
+
+            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x => NewOrGet(x, false);
+
+            Response CreateOrUpdate(dynamic x, bool create)
             {
                 VerifyAuthentication();
 
@@ -42,9 +58,6 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 {
                     return null;
                 }
-
-                int applicationId = int.Parse(x.appid);
-                string loggerId = x.lid;
 
                 PropertyObjectDTO[] propertyObjs;
                 try
@@ -59,8 +72,22 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 try
                 {
+                    int applicationId = int.Parse(x.appid);
+                    string loggerId = x.lid;
+
                     CoreService coreService = LoadCoreService(applicationId);
-                    DeclaredLoggerModel loggerModel = coreService.GetDeclaredLogger(loggerId);
+
+                    DeclaredLoggerModel loggerModel;
+                    if (create)
+                    {
+                        LoggerModel availableLoggerModel = coreService.GetAvailableLogger(loggerId);
+                        loggerModel = DeclaredLoggerModel.FromLogger(availableLoggerModel);
+                    }
+                    else
+                    {
+                        loggerModel = coreService.GetDeclaredLogger(loggerId);
+                    }
+
                     PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
@@ -69,6 +96,11 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     {
                         if (loggerModel.UpdateSettings(validationResult, propertyObjs))
                         {
+                            if (create)
+                            {
+                                loggerModel.RootXmlNode = coreService.AppendConfigurationNode(loggerModel.RootXmlNode);
+                                loggerModel.ReinitializeSettings();
+                            }
                             coreService.SaveConfiguration();
                             loggerModel.ReloadProperties();
                         }
@@ -86,7 +118,11 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 {
                     return Response.AsJson(ex.Message, HttpStatusCode.BadRequest);
                 }
-            };
+            }
+
+            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, true);
+
+            Put["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
         }
     }
 }

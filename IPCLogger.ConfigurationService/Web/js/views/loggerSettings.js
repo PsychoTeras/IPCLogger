@@ -10,6 +10,10 @@
         return $("#logger-id").val();
     }
 
+    function isNew() {
+        return $("#is-new").val() === "True";
+    }
+
     function hasChanges() {
         var result = false;
         $.each(dictControls,
@@ -58,7 +62,11 @@
     function savePropertyObjs(propertyObjs) {
         var applicationId = getApplicationId();
         var loggerId = getLoggerId();
-        LoggerSettingsController.save(applicationId, loggerId, propertyObjs, processSaveResult);
+        if (isNew()) {
+            LoggerSettingsController.create(applicationId, loggerId, propertyObjs, processSaveResult);
+        } else {
+            LoggerSettingsController.update(applicationId, loggerId, propertyObjs, processSaveResult);
+        }
     }
 
     function prepareForSave() {
