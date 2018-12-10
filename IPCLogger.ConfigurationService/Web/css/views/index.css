@@ -232,7 +232,7 @@ body.loading {
     cursor: default;
     display: none;
     position: fixed;
-    z-index: 1100;
+    z-index: 9999;
     top: 0;
     left: 0;
     height: 100%;
@@ -241,7 +241,7 @@ body.loading {
 
 body.locked .page-lock {
     display: block;
-    cursor: wait;
+    cursor: wait !important;
 }
 
 .input-group-addon {
