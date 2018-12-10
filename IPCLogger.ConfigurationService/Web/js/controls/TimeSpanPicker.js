@@ -146,7 +146,8 @@
                     placement: "auto",
                     trigger: "click",
                     html: true,
-                    content: $picker
+                    content: $picker,
+                    animation: false
                 });
             }
             init();
