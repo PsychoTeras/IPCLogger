@@ -21,11 +21,11 @@
     });
 
     $(document).on({
-        ajaxStart: function() {
-            $("body").addClass("loading");
+        ajaxStart: function () {
+            lockPage();
         },
-        ajaxStop: function() {
-            $("body").removeClass("loading"); 
+        ajaxStop: function () {
+            unlockPage();
         },
         mousemove: function (e) {
             if (document.body) {
