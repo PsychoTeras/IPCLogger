@@ -100,6 +100,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                             {
                                 loggerModel.RootXmlNode = coreService.AppendConfigurationNode(loggerModel.RootXmlNode);
                                 loggerModel.ReinitializeSettings();
+                                coreService.AppendLogger(loggerModel);
                             }
                             coreService.SaveConfiguration();
                             loggerModel.ReloadProperties();

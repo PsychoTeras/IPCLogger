@@ -79,7 +79,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-#region Application methods
+#region Loggers methods
 
         private void ReadAvailableLoggers(string configurationFile)
         {
@@ -96,7 +96,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
             DeclaredLoggers = LFactorySettings.
                 GetDeclaredLoggers(ConfigurationXml, true).
                 Select(s => DeclaredLoggerModel.FromCoreDeclaredLogger(s, availableTypes)).
-                OrderBy(t => t.TypeName).
                 ToList();
         }
 
@@ -126,6 +125,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             return loggerModel;
+        }
+
+        public void AppendLogger(DeclaredLoggerModel loggerModel)
+        {
+            DeclaredLoggers.Add(loggerModel);
         }
 
 #endregion
