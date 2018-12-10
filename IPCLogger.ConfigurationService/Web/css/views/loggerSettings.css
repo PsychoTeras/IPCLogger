@@ -1,15 +1,19 @@
-﻿#form-logger-settings .card .card-header:not(:first-child) {
+﻿#form-logger-settings {
+    margin-bottom: 15px;
+}
+
+#form-logger-settings .card-container {
+    max-height: calc(100vh - 170px);
+    overflow: auto;
+}
+
+#form-logger-settings .card-header:not(:first-child) {
     border-top: 1px solid #000000;
     border-top: 1px solid rgba(0, 0, 0, .125);
 }
 
-#form-logger-settings .card .card-body {
+#form-logger-settings .card-body {
     padding: 0 1rem 1rem 1rem !important;
-}
-
-#form-logger-settings .card .card-container {
-    max-height: calc(100vh - 170px);
-    overflow: auto;
 }
 
 #form-logger-settings .table-wrap {
