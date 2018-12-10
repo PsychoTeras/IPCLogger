@@ -24,7 +24,7 @@ namespace IPCLogger.TestService
         private static readonly WaitCallback _workMethod = WriteLogIPC;                  //Do we use WriteLogIPC or WriteLog4Net?
         private static readonly bool IsIPCLogger = _workMethod == WriteLogIPC;           //Whether target logger is IPCLogger
         private static readonly int _parallelOperations = Environment.ProcessorCount;    //Number of parallel operations (Environment.ProcessorCount)
-        private static readonly int _recordsCount = 5000000 / _parallelOperations;       //Number of iterations
+        private static readonly int _recordsCount = 500000 / _parallelOperations;        //Number of iterations
 
         //-------------------------------------------------------------------------------------------------------------------------
 

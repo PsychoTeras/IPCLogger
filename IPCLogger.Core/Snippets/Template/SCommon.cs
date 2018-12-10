@@ -16,12 +16,12 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Declarations
 
-        class DateTimeRecord
+        class DateTimeCache
         {
             public int LastDateMark;
             public string Value;
 
-            public DateTimeRecord(int lastDateMark, string value)
+            public DateTimeCache(int lastDateMark, string value)
             {
                 LastDateMark = lastDateMark;
                 Value = value;
@@ -38,11 +38,10 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Static fields
 
-        private static readonly Dictionary<string, DateTimeRecord> _dateStrings = new Dictionary<string, DateTimeRecord>();
+        private static readonly Dictionary<string, DateTimeCache> _dateStrings = new Dictionary<string, DateTimeCache>();
         private static readonly LightLock _lockDateStrings = new LightLock();
 
-        private static volatile int _lastUtcMark;
-        private static readonly Dictionary<string, string> _dateUtcStrings = new Dictionary<string, string>();
+        private static readonly Dictionary<string, DateTimeCache> _dateUtcStrings = new Dictionary<string, DateTimeCache>();
         private static readonly LightLock _lockDateUtcStrings = new LightLock();
 
         private static readonly string _machineName = Environment.MachineName;
@@ -98,6 +97,40 @@ namespace IPCLogger.Core.Snippets.Template
         public override string Process(Type callerType, Enum eventType, string snippetName, byte[] data,
             string text, string @params, PFactory pFactory)
         {
+            string GetDate(Dictionary<string, DateTimeCache> dateStrings, LightLock lockDateStrings)
+            {
+                int ticks = Environment.TickCount;
+                int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
+                bool newCacheItem = !dateStrings.TryGetValue(@params, out DateTimeCache cachedDate);
+
+                if (newCacheItem || currentTimeMark != cachedDate.LastDateMark)
+                {
+                    lockDateStrings.WaitOne();
+
+                    if (newCacheItem && dateStrings.TryGetValue(@params, out cachedDate))
+                    {
+                        lockDateStrings.Set();
+                        return cachedDate.Value;
+                    }
+
+                    string value = DateTime.Now.ToString(@params);
+                    if (newCacheItem)
+                    {
+                        cachedDate = new DateTimeCache(currentTimeMark, value);
+                        dateStrings.Add(@params, cachedDate);
+                    }
+                    else
+                    {
+                        cachedDate.LastDateMark = currentTimeMark;
+                        cachedDate.Value = value;
+                    }
+
+                    lockDateStrings.Set();
+                }
+
+                return cachedDate.Value;
+            }
+
             switch (snippetName)
             {
                 case "text":
@@ -109,61 +142,9 @@ namespace IPCLogger.Core.Snippets.Template
                 case "newline":
                     return Constants.NewLine;
                 case "date":
-                {
-                    int ticks = Environment.TickCount;
-                    int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
-                    bool newCacheItem = !_dateStrings.TryGetValue(@params, out DateTimeRecord cachedDate);
-
-                    if (newCacheItem || currentTimeMark != cachedDate.LastDateMark)
-                    {
-                        _lockDateStrings.WaitOne();
-
-                        if (newCacheItem && _dateStrings.TryGetValue(@params, out cachedDate))
-                        {
-                            _lockDateStrings.Set();
-                            return cachedDate.Value;
-                        }
-
-                        string value = DateTime.Now.ToString(@params);
-                        if (newCacheItem)
-                        {
-                            cachedDate = new DateTimeRecord(currentTimeMark, value);
-                            _dateStrings.Add(@params, cachedDate);
-                        }
-                        else
-                        {
-                            cachedDate.LastDateMark = currentTimeMark;
-                            cachedDate.Value = value;
-                        }
-
-                        _lockDateStrings.Set();
-                    }
-
-                    return cachedDate.Value;
-                }
+                    return GetDate(_dateStrings, _lockDateStrings);
                 case "utcdate":
-                {
-                    int ticks = Environment.TickCount;
-                    int currentTimeUtcMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
-                    if (currentTimeUtcMark != _lastUtcMark || !_dateUtcStrings.TryGetValue(@params, out var cachedDate))
-                    {
-                        _lockDateUtcStrings.WaitOne();
-                        cachedDate = DateTime.UtcNow.ToString(@params);
-                        if (currentTimeUtcMark == _lastUtcMark)
-                        {
-                            _dateUtcStrings.Add(@params, cachedDate);
-                        }
-                        else
-                        {
-                            _dateUtcStrings[@params] = cachedDate;
-                        }
-
-                        _lastUtcMark = currentTimeUtcMark;
-                        _lockDateUtcStrings.Set();
-                    }
-
-                    return cachedDate;
-                }
+                    return GetDate(_dateUtcStrings, _lockDateUtcStrings);
                 case "ticks":
                     return Environment.TickCount.ToString(@params);
                 case "uptime":
