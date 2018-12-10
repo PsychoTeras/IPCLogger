@@ -96,14 +96,19 @@ namespace IPCLogger.Core.Snippets.Template
                     return Constants.NewLine;
                 case "date":
                 {
-                    string cachedDate = null;
                     int ticks = Environment.TickCount;
                     int currentTimeMark = _timeMarkMod == 0 ? ticks : ticks - ticks % _timeMarkMod;
-                    bool newCacheItem = !_dateParamStrings.Contains(@params);
+                    bool newCacheItem = !_dateStrings.TryGetValue(@params, out var cachedDate);
+
                     if (currentTimeMark != _lastDateMark || newCacheItem)
                     {
                         _lockDateStrings.WaitOne();
-                        newCacheItem = !_dateStrings.TryGetValue(@params, out cachedDate);
+
+                        if (newCacheItem && _dateStrings.TryGetValue(@params, out cachedDate))
+                        {
+                            _lockDateStrings.Set();
+                            return cachedDate;
+                        }
 
                         DateTime dt = DateTime.Now;
                         if (newCacheItem)
@@ -123,7 +128,6 @@ namespace IPCLogger.Core.Snippets.Template
                                     cachedDate = dateString;
                                 }
                             }
-
                             _lastDateMark = currentTimeMark;
                         }
 
