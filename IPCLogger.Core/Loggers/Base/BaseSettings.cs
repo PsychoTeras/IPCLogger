@@ -475,8 +475,11 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected internal virtual string GetPropertyValues(PropertyInfo property)
         {
+            string[] names;
             Type type = property.PropertyType;
-            return type.IsEnum ? Enum.GetNames(type).Aggregate((current, next) => current + "," + next) : null;
+            return type.IsEnum && (names = Enum.GetNames(type)).Any()
+                ? names.Aggregate((current, next) => current + "," + next)
+                : null;
         }
 
         protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,

@@ -18,7 +18,7 @@
         var result = false;
         $.each(dictControls,
             function(_, item) {
-                result = item.control.isChanged();
+                result = isNew() || item.control.isChanged();
                 return !result;
             });
         return result;
@@ -30,12 +30,12 @@
             function (_, item) {
 
                 var control = item.control;
-                if (control.isChanged() || control.isRequired()) {
+                if (control.isChanged() || control.isRequired() || isNew()) {
                     var propertyObj = control.getPropertyObject();
                     if (!propertyObj) {
                         throw "PropertyObject is undefined, control " + control.name();
                     }
-
+                    propertyObj.isChanged |= isNew();
                     propertyObjs.push(propertyObj);
                 }
             });

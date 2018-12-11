@@ -143,7 +143,10 @@
 
         var url = globalSetting.APP_URL;
         $.each(arguments,
-            function(_, value) {
+            function (_, value) {
+                if (value == null) {
+                    return true;
+                }
                 if (value instanceof Object) {
                     url = url.concat(valueToGetParams(value));
                     return false;

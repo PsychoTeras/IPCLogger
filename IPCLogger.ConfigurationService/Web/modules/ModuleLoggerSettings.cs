@@ -45,10 +45,6 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 return View["index", pageModel];
             }
 
-            Get["/applications/{appid:int}/loggers/{lid}"] = x => NewOrGet(x, true);
-
-            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x => NewOrGet(x, false);
-
             Response CreateOrUpdate(dynamic x, bool create)
             {
                 VerifyAuthentication();
@@ -89,6 +85,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     }
 
                     PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
+                    CoreService.ValidateLoggerUniqueness(loggerModel, propertyObjs, ref validationResult);
+
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
                         Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
@@ -121,9 +119,13 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
             }
 
-            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, true);
+            Get["/applications/{appid:int}/loggers/{lid}"] = x => NewOrGet(x, true);
 
-            Put["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
+            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x => NewOrGet(x, false);
+
+            Post["/applications/{appid:int}/loggers/{lid}"] = x => CreateOrUpdate(x, true);
+
+            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
         }
     }
 }

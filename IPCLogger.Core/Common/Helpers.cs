@@ -256,7 +256,10 @@ namespace IPCLogger.Core.Common
 
         public static string ByteArrayToString(byte[] bytes, int lineLength)
         {
-            if (bytes == null || bytes.Length == 0) return null;
+            if (bytes == null || bytes.Length == 0)
+            {
+                return string.Empty;
+            }
 
             int curCharsCnt = 0;
             StringBuilder hex = new StringBuilder(bytes.Length * 2);
@@ -320,7 +323,9 @@ namespace IPCLogger.Core.Common
 
         public static string StringListToString(IEnumerable<string> value, string splitter)
         {
-            return value?.Aggregate((current, next) => current + splitter + next);
+            return value != null && value.Any()
+                ? value.Aggregate((current, next) => current + splitter + next)
+                : string.Empty;
         }
 
         private static void AddKeyValueToDictionary(IDictionary dict, string key, object value, Type valueType)

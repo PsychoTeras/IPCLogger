@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using IPCLogger.ConfigurationService.Common.Exceptions;
+using IPCLogger.ConfigurationService.Entities.DTO;
+using static IPCLogger.Core.Loggers.Base.BaseSettings;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
@@ -125,6 +127,28 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             return loggerModel;
+        }
+
+        internal void ValidateLoggerUniqueness(DeclaredLoggerModel loggerModel, PropertyObjectDTO[] propertyObjs,
+            ref PropertyValidationResult[] validationResult)
+        {
+            PropertyValidationResult pvrName = validationResult.FirstOrDefault(r => r.Name == "Name" && r.IsCommon);
+
+            if (DeclaredLoggers.Exists(l => l.Name == (pvrName?.Value ?? loggerModel.Name) as string &&
+                    l.TypeName == loggerModel.TypeName && l.Namespace == loggerModel.Namespace))
+            {
+                string msg = "Such logger with the same name is already registered. Please select another logger name";
+                if (pvrName != null)
+                {
+                    pvrName.SetInvalid(msg);
+                }
+                else
+                {
+                    pvrName = PropertyValidationResult.Invalid("Name", true, msg);
+                    Array.Resize(ref validationResult, validationResult.Length + 1);
+                    validationResult[validationResult.Length - 1] = pvrName;
+                }
+            }
         }
 
         public void AppendLogger(DeclaredLoggerModel loggerModel)
