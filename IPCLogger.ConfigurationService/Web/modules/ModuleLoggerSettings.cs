@@ -41,7 +41,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 ViewBag.typeName = loggerModel.TypeName;
 
-                PageModel pageModel = SetPageModel(() => PageModel.AddLogger(applicationId, loggerModel, PageModel));
+                PageModel pageModel = SetPageModel(PageModel.AddLogger(applicationId, loggerModel, PageModel));
                 return View["index", pageModel];
             }
 

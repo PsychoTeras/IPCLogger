@@ -3,9 +3,7 @@ using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
 using Nancy;
-using System;
 using System.Linq;
-using Nancy.Security;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
@@ -38,17 +36,17 @@ namespace IPCLogger.ConfigurationService.Web.modules
             return coreService;
         }
 
-        protected PageModel SetPageModel(Func<PageModel> funcPageModel)
+        protected PageModel SetPageModel(PageModel pageModel)
         {
             PageModel previousPageModel = PageModel;
-            PageModel currentPageModel = funcPageModel();
+            PageModel currentPageModel = pageModel;
             if (currentPageModel != null && previousPageModel != null)
             {
-                PageModel model = currentPageModel;
-                PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == model.PageType);
+                PageModel existingPageModel = previousPageModel.FirstOrDefault(m => m.PageType == currentPageModel.PageType);
                 if (existingPageModel != null)
                 {
                     currentPageModel = existingPageModel;
+                    currentPageModel.Model = pageModel.Model;
                 }
             }
             PageModel = currentPageModel;

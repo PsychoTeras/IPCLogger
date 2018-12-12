@@ -48,7 +48,7 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             }
 
             Type objType = Type.GetType(jtType.ToString());
-            return JsonConvert.DeserializeObject(jtValue.ToString(), objType); ;
+            return JsonConvert.DeserializeObject(jtValue.ToString(), objType);
         }
     }
 }

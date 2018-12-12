@@ -19,7 +19,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 VerifyAuthentication();
 
                 List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
-                PageModel pageModel = SetPageModel(() => PageModel.Applications(applications));
+                PageModel pageModel = SetPageModel(PageModel.Applications(applications));
                 return View["index", pageModel];
             };
 
@@ -31,7 +31,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
                 CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);
 
-                PageModel pageModel = SetPageModel(() => PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PageModel));
+                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PageModel));
                 return View["index", pageModel];
             };
 
