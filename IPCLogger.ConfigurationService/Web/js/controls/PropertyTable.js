@@ -41,11 +41,10 @@
             var $me = $(this);
 
             var value = !$me.hasAttr("is-empty") ? $me.text() : "";
-            var width = $me.width();
             var colKey = "col" + (colIdx + 1);
             var colSettings = $ColSettings[colKey];
 
-            $me.empty().width(width);
+            $me.empty();
 
             var input;
             if (!colSettings.values) {
@@ -192,10 +191,18 @@
         if (isNewRow) {
             $bodyRow.attr("is-new-row", "");
         }
+
+        var widthPrc = Math.round(100 / colsNumber), remainingWidthPrc = 100;
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
+            if (colIdx === colsNumber) {
+                widthPrc = remainingWidthPrc;
+            } else {
+                remainingWidthPrc -= widthPrc;
+            }
+
             var colKey = "col" + colIdx;
             var cellValue = rowData ? rowData[colKey] : "";
-            var $td = $("<td>").attr("data-field", colKey);
+            var $td = $("<td>").css("width", widthPrc + "%").attr("data-field", colKey);
             $bodyRow.append($td);
             if (isNewRow) {
                 $td.text(cellValue);
@@ -255,11 +262,17 @@
         var $headRow = $table.append("<thead class='card-header'><tr>").find("tr");
 
         var colsNumber = jsonData.colsNumber;
-        var width = Math.round(100 / colsNumber);
+        var widthPrc = Math.round(100 / colsNumber), remainingWidthPrc = 100;
         for (var colIdx = 1; colIdx <= colsNumber; colIdx++) {
+            if (colIdx === colsNumber) {
+                widthPrc = remainingWidthPrc;
+            } else {
+                remainingWidthPrc -= widthPrc;
+            }
+
             var colKey = "col" + colIdx;
             var colName = jsonData[colKey];
-            $headRow.append($("<td>").css("width", width + "%").text(colName));
+            $headRow.append($("<td>").css("width", widthPrc + "%").text(colName));
         }
 
         $headRow.append($("<td>")).children("td:last").

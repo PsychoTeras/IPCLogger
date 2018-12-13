@@ -77,8 +77,7 @@
                 width: 31px;
             }
 
-        #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button,
-        #form-logger-settings .table-wrap table tbody tr.ui-sortable-helper .td-actions button {
+        #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button {
             display: none;
         }
 
