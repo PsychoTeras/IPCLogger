@@ -114,3 +114,8 @@
 #form-logger-settings .invalid-feedback.visible {
     display: block;
 }
+
+
+#form-logger-settings hr {
+        margin-bottom: .5rem;
+}

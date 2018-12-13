@@ -18,12 +18,21 @@
     -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
+hr {
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left, rgba(0,0,0,.02), rgba(0,0,0,.15), rgba(0,0,0,.02));
+    background-image: -moz-linear-gradient(left, rgba(0,0,0,.02), rgba(0,0,0,.15), rgba(0,0,0,.02));
+    background-image: -ms-linear-gradient(left, rgba(0,0,0,.02), rgba(0,0,0,.15), rgba(0,0,0,.02));
+    background-image: -o-linear-gradient(left, rgba(0,0,0,.02), rgba(0,0,0,.15), rgba(0,0,0,.02));
+}
+
 .div-save-cancel {
     text-align: right;
 }
 
     .div-save-cancel > button {
-        margin-right: 3px;
+        margin-right: 4px;
         width: 105px;
     }
 

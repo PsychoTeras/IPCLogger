@@ -14,6 +14,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 #region Constants
 
         private const string BASE_CLASS = "div";
+        private const string SEPARATOR_CLASS = "hr";
 
         private const string PROPERTY_ATTR_NAME = "name";
         private const string PROPERTY_ATTR_VALUE = "value";
@@ -102,6 +103,13 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 html.RenderBeginTag(BASE_CLASS);
 
                 html.RenderEndTag();
+
+                if (propertyModel.IsCommon && propertyModel.Name == "Enabled")
+                {
+                    html.RenderBeginTag(SEPARATOR_CLASS);
+
+                    html.RenderEndTag();
+                }
             }
 
             return stringWriter.ToString();
