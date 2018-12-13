@@ -1,9 +1,11 @@
 ﻿@using IPCLogger.ConfigurationService.Entities.Models;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<LoggerModel>>
 
-<input type="hidden" id="logger-id" />
+<link href="../../css/views/popups/popupAddLogger.css" rel="stylesheet">
 
 <div class="modal-content">
+    
+    <input type="hidden" id="logger-id" />
 
     <div class="modal-header">
         <h5 class="modal-title">Add a logger</h5>
@@ -41,6 +43,5 @@
 
 </div>
 
-<link href="../../css/views/popups/popupAddLogger.css" rel="stylesheet">
-<script src="../../js/controllers/loggerController.js" type="text/javascript"></script>
 <script src="../../js/views/popups/popupAddLogger.js" type="text/javascript"></script>
+<script src="../../js/controllers/loggerController.js" type="text/javascript"></script>

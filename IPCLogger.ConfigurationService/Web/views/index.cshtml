@@ -44,21 +44,6 @@
             </nav>
 
             <main role="main" class="col-md-10 col-lg-12">
-
-                <ol style="margin: 0; padding: 0; display: flex; list-style: none; height: 56px" class="pt-3 pb-2">
-                    @foreach (PageModel model in Model.Reverse())
-                    {
-                        if (model == Model)
-                        {
-                            <li class="breadcrumb-item active h5" aria-current="page">@(model.Caption)</li>
-                        }
-                        else
-                        {
-                            <li class="breadcrumb-item h5"><a href="@(model.PagePath)">@(model.Caption)</a></li>
-                        }
-                    }
-                </ol>
-
                 @Html.Partial(string.Format("partials/{0}.cshtml", Model.PageName), Model.Model)
             </main>
 

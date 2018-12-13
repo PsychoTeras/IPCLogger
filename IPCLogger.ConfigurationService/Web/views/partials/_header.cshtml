@@ -1,12 +1,26 @@
 ﻿@using IPCLogger.ConfigurationService.Entities;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<PageModel>
 
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <div class="navbar-caption col-sm-3 col-md-2 p-2">
-        <a href="/applications" style="text-decoration: none; color: #f8f9fa">
-            <img class="mr-3" src="../../assets/application.png" alt="" width="32" height="32">Configuration Console
-        </a>
+<nav class="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow">
+    
+    <div class="navbar-caption col-sm-2 col-md-2">
+        <img class="ml-1 mr-3" src="../../assets/application.png" alt="" width="30" height="30">
+        <a class="h6" href="/applications">Configuration Console</a>
     </div>
+    
+    <ul class="breadcrumb">
+        @foreach (PageModel model in Model.Reverse())
+        {
+            if (model == Model)
+            {
+                <li class="breadcrumb-item active h6" aria-current="page">@(model.Caption)</li>
+            }
+            else
+            {
+                <li class="breadcrumb-item h6"><a href="@(model.PagePath)">@(model.Caption)</a></li>
+            }
+        }
+    </ul>
 
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">

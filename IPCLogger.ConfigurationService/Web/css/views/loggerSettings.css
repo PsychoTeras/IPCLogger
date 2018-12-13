@@ -3,7 +3,7 @@
 }
 
 #form-logger-settings .card-container {
-    max-height: calc(100vh - 170px);
+    max-height: calc(100vh - 130px);
     overflow: auto;
 }
 
@@ -32,16 +32,12 @@
             border-top-width: 0;
         }
 
-        #form-logger-settings .table-wrap table thead.card-header {
-            background-color: #006be0;
-            background-color: rgba(0, 107, 224, .05);
-        }
-
         #form-logger-settings .table-wrap table tbody .no-records {
-            height: 33px;
             font-style: italic;
             background-color: white !important;
             cursor: auto;
+            padding: 7px;
+            text-align: center;
         }
 
         #form-logger-settings .table-wrap table tbody td {
@@ -50,13 +46,17 @@
             padding: 1px 1px 1px 5px;
         }
 
+        #form-logger-settings .table-wrap table.editing tbody tr.editing td {
+            padding-left: 3px;
+        }
+
             #form-logger-settings .table-wrap table tbody td[is-empty] {
                 color: #000000;
                 color: rgba(0, 0, 0, .2);
                 font-style: italic;
             }
 
-#form-logger-settings .table-wrap table tbody td select,
+            #form-logger-settings .table-wrap table tbody td select,
             #form-logger-settings .table-wrap table tbody td input {
                 height: auto !important;
             }
@@ -64,7 +64,7 @@
         #form-logger-settings .table-wrap table tbody .td-actions {
             opacity: 0.05;
             text-align: right;
-            width: 62px;
+            height: 33px;
         }
 
             #form-logger-settings .table-wrap table tbody .td-actions.mouseover,
@@ -73,13 +73,13 @@
             }
 
             #form-logger-settings .table-wrap table tbody .td-actions button {
-                padding-top: 4px;
                 height: 30px;
                 width: 31px;
             }
 
-        #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions {
-            opacity: 0;
+        #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button,
+        #form-logger-settings .table-wrap table tbody tr.ui-sortable-helper .td-actions button {
+            display: none;
         }
 
         #form-logger-settings .table-wrap table.editing tbody tr.editing {

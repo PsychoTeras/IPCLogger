@@ -11,19 +11,6 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
 {
     public class BootstrapperCommon : DefaultNancyBootstrapper
     {
-        //class DisableViewCache : IViewCache
-        //{
-        //    public TCompiledView GetOrAdd<TCompiledView>(ViewLocationResult viewLocationResult, Func<ViewLocationResult, TCompiledView> valueFactory)
-        //    {
-        //        return valueFactory(viewLocationResult);
-        //    }
-        //}
-
-        //protected override NancyInternalConfiguration InternalConfiguration
-        //{
-        //    get => NancyInternalConfiguration.WithOverrides(x => { x.ViewCache = typeof(DisableViewCache); });
-        //}
-
         private static readonly FormsAuthenticationConfiguration _formsAuthConfiguration = new FormsAuthenticationConfiguration
         {
             RedirectUrl = "~/signin",

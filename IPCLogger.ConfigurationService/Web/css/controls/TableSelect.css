@@ -16,7 +16,7 @@
 
         .ui-table-select tbody > tr.selected {
             color: white;
-            background-color: #006be0;
+            background-color: steelblue;
         }
 
         .ui-table-select tbody > tr > td {

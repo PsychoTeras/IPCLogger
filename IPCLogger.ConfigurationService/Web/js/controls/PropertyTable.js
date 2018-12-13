@@ -122,6 +122,10 @@
         e.preventDefault();
 
         var $tr = $(e.target).closest("tr");
+        if (!$tr.length) {
+            return;
+        }
+
         if ($RowEditing && $RowEditing[0] !== $tr[0]) {
             saveChanges();
         }
@@ -144,10 +148,8 @@
 
     function displayNoRowMessage($body) {
         if (!$body.children().length) {
-            $body.append($("<tr>")).children("tr").
-                append($("<td class='no-records'>")).
-                append($("<td class='no-records'>")).children("td:last").
-                text("No records");
+            $body.append($("<td class='no-records' colspan='" + ($ColsNumber + 1) + "'>")).
+                children("td:last").text("No records");
             $Table.children("tbody").sortable("option", "disabled", true);
         }
     }

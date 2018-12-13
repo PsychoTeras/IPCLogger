@@ -8,12 +8,12 @@
 }
 
 [role="main"] {
-    padding-left: 335px;
-    padding-top: 48px;
+    padding-left: 265px;
+    padding-top: 64px;
 }
 
 .main-table-wrap {
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 80px);
     overflow: auto;
     -ms-overflow-style: -ms-autohiding-scrollbar;
 }
@@ -24,12 +24,11 @@
 
     .div-save-cancel > button {
         margin-right: 3px;
-        width: 100px;
-        height: 34px;
+        width: 105px;
     }
 
     .div-save-cancel > div > button:first-child {
-        width: 75px;
+        width: 80px;
     }
 
     .div-save-cancel .dropdown-menu {
@@ -46,11 +45,11 @@ table thead .th-actions {
     table thead .th-actions button {
         font-size: .875rem;
         font-weight: 500;
-        padding: 0;
         border: 0;
         height: auto;
         line-height: normal;
         color: #006be0;
+        padding: 0 2px 0 0 !important;
     }
 
 input, select, textarea, .custom-checkbox > label:before {
@@ -66,12 +65,52 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     outline: 0 none;
 }
 
+.navbar {
+    background-color: #495057;
+    height: 48px;
+}
+
 .navbar-caption {
     font-weight: 500;
-    min-width: 320px;
-    font-size: 1rem;
+    min-width: 250px;
+    max-width: 250px;
     background-color: #000000;
-    background-color: rgba(0, 0, 0, .25);
+    background-color: rgba(0, 0, 0, .15);
+    padding: 0.6rem 0.3rem 0.6rem 0.3rem;
+}
+
+    .navbar-caption a {
+        color: whitesmoke;
+        text-decoration: none;
+        vertical-align: middle;
+        line-height: inherit;
+    }
+
+.breadcrumb {
+    margin: 0;
+    height: 44px;
+    display: flex;
+    list-style: none;
+    flex-basis: 100%;
+    background-color: transparent;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "●";
+    font-size: 0.5rem;
+    padding-bottom: .3rem;
+    vertical-align: middle;
+}
+
+.breadcrumb-item a,
+.breadcrumb-item + .breadcrumb-item::before {
+    color: #ffffff;
+    color: rgba(255, 255, 255, .5);
+}
+
+.breadcrumb-item a:hover,
+.breadcrumb-item.active {
+    color: whitesmoke;
 }
 
 .sidebar {
@@ -79,7 +118,8 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     top: 0;
     bottom: 0;
     left: 0;
-    min-width: 320px;
+    min-width: 250px;
+    max-width: 250px;
     z-index: 100;
     padding: 48px 0 0;
     box-shadow: inset -1px 0 0 #000000;
@@ -127,25 +167,9 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     box-shadow: none !important;
 }
 
-.breadcrumb-item a {
-    color: #006be0;
-}
-
-.breadcrumb-item.active {
-    color: #343a40;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "●";
-    font-size: 0.8rem;
-    padding-bottom: .3rem;
-    vertical-align: middle;
-    color: #343a40;
-}
-
 button.btn {
     height: 34px;
-    padding-top: 1px;
+    padding-top: 1px !important;
     font-family: "Segoe UI"
 }
 
@@ -169,25 +193,6 @@ button.dropdown-toggle:after {
 input {
     height: 32px !important;
 }
-
-/*.modal.popup {
-    text-align: center;
-    padding: 0 !important;
-}
-
-    .modal.popup:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-        margin-right: -4px;
-    }
-
-    .modal.popup .modal-dialog {
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-    }*/
 
 .ui-autocomplete {
     z-index: 5000;
