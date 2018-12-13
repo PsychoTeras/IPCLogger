@@ -36,7 +36,8 @@
             font-style: italic;
             background-color: white !important;
             cursor: auto;
-            padding: 7px;
+            padding-top: 6px;
+            padding-bottom: 7px;
             text-align: center;
         }
 

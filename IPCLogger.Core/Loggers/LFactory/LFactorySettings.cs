@@ -14,20 +14,12 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #region Private fields
 
-        private bool _enabled;
         private bool _noLock;
         private bool _autoReload;
 
 #endregion
 
 #region Properties
-
-        [NonSetting]
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set { _enabled = value; }
-        }
 
         [NonSetting]
         public bool NoLock
@@ -118,10 +110,10 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override void ApplyCommonSettings(XmlNode cfgNode)
         {
+            XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
+            Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out var enabled) || enabled;
             XmlAttribute aNoLock = cfgNode.Attributes["no-lock"];
             _noLock = aNoLock != null && bool.TryParse(aNoLock.Value, out _noLock) && _noLock;
-            XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
-            _enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out _enabled) || _enabled;
             XmlAttribute aAutoReload = cfgNode.Attributes["auto-reload"];
             _autoReload = aAutoReload != null && bool.TryParse(aAutoReload.Value, out _autoReload) && _autoReload;
         }
@@ -133,8 +125,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override void Save(XmlNode cfgNode)
         {
+            SetCfgAttributeValue(cfgNode, "enabled", Enabled);
             SetCfgAttributeValue(cfgNode, "no-lock", _noLock);
-            SetCfgAttributeValue(cfgNode, "enabled", _enabled);
             SetCfgAttributeValue(cfgNode, "auto-reload", _autoReload);
         }
 

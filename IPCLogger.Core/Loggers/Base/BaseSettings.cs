@@ -70,6 +70,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private static readonly Dictionary<string, string> _commonPropertiesSet = new Dictionary<string, string>
         {
+            { "Enabled", "enabled" },
             { "Name", "name" },
             { "AllowEvents", "allow-events" },
             { "DenyEvents", "deny-events" }
@@ -97,6 +98,9 @@ namespace IPCLogger.Core.Loggers.Base
 #endregion
 
 #region Properties
+
+        [NonSetting]
+        public bool Enabled { get; protected set; }
 
         [NonSetting]
         public string Name { get; set; }
@@ -256,6 +260,9 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void ApplyCommonSettings(XmlNode cfgNode)
         {
+            XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
+            Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out var enabled) || enabled;
+
             XmlAttribute aName = cfgNode.Attributes["name"];
             Name = aName?.InnerText.Trim();
 

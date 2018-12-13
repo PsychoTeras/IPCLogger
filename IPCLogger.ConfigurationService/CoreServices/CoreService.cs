@@ -134,7 +134,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             PropertyValidationResult pvrName = validationResult.FirstOrDefault(r => r.Name == "Name" && r.IsCommon);
 
-            if (DeclaredLoggers.Exists(l => l.Name == (pvrName?.Value ?? loggerModel.Name) as string &&
+            if (DeclaredLoggers.Exists(l => l.Id != loggerModel.Id &&
+                    l.Name == (pvrName?.Value ?? loggerModel.Name) as string &&
                     l.TypeName == loggerModel.TypeName && l.Namespace == loggerModel.Namespace))
             {
                 string msg = "Such logger with the same name is already registered. Please select another logger name";
