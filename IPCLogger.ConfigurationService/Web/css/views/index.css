@@ -194,6 +194,11 @@ button.dropdown-toggle:after {
     margin-top: 5px;
 }
 
+ button.disabled {
+    opacity: 0.65; 
+    cursor: not-allowed;
+}
+
 .card-header {
     font-weight: 500;
     padding: .2rem .4rem .2rem .4rem;
