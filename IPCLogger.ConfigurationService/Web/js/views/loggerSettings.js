@@ -3,15 +3,19 @@
     var dictControls;
 
     function getApplicationId() {
-        return $("#application-id").val();
+        return $("#logger-settings #application-id").val();
     }
 
     function getLoggerId() {
-        return $("#logger-id").val();
+        return $("#logger-settings #logger-id").val();
     }
 
     function isNew() {
-        return $("#is-new").val() === "True";
+        return $("#logger-settings #is-new").val() === "True";
+    }
+
+    function isEmbedded() {
+        return $("#logger-settings #is-embedded").val() === "True";
     }
 
     function hasChanges() {
@@ -55,6 +59,10 @@
         if (failedProps) {
             highlightValidationErroredControls(failedProps);
         } else {
+            $.each(dictControls,
+                function (_, item) {
+                    item.control.saveOrigValue();
+                });
             cancel(true);
         }
     }
@@ -87,10 +95,15 @@
     }
 
     function cancel(force) {
+        if (isEmbedded()) {
+            return;
+        }
+
         if (force) {
             window.onbeforeunload = undefined;
         }
         var applicationId = getApplicationId();
+
         ApplicationController.manageApplication(applicationId);
     }
 
@@ -103,11 +116,11 @@
     }
 
     function initialize() {
-        dictControls = new UI.ControlsFactory("#form-logger-settings div.form-control");
+        dictControls = new UI.ControlsFactory("#logger-settings div.form-control");
 
-        $(".div-save-cancel #btn-save").on("click", save);
-        $(".div-save-cancel #btn-cancel").on("click", cancel);
-        $(".div-save-cancel #btn-reset").on("click", reset);
+        $("#logger-settings .div-save-cancel #btn-save").on("click", save);
+        $("#logger-settings .div-save-cancel #btn-cancel").on("click", isEmbedded() ? reset : cancel);
+        $("#logger-settings .div-save-cancel #btn-reset").on("click", reset);
 
         window.onbeforeunload = function () {
             return hasChanges() ? "Your changes will be lost. Continue?" : undefined;

@@ -125,7 +125,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public DeclaredLoggerModel GetDeclaredLogger(string loggerId)
         {
-            DeclaredLoggerModel loggerModel = DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
+            DeclaredLoggerModel loggerModel = FactoryLogger.Id == loggerId
+                ? FactoryLogger
+                : DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
             if (loggerModel == null)
             {
                 throw new InvalidRequestException();

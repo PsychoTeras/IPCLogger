@@ -27,9 +27,11 @@ namespace IPCLogger.ConfigurationService.Web.modules
             {
                 VerifyAuthentication();
 
+                ViewBag.isEmbedded = true;
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
                 CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);
+                ViewBag.loggerId = coreService.FactoryLogger.Id;
 
                 DeclaredLoggersModel model = new DeclaredLoggersModel(coreService.DeclaredLoggers, coreService.FactoryLogger);
                 PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, model, PageModel));

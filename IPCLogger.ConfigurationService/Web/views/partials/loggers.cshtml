@@ -5,13 +5,13 @@
     <div class="justify-content-start btn-group">
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+                <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="loggers-tab" data-toggle="tab" href="#loggers" role="tab" aria-controls="loggers" aria-selected="false">Loggers</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="patterns-tab" data-toggle="tab" href="#patterns" role="tab" aria-controls="patterns" aria-selected="false">Patterns</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" id="loggers-tab" data-toggle="tab" href="#loggers" role="tab" aria-controls="loggers" aria-selected="true">Loggers</a>
             </li>
         </ul>
     </div>
@@ -23,11 +23,11 @@
 
 <div class="tab-content">
     
-    <div id="settings" class="tab-pane" role="tabpanel" aria-labelledby="settings-tab">
+    <div id="settings" class="tab-pane show active" role="tabpanel" aria-labelledby="settings-tab">
         @Html.Partial("partials/loggerSettings.cshtml", Model.FactoryLogger)
     </div>
     
-    <div id="loggers" class="tab-pane show active card bg-light main-table-wrap" role="tabpanel" aria-labelledby="loggers-tab">
+    <div id="loggers" class="tab-pane card bg-light main-table-wrap" role="tabpanel" aria-labelledby="loggers-tab">
         
         <input type="hidden" id="application-id" value="@ViewBag.applicationId" />
 

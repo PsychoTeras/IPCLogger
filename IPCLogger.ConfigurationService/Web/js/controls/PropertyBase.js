@@ -97,6 +97,11 @@
         }
     };
 
+    UI.PropertyBase.prototype.saveOrigValue = function () {
+        var me = this;
+        me.OrigValue = me.value();
+    };
+
     UI.PropertyBase.prototype.initialize = function ($element) {
 
         function changeType($element, nodeType, controlType) {
@@ -136,7 +141,7 @@
             $element.removeAttr("values");
         }
 
-        me.OrigValue = me.value();
+        me.saveOrigValue();
     };
 
 })(window.UI = window.UI || {});

@@ -1,38 +1,38 @@
-﻿#form-logger-settings {
+﻿#logger-settings {
     margin-bottom: 15px;
 }
 
-    #form-logger-settings .card-container {
+    #logger-settings .card-container {
         max-height: calc(100vh - 130px);
         overflow: auto;
     }
 
-    #form-logger-settings .card-header:not(:first-child) {
+    #logger-settings .card-header:not(:first-child) {
         border-top: 1px solid #000000;
         border-top: 1px solid rgba(0, 0, 0, .125);
     }
 
-    #form-logger-settings .card-body {
+    #logger-settings .card-body {
         padding: 0 1rem 1rem 1rem !important;
     }
 
-    #form-logger-settings .table-wrap {
+    #logger-settings .table-wrap {
         height: auto;
         /*max-height: 194px;*/
         overflow: auto;
         padding: 0;
     }
 
-        #form-logger-settings .table-wrap table {
+        #logger-settings .table-wrap table {
             font-size: .875rem;
             margin-bottom: 0;
         }
 
-            #form-logger-settings .table-wrap table thead td {
+            #logger-settings .table-wrap table thead td {
                 border-top-width: 0;
             }
 
-            #form-logger-settings .table-wrap table tbody .no-records {
+            #logger-settings .table-wrap table tbody .no-records {
                 font-style: italic;
                 background-color: white !important;
                 cursor: auto;
@@ -41,80 +41,84 @@
                 text-align: center;
             }
 
-            #form-logger-settings .table-wrap table tbody td {
+            #logger-settings .table-wrap table tbody td {
                 vertical-align: middle;
                 cursor: pointer;
                 padding: 1px 1px 1px 5px;
             }
 
-            #form-logger-settings .table-wrap table.editing tbody tr.editing td {
+            #logger-settings .table-wrap table.editing tbody tr.editing td {
                 padding-left: 3px;
             }
 
-            #form-logger-settings .table-wrap table tbody td[is-empty] {
+            #logger-settings .table-wrap table tbody td[is-empty] {
                 color: #000000;
                 color: rgba(0, 0, 0, .2);
                 font-style: italic;
             }
 
-            #form-logger-settings .table-wrap table tbody td select,
-            #form-logger-settings .table-wrap table tbody td input {
+            #logger-settings .table-wrap table tbody td select,
+            #logger-settings .table-wrap table tbody td input {
                 height: auto !important;
             }
 
-            #form-logger-settings .table-wrap table tbody .td-actions {
+            #logger-settings .table-wrap table tbody .td-actions {
                 opacity: 0.05;
                 text-align: right;
                 height: 33px;
             }
 
-                #form-logger-settings .table-wrap table tbody .td-actions.mouseover,
-                #form-logger-settings .table-wrap table.editing tbody tr.editing .td-actions {
+                #logger-settings .table-wrap table tbody .td-actions.mouseover,
+                #logger-settings .table-wrap table.editing tbody tr.editing .td-actions {
                     opacity: 1;
                 }
 
-                #form-logger-settings .table-wrap table tbody .td-actions button {
+                #logger-settings .table-wrap table tbody .td-actions button {
                     height: 30px;
                     width: 31px;
                 }
 
-            #form-logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button {
+            #logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button {
                 display: none;
             }
 
-            #form-logger-settings .table-wrap table.editing tbody tr.editing {
+            #logger-settings .table-wrap table.editing tbody tr.editing {
                 background-color: lemonchiffon;
             }
 
-    #form-logger-settings div.custom-checkbox {
+    #logger-settings div.custom-checkbox {
         padding-top: 5px;
         height: 32px;
     }
 
-        #form-logger-settings div.custom-checkbox label {
+        #logger-settings div.custom-checkbox label {
             margin-left: 8px;
             cursor: pointer;
         }
 
-            #form-logger-settings div.custom-checkbox label,
-            #form-logger-settings div.custom-checkbox label:before,
-            #form-logger-settings div.custom-checkbox label:after {
+            #logger-settings div.custom-checkbox label,
+            #logger-settings div.custom-checkbox label:before,
+            #logger-settings div.custom-checkbox label:after {
                 margin-top: -1px;
             }
 
-    #form-logger-settings select.custom-select {
+    #logger-settings select.custom-select {
         height: 32px;
         padding: 0 0 2px 12px;
     }
 
-    #form-logger-settings *[invalid] {
+    #logger-settings *[invalid] {
         border-color: #dc3545;
     }
 
-    #form-logger-settings .invalid-feedback.visible {
+    #logger-settings .invalid-feedback.visible {
         display: block;
     }
 
-    #form-logger-settings hr {
+    #logger-settings hr {
         margin-bottom: .5rem;
+    }
+
+    #logger-settings .div-save-cancel {
+        margin-top: 15px;
     }
