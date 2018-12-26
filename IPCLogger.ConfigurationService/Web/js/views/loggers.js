@@ -1,7 +1,7 @@
 ﻿(function () {
 
     function getApplicationId() {
-        return $("#application-id")[0].value;
+        return $("#loggers #application-id")[0].value;
     }
 
     function getLoggerId(caller) {
@@ -32,7 +32,7 @@
         $("#table-loggers").TableList();
 
         $("#table-loggers button[id^='btn-logger-settings']").on("click", loggerSettings);
-        $("#table-loggers button[id='btn-add-logger']").on("click", addLogger);
+        $(".btn-toolbar button[id='btn-add-logger']").on("click", addLogger);
     }
 
     initialize();

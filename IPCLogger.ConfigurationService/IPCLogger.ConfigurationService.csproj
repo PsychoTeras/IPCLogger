@@ -97,6 +97,7 @@
     <Compile Include="Entities\DTO\PropertyObjectDTO.cs" />
     <Compile Include="Entities\DTO\InvalidPropertyValueDTO.cs" />
     <Compile Include="Entities\Models\ApplicationModel.cs" />
+    <Compile Include="Entities\Models\DeclaredLoggersModel.cs" />
     <Compile Include="Entities\Models\PropertyModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />

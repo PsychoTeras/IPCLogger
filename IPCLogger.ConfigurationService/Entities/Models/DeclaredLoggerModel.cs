@@ -13,12 +13,12 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return CommonProperties.FirstOrDefault(p => p.Name == "Name")?.Value; }
         }
 
-        private void SetLoggerType(IEnumerable<Type> availableLoggers)
+        private static Type FindLoggerType(string typeName, string nameSpace, IEnumerable<Type> availableLoggers)
         {
-            Type = availableLoggers.FirstOrDefault
+            return availableLoggers.FirstOrDefault
             (
-                t => t.Name == TypeName &&
-                     (string.IsNullOrEmpty(Namespace) || t.Namespace != null && t.Namespace.Equals(Namespace))
+                t => t.Name == typeName &&
+                     (string.IsNullOrEmpty(nameSpace) || t.Namespace != null && t.Namespace.Equals(nameSpace))
             );
         }
 
@@ -40,10 +40,16 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal static DeclaredLoggerModel FromCoreDeclaredLogger(DeclaredLogger source, IEnumerable<Type> availableLoggers)
         {
+            Type loggerType = FindLoggerType(source.TypeName, source.Namespace, availableLoggers);
+            return FromCoreDeclaredLogger(source, loggerType);
+        }
+
+        internal static DeclaredLoggerModel FromCoreDeclaredLogger(DeclaredLogger source, Type loggerType)
+        {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
             model.TypeName = source.TypeName;
             model.Namespace = source.Namespace;
-            model.SetLoggerType(availableLoggers);
+            model.Type = loggerType;
             model.InitializeSettings(source.CfgNode);
             return model;
         }

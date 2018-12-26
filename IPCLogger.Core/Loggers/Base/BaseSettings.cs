@@ -68,14 +68,6 @@ namespace IPCLogger.Core.Loggers.Base
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
 
-        private static readonly Dictionary<string, string> _commonPropertiesSet = new Dictionary<string, string>
-        {
-            { "Enabled", "enabled" },
-            { "Name", "name" },
-            { "AllowEvents", "allow-events" },
-            { "DenyEvents", "deny-events" }
-        };
-
 #endregion
 
 #region Private fields
@@ -91,9 +83,9 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
-#region Internal fields
+#region Protected internal fields
 
-        internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
+        protected internal Func<string, bool> CheckApplicableEvent = _defCheckApplicableEvent;
 
 #endregion
 
@@ -130,63 +122,18 @@ namespace IPCLogger.Core.Loggers.Base
         {
             _onApplyChanges = onApplyChanges;
             _loggerType = loggerType;
-
-            _commonProperties = GetType().
-                GetProperties
-                (
-                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
-                ).Where
-                (
-                    p => _commonPropertiesSet.ContainsKey(p.Name)
-                ).ToDictionary
-                (
-                    p => p.Name,
-                    p => new PropertyData
-                    (
-                        p,
-                        p.GetAttribute<CustomConversionAttribute>(),
-                        p.IsDefined<RequiredSettingAttribute>()
-                    )
-                );
-
-            _properties = GetType().
-                GetProperties
-                (
-                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
-                ).Where
-                (
-                    p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()
-                ).ToDictionary
-                (
-                    p => p.Name, 
-                    p => new PropertyData
-                        (
-                            p, 
-                            p.GetAttribute<CustomConversionAttribute>(),
-                            p.IsDefined<RequiredSettingAttribute>()
-                        )
-                );
-
-            _exclusivePropertyNodeNames = new HashSet<string>
-                (
-                    _properties.Concat(_commonProperties).
-                    Select(d => d.Value.Item2).
-                    OfType<XmlNodesConversionAttribute>().
-                    SelectMany(p => p.ExclusiveNodeNames).
-                    Distinct()
-                );
         }
 
 #endregion
 
 #region Public methods
 
-        public virtual void Setup()
+        public void Setup()
         {
             Setup(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
         }
 
-        public virtual void Setup(string configurationFile, string loggerName = null)
+        public void Setup(string configurationFile, string loggerName = null)
         {
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
@@ -199,7 +146,7 @@ namespace IPCLogger.Core.Loggers.Base
             Setup(xmlCfg, loggerName);
         }
 
-        public virtual void Setup(XmlDocument xmlCfg, string loggerName = null)
+        public void Setup(XmlDocument xmlCfg, string loggerName = null)
         {
             XmlNode cfgNode = GetLoggerSettingsNode(xmlCfg, loggerName);
             if (cfgNode == null)
@@ -211,7 +158,7 @@ namespace IPCLogger.Core.Loggers.Base
             Setup(cfgNode);
         }
 
-        public virtual void Setup(XmlNode cfgNode)
+        public void Setup(XmlNode cfgNode)
         {
             byte[] newHash = CalculateHash(cfgNode);
             if (newHash != null && !Helpers.ByteArrayEquals(newHash, Hash)) //Setup if changed
@@ -244,7 +191,69 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Initialization methods
 
-        protected virtual void BeginSetup() { }
+        protected virtual Dictionary<string, string> GetCommonPropertiesSet()
+        {
+            return new Dictionary<string, string>
+            {
+                { "Enabled", "enabled" },
+                { "Name", "name" },
+                { "AllowEvents", "allow-events" },
+                { "DenyEvents", "deny-events" }
+            };
+        }
+
+        protected virtual void BeginSetup()
+        {
+            Dictionary<string, string> commonPropertiesSet = GetCommonPropertiesSet();
+
+            _commonProperties = GetType().
+                GetProperties
+                (
+                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
+                ).Where
+                (
+                    p => commonPropertiesSet.ContainsKey(p.Name)
+                ).OrderByDescending
+                (
+                    p => p.DeclaringType.MetadataToken
+                ).ToDictionary
+                (
+                    p => p.Name,
+                    p => new PropertyData
+                    (
+                        p,
+                        p.GetAttribute<CustomConversionAttribute>(),
+                        p.IsDefined<RequiredSettingAttribute>()
+                    )
+                );
+
+            _properties = GetType().
+                GetProperties
+                (
+                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
+                ).Where
+                (
+                    p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()
+                ).ToDictionary
+                (
+                    p => p.Name,
+                    p => new PropertyData
+                    (
+                        p,
+                        p.GetAttribute<CustomConversionAttribute>(),
+                        p.IsDefined<RequiredSettingAttribute>()
+                    )
+                );
+
+            _exclusivePropertyNodeNames = new HashSet<string>
+            (
+                _properties.Concat(_commonProperties).
+                    Select(d => d.Value.Item2).
+                    OfType<XmlNodesConversionAttribute>().
+                    SelectMany(p => p.ExclusiveNodeNames).
+                    Distinct()
+            );
+        }
 
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
@@ -252,7 +261,7 @@ namespace IPCLogger.Core.Loggers.Base
             return $"{RootLoggersCfgPath}/{_loggerType.Name}{loggerName}";
         }
 
-        protected internal XmlNode GetLoggerSettingsNode(XmlDocument xmlCfg, string loggerName = null)
+        protected virtual XmlNode GetLoggerSettingsNode(XmlDocument xmlCfg, string loggerName = null)
         {
             string loggerXPath = GetLoggerSettingsNodeName(loggerName);
             return xmlCfg.SelectSingleNode(loggerXPath);
@@ -541,6 +550,8 @@ namespace IPCLogger.Core.Loggers.Base
                 ? _commonProperties
                 : _properties;
 
+            Dictionary<string, string> commonPropertiesSet = GetCommonPropertiesSet();
+
             if (dictProps.TryGetValue(propertyName, out var data))
             {
                 data.Item1.SetValue(this, value, null);
@@ -551,7 +562,7 @@ namespace IPCLogger.Core.Loggers.Base
                         value = vcAttr.ValueToString(value);
                         if (isCommon)
                         {
-                            string attrName = _commonPropertiesSet[propertyName];
+                            string attrName = commonPropertiesSet[propertyName];
                             SetCfgAttributeValue(cfgNode, attrName, value);
                         }
                         else
@@ -568,7 +579,7 @@ namespace IPCLogger.Core.Loggers.Base
                     default:
                         if (isCommon)
                         {
-                            string attrName = _commonPropertiesSet[propertyName];
+                            string attrName = commonPropertiesSet[propertyName];
                             SetCfgAttributeValue(cfgNode, attrName, value);
                         }
                         else

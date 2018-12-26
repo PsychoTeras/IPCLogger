@@ -31,7 +31,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
                 CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);
 
-                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, coreService.DeclaredLoggers, PageModel));
+                DeclaredLoggersModel model = new DeclaredLoggersModel(coreService.DeclaredLoggers, coreService.FactoryLogger);
+                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, model, PageModel));
                 return View["index", pageModel];
             };
 

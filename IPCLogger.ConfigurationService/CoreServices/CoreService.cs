@@ -30,6 +30,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public List<DeclaredLoggerModel> DeclaredLoggers { get; set; }
 
+        public DeclaredLoggerModel FactoryLogger { get; set; }
+
 #endregion
 
 #region Ctor
@@ -38,7 +40,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         {
             _applicationId = applicationId;
             LoadConfiguration(_configurationFile = configurationFile);
-            ReadLoggers(configurationFile);
+            ReadLoggers();
         }
 
 #endregion
@@ -83,7 +85,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Loggers methods
 
-        private void ReadAvailableLoggers(string configurationFile)
+        private void ReadAvailableLoggers()
         {
             AvailableLoggers = LFactory.
                 GetLoggers().
@@ -92,19 +94,22 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 ToList();
         }
 
-        private void ReadDeclaredLoggers(string configurationFile)
+        private void ReadDeclaredLoggers()
         {
             IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
                 GetDeclaredLoggers(ConfigurationXml, true).
                 Select(s => DeclaredLoggerModel.FromCoreDeclaredLogger(s, availableTypes)).
                 ToList();
+
+            DeclaredLogger dlFactory = LFactorySettings.GetDeclaredFactoryLogger(ConfigurationXml);
+            FactoryLogger = DeclaredLoggerModel.FromCoreDeclaredLogger(dlFactory, typeof(LFactory));
         }
 
-        private void ReadLoggers(string configurationFile)
+        private void ReadLoggers()
         {
-            ReadAvailableLoggers(configurationFile);
-            ReadDeclaredLoggers(configurationFile);
+            ReadAvailableLoggers();
+            ReadDeclaredLoggers();
         }
 
         public LoggerModel GetAvailableLogger(string loggerId)

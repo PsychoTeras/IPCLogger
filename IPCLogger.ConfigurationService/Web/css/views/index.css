@@ -12,6 +12,15 @@
     padding-top: 64px;
 }
 
+.btn-toolbar,
+.btn-toolbar div {
+    display: flex;
+}
+
+.btn-toolbar .nav {
+    height: 34px;
+}
+
 .main-table-wrap {
     max-height: calc(100vh - 80px);
     overflow: auto;
@@ -178,8 +187,11 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
 
 button.btn {
     height: 34px;
-    padding-top: 1px !important;
     font-family: "Segoe UI"
+}
+
+button.btn:not(.fa) {
+    padding-top: 1px !important;
 }
 
 button.btn.fa:before {
@@ -265,4 +277,7 @@ body.locked .page-lock {
 
 .input-group-addon {
     padding: 6px 10px 3px;
+}
+
+.popup {
 }

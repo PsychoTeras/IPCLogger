@@ -1,6 +1,13 @@
 ﻿@using IPCLogger.ConfigurationService.Entities.Models;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<ApplicationModel>>
 
+<div class="btn-toolbar justify-content-between pb-3">
+    <div class="justify-content-start btn-group"></div>
+    <div class="justify-content-end btn-group">
+        <button id="btn-refresh" class="btn btn-outline-secondary fa fa-refresh">Refresh</button>
+    </div>
+</div>
+
 <div class="card bg-light main-table-wrap">
     <table id="table-applications" class="table table-sm ui-table-list">
         <thead class="card-header">

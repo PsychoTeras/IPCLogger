@@ -91,6 +91,13 @@ namespace IPCLogger.Core.Loggers.LFactory
             return loggers;
         }
 
+        internal static DeclaredLogger GetDeclaredFactoryLogger(XmlDocument xmlCfg)
+        {
+            string loggersXPath = $"{Constants.RootLoggerCfgPath}";
+            XmlNode cfgNode = xmlCfg.SelectSingleNode(loggersXPath);
+            return new DeclaredLogger(cfgNode);
+        }
+
         internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
         {
             XmlNode rootNode = xmlCfg.SelectSingleNode(RootLoggersCfgPath);
@@ -102,6 +109,16 @@ namespace IPCLogger.Core.Loggers.LFactory
 #endregion
 
 #region Class methods
+
+        protected override Dictionary<string, string> GetCommonPropertiesSet()
+        {
+            return new Dictionary<string, string>
+            {
+                { "Enabled", "enabled" },
+                { "NoLock", "no-lock" },
+                { "AutoReload", "auto-reload" }
+            };
+        }
 
         protected override string GetLoggerSettingsNodeName(string loggerName = null)
         {
@@ -140,7 +157,6 @@ namespace IPCLogger.Core.Loggers.LFactory
         public string Namespace;
         public bool Enabled;
         public XmlNode CfgNode;
-
         public string UniqueId;
 
         public DeclaredLogger(XmlNode cfgNode)
