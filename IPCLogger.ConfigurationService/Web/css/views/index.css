@@ -21,6 +21,15 @@
     height: 34px;
 }
 
+    .btn-toolbar #btn-go-back,
+    .btn-toolbar #btn-refresh {
+        width: 95px;
+    }
+
+    .btn-toolbar .btn-group-common {
+        margin-left: 5px;
+    }
+
 .main-table-wrap {
     max-height: calc(100vh - 130px);
     overflow: auto;

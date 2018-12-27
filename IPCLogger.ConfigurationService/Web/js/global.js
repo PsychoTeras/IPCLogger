@@ -18,6 +18,18 @@
         });
 
         bindMouseWheelIncrement($("input[type='number']"));
+
+        $(".btn-toolbar #btn-go-back").on("click", function () {
+            var url = getApiUrl("backurl");
+            asyncQuery(url,
+                "GET",
+                "text",
+                function (backUrl) {
+                    if (backUrl) {
+                        navigate(backUrl);
+                    }
+                });
+        });
     });
 
     $(document).on({

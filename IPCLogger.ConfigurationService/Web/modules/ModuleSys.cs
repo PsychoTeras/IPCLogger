@@ -1,4 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.Entities;
+using Nancy;
 using Nancy.Extensions;
 
 namespace IPCLogger.ConfigurationService.Web.modules
@@ -7,6 +8,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
     {
         public ModuleSys()
         {
+            Get["/backurl"] = x => Response.AsText(PageModel?.PreviousPageModel?.PagePath);
+
             Post["/trackurl"] = x =>
             {
                 PageModel pageModel = PageModel;

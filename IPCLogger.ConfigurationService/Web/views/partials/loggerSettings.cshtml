@@ -11,6 +11,16 @@
     <input type="hidden" id="is-new" value="@ViewBag.isNew" />
     <input type="hidden" id="is-embedded" value="@ViewBag.isEmbedded" />
     <input type="hidden" id="hide-headers" value="@ViewBag.hideHeaders" />
+    
+    @if (!ViewBag.isEmbedded)
+    {
+        <div class="btn-toolbar justify-content-between pb-3">
+            <div class="justify-content-start"></div>
+            <div class="btn-group btn-group-common">
+                <button id="btn-go-back" class="btn btn-outline-secondary fa fa-arrow-left">Go back</button>
+            </div>
+        </div>
+    }
 
     <div class="card bg-light">
 

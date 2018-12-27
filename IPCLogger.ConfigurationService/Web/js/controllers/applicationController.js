@@ -1,8 +1,8 @@
 ﻿function ApplicationController() {
 
-    this.manageApplication = function (applicationId, defaultPage) {
+    this.manageApplication = function (applicationId, defaultTab) {
         var url = getApiUrl("applications", applicationId) +
-            (defaultPage ? "#" + defaultPage : "#settings");
+            ("#" + (defaultTab || globalSetting.LOGGERS_DEFAULT_TAB));
         navigate(url);
     };
 

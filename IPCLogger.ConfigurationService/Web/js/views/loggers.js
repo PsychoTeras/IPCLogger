@@ -51,7 +51,7 @@
         $(".btn-toolbar button[id='btn-add-logger']").on("click", addLogger);
         $(".btn-toolbar button[id='btn-add-pattern']").on("click", addPattern);
 
-        changeTab(window.location.hash || "#settings");
+        changeTab(window.location.hash || ("#" + globalSetting.LOGGERS_DEFAULT_TAB));
         $(".btn-toolbar a[data-toggle=\"tab\"]").on("shown.bs.tab", onTabChanged);
     }
 
