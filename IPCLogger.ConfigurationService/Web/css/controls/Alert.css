@@ -3,7 +3,7 @@
     position: fixed;
     z-index: 9999;
     display: none;
-    font-size: 1.2em;
+    font-size: 1rem;
     text-align: center;
     border: 1px solid #000000;
     border: 1px solid rgba(0,0,0,.125)
