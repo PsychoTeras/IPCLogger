@@ -7,7 +7,7 @@
             <tr>
                 <th style="width: 35%">Application name</th>
                 <th style="width: auto">Description</th>
-                <th style="width: 175px">Actions</th>
+                <th style="width: 162px">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -17,9 +17,12 @@
                     <td id="cell-application-name">@(model.Name)</td>
                     <td id="cell-desciption">@(model.Description)</td>
                     <td id="cell-actions">
-                        <div class="btn-group btn-group-sm" role="group">
+                        <div class="btn-group btn-group-sm">
                             <button id="btn-configure-application-@(model.Id)" class="btn btn-info">Configure loggers</button>
-                            <button class="btn btn-secondary btn-glyph fa fa-save"></button>
+                            <button class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                @*<a id="btn-remove-logger-@(model.Id)" class="dropdown-item" style="cursor: pointer">Remove logger</a>*@
+                            </div>
                         </div>
                     </td>
                 </tr>
