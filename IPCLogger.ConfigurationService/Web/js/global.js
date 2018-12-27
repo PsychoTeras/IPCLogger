@@ -18,6 +18,14 @@
         });
 
         bindMouseWheelIncrement($("input[type='number']"));
+
+        window.onbeforeunload = function () {
+            lockPage();
+
+            var apiTrackUrl = getApiUrl("trackurl");
+            var trackedUrl = location.href.replace(location.origin, "");
+            syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
+        };
     });
 
     $(document).on({
@@ -53,17 +61,6 @@
             $(".btn-toolbar-right").append($toolbarRight.children());
             $toolbarRight.remove();
         }
-        $(".btn-toolbar #btn-go-back").on("click", function () {
-            var url = getApiUrl("backurl");
-            asyncQuery(url,
-                "GET",
-                "text",
-                function (backUrl) {
-                    if (backUrl) {
-                        navigate(backUrl);
-                    }
-                });
-        });
     };
 
     window.bindMouseWheelIncrement = function($input, onChange) {
@@ -112,14 +109,6 @@
 
     window.unlockPage = function () {
         $("body").removeClass("loading locked");
-    };
-
-    window.onbeforeunload = function() {
-        lockPage();
-
-        var apiTrackUrl = getApiUrl("trackurl");
-        var trackedUrl = location.href.replace(location.origin, "");
-        syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
     };
 
     window.getParameterByName = function(name, url) {

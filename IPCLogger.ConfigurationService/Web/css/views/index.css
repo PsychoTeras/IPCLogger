@@ -26,8 +26,7 @@
     height: 34px;
 }
 
-    .btn-toolbar #btn-go-back,
-    .btn-toolbar #btn-refresh {
+    .btn-toolbar .btn-go-back {
         width: 95px;
     }
 

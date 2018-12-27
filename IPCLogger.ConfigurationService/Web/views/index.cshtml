@@ -53,8 +53,9 @@
                     <div class="justify-content-center btn-toolbar-center"></div>
                     <div class="justify-content-end">
                         <div class="btn-toolbar-right"></div>
-                        <div class="btn-group btn-group-common">
-                            <button id="btn-go-back" class="btn btn-outline-secondary fa fa-arrow-left">Go back</button>
+                        <div class="btn-group btn-group-common ">
+                            <button class="btn btn-go-back btn-outline-secondary fa fa-arrow-left @(Model.PreviousPageModel == null ? "disabled" : "")"
+                                    onclick="@(Model.PreviousPageModel != null ? "navigate('" + Model.PreviousPageModel.PagePath + "')" : "")">Go back</button>
                         </div>
                     </div>
                 </div>
