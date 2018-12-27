@@ -34,11 +34,15 @@
         margin-left: 5px;
     }
 
-.main-table-wrap {
-    max-height: calc(100vh - 130px);
-    overflow: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-}
+    /*.btn-toolbar .page-caption {
+        color: rgb(108, 117, 125);
+    }*/
+
+    .main-table-wrap {
+        max-height: calc(100vh - 130px);
+        overflow: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
 
 hr {
     border: 0;
@@ -80,6 +84,19 @@ table thead .th-actions {
         height: auto;
         line-height: normal;
         padding: 0 2px 0 0 !important;
+    }
+
+.ui-table-list tbody div.btn-group,
+.ui-table-list tbody div.btn-group button:not(.dropdown-toggle) {
+    width: 100%;
+}
+
+    .ui-table-list tbody div.btn-group button.dropdown-toggle {
+        width: 30px;
+    }
+
+    .ui-table-list tbody td:last-child {
+        width: 165px;
     }
 
 input, select, textarea, .custom-checkbox > label:before {

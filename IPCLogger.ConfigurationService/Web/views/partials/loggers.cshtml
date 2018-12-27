@@ -35,19 +35,19 @@
         <table id="table-loggers" class="table table-sm ui-table-list">
             <thead class="card-header">
             <tr>
-                <th style="width: 25%">Logger type</th>
-                <th style="width: 25%">Logger name</th>
-                <th style="width: auto">Namespace</th>
-                <th style="width: 162px">Actions</th>
+                <th>Logger type</th>
+                <th>Logger name</th>
+                <th>Namespace</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             @foreach (DeclaredLoggerModel model in Model.DeclaredLoggers)
             {
                 <tr id="row-logger" modelId="@(model.Id)">
-                    <td id="cell-logger-type">@(model.TypeName)</td>
-                    <td id="cell-logger-type">@(model.Name)</td>
-                    <td id="cell-desciption">@(model.Namespace)</td>
+                    <td id="cell-logger-type" style="width: 25%">@(model.TypeName)</td>
+                    <td id="cell-logger-type" style="width: 25%">@(model.Name)</td>
+                    <td id="cell-desciption" style="width: auto">@(model.Namespace)</td>
                     <td id="cell-actions">
                         <div class="btn-group btn-group-sm">
                             <button id="btn-logger-settings-@(model.Id)" class="btn btn-info">Manage settings</button>

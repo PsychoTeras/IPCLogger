@@ -5,17 +5,17 @@
     <table id="table-applications" class="table table-sm ui-table-list">
         <thead class="card-header">
             <tr>
-                <th style="width: 35%">Application name</th>
-                <th style="width: auto">Description</th>
-                <th style="width: 162px">Actions</th>
+                <th>Application name</th>
+                <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (ApplicationModel model in Model)
             {
                 <tr id="row-application" modelId="@(model.Id)">
-                    <td id="cell-application-name">@(model.Name)</td>
-                    <td id="cell-desciption">@(model.Description)</td>
+                    <td id="cell-application-name" style="width: 35%">@(model.Name)</td>
+                    <td id="cell-desciption" style="width: auto">@(model.Description)</td>
                     <td id="cell-actions">
                         <div class="btn-group btn-group-sm">
                             <button id="btn-configure-application-@(model.Id)" class="btn btn-info">Configure loggers</button>
