@@ -11,8 +11,9 @@
     }
 
     function initialize() {
-        $("#table-applications").TableList();
+        initToolBar();
 
+        $("#table-applications").TableList();
         $("#table-applications button[id^='btn-configure-application']").on("click", applicationConfigure);
     }
 

@@ -17,6 +17,11 @@
     display: flex;
 }
 
+    .btn-toolbar .justify-content-start {
+        height: 0;
+        margin-top: 5px;
+    }
+
 .btn-toolbar .nav {
     height: 34px;
 }
@@ -287,5 +292,13 @@ body.locked .page-lock {
     padding: 6px 10px 3px;
 }
 
-.popup {
+.btn-toolbar-left,
+.btn-toolbar-center,
+.btn-toolbar-right {
+}
+
+.btn-toolbar-user-left,
+.btn-toolbar-user-center,
+.btn-toolbar-user-right {
+    display: none;
 }

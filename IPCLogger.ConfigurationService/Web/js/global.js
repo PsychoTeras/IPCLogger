@@ -18,18 +18,6 @@
         });
 
         bindMouseWheelIncrement($("input[type='number']"));
-
-        $(".btn-toolbar #btn-go-back").on("click", function () {
-            var url = getApiUrl("backurl");
-            asyncQuery(url,
-                "GET",
-                "text",
-                function (backUrl) {
-                    if (backUrl) {
-                        navigate(backUrl);
-                    }
-                });
-        });
     });
 
     $(document).on({
@@ -48,6 +36,35 @@
             }
         }
     });
+
+    window.initToolBar = function () {
+        var $toolbarLeft = $(".btn-toolbar-user-left");
+        if ($toolbarLeft.length) {
+            $(".btn-toolbar-left").append($toolbarLeft.children());
+            $toolbarLeft.remove();
+        }
+        var $toolbarCenter = $(".btn-toolbar-user-center");
+        if ($toolbarCenter.length) {
+            $(".btn-toolbar-center").append($toolbarCenter.children());
+            $toolbarCenter.remove();
+        }
+        var $toolbarRight = $(".btn-toolbar-user-right");
+        if ($toolbarCenter.length) {
+            $(".btn-toolbar-right").append($toolbarRight.children());
+            $toolbarRight.remove();
+        }
+        $(".btn-toolbar #btn-go-back").on("click", function () {
+            var url = getApiUrl("backurl");
+            asyncQuery(url,
+                "GET",
+                "text",
+                function (backUrl) {
+                    if (backUrl) {
+                        navigate(backUrl);
+                    }
+                });
+        });
+    };
 
     window.bindMouseWheelIncrement = function($input, onChange) {
         $input.bind("mousewheel", function (e) {
@@ -99,6 +116,10 @@
 
     window.onbeforeunload = function() {
         lockPage();
+
+        var apiTrackUrl = getApiUrl("trackurl");
+        var trackedUrl = location.href.replace(location.origin, "");
+        syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
     };
 
     window.getParameterByName = function(name, url) {
@@ -262,15 +283,6 @@
     };
 
     window.navigate = function(url) {
-        var apiTrackUrl = getApiUrl("trackurl");
-        var trackedUrl = location.href.replace(location.origin, "");
-        asyncQuery(apiTrackUrl,
-            "POST",
-            "text",
-            function() {
-                location.href = url;
-            },
-            null,
-            trackedUrl);
+        location.href = url;
     };
 })();

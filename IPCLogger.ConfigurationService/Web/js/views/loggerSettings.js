@@ -119,6 +119,8 @@
     }
 
     function initialize() {
+        initToolBar();
+
         dictControls = new UI.ControlsFactory("#logger-settings div.form-control");
 
         $("#logger-settings .div-save-cancel #btn-save").on("click", save);

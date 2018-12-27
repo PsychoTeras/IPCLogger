@@ -45,6 +45,8 @@
     }
 
     function initialize() {
+        initToolBar();
+
         $("#table-loggers").TableList();
         $("#table-loggers button[id^='btn-logger-settings']").on("click", loggerSettings);
 
