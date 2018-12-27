@@ -1,11 +1,13 @@
 ﻿function LoggerController() {
 
     this.addLogger = function (applicationId, loggerId) {
-        location.href = getApiUrl("applications", applicationId, "loggers", loggerId);
+        var url = getApiUrl("applications", applicationId, "loggers", loggerId);
+        navigate(url);
     };
 
     this.manageSettings = function (applicationId, loggerId) {
-        location.href = getApiUrl("applications", applicationId, "loggers", loggerId, "settings");
+        var url = getApiUrl("applications", applicationId, "loggers", loggerId, "settings");
+        navigate(url);
     };
 
 }

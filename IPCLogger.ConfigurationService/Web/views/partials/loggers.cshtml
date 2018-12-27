@@ -5,25 +5,26 @@
     <div class="justify-content-start btn-group">
         <ul class="nav nav-pills" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
+                <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Base settings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="loggers-tab" data-toggle="tab" href="#loggers" role="tab" aria-controls="loggers" aria-selected="false">Loggers</a>
+                <a class="nav-link" id="loggers-tab" data-toggle="tab" href="#loggers" role="tab" aria-controls="loggers" aria-selected="false">Manage loggers</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="patterns-tab" data-toggle="tab" href="#patterns" role="tab" aria-controls="patterns" aria-selected="false">Patterns</a>
+                <a class="nav-link" id="patterns-tab" data-toggle="tab" href="#patterns" role="tab" aria-controls="patterns" aria-selected="false">Manage patterns</a>
             </li>
         </ul>
     </div>
     <div class="justify-content-end btn-group">
         <button id="btn-add-logger" class="btn btn-outline-secondary fa fa-plus">Add logger</button>
+        <button id="btn-add-pattern" class="btn btn-outline-secondary fa fa-plus">Add pattern</button>
         <button id="btn-refresh" class="btn btn-outline-secondary fa fa-refresh">Refresh</button>
     </div>
 </div>
 
 <div class="tab-content">
     
-    <div id="settings" class="tab-pane show active" role="tabpanel" aria-labelledby="settings-tab">
+    <div id="settings" class="tab-pane" role="tabpanel" aria-labelledby="settings-tab">
         @Html.Partial("partials/loggerSettings.cshtml", Model.FactoryLogger)
     </div>
     

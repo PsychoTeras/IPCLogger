@@ -163,7 +163,7 @@
         success = success || function() {};
         var objToGetStack = new Error();
 
-        error = error || function(xhr, ajaxOptions, thrownError) {
+        error = error || function(xhr, _, thrownError) {
             var callerName = "";
             var stack = objToGetStack.stack;
             if (stack) {
@@ -175,10 +175,10 @@
             if (xhr.responseText) {
                 message = xhr.responseText;
             } else if (xhr.responseJSON) {
-                message = xhr.responseJSON.Message;
+                message = JSON.parse(xhr.responseJSON.Message);
             }
 
-            showDialog.error(callerName + thrownError, JSON.parse(message));
+            showDialog.error(callerName + thrownError, message);
         };
 
         return $.ajax({
@@ -192,13 +192,14 @@
         });
     };
 
-    window.syncQuery = function (url, method, dataType) {
+    window.syncQuery = function (url, method, dataType, data) {
         method = method || "GET";
         return $.ajax({
             url: url,
             cache: globalSetting.CACHE_AJAX_RESULT,
             type: method,
             dataType: dataType,
+            data: data,
             async: false
         });
     };
@@ -246,5 +247,18 @@
         }
 
         return arrData;
+    };
+
+    window.navigate = function(url) {
+        var apiTrackUrl = getApiUrl("trackurl");
+        var trackedUrl = location.href.replace(location.origin, "");
+        asyncQuery(apiTrackUrl,
+            "POST",
+            "text",
+            function() {
+                location.href = url;
+            },
+            null,
+            trackedUrl);
     };
 })();

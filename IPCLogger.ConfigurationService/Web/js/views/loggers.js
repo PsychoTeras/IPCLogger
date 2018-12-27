@@ -8,6 +8,10 @@
         return $(caller).parentsUntil("tbody", "#row-logger").attr("modelId");
     }
 
+    function changeTab(tabRef) {
+        $(".btn-toolbar a[href='" + tabRef + "']").tab("show");
+    }
+
     function loggerSettings(e) {
         var caller = e.target;
         var applicationId = getApplicationId();
@@ -16,6 +20,8 @@
     }
 
     function addLogger() {
+        changeTab("#loggers");
+
         var applicationId = getApplicationId();
         PopupController.addLogger(applicationId, function (html) {
             var divAddLogger = $("#popup-add-logger");
@@ -28,11 +34,25 @@
         });
     }
 
+    function addPattern() {
+        changeTab("#patterns");
+    }
+
+    function onTabChanged(e) {
+        var $target = $(e.target);
+        var href = $target.attr("href");
+        window.location.hash = href;
+    }
+
     function initialize() {
         $("#table-loggers").TableList();
-
         $("#table-loggers button[id^='btn-logger-settings']").on("click", loggerSettings);
+
         $(".btn-toolbar button[id='btn-add-logger']").on("click", addLogger);
+        $(".btn-toolbar button[id='btn-add-pattern']").on("click", addPattern);
+
+        changeTab(window.location.hash || "#settings");
+        $(".btn-toolbar a[data-toggle=\"tab\"]").on("shown.bs.tab", onTabChanged);
     }
 
     initialize();

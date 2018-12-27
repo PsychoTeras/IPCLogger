@@ -5,17 +5,21 @@
 <link href="../../css/views/loggerSettings.css" rel="stylesheet">
 
 <div id="logger-settings">
-    
+
     <input type="hidden" id="application-id" value="@ViewBag.applicationId" />
     <input type="hidden" id="logger-id" value="@ViewBag.loggerId" />
     <input type="hidden" id="is-new" value="@ViewBag.isNew" />
     <input type="hidden" id="is-embedded" value="@ViewBag.isEmbedded" />
-    
+    <input type="hidden" id="hide-headers" value="@ViewBag.hideHeaders" />
+
     <div class="card bg-light">
 
         <div class="card-container">
-
-            <div class="card-header">Common settings</div>
+            
+            @if (!ViewBag.hideHeaders)
+            {
+                <div class="card-header">Common settings</div>
+            }
 
             <div class="card-body">
                 @foreach (PropertyModel model in Model.CommonProperties)
@@ -36,7 +40,10 @@
 
             @if (Model.HasProperties)
             {
-                <div class="card-header">@ViewBag.typeName settings</div>
+                if (!ViewBag.hideHeaders)
+                {
+                    <div class="card-header">@ViewBag.typeName settings</div>
+                }
 
                 <div class="card-body">
 
@@ -58,9 +65,9 @@
             }
 
         </div>
-        
+
     </div>
-    
+
     <div class="div-save-cancel">
         <button id="btn-save" class="btn btn-sm btn-success">Save</button>
         @if (ViewBag.isEmbedded)
@@ -78,7 +85,7 @@
             </div>
         }
     </div>
-
+    
 </div>
 
 <script src="../../js/views/loggerSettings.js" type="text/javascript"></script>

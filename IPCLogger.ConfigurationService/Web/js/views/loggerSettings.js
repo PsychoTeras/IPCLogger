@@ -63,7 +63,9 @@
                 function (_, item) {
                     item.control.saveOrigValue();
                 });
-            cancel(true);
+            if (!cancel(true)) {
+                $.alert("Changes successfully saved", { type: "success" });
+            }
         }
     }
 
@@ -89,22 +91,23 @@
         var propertyObjs = getPropertyObjs();
         if (propertyObjs.length) {
             savePropertyObjs(propertyObjs);
-        } else {
-            cancel(true);
+        } else if (!cancel(true)) {
+            $.alert("Nothing to save");
         }
     }
 
     function cancel(force) {
         if (isEmbedded()) {
-            return;
+            return false;
         }
 
         if (force) {
             window.onbeforeunload = undefined;
         }
-        var applicationId = getApplicationId();
 
-        ApplicationController.manageApplication(applicationId);
+        var applicationId = getApplicationId();
+        ApplicationController.manageApplication(applicationId, "loggers");
+        return true;
     }
 
     function reset() {

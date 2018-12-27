@@ -1,7 +1,9 @@
 ﻿function ApplicationController() {
 
-    this.manageApplication = function (applicationId) {
-        location.href = getApiUrl("applications", applicationId);
+    this.manageApplication = function (applicationId, defaultPage) {
+        var url = getApiUrl("applications", applicationId) +
+            (defaultPage ? "#" + defaultPage : "#settings");
+        navigate(url);
     };
 
 }

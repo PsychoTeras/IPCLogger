@@ -27,7 +27,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
             {
                 VerifyAuthentication();
 
-                ViewBag.isEmbedded = true;
+                ViewBag.isEmbedded = ViewBag.hideHeaders = true;
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
                 CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);

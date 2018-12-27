@@ -13,7 +13,7 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
     {
         private static readonly FormsAuthenticationConfiguration _formsAuthConfiguration = new FormsAuthenticationConfiguration
         {
-            RedirectUrl = "~/signin",
+            RedirectUrl = "~/signin"
         };
 
         public static readonly KeyValuePair<string, string>[] StaticContentsConventions =
