@@ -24,7 +24,7 @@
     }
 
         #logger-settings .table-wrap table {
-            font-size: .875rem;
+            font-size: var(--sc-font-size);
             margin-bottom: 0;
         }
 

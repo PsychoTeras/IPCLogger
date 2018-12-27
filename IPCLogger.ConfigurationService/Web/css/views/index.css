@@ -1,6 +1,15 @@
-﻿body,
+﻿:root {
+    --sc-font-size: .875rem;
+    --sc-navbar-color: #495057;
+    --sc-link-color: #006be0;
+    --sc-selection-color: white;
+    --sc-selection-back-color: steelblue;
+    --sc-tab-color: var(--sc-selection-back-color);
+}
+
+body,
 .form-control {
-    font-size: .875rem;
+    font-size: var(--sc-font-size);
     -moz-user-select: -moz-none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -10,6 +19,20 @@
 [role="main"] {
     padding-left: 265px;
     padding-top: 64px;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before,
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--sc-selection-back-color);
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--sc-tab-color);
+}
+
+.nav-pills .nav-link {
+    color: var(--sc-tab-color);
 }
 
 .btn-toolbar,
@@ -22,9 +45,9 @@
         margin-top: 5px;
     }
 
-.btn-toolbar .nav {
-    height: 34px;
-}
+    .btn-toolbar .nav {
+        height: 34px;
+    }
 
     .btn-toolbar .btn-go-back {
         width: 95px;
@@ -34,15 +57,15 @@
         margin-left: 5px;
     }
 
-    /*.btn-toolbar .page-caption {
-        color: rgb(108, 117, 125);
-    }*/
-
-    .main-table-wrap {
-        max-height: calc(100vh - 130px);
-        overflow: auto;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
+    .btn-toolbar .page-caption {
+        color: var(--sc-navbar-color);
     }
+
+.main-table-wrap {
+    max-height: calc(100vh - 130px);
+    overflow: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
 
 hr {
     border: 0;
@@ -69,7 +92,7 @@ hr {
     .div-save-cancel .dropdown-menu {
         min-width: 0 !important;
         width: auto !important;
-        font-size: .875rem;
+        font-size: var(--sc-font-size);
         margin: 0;
     }
 
@@ -78,7 +101,7 @@ table thead .th-actions {
 }
 
     table thead .th-actions button {
-        font-size: .875rem;
+        font-size: var(--sc-font-size);
         font-weight: 500;
         border: 0;
         height: auto;
@@ -95,9 +118,9 @@ table thead .th-actions {
         width: 30px;
     }
 
-    .ui-table-list tbody td:last-child {
-        width: 165px;
-    }
+.ui-table-list tbody td:last-child {
+    width: 165px;
+}
 
 input, select, textarea, .custom-checkbox > label:before {
     -webkit-box-shadow: none !important;
@@ -105,15 +128,15 @@ input, select, textarea, .custom-checkbox > label:before {
     box-shadow: none !important;
 }
 
-textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
-    -webkit-box-shadow: 0 0 0;
-    -ms-box-shadow: 0 0 0;
-    box-shadow: 0 0 0;
-    outline: 0 none;
-}
+    textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
+        -webkit-box-shadow: 0 0 0;
+        -ms-box-shadow: 0 0 0;
+        box-shadow: 0 0 0;
+        outline: 0 none;
+    }
 
 .navbar {
-    background-color: #495057;
+    background-color: var(--sc-navbar-color);
     height: 48px;
 }
 
@@ -155,10 +178,10 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     color: rgba(255, 255, 255, .5);
 }
 
-.breadcrumb-item a:hover,
-.breadcrumb-item.active {
-    color: whitesmoke;
-}
+    .breadcrumb-item a:hover,
+    .breadcrumb-item.active {
+        color: whitesmoke;
+    }
 
 .sidebar {
     position: fixed;
@@ -184,7 +207,7 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
 }
 
     .sidebar .nav-link.active {
-        color: #006be0;
+        color: var(--sc-link-color);
     }
 
     .sidebar .nav-link .feather {
@@ -204,11 +227,6 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
         color: inherit;
     }
 
-.sidebar-heading {
-    font-size: .75rem;
-    text-transform: uppercase;
-}
-
 .btn.focus, .btn:focus {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
@@ -219,24 +237,28 @@ button.btn {
     font-family: "Segoe UI"
 }
 
-button.btn:not(.fa) {
-    padding-top: 1px !important;
+    button.btn:not(.fa) {
+        padding-top: 1px !important;
+    }
+
+button.btn-link {
+    color: var(--sc-link-color);
 }
 
 button.btn.fa:before {
     font-family: "FontAwesome"
 }
 
-    button.btn.fa:not(.btn-glyph):before {
-        margin-right: 5px;
-    }
+button.btn.fa:not(.btn-glyph):before {
+    margin-right: 5px;
+}
 
 button.dropdown-toggle:after {
     margin-top: 5px;
 }
 
- button.disabled {
-    opacity: 0.65; 
+button.disabled {
+    opacity: 0.65;
     cursor: not-allowed;
 }
 
@@ -266,11 +288,13 @@ input {
         -moz-transform: rotate(360deg);
     }
 }
+
 @-webkit-keyframes spin {
     100% {
         -webkit-transform: rotate(360deg);
     }
 }
+
 @keyframes spin {
     100% {
         -webkit-transform: rotate(360deg);

@@ -1,5 +1,5 @@
 ﻿.ui-table-select {
-    font-size: .875rem;
+    font-size: var(--sc-font-size);
     margin-bottom: 0;
 }
 
@@ -15,8 +15,8 @@
     }
 
         .ui-table-select tbody > tr.selected {
-            color: white;
-            background-color: steelblue;
+            color: var(--sc-selection-color);
+            background-color: var(--sc-selection-back-color);
         }
 
         .ui-table-select tbody > tr > td {
