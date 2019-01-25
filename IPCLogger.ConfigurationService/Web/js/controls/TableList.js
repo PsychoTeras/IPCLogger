@@ -9,8 +9,14 @@
         $table.addClass(TableClasses);
 
         $table.find("tbody>tr").mouseover(function () {
+            $('[data-toggle="dropdown"]').parent().removeClass('open');
             $table.find("tbody>tr>td").removeClass("mouseover");
             $(this).find("#" + CellActions).addClass("mouseover");
+
+            var $dd = $table.find("[data-toggle='dropdown'][aria-expanded='true']");
+            if ($dd.closest("tr")[0] !== this) {
+                $dd.attr("aria-expanded", "false").next().removeClass("show");
+            }
         });
 
         $table.find("tbody>tr").mouseleave(function () {

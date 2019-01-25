@@ -164,6 +164,19 @@ namespace IPCLogger.ConfigurationService.CoreServices
             DeclaredLoggers.Add(loggerModel);
         }
 
+        public void RemoveLogger(string loggerId)
+        {
+            DeclaredLoggerModel loggerModel = DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
+            if (loggerModel == null)
+            {
+                throw new InvalidRequestException();
+            }
+
+            DeclaredLoggers.Remove(loggerModel);
+            loggerModel.RootXmlNode.ParentNode.RemoveChild(loggerModel.RootXmlNode);
+            SaveConfiguration();
+        }
+
 #endregion
 
     }

@@ -1,7 +1,7 @@
 ﻿@using IPCLogger.ConfigurationService.Entities.Models;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<ApplicationModel>>
 
-<div class="card bg-light main-table-wrap">
+<div class="card bg-light main-table-wrap" id="applications">
     <table id="table-applications" class="table table-sm ui-table-list">
         <thead class="card-header">
             <tr>
@@ -21,7 +21,6 @@
                             <button id="btn-configure-application-@(model.Id)" class="btn btn-info">Configure loggers</button>
                             <button class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                @*<a id="btn-remove-logger-@(model.Id)" class="dropdown-item" style="cursor: pointer">Remove logger</a>*@
                             </div>
                         </div>
                     </td>

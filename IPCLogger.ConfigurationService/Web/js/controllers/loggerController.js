@@ -10,6 +10,14 @@
         navigate(url);
     };
 
+    this.removeLogger = function (applicationId, loggerId, onReady) {
+        var url = getApiUrl("applications", applicationId, "loggers", loggerId);
+        asyncQuery(
+            url,
+            "DELETE",
+            null,
+            onReady);
+    };
 }
 
 window.LoggerController = new LoggerController();

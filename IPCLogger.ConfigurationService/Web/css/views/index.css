@@ -89,11 +89,28 @@ hr {
         width: 80px;
     }
 
-    .div-save-cancel .dropdown-menu {
-        min-width: 0 !important;
-        width: auto !important;
-        font-size: var(--sc-font-size);
-        margin: 0;
+.dropdown-menu {
+    min-width: 0 !important;
+    width: auto !important;
+    font-size: var(--sc-font-size);
+    margin: 0;
+}
+
+.dropdown-item:active {
+    color: white !important;
+}
+
+.dropdown-item.red {
+    color: crimson !important;
+}
+
+    .dropdown-item.red:hover {
+        background-color: rgba(99, 0, 0, .05) !important;
+    }
+
+    .dropdown-item.red:active {
+        color: white !important;
+        background-color: firebrick !important;
     }
 
 table thead .th-actions {
@@ -119,7 +136,7 @@ table thead .th-actions {
     }
 
 .ui-table-list tbody td:last-child {
-    width: 165px;
+    width: 168px;
 }
 
 input, select, textarea, .custom-checkbox > label:before {
@@ -271,10 +288,6 @@ input {
     height: 32px !important;
 }
 
-.ui-autocomplete {
-    z-index: 5000;
-}
-
 .dialog-alert .modal-body {
     padding: 0 !important;
 }
@@ -328,10 +341,6 @@ body.locked .page-lock {
     cursor: wait !important;
 }
 
-.input-group-addon {
-    padding: 6px 10px 3px;
-}
-
 .btn-toolbar-left,
 .btn-toolbar-center,
 .btn-toolbar-right {
@@ -341,4 +350,8 @@ body.locked .page-lock {
 .btn-toolbar-user-center,
 .btn-toolbar-user-right {
     display: none;
+}
+
+.ui-autocomplete {
+    z-index: 5000;
 }

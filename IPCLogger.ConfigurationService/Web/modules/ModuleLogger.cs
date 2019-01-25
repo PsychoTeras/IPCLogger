@@ -15,9 +15,9 @@ namespace IPCLogger.ConfigurationService.Web.modules
 {
     using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
-    public class ModuleLoggerSettings : ModuleBase
+    public class ModuleLogger : ModuleBase
     {
-        public ModuleLoggerSettings()
+        public ModuleLogger()
         {
             Negotiator NewOrGet(dynamic x, bool isNew)
             {
@@ -126,6 +126,24 @@ namespace IPCLogger.ConfigurationService.Web.modules
             Post["/applications/{appid:int}/loggers/{lid}"] = x => CreateOrUpdate(x, true);
 
             Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
+
+            Delete["/applications/{appid:int}/loggers/{lid}"] = x =>
+            {
+                VerifyAuthentication();
+
+                try
+                {
+                    int applicationId = int.Parse(x.appid);
+                    string loggerId = x.lid;
+                    CoreService coreService = LoadCoreService(applicationId);
+                    coreService.RemoveLogger(loggerId);
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    return Response.AsJson(ex.Message, HttpStatusCode.BadRequest);
+                }
+            };
         }
     }
 }
