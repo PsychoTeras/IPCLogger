@@ -1,12 +1,12 @@
-﻿using IPCLogger.ConfigurationService.Entities.Models;
+﻿using IPCLogger.ConfigurationService.Common.Exceptions;
+using IPCLogger.ConfigurationService.Entities.DTO;
+using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using IPCLogger.ConfigurationService.Common.Exceptions;
-using IPCLogger.ConfigurationService.Entities.DTO;
 using static IPCLogger.Core.Loggers.Base.BaseSettings;
 
 namespace IPCLogger.ConfigurationService.CoreServices

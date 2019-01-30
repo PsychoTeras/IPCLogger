@@ -1,6 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Helpers;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using PropertyData = Tuple<PropertyInfo, CustomConversionAttribute, bool>;
+    using PropertyData = BaseSettings.PropertyData;
     using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
     public class LoggerModel
@@ -52,13 +51,14 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             {
                 return new PropertyModel
                 (
-                    data.Item1.Name,
-                    data.Item1.PropertyType,
-                    data.Item2?.GetType(),
-                    BaseSettings.GetPropertyValue(data.Item1, data.Item2),
-                    BaseSettings.GetPropertyValues(data.Item1),
+                    data.PropertyInfo.Name,
+                    data.PropertyInfo.PropertyType,
+                    data.ConversionAttribute?.GetType(),
+                    BaseSettings.GetPropertyValue(data.PropertyInfo, data.ConversionAttribute),
+                    BaseSettings.GetPropertyValues(data.PropertyInfo),
                     isCommon,
-                    data.Item3
+                    data.IsRequired,
+                    data.IsFormattable
                 );
             }
 

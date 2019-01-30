@@ -23,9 +23,10 @@ namespace IPCLogger.Core.Loggers.LFile
         [SizeStringConversion]
         public long BufferSize { get; set; }
 
+        [FormattableSetting]
         public string LogDir { get; set; }
 
-        [RequiredSetting]
+        [RequiredSetting, FormattableSetting]
         public string LogFile { get; set; }
 
         public bool RecreateFile { get; set; }

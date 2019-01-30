@@ -30,7 +30,7 @@ namespace IPCLogger.Core.Snippets
 
 #endregion
 
-#region Ctor
+#region Static ctor
 
         static SFactory()
         {

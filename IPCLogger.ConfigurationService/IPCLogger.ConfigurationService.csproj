@@ -90,6 +90,8 @@
     </Compile>
     <Compile Include="CoreServices\ControlsService.cs" />
     <Compile Include="CoreServices\CoreService.cs" />
+    <Compile Include="CoreServices\DocsService.cs" />
+    <Compile Include="CoreServices\Resolvers\RPatterns.cs" />
     <Compile Include="DAL\ApplicationDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
@@ -98,6 +100,8 @@
     <Compile Include="Entities\DTO\InvalidPropertyValueDTO.cs" />
     <Compile Include="Entities\Models\ApplicationModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggersModel.cs" />
+    <Compile Include="Entities\Models\DocItemModel.cs" />
+    <Compile Include="Entities\Models\DocItemParamModel.cs" />
     <Compile Include="Entities\Models\PropertyModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
@@ -169,6 +173,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Web\docs\snippets\SSnippet.json" />
     <None Include="Web\fonts\fontawesome-webfont.eot" />
     <None Include="Web\fonts\fontawesome-webfont.ttf" />
     <None Include="Web\fonts\fontawesome-webfont.woff" />
@@ -275,5 +280,6 @@
       <Version>1.0.109.2</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -23,7 +23,10 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public bool IsRequired { get; private set; }
 
-        public PropertyModel(string name, Type type, Type converter, string value, string values, bool isCommon, bool isRequired)
+        public bool IsFormattable { get; private set; }
+
+        public PropertyModel(string name, Type type, Type converter, string value, string values, 
+            bool isCommon, bool isRequired, bool isFormattable)
         {
             Name = name;
             Type = type;
@@ -32,6 +35,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             Values = values;
             IsCommon = isCommon;
             IsRequired = isRequired;
+            IsFormattable = isFormattable;
 
             DisplayName = string.Empty;
             MatchCollection matches = _regexMakeDisplayName.Matches(Name);

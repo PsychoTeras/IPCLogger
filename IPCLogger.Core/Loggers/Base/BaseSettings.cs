@@ -1,4 +1,6 @@
 ﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Attributes.CustomConversionAttributes;
+using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Common;
 using System;
 using System.Collections.Generic;
@@ -9,18 +11,34 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-using IPCLogger.Core.Attributes.CustomConversionAttributes;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.Core.Loggers.Base
 {
-    using PropertyData = Tuple<PropertyInfo, CustomConversionAttribute, bool>;
-
     // ReSharper disable PossibleNullReferenceException
     public abstract class BaseSettings
     {
 
 #region Definitions
+
+        protected internal class PropertyData
+        {
+            public PropertyInfo PropertyInfo { get; }
+
+            public CustomConversionAttribute ConversionAttribute { get; }
+
+            public bool IsRequired { get; }
+
+            public bool IsFormattable { get; }
+
+            public PropertyData(PropertyInfo propertyInfo, CustomConversionAttribute conversionAttribute,
+                bool isRequired, bool isFormattable)
+            {
+                PropertyInfo = propertyInfo;
+                ConversionAttribute = conversionAttribute;
+                IsRequired = isRequired;
+                IsFormattable = IsFormattable;
+            }
+        }
 
         protected internal class PropertyValidationResult
         {
@@ -223,7 +241,8 @@ namespace IPCLogger.Core.Loggers.Base
                     (
                         p,
                         p.GetAttribute<CustomConversionAttribute>(),
-                        p.IsDefined<RequiredSettingAttribute>()
+                        p.IsDefined<RequiredSettingAttribute>(),
+                        p.IsDefined<FormattableSettingAttribute>()
                     )
                 );
 
@@ -241,14 +260,15 @@ namespace IPCLogger.Core.Loggers.Base
                     (
                         p,
                         p.GetAttribute<CustomConversionAttribute>(),
-                        p.IsDefined<RequiredSettingAttribute>()
+                        p.IsDefined<RequiredSettingAttribute>(),
+                        p.IsDefined<FormattableSettingAttribute>()
                     )
                 );
 
             _exclusivePropertyNodeNames = new HashSet<string>
             (
                 _properties.Concat(_commonProperties).
-                    Select(d => d.Value.Item2).
+                    Select(d => d.Value.ConversionAttribute).
                     OfType<XmlNodesConversionAttribute>().
                     SelectMany(p => p.ExclusiveNodeNames).
                     Distinct()
@@ -340,12 +360,12 @@ namespace IPCLogger.Core.Loggers.Base
             foreach (KeyValuePair<string, XmlNode> setting in settingsDict)
             {
                 PropertyData data = _properties[setting.Key];
-                Type propertyType = data.Item1.PropertyType;
+                Type propertyType = data.PropertyInfo.PropertyType;
 
                 try
                 {
                     object value;
-                    switch (data.Item2)
+                    switch (data.ConversionAttribute)
                     {
                         case ValueConversionAttribute vcAttr:
                             value = vcAttr.StringToValue(setting.Value.InnerText.Trim());
@@ -399,13 +419,13 @@ namespace IPCLogger.Core.Loggers.Base
         {
             Dictionary<string, object> valuesDict = new Dictionary<string, object>();
             IEnumerable<PropertyData> exclusiveProperties = _properties.Values.
-                Where(p => p.Item2 is XmlNodesConversionAttribute);
+                Where(p => p.ConversionAttribute is XmlNodesConversionAttribute);
 
             foreach (PropertyData data in exclusiveProperties)
             {
-                string propertyName = data.Item1.Name;
-                Type propertyType = data.Item1.PropertyType;
-                XmlNodesConversionAttribute xmlnsAttr = data.Item2 as XmlNodesConversionAttribute;
+                string propertyName = data.PropertyInfo.Name;
+                Type propertyType = data.PropertyInfo.PropertyType;
+                XmlNodesConversionAttribute xmlnsAttr = data.ConversionAttribute as XmlNodesConversionAttribute;
 
                 try
                 {
@@ -415,7 +435,7 @@ namespace IPCLogger.Core.Loggers.Base
                         throw new Exception();
                     }
 
-                    valuesDict.Add(data.Item1.Name, value);
+                    valuesDict.Add(data.PropertyInfo.Name, value);
                 }
                 catch (Exception ex)
                 {
@@ -435,7 +455,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = _properties[value.Key].Item1;
+                PropertyInfo property = _properties[value.Key].PropertyInfo;
                 property.SetValue(this, value.Value, null);
             }
         }
@@ -448,10 +468,10 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (PropertyData data in _properties.Values)
             {
-                PropertyInfo property = data.Item1;
+                PropertyInfo property = data.PropertyInfo;
                 object value = property.GetValue(this, null);
 
-                switch (data.Item2)
+                switch (data.ConversionAttribute)
                 {
                     case ValueConversionAttribute vcAttr:
                         value = vcAttr.ValueToString(value);
@@ -524,11 +544,11 @@ namespace IPCLogger.Core.Loggers.Base
 
                 if (dictProps.TryGetValue(propertyName, out var data))
                 {
-                    object value = data.Item2 != null
-                        ? data.Item2.CSStringToValue(sValue)
-                        : ConvertValue(sValue, data.Item1.PropertyType);
+                    object value = data.ConversionAttribute != null
+                        ? data.ConversionAttribute.CSStringToValue(sValue)
+                        : ConvertValue(sValue, data.PropertyInfo.PropertyType);
 
-                    if (value == null || data.Item3 && IsDefaultValue(value, data.Item1.PropertyType))
+                    if (value == null || data.IsRequired && IsDefaultValue(value, data.PropertyInfo.PropertyType))
                     {
                         string errorMessage = string.Format(ValidationErrorMessage, propertyName);
                         return PropertyValidationResult.Invalid(propertyName, isCommon, errorMessage);
@@ -556,9 +576,9 @@ namespace IPCLogger.Core.Loggers.Base
 
             if (dictProps.TryGetValue(propertyName, out var data))
             {
-                data.Item1.SetValue(this, value, null);
+                data.PropertyInfo.SetValue(this, value, null);
 
-                switch (data.Item2)
+                switch (data.ConversionAttribute)
                 {
                     case ValueConversionAttribute vcAttr:
                         value = vcAttr.ValueToString(value);

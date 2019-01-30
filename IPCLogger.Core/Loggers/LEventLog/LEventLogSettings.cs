@@ -45,12 +45,16 @@ namespace IPCLogger.Core.Loggers.LEventLog
 
         public string MachineName { get; set; }
 
+        [FormattableSetting]
         public string LogName { get; set; }
 
+        [FormattableSetting]
         public string Source { get; set; }
 
+        [FormattableSetting]
         public string EventId { get; set; }
 
+        [FormattableSetting]
         public string Category { get; set; }
 
         public EventLogEntryType DefaultLogEntryType { get; set; }

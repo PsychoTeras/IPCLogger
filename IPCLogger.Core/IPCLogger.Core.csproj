@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\CustomConversionAttributes\KeyValueConversionAttribute.cs" />
+    <Compile Include="Attributes\FormattableSettingAttribute.cs" />
     <Compile Include="Attributes\RequiredSettingAttribute.cs" />
     <Compile Include="Attributes\CustomConversionAttributes\SizeStringConversionAttribute.cs" />
     <Compile Include="Attributes\CustomConversionAttributes\Base\CustomConversionAttribute.cs" />
@@ -131,6 +132,8 @@
     <Compile Include="Patterns\PFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proto\Serializer.cs" />
+    <Compile Include="Resolvers\Base\IBaseResolver.cs" />
+    <Compile Include="Resolvers\RFactory.cs" />
     <Compile Include="Snippets\AutoKey\AutoKey.cs" />
     <Compile Include="Snippets\Base\BaseSnippet.cs" />
     <Compile Include="Snippets\Base\SnippetParams.cs" />

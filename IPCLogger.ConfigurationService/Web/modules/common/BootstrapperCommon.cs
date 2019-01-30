@@ -22,7 +22,7 @@ namespace IPCLogger.ConfigurationService.Web.modules.common
             new KeyValuePair<string, string>("css", "/Web/css"),
             new KeyValuePair<string, string>("js", "/Web/js"),
             new KeyValuePair<string, string>("assets", "/Web/assets"),
-            new KeyValuePair<string, string>("fonts", "/Web/fonts")
+            new KeyValuePair<string, string>("docs", "/Web/docs"),
         };
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)

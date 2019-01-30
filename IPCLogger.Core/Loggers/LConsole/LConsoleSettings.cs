@@ -1,4 +1,5 @@
-﻿using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Attributes;
+using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,7 @@ namespace IPCLogger.Core.Loggers.LConsole
 
 #region Properties
 
+        [FormattableSetting]
         public string Title { get; set; }
 
         [ConsoleHighlightsConversion]
