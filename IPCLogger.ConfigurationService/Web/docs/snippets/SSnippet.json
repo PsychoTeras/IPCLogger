@@ -1,3 +1,5 @@
 {
-  
+  "NameResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
+  "Type": "Snippet",
+  "Description":  ""
 }

@@ -6,18 +6,16 @@ namespace IPCLogger.ConfigurationService.Entities.Models
     public class DocItemModel
     {
         private List<DocItemParamModel> _params;
-        private IBaseResolver _relObjectSubIdResolver;
-        private string _constRelObjectSubId;
+        private IBaseResolver _relObjectIdResolver;
+        private object _constRelObjectId;
 
-        public string RelObjectId { get; } //Ex: snippet class, logger class
-
-        public string RelObjectSubId  //Ex: snippet name, logger param name
+        public object RelObjectId  //Ex: snippet class, snippet name
         {
             get
             {
-                return _relObjectSubIdResolver != null
-                    ? _relObjectSubIdResolver.Resolve(RelObjectId).ToString()
-                    : _constRelObjectSubId;
+                return _relObjectIdResolver != null
+                    ? _relObjectIdResolver.Resolve(Type)
+                    : _constRelObjectId;
             }
         }
 
@@ -32,25 +30,19 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return _params; }
         }
 
-        public DocItemModel(string relObjectId, string relObjectSubId, string type,
-            string name, string description)
+        public DocItemModel(string relObjectId, string type, string name, string description)
         {
-            RelObjectId = relObjectId;
-            _constRelObjectSubId = relObjectSubId;
+            _constRelObjectId = relObjectId;
             Type = type;
             Name = name;
             Description = description;
             _params = new List<DocItemParamModel>();
         }
 
-        public DocItemModel(string relObjectId, string type, string name, string description)
-            : this(relObjectId, null, type, name, description)
+        public DocItemModel(IBaseResolver resolver, string type, string name, string description)
+            : this((string)null, type, name, description)
         {
-        }
-
-        public void SetRelObjectSubIdResolver(IBaseResolver resolver)
-        {
-            _relObjectSubIdResolver = resolver;
+            _relObjectIdResolver = resolver;
         }
     }
 }

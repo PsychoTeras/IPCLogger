@@ -2,7 +2,7 @@
 
 namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 {
-    public class RPatterns : IBaseResolver
+    public class RSnippet : IBaseResolver
     {
         public object Resolve(string name)
         {

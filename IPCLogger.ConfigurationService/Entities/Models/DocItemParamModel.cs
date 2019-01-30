@@ -25,7 +25,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             }
         }
 
-        public DocItemParamModel(string name, string descritption, string paramType)
+        public DocItemParamModel(object value, string name, string descritption, string paramType)
         {
             Name = name;
             Description = descritption;
@@ -34,14 +34,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             {
                 ParamType = typeof(string);
             }
-        }
-
-        public void SetConstValue(object value)
-        {
             _constValue = value;
         }
 
-        public void SetValueResolver(IBaseResolver resolver)
+        public DocItemParamModel(IBaseResolver resolver, string name, string descritption, string paramType)
+            : this((object)null, name, descritption, paramType)
         {
             _valueResolver = resolver;
         }
