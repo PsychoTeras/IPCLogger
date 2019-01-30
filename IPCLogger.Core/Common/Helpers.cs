@@ -359,8 +359,10 @@ namespace IPCLogger.Core.Common
             }
 
             object result = Activator.CreateInstance(dataType);
-            XmlNodeList paramNodes = xmlNode.ChildNodes;
-            if (paramNodes.Count == 0)
+            IEnumerable<XmlNode> paramNodes = xmlNode.ChildNodes.
+                OfType<XmlNode>().
+                Where(n => n.NodeType != XmlNodeType.Whitespace);
+            if (!paramNodes.Any())
             {
                 return result;
             }
@@ -377,7 +379,7 @@ namespace IPCLogger.Core.Common
                             Type[] arguments = result.GetType().GetGenericArguments();
                             dictValueType = arguments[1];
                         }
-                        AddKeyValueToDictionary(dict, paramNode.Name, paramNode.InnerText, dictValueType);
+                        AddKeyValueToDictionary(dict, paramNode.Name, paramNode.InnerText.Trim(), dictValueType);
                         break;
                     default:
                         string msg = $"Type '{dataType.Name}' is not supported";

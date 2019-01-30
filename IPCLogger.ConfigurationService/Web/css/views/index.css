@@ -5,6 +5,9 @@
     --sc-selection-color: white;
     --sc-selection-back-color: steelblue;
     --sc-tab-color: var(--sc-selection-back-color);
+    --sc-btn-action-color: steelblue;
+    --sc-btn-action-color-hover: #3f75a2;
+    --sc-btn-action-color-focus: #386890;
 }
 
 body,
@@ -34,6 +37,23 @@ body,
 .nav-pills .nav-link {
     color: var(--sc-tab-color);
 }
+
+.btn-action {
+    color: white;
+    background-color: var(--sc-btn-action-color);
+    border-color: var(--sc-btn-action-color);
+}
+
+    .btn-action:hover {
+        background-color: var(--sc-btn-action-color-hover);
+        border-color: var(--sc-btn-action-color-hover);
+    }
+
+    .btn-action:focus,
+    .btn-action.focus {
+        background-color: var(--sc-btn-action-color-focus);
+        border-color: var(--sc-btn-action-color-focus);
+    }
 
 .btn-toolbar,
 .btn-toolbar div {

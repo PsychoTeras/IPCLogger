@@ -301,7 +301,9 @@ namespace IPCLogger.Core.Loggers.Base
         {
             Dictionary<string, XmlNode> settingsDict = new Dictionary<string, XmlNode>();
 
-            IEnumerable<XmlNode> nodes = cfgNode.OfType<XmlNode>().Where(n => n.NodeType != XmlNodeType.Comment);
+            IEnumerable<XmlNode> nodes = cfgNode.
+                OfType<XmlNode>().
+                Where(n => n.NodeType != XmlNodeType.Comment && n.NodeType != XmlNodeType.Whitespace);
             if (excludes != null)
             {
                 nodes = nodes.Where(n => !excludes.Contains(n.Name, StringComparer.InvariantCultureIgnoreCase));

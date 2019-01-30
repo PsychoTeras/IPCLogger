@@ -205,7 +205,7 @@ get_generic_pattern:
                 IEnumerable<XmlNode> contentNodes = patternNode.
                     SelectNodes(PATTERN_CONTENT_CFG_PATH).
                     Cast<XmlNode>().
-                    Where(n => !string.IsNullOrEmpty(n.InnerText));
+                    Where(n => !string.IsNullOrEmpty(n.InnerText.Trim()));
                 if (!contentNodes.Any())
                 {
                     continue;

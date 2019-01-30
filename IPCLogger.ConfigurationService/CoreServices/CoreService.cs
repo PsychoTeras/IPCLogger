@@ -58,6 +58,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
             //Load XML
             ConfigurationXml = new XmlDocument();
+            ConfigurationXml.PreserveWhitespace = true;
             ConfigurationXml.Load(configurationFile);
         }
 
