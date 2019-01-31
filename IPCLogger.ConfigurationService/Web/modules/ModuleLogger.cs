@@ -27,7 +27,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 string loggerId = ViewBag.loggerId = x.lid;
                 ViewBag.isNew = isNew;
 
-                CoreService coreService = LoadCoreService(applicationId);
+                CoreService coreService = GetCoreService(applicationId);
                 DeclaredLoggerModel loggerModel;
                 if (isNew)
                 {
@@ -71,7 +71,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     int applicationId = int.Parse(x.appid);
                     string loggerId = x.lid;
 
-                    CoreService coreService = LoadCoreService(applicationId);
+                    CoreService coreService = GetCoreService(applicationId);
 
                     DeclaredLoggerModel loggerModel;
                     if (create)
@@ -85,7 +85,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     }
 
                     PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
-                    CoreService.ValidateLoggerUniqueness(loggerModel, propertyObjs, ref validationResult);
+                    coreService.ValidateLoggerUniqueness(loggerModel, propertyObjs, ref validationResult);
 
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
@@ -135,7 +135,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 {
                     int applicationId = int.Parse(x.appid);
                     string loggerId = x.lid;
-                    CoreService coreService = LoadCoreService(applicationId);
+                    CoreService coreService = GetCoreService(applicationId);
                     coreService.RemoveLogger(loggerId);
                     return null;
                 }

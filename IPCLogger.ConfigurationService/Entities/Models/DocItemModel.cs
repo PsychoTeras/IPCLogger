@@ -5,9 +5,16 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class DocItemModel
     {
+
+#region Private fields
+
         private List<DocItemParamModel> _params;
         private IBaseResolver _relObjectIdResolver;
         private object _constRelObjectId;
+
+#endregion
+
+#region Properties
 
         public object RelObjectId  //Ex: snippet class, snippet name
         {
@@ -21,7 +28,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Type { get; } //Ex: snippet type
 
-        public string Name { get; }
+        public string DisplayName { get; }
 
         public string Description { get; }
 
@@ -30,19 +37,26 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return _params; }
         }
 
-        public DocItemModel(string relObjectId, string type, string name, string description)
+#endregion
+
+#region Ctor
+
+        public DocItemModel(string relObjectId, string type, string displayName, string description)
         {
             _constRelObjectId = relObjectId;
             Type = type;
-            Name = name;
+            DisplayName = displayName;
             Description = description;
             _params = new List<DocItemParamModel>();
         }
 
-        public DocItemModel(IBaseResolver resolver, string type, string name, string description)
-            : this((string)null, type, name, description)
+        public DocItemModel(IBaseResolver resolver, string type, string displayName, string description)
+            : this((string)null, type, displayName, description)
         {
             _relObjectIdResolver = resolver;
         }
+
+#endregion
+
     }
 }

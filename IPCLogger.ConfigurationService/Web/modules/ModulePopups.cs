@@ -13,7 +13,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 VerifyAuthentication();
 
                 int applicationId = int.Parse(x.appid);
-                CoreService coreService = LoadCoreService(applicationId);
+                CoreService coreService = GetCoreService(applicationId);
                 List<LoggerModel> loggers = coreService.AvailableLoggers;
                 return View["popups/popupAddLogger", loggers];
             };            

@@ -20,6 +20,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
                 PageModel pageModel = SetPageModel(PageModel.Applications(applications));
+                DocsService docsService = GetDocsService();
                 return View["index", pageModel];
             };
 
@@ -30,7 +31,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 ViewBag.isEmbedded = ViewBag.hideHeaders = true;
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
                 ApplicationModel applicationModel = ApplicationDAL.Instance.GetApplication(applicationId);
-                CoreService coreService = LoadCoreService(applicationModel.Id, applicationModel);
+                CoreService coreService = GetCoreService(applicationModel.Id, applicationModel);
                 ViewBag.loggerId = coreService.FactoryLogger.Id;
 
                 DeclaredLoggersModel model = new DeclaredLoggersModel(coreService.DeclaredLoggers, coreService.FactoryLogger);

@@ -2,8 +2,11 @@
 using IPCLogger.ConfigurationService.DAL;
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.ConfigurationService.Web.modules.common;
 using Nancy;
+using System.IO;
 using System.Linq;
+using System.Web;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
@@ -15,16 +18,22 @@ namespace IPCLogger.ConfigurationService.Web.modules
             set { Context.Request.Session["PageModel"] = value; }
         }
 
-        protected CoreService CoreService
+        private CoreService CoreService
         {
             get { return Context.Request.Session["CoreService"] as CoreService; }
             set { Context.Request.Session["CoreService"] = value; }
         }
 
-        protected CoreService LoadCoreService(int applicationId, ApplicationModel applicationModel = null)
+        private DocsService DocsService
+        {
+            get { return Context.Request.Session["DocsService"] as DocsService; }
+            set { Context.Request.Session["DocsService"] = value; }
+        }
+
+        protected CoreService GetCoreService(int applicationId, ApplicationModel applicationModel = null)
         {
             CoreService coreService = CoreService;
-            if (CoreService == null || !CoreService.IsSameApplication(applicationId))
+            if (coreService == null || !coreService.IsSameApplication(applicationId))
             {
                 applicationModel = applicationModel ?? ApplicationDAL.Instance.GetApplication(applicationId);
                 if (CoreService == null || !CoreService.IsSameConfiguration(applicationModel.ConfigurationFile))
@@ -34,6 +43,22 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
             }
             return coreService;
+        }
+
+        protected DocsService GetDocsService()
+        {
+            DocsService docsService = DocsService;
+            if (docsService == null)
+            {
+                DefaultRootPathProvider pathProvider = new DefaultRootPathProvider();
+                string docsPath = BootstrapperCommon.StaticContentsConventions.
+                    First(kv => kv.Key == "docs").
+                    Value.Substring(1).
+                    Replace("/", "\\");
+                docsPath = Path.Combine(pathProvider.GetRootPath(), docsPath);
+                docsService = new DocsService(docsPath);
+            }
+            return docsService;
         }
 
         protected PageModel SetPageModel(PageModel pageModel)

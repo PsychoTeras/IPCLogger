@@ -1,5 +1,8 @@
-{
-  "NameResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
-  "Type": "Snippet",
-  "Description":  ""
-}
+[
+  {
+    "RelObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
+    "Type": "Snippet",
+    "DisplayName": "SSnippet",
+    "Description": "SSnippet description"
+  }
+]

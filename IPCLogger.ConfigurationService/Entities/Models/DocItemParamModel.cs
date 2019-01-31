@@ -5,9 +5,15 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 {
     public class DocItemParamModel
     {
-        private IBaseResolver _valueResolver;
 
+#region Private fields
+
+        private IBaseResolver _valueResolver;
         private object _constValue;
+
+#endregion
+
+#region Properties
 
         public string Name { get; }
 
@@ -24,6 +30,10 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                     : _constValue;
             }
         }
+
+#endregion
+
+#region Ctor
 
         public DocItemParamModel(object value, string name, string descritption, string paramType)
         {
@@ -42,5 +52,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         {
             _valueResolver = resolver;
         }
+
+#endregion
+
     }
 }
