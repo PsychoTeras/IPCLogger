@@ -36,11 +36,75 @@ namespace IPCLogger.Core.Snippets
         {
             InitializeSnippetsList();
             InitializeParseStringRegex();
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
         }
 
 #endregion
 
 #region Private methods
+
+        private static IEnumerable<Type> GetDeclaredResolvers(Assembly assembly)
+        {
+            return assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(BaseSnippet)));
+        }
+
+        private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
+        {
+            try
+            {
+                IEnumerable<Type> snippetTypes = GetDeclaredResolvers(args.LoadedAssembly);
+                AppendSnippets(snippetTypes);
+                InitializeParseStringRegex();
+            }
+            catch { }
+        }
+
+        private static void AppendSnippets(IEnumerable<Type> snippetTypes)
+        {
+            lock (_snippetsCache)
+            {
+                foreach (Type baseSnippetType in snippetTypes)
+                {
+                    BaseSnippet snippet = Activator.CreateInstance(baseSnippetType) as BaseSnippet;
+                    if (snippet != null)
+                    {
+                        SnippetType snippetType = snippet.Type;
+                        if (snippet.Names == null)
+                        {
+                            if (!_customBodySnippets.ContainsKey(snippetType))
+                            {
+                                _customBodySnippets.Add(snippetType, snippet);
+                            }
+                            else
+                            {
+                                string msg = $"Duplicate custom-body snippet, type '{snippetType}'";
+                                throw new Exception(msg);
+                            }
+                        }
+                        else
+                        {
+                            if (!_snippets.ContainsKey(snippetType))
+                            {
+                                _snippets.Add(snippetType, new Dictionary<string, BaseSnippet>());
+                            }
+                            Dictionary<string, BaseSnippet> snippetsList = _snippets[snippetType];
+                            foreach (string name in snippet.Names)
+                            {
+                                if (!snippetsList.ContainsKey(name))
+                                {
+                                    snippetsList.Add(name, snippet);
+                                }
+                                else
+                                {
+                                    string msg = $"Duplicate snippet, name '{name}', type '{snippetType}'";
+                                    throw new Exception(msg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         private static void InitializeSnippetsList()
         {
@@ -51,54 +115,13 @@ namespace IPCLogger.Core.Snippets
             foreach (Assembly assembly in assemblies)
             {
                 try
-                {
-                    types.AddRange(assembly.
-                        GetTypes().
-                        Where(t => t.IsSubclassOf(typeof (BaseSnippet))));
+                {                    
+                    types.AddRange(GetDeclaredResolvers(assembly));
                 }
                 catch { }
             }
 
-            foreach (Type baseSnippetType in types)
-            {
-                BaseSnippet snippet = Activator.CreateInstance(baseSnippetType) as BaseSnippet;
-                if (snippet != null)
-                {
-                    SnippetType snippetType = snippet.Type;
-                    if (snippet.Names == null)
-                    {
-                        if (!_customBodySnippets.ContainsKey(snippetType))
-                        {
-                            _customBodySnippets.Add(snippetType, snippet);
-                        }
-                        else
-                        {
-                            string msg = $"Duplicate custom-body snippet, type '{snippetType}'";
-                            throw new Exception(msg);
-                        }
-                    }
-                    else
-                    {
-                        if (!_snippets.ContainsKey(snippetType))
-                        {
-                            _snippets.Add(snippetType, new Dictionary<string, BaseSnippet>());
-                        }
-                        Dictionary<string, BaseSnippet> snippetsList = _snippets[snippetType];
-                        foreach (string name in snippet.Names)
-                        {
-                            if (!snippetsList.ContainsKey(name))
-                            {
-                                snippetsList.Add(name, snippet);
-                            }
-                            else
-                            {
-                                string msg = $"Duplicate snippet, name '{name}', type '{snippetType}'";
-                                throw new Exception(msg);
-                            }
-                        }
-                    }
-                }
-            }
+            AppendSnippets(types);
         }
 
         private static void InitializeParseStringRegex()

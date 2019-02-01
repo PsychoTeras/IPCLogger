@@ -37,8 +37,8 @@ namespace IPCLogger.Core.Resolvers
         {
             try
             {
-                IEnumerable<Type> resolvers = GetDeclaredResolvers(args.LoadedAssembly);
-                AppendResolvers(resolvers);
+                IEnumerable<Type> resolverTypes = GetDeclaredResolvers(args.LoadedAssembly);
+                AppendResolvers(resolverTypes);
             }
             catch { }
         }
