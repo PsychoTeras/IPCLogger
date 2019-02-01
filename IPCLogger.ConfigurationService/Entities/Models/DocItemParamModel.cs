@@ -1,5 +1,4 @@
 ﻿using IPCLogger.Core.Resolvers.Base;
-using System;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
@@ -8,8 +7,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Private fields
 
-        private IBaseResolver _valueResolver;
-        private object _constValue;
+        private IBaseResolver _valuesResolver;
+        private string[] _constValues;
 
 #endregion
 
@@ -19,15 +18,13 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Description { get; }
 
-        public Type ParamType { get; }
-
-        public object Value
+        public string[] Values
         {
             get
             {
-                return _valueResolver != null
-                    ? _valueResolver.Resolve(Name)
-                    : _constValue;
+                return _valuesResolver != null
+                    ? _valuesResolver.Resolve(Name)
+                    : _constValues;
             }
         }
 
@@ -35,22 +32,28 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Ctor
 
-        public DocItemParamModel(object value, string name, string descritption, string paramType)
+        public DocItemParamModel(string name, string description)
         {
             Name = name;
-            Description = descritption;
-            ParamType = Type.GetType(paramType, false, true);
-            if (ParamType == null)
-            {
-                ParamType = typeof(string);
-            }
-            _constValue = value;
+            Description = description;
         }
 
-        public DocItemParamModel(IBaseResolver resolver, string name, string descritption, string paramType)
-            : this((object)null, name, descritption, paramType)
+        public DocItemParamModel(string value, string name, string description)
+            : this(name, description)
         {
-            _valueResolver = resolver;
+            _constValues = new[] { value };
+        }
+
+        public DocItemParamModel(string[] values, string name, string description)
+            : this(name, description)
+        {
+            _constValues = values;
+        }
+
+        public DocItemParamModel(IBaseResolver valueResolver, string name, string description)
+            : this(name, description)
+        {
+            _valuesResolver = valueResolver;
         }
 
 #endregion

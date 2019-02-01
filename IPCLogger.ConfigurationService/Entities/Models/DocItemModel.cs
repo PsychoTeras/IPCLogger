@@ -8,21 +8,20 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Private fields
 
-        private List<DocItemParamModel> _params;
-        private IBaseResolver _relObjectIdResolver;
-        private object _constRelObjectId;
+        private IBaseResolver _objectIdResolver;
+        private object _constObjectId;
 
 #endregion
 
 #region Properties
 
-        public object RelObjectId  //Ex: snippet class, snippet name
+        public object ObjectId  //Ex: snippet class, snippet name
         {
             get
             {
-                return _relObjectIdResolver != null
-                    ? _relObjectIdResolver.Resolve(Type)
-                    : _constRelObjectId;
+                return _objectIdResolver != null
+                    ? _objectIdResolver.Resolve(Type)
+                    : _constObjectId;
             }
         }
 
@@ -32,10 +31,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public string Description { get; }
 
-        public IReadOnlyList<DocItemParamModel> Params
-        {
-            get { return _params; }
-        }
+        public List<DocItemParamModel> Params { get; }
 
 #endregion
 
@@ -43,17 +39,17 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         public DocItemModel(string relObjectId, string type, string displayName, string description)
         {
-            _constRelObjectId = relObjectId;
+            _constObjectId = relObjectId;
             Type = type;
             DisplayName = displayName;
             Description = description;
-            _params = new List<DocItemParamModel>();
+            Params = new List<DocItemParamModel>();
         }
 
-        public DocItemModel(IBaseResolver resolver, string type, string displayName, string description)
+        public DocItemModel(IBaseResolver objectIdResolver, string type, string displayName, string description)
             : this((string)null, type, displayName, description)
         {
-            _relObjectIdResolver = resolver;
+            _objectIdResolver = objectIdResolver;
         }
 
 #endregion

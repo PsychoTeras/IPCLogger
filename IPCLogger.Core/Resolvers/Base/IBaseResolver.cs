@@ -2,6 +2,6 @@
 {
     public interface IBaseResolver
     {
-        object Resolve(string name);
+        string[] Resolve(string name);
     }
 }

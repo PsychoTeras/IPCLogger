@@ -1,8 +1,29 @@
 [
   {
-    "RelObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
+    "ObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
     "Type": "Snippet",
     "DisplayName": "SSnippet",
-    "Description": "SSnippet description"
+    "Description": "SSnippet description",
+    "Params": [
+      {
+        "Name": "p1",
+        "Description": "param1",
+        "Values": [ "v1", "v2", "v3" ]
+      },
+      {
+        "Name": "p2",
+        "Description": "param2",
+        "Value": "val"
+      },
+      {
+        "Name": "p3",
+        "Description": "param3",
+        "ValueResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet"
+      },
+      {
+        "Name": "p4",
+        "Description": "param4"
+      }
+    ]
   }
 ]

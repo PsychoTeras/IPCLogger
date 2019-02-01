@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
@@ -40,32 +41,99 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Initialization methods
 
+        private DocItemParamModel DocItemModelParamFromJObject(JObject jParam)
+        {
+            DocItemParamModel model = null;
+
+            string name = jParam["Name"]?.Value<string>();
+            string description = jParam["Description"]?.Value<string>();
+
+            string value = jParam["Value"]?.Value<string>();
+            string valueResolver = jParam["ValueResolver"]?.Value<string>();
+            string[] values = jParam["Values"]?.Values<string>().ToArray();
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                model = new DocItemParamModel(value, name, description);
+            }
+            else if (!string.IsNullOrEmpty(valueResolver))
+            {
+                IBaseResolver resolver = RFactory.Get(valueResolver);
+                if (resolver != null)
+                {
+                    model = new DocItemParamModel(resolver, name, description);
+                }
+                else
+                {
+                    string msg = $"ValueResolver is wrong";
+                    throw new Exception(msg);
+                }
+            }
+            else if (values != null)
+            {
+                model = new DocItemParamModel(values, name, description);
+            }
+            else
+            {
+                model = new DocItemParamModel(name, description);
+            }
+
+            return model;
+        }
+
+        private void ReadDocItemModelParamsFromJObject(DocItemModel model, JObject jDoc)
+        {
+            IJEnumerable<JToken> jParams = jDoc["Params"]?.AsJEnumerable();
+            if (jParams == null) return;
+            
+            foreach (JObject jParam in jParams)
+            {
+                DocItemParamModel modelParam = DocItemModelParamFromJObject(jParam);
+                if (modelParam != null)
+                {
+                    model.Params.Add(modelParam);
+                }
+            }
+        }
+
         private DocItemModel DocItemModelFromJObject(JObject jDoc)
         {
             try
             {
+                DocItemModel model = null;
+
                 string type = jDoc["Type"]?.Value<string>();
                 string displayName = jDoc["DisplayName"]?.Value<string>();
                 string description = jDoc["Description"]?.Value<string>();
 
-                string relObjectIdResolver = jDoc["RelObjectIdResolver"].Value<string>();
-                if (!string.IsNullOrEmpty(relObjectIdResolver))
+                string objectIdResolver = jDoc["ObjectIdResolver"]?.Value<string>();
+                if (!string.IsNullOrEmpty(objectIdResolver))
                 {
-                    IBaseResolver resolver = RFactory.Get(relObjectIdResolver);
+                    IBaseResolver resolver = RFactory.Get(objectIdResolver);
                     if (resolver != null)
                     {
-                        return new DocItemModel(resolver, type, displayName, description);
+                        model = new DocItemModel(resolver, type, displayName, description);
+                    }
+                }
+                else
+                {
+                    string objectId = jDoc["ObjectId"]?.Value<string>();
+                    if (!string.IsNullOrWhiteSpace(objectId))
+                    {
+                        model = new DocItemModel(objectId, type, displayName, description);
                     }
                 }
 
-                string relObjectId = jDoc["RelObjectId"].Value<string>();
-                if (!string.IsNullOrWhiteSpace(relObjectId))
+                if (model != null)
                 {
-                    return new DocItemModel(relObjectId, type, displayName, description);
+                    ReadDocItemModelParamsFromJObject(model, jDoc);
+                    return model;
                 }
-
-                string msg = $"Doc record doesn't have RelObjectId or RelObjectIdResolver is wrong";
-                throw new Exception(msg);
+                else
+                {
+                    string msg = $"Doc record doesn't have ObjectId or ObjectIdResolver is wrong";
+                    throw new Exception(msg);
+                }
             }
             catch
             {
