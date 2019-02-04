@@ -118,10 +118,21 @@
             });
     }
 
+    function showFormattablePopup(e, element) {
+        var applicationId = getApplicationId();
+        PopupController.snippetsInfo(applicationId, function (data) {
+        });
+    }
+
     function initialize() {
         initToolBar();
 
         dictControls = new UI.ControlsFactory("#logger-settings div.form-control");
+        $.each(dictControls,
+            function (_, item) {
+                var $control = $(item.control);
+                $control.on("showFormattable", showFormattablePopup);
+            });
 
         $("#logger-settings .div-save-cancel #btn-save").on("click", save);
         $("#logger-settings .div-save-cancel #btn-cancel").on("click", isEmbedded() ? reset : cancel);

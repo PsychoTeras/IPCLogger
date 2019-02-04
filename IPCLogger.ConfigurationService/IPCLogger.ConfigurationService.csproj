@@ -103,6 +103,7 @@
     <Compile Include="Entities\Models\DocItemModel.cs" />
     <Compile Include="Entities\Models\DocItemParamModel.cs" />
     <Compile Include="Entities\Models\PropertyModel.cs" />
+    <Compile Include="Entities\Models\SnippetsInfoModel.cs" />
     <Compile Include="Entities\PageModel.cs" />
     <Compile Include="Entities\Models\DeclaredLoggerModel.cs" />
     <Compile Include="Entities\Models\LoggerModel.cs" />
@@ -181,12 +182,14 @@
     <None Include="Web\fonts\FontAwesome.otf" />
     <Content Include="Web\css\controls\Alert.css" />
     <Content Include="Web\css\controls\TableSelect.css" />
+    <Content Include="Web\css\views\popups\popupSnippetsInfo.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
     <Content Include="Web\js\controllers\popupController.js" />
     <Content Include="Web\js\controls\Alert.js" />
     <Content Include="Web\js\controls\TableSelect.js" />
     <Content Include="Web\js\libraries\bootstrap\bootbox.min.js" />
     <Content Include="Web\js\libraries\jquery\jquery-ui.min.js" />
+    <Content Include="Web\js\views\popups\popupSnippetsInfo.js" />
     <Content Include="Web\js\views\popups\popupAddLogger.js" />
     <Content Include="_cutted_off\PropertyTable.js.txt" />
   </ItemGroup>
@@ -248,6 +251,7 @@
     <Content Include="Web\js\libraries\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Web\js\libraries\jquery\jquery-3.3.1.min.js" />
     <None Include="Web\views\index.cshtml" />
+    <None Include="Web\views\popups\popupSnippetsInfo.cshtml" />
     <None Include="Web\views\popups\popupAddLogger.cshtml" />
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>

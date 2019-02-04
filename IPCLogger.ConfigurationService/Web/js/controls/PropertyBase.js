@@ -135,7 +135,7 @@
                 $target.appendTo($div);
                 var $btnFmtShow = $("<button class='btn btn-sm btn-glyph btn-light fa fa-info-circle'>");
                 $btnFmtShow.click(function () {
-                    me.trigger("showFormattable", $target);
+                    $(me).trigger("showFormattable", $target);
                 });
                 $div.append($btnFmtShow);
             }
