@@ -86,6 +86,17 @@
                 background-color: lemonchiffon;
             }
 
+    #logger-settings div.div-formattable {
+        display: flex;
+    }
+
+        #logger-settings div.div-formattable button {
+            border: 1px solid #ced4da;
+            margin-left: 4px;
+            height: 32px;
+            width: 32px;
+        }
+
     #logger-settings div.custom-checkbox {
         padding-top: 5px;
         height: 32px;

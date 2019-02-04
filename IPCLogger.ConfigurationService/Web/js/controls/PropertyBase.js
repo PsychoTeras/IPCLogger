@@ -109,7 +109,9 @@
 
     UI.PropertyBase.prototype.initialize = function ($element) {
 
-        function changeType($element, nodeType, controlType) {
+        var me = this;
+
+        function changeType($element, nodeType, controlType, isFormattable) {
             if (!nodeType) {
                 return $element;
             }
@@ -126,14 +128,26 @@
                 return $("<" + nodeType + "/>", attrs).append($element.contents());
             });
 
-            return $parentElement.children(nodeType);
+            var $target = $parentElement.children(nodeType);
+
+            if (isFormattable) {
+                var $div = $("<div class='div-formattable'>").insertAfter($parentElement.children("label"));
+                $target.appendTo($div);
+                var $btnFmtShow = $("<button class='btn btn-sm btn-glyph btn-light fa fa-info-circle'>");
+                $btnFmtShow.click(function () {
+                    me.trigger("showFormattable", $target);
+                });
+                $div.append($btnFmtShow);
+            }
+
+            return $target;
         }
 
-        var me = this;
         var nodeType = me.getNodeType();
         var controlType = me.getControlType();
+        var isFormattable = $element.attr("formattable") !== undefined;
 
-        me.Element = $element = changeType($element, nodeType, controlType);
+        me.Element = $element = changeType($element, nodeType, controlType, isFormattable);
 
         me.VisibleElement = me.afterChangeType($element) || $element;
 
