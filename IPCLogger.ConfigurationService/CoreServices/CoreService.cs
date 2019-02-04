@@ -2,6 +2,8 @@
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Loggers.LFactory;
+using IPCLogger.Core.Snippets;
+using IPCLogger.Core.Snippets.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +19,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 #region Private fields
 
         private int _applicationId;
-
         private string _configurationFile;
 
 #endregion
@@ -32,6 +33,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public DeclaredLoggerModel FactoryLogger { get; set; }
 
+        public Dictionary<SnippetType, List<BaseSnippet>> Snippets { get; set; }
+
 #endregion
 
 #region Ctor
@@ -41,6 +44,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             _applicationId = applicationId;
             LoadConfiguration(_configurationFile = configurationFile);
             ReadLoggers();
+            ReadSnippets();
         }
 
 #endregion
@@ -174,8 +178,17 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             DeclaredLoggers.Remove(loggerModel);
-            loggerModel.RootXmlNode.ParentNode.RemoveChild(loggerModel.RootXmlNode);
+            loggerModel.RootXmlNode.ParentNode?.RemoveChild(loggerModel.RootXmlNode);
             SaveConfiguration();
+        }
+
+#endregion
+
+#region Snippets methods
+
+        private void ReadSnippets()
+        {
+            Snippets = SFactory.GetSnippets();
         }
 
 #endregion

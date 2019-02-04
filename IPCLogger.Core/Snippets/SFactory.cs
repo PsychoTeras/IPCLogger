@@ -1,14 +1,14 @@
-﻿using System;
+﻿using IPCLogger.Core.Caches;
+using IPCLogger.Core.Patterns;
+using IPCLogger.Core.Patterns.Base;
+using IPCLogger.Core.Snippets.Base;
+using IPCLogger.Core.Storages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using IPCLogger.Core.Caches;
-using IPCLogger.Core.Patterns;
-using IPCLogger.Core.Patterns.Base;
-using IPCLogger.Core.Snippets.Base;
-using IPCLogger.Core.Storages;
 
 namespace IPCLogger.Core.Snippets
 {
@@ -26,6 +26,9 @@ namespace IPCLogger.Core.Snippets
         private static readonly Dictionary<int, SnippetsCache> _snippetsCache =
             new Dictionary<int, SnippetsCache>();
 
+        private static readonly Dictionary<SnippetType, List<BaseSnippet>> _snippetsList =
+            new Dictionary<SnippetType, List<BaseSnippet>>();
+
         private static Regex _regexParseString;
 
 #endregion
@@ -36,7 +39,7 @@ namespace IPCLogger.Core.Snippets
         {
             InitializeSnippetsList();
             InitializeParseStringRegex();
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
         }
 
 #endregion
@@ -65,10 +68,17 @@ namespace IPCLogger.Core.Snippets
             {
                 foreach (Type baseSnippetType in snippetTypes)
                 {
-                    BaseSnippet snippet = Activator.CreateInstance(baseSnippetType) as BaseSnippet;
-                    if (snippet != null)
+                    if (Activator.CreateInstance(baseSnippetType) is BaseSnippet snippet)
                     {
                         SnippetType snippetType = snippet.Type;
+
+                        if (!_snippetsList.TryGetValue(snippetType, out var snippets))
+                        {
+                            snippets = new List<BaseSnippet>();
+                            _snippetsList.Add(snippetType, snippets);
+                        }
+                        snippets.Add(snippet);
+
                         if (snippet.Names == null)
                         {
                             if (!_customBodySnippets.ContainsKey(snippetType))
@@ -286,6 +296,11 @@ namespace IPCLogger.Core.Snippets
 #endregion
 
 #region Public methods
+
+        internal static Dictionary<SnippetType, List<BaseSnippet>> GetSnippets()
+        {
+            return _snippetsList;
+        }
 
         public static string Process(string pattern, PFactory pFactory)
         {

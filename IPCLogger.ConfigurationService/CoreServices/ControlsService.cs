@@ -21,6 +21,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_VALUES = "values";
         private const string PROPERTY_ATTR_COMMON = "common";
         private const string PROPERTY_ATTR_REQUIRED = "required";
+        private const string PROPERTY_ATTR_FORMATTABLE = "formattable";
 
         private const string PROPERTY_CONTROL = "form-control";
         private const string PROPERTY_STRING = "ui-property-string";
@@ -98,6 +99,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 if (propertyModel.IsRequired)
                 {
                     html.AddAttribute(PROPERTY_ATTR_REQUIRED, string.Empty);
+                }
+
+                if (propertyModel.IsFormattable)
+                {
+                    html.AddAttribute(PROPERTY_ATTR_FORMATTABLE, string.Empty);
                 }
 
                 html.RenderBeginTag(BASE_CLASS);

@@ -36,7 +36,7 @@ namespace IPCLogger.Core.Loggers.Base
                 PropertyInfo = propertyInfo;
                 ConversionAttribute = conversionAttribute;
                 IsRequired = isRequired;
-                IsFormattable = IsFormattable;
+                IsFormattable = isFormattable;
             }
         }
 

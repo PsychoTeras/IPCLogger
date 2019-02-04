@@ -21,7 +21,7 @@ namespace IPCLogger.Core.Resolvers
         static RFactory()
         {
             InitializeResolversList();
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(AssemblyLoadEventHandler);
+            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
         }
 
 #endregion
@@ -67,8 +67,7 @@ namespace IPCLogger.Core.Resolvers
             {
                 foreach (Type resolverType in resolverTypes)
                 {
-                    IBaseResolver resolver = Activator.CreateInstance(resolverType) as IBaseResolver;
-                    if (resolver != null)
+                    if (Activator.CreateInstance(resolverType) is IBaseResolver resolver)
                     {
                         _resolvers.Add(resolverType.FullName, resolver);
                     }

@@ -15,12 +15,14 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Constants
 
+        private const string FOLDER_LOGGERS = "loggers";
         private const string FOLDER_SNIPPETS = "snippets";
 
 #endregion
 
 #region Private fields
 
+        private List<DocItemModel> _docLoggers;
         private List<DocItemModel> _docSnippets;
 
 #endregion
@@ -41,7 +43,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Initialization methods
 
-        private DocItemParamModel DocItemModelParamFromJObject(JObject jParam)
+        private DocItemParamModel DocItemModelParamFromJObject(JToken jParam)
         {
             DocItemParamModel model = null;
 
@@ -65,7 +67,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 }
                 else
                 {
-                    string msg = $"ValueResolver is wrong";
+                    string msg = "ValueResolver is wrong";
                     throw new Exception(msg);
                 }
             }
@@ -81,12 +83,12 @@ namespace IPCLogger.ConfigurationService.CoreServices
             return model;
         }
 
-        private void ReadDocItemModelParamsFromJObject(DocItemModel model, JObject jDoc)
+        private void ReadDocItemModelParamsFromJObject(DocItemModel model, JToken jDoc)
         {
             IJEnumerable<JToken> jParams = jDoc["Params"]?.AsJEnumerable();
             if (jParams == null) return;
             
-            foreach (JObject jParam in jParams)
+            foreach (JToken jParam in jParams)
             {
                 DocItemParamModel modelParam = DocItemModelParamFromJObject(jParam);
                 if (modelParam != null)
@@ -96,7 +98,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
         }
 
-        private DocItemModel DocItemModelFromJObject(JObject jDoc)
+        private DocItemModel DocItemModelFromJObject(JToken jDoc)
         {
             try
             {
@@ -129,11 +131,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
                     ReadDocItemModelParamsFromJObject(model, jDoc);
                     return model;
                 }
-                else
-                {
-                    string msg = $"Doc record doesn't have ObjectId or ObjectIdResolver is wrong";
-                    throw new Exception(msg);
-                }
+
+                string msg = "Doc record doesn\'t have ObjectId or ObjectIdResolver is wrong";
+                throw new Exception(msg);
             }
             catch
             {
@@ -161,7 +161,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
             if (jDocs != null)
             {
-                foreach (JObject jDoc in jDocs.Children())
+                foreach (JToken jDoc in jDocs.Children())
                 {
                     DocItemModel model = DocItemModelFromJObject(jDoc);
                     if (model != null)
@@ -174,6 +174,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private void ReadDocsItems(string docsPath, List<DocItemModel> docsSnippet)
         {
+            if (!Directory.Exists(docsPath)) return;
+
             string[] docsFiles = Directory.GetFiles(docsPath, "*.json");
             foreach (string docsFile in docsFiles)
             {
@@ -183,9 +185,12 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private void Initialize(string docsPath)
         {
+            _docLoggers = new List<DocItemModel>();
             _docSnippets = new List<DocItemModel>();
 
-            if (!Directory.Exists(docsPath)) return;
+            //Read docs for loggers
+            string loggersPath = Path.Combine(docsPath, FOLDER_LOGGERS);
+            ReadDocsItems(loggersPath, _docLoggers);
 
             //Read docs for snippets
             string snippetsPath = Path.Combine(docsPath, FOLDER_SNIPPETS);

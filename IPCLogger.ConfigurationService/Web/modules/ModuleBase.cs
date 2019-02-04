@@ -6,7 +6,6 @@ using IPCLogger.ConfigurationService.Web.modules.common;
 using Nancy;
 using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
@@ -57,6 +56,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     Replace("/", "\\");
                 docsPath = Path.Combine(pathProvider.GetRootPath(), docsPath);
                 docsService = new DocsService(docsPath);
+                DocsService = docsService;
             }
             return docsService;
         }
