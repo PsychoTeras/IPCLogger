@@ -57,6 +57,11 @@
         return me.Element.attr("required") !== undefined;
     };
 
+    UI.PropertyBase.prototype.isFormattable = function () {
+        var me = this;
+        return me.Element.attr("formattable") !== undefined;
+    };
+
     UI.PropertyBase.prototype.isCommon = function () {
         var me = this;
         return me.Element.attr("common") !== undefined;
