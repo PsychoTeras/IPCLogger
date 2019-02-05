@@ -24,10 +24,12 @@
     };
 
     UI.PropertyBoolean.prototype.value = function (val) {
-        var input = this.Element.find("input")[0];
+        var me = this;
+        var input = me.Element.find("input")[0];
         if (val !== null && val !== undefined) {
             val = val.toString().toLowerCase();
             input.checked = val === "true";
+            me.Element.val(val).change();
         }
         return input.checked;
     };

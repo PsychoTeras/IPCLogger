@@ -102,9 +102,21 @@
         }
     };
 
-    UI.PropertyBase.prototype.saveOrigValue = function () {
+    UI.PropertyBase.prototype.saveOrigValue = function (dontTriggerChange) {
         var me = this;
         me.OrigValue = me.value();
+        if (!dontTriggerChange) {
+            $(me.Element).trigger("change");
+        }
+    };
+
+    UI.PropertyBase.prototype.onChangeEvent = function () {
+        var me = this;
+        if (me.isChanged()) {
+            me.VisibleElement.attr("changed", "");
+        } else {
+            me.VisibleElement.removeAttr("changed");
+        }
     };
 
     UI.PropertyBase.prototype.initialize = function ($element) {
@@ -160,7 +172,8 @@
             $element.removeAttr("values");
         }
 
-        me.saveOrigValue();
+        me.saveOrigValue(true);
+        me.Element.on("change", $.proxy(me.onChangeEvent, me));
     };
 
 })(window.UI = window.UI || {});

@@ -16,6 +16,10 @@
         padding: 0 1rem 1rem 1rem !important;
     }
 
+        #logger-settings .card-body *[changed] {
+            background-color: cornsilk;
+        }
+
     #logger-settings .table-wrap {
         height: auto;
         /*max-height: 194px;*/
@@ -83,7 +87,8 @@
             }
 
             #logger-settings .table-wrap table.editing tbody tr.editing {
-                background-color: lemonchiffon;
+                background-color: #000000;
+                background-color: rgba(0, 0, 0, .075);
             }
 
     #logger-settings div.div-formattable {

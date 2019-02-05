@@ -5,6 +5,8 @@
     var $ColsNumber = null;
     var $ColSettings = [];
 
+    var thisControl;
+
     UI.PropertyTable = function () {
         var me = this;
         UI.PropertyBase.call(me);
@@ -180,6 +182,7 @@
             } else {
                 var $tr = $(e.target).closest("tr");
                 deleteRow($tr);
+                $(thisControl.Element).trigger("change");
             }
         });
     }
@@ -362,12 +365,13 @@
     UI.PropertyTable.prototype.value = function (val) {
         if (val || val === "") {
             setValue(val);
+            $(thisControl.Element).trigger("change");
         }
         return getValue();
     };
 
     UI.PropertyTable.prototype.afterChangeType = function ($element) {
-        var me = this;
+        var me = thisControl = this;
 
         $element.addClass("table-wrap");
 
