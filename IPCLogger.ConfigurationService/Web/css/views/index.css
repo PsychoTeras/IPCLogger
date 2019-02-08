@@ -5,9 +5,13 @@
     --sc-selection-color: white;
     --sc-selection-back-color: steelblue;
     --sc-tab-color: var(--sc-selection-back-color);
-    --sc-btn-action-color: steelblue;
+    --sc-btn-action-color: var(--sc-selection-back-color);
     --sc-btn-action-color-hover: #3f75a2;
     --sc-btn-action-color-focus: #386890;
+    --sc-btn-save-color: seagreen;
+    --sc-btn-save-color-hover: #28784b;
+    --sc-btn-save-color-focus: #21653f;
+    --sc-tooltip-color: seagreen;
 }
 
 body,
@@ -53,6 +57,23 @@ body,
     .btn-action.focus {
         background-color: var(--sc-btn-action-color-focus);
         border-color: var(--sc-btn-action-color-focus);
+    }
+
+.btn-save {
+    color: white;
+    background-color: var(--sc-btn-save-color);
+    border-color: var(--sc-btn-save-color);
+}
+
+    .btn-save:hover {
+        background-color: var(--sc-btn-save-color-hover);
+        border-color: var(--sc-btn-save-color-hover);
+    }
+
+    .btn-save:focus,
+    .btn-save.focus {
+        background-color: var(--sc-btn-save-color-focus);
+        border-color: var(--sc-btn-save-color-focus);
     }
 
 .btn-toolbar,
@@ -372,6 +393,26 @@ body.locked .page-lock {
     display: none;
 }
 
-.ui-autocomplete {
-    z-index: 5000;
+.tooltip .arrow::before {
+    border-bottom-color: var(--sc-tooltip-color);
+}
+
+.tooltip.show {
+    opacity: .95 !important;
+}
+
+.tooltip-inner {
+    max-width: 350px;
+    width: auto;
+    color: white;
+    text-align: left;
+    background-color: var(--sc-tooltip-color);
+}
+
+img.icon-info {
+    width: 14px;
+    height: 14px;
+    margin-top: 4px;
+    margin-left: 5px;
+    cursor: help;
 }

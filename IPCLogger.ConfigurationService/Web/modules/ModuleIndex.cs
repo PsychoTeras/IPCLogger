@@ -20,7 +20,6 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 List<ApplicationModel> applications = ApplicationDAL.Instance.GetApplications();
                 PageModel pageModel = SetPageModel(PageModel.Applications(applications));
-                DocsService docsService = GetDocsService();
                 return View["index", pageModel];
             };
 

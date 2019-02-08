@@ -133,7 +133,7 @@
                     },
                     confirm: {
                         label: "Yes",
-                        className: "btn-success"
+                        className: "btn-save"
                     }
                 },
                 callback: onClose

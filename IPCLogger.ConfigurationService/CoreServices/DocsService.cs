@@ -1,6 +1,9 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.ConfigurationService.Web.modules.common;
+using IPCLogger.Core.Common;
 using IPCLogger.Core.Resolvers;
 using IPCLogger.Core.Resolvers.Base;
+using Nancy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,20 +25,30 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Private fields
 
+        private static readonly Lazy<DocsService> _instance = new Lazy<DocsService>(() => new DocsService());
+
         private List<DocItemModel> _docLoggers;
         private List<DocItemModel> _docSnippets;
+
 
 #endregion
 
 #region Properties
 
-        
+        public static DocsService Instance { get { return _instance.Value; } }
+
 #endregion
 
 #region Ctor
 
-        public DocsService(string docsPath)
+        private DocsService()
         {
+            DefaultRootPathProvider pathProvider = new DefaultRootPathProvider();
+            string docsPath = BootstrapperCommon.StaticContentsConventions.
+                First(kv => kv.Key == "docs").
+                Value.Substring(1).
+                Replace("/", "\\");
+            docsPath = Path.Combine(pathProvider.GetRootPath(), docsPath);
             Initialize(docsPath);
         }
 
@@ -104,7 +117,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             {
                 DocItemModel model = null;
 
-                string type = jDoc["Type"]?.Value<string>();
+                string objectSubId = jDoc["ObjectSubId"]?.Value<string>();
                 string displayName = jDoc["DisplayName"]?.Value<string>();
                 string description = jDoc["Description"]?.Value<string>();
 
@@ -114,7 +127,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                     IBaseResolver resolver = RFactory.Get(objectIdResolver);
                     if (resolver != null)
                     {
-                        model = new DocItemModel(resolver, type, displayName, description);
+                        model = new DocItemModel(resolver, objectSubId, displayName, description);
                     }
                 }
                 else
@@ -122,7 +135,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                     string objectId = jDoc["ObjectId"]?.Value<string>();
                     if (!string.IsNullOrWhiteSpace(objectId))
                     {
-                        model = new DocItemModel(objectId, type, displayName, description);
+                        model = new DocItemModel(objectId, objectSubId, displayName, description);
                     }
                 }
 
@@ -195,6 +208,22 @@ namespace IPCLogger.ConfigurationService.CoreServices
             //Read docs for snippets
             string snippetsPath = Path.Combine(docsPath, FOLDER_SNIPPETS);
             ReadDocsItems(snippetsPath, _docSnippets);
+        }
+
+#endregion
+
+#region Logger methods
+
+        public DocItemModel GetLoggerDoc(string loggerType, string propertyName)
+        {
+            return _docLoggers.FirstOrDefault
+            (
+                d => d.ObjectId.ToString() == loggerType && d.ObjectSubId == propertyName
+            ) ??
+            _docLoggers.FirstOrDefault
+            (
+                d => d.ObjectId.ToString() == Constants.ApplicableForAllMark && d.ObjectSubId == propertyName
+            );
         }
 
 #endregion

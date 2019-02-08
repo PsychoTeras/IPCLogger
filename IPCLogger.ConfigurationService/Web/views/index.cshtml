@@ -44,7 +44,7 @@
             </nav>
 
             <main role="main" class="col-md-10 col-lg-12">
-                
+
                 <div class="btn-toolbar justify-content-between pb-3">
                     <div class="justify-content-start btn-group">
                         <h5 class="page-caption">@Model.Caption</h5>
@@ -55,19 +55,25 @@
                         <div class="btn-toolbar-right"></div>
                         <div class="btn-group btn-group-common ">
                             <button class="btn btn-go-back btn-outline-secondary fa fa-arrow-left @(Model.PreviousPageModel == null ? "disabled" : "")"
-                                    onclick="@(Model.PreviousPageModel != null ? "navigate('" + Model.PreviousPageModel.PagePath + "')" : "")">Go back</button>
+                                    onclick="@(Model.PreviousPageModel != null ? "navigate('" + Model.PreviousPageModel.PagePath + "')" : "")">
+                                Go back
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 @Html.Partial(string.Format("partials/{0}.cshtml", Model.PageName), Model.Model)
-                
+
             </main>
 
         </div>
     </div>
 
     @Html.Partial("partials/_footer.cshtml", Model)
+
+    <script>
+        $('[data-toggle="tooltip"]').tooltip()
+    </script>
 
 </body>
 

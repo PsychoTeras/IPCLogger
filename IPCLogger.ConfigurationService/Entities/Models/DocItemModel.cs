@@ -15,17 +15,17 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Properties
 
-        public object ObjectId  //Ex: snippet class, snippet name
+        public object ObjectId  //Ex: logger class, snippet name
         {
             get
             {
                 return _objectIdResolver != null
-                    ? _objectIdResolver.Resolve(Type)
+                    ? _objectIdResolver.Resolve(ObjectSubId)
                     : _constObjectId;
             }
         }
 
-        public string Type { get; } //Ex: snippet type
+        public string ObjectSubId { get; } //Ex: logger property, snippet type
 
         public string DisplayName { get; }
 
@@ -37,17 +37,17 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Ctor
 
-        public DocItemModel(string relObjectId, string type, string displayName, string description)
+        public DocItemModel(string objectId, string objectSubId, string displayName, string description)
         {
-            _constObjectId = relObjectId;
-            Type = type;
+            _constObjectId = objectId;
+            ObjectSubId = objectSubId;
             DisplayName = displayName;
             Description = description;
             Params = new List<DocItemParamModel>();
         }
 
-        public DocItemModel(IBaseResolver objectIdResolver, string type, string displayName, string description)
-            : this((string)null, type, displayName, description)
+        public DocItemModel(IBaseResolver objectIdResolver, string objectSubId, string displayName, string description)
+            : this((string)null, objectSubId, displayName, description)
         {
             _objectIdResolver = objectIdResolver;
         }

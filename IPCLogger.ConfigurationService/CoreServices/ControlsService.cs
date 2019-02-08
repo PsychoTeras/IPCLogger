@@ -59,8 +59,22 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-        public static string ControlByPropertyModel(PropertyModel propertyModel)
+        public static string GetPropertyDisplayName(string loggerType, PropertyModel propertyModel)
         {
+            DocItemModel doc = DocsService.Instance.GetLoggerDoc(loggerType, propertyModel.Name);
+            return doc != null && doc.DisplayName != null ? doc.DisplayName : propertyModel.DisplayName;
+        }
+
+        public static string GetPropertyDescription(string loggerType, PropertyModel propertyModel)
+        {
+            DocItemModel doc = DocsService.Instance.GetLoggerDoc(loggerType, propertyModel.Name);
+            return doc?.Description;
+        }
+
+        public static string ControlByPropertyModel(string loggerType, PropertyModel propertyModel)
+        {
+            DocItemModel doc = DocsService.Instance.GetLoggerDoc(loggerType, propertyModel.Name);
+
             Type GetBasePropertyType(Type type)
             {
                 if (type.IsEnum)

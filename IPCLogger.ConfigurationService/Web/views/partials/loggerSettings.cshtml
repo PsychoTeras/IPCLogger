@@ -25,14 +25,24 @@
                 @foreach (PropertyModel model in Model.CommonProperties)
                 {
                     <div class="mt-2">
-                        <label>
-                            @(model.DisplayName)
-                            @if (model.IsRequired)
-                            {
-                                <a style="color: red; font-weight: bold"> * </a>
-                            }
-                        </label>
-                        @Html.Raw(ControlsService.ControlByPropertyModel(model))
+                        <div style="display: flex">
+                            <label>
+                                @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
+                                @if (model.IsRequired)
+                                {
+                                    <a style="color: red; font-weight: bold"> * </a>
+                                }
+                            </label>
+                            @{
+                                string description = ControlsService.GetPropertyDescription(Model.TypeName, model);
+                                if (!string.IsNullOrEmpty(description))
+                                {
+                                    <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
+                                         src="assets/icon-info-16.png" />
+                                    }
+                                }
+                        </div>
+                        @Html.Raw(ControlsService.ControlByPropertyModel(Model.TypeName, model))
                         <div class="invalid-feedback"></div>
                     </div>
                 }
@@ -50,14 +60,24 @@
                     @foreach (PropertyModel model in Model.Properties)
                     {
                         <div class="mt-2">
-                            <label>
-                                @(model.DisplayName)
-                                @if (model.IsRequired)
-                                {
-                                    <a style="color: red; font-weight: bold"> * </a>
+                            <div style="display: flex">
+                                <label>
+                                    @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
+                                    @if (model.IsRequired)
+                                    {
+                                        <a style="color: red; font-weight: bold"> * </a>
+                                    }
+                                </label>
+                                @{
+                                    string description = ControlsService.GetPropertyDescription(Model.TypeName, model);
+                                    if (!string.IsNullOrEmpty(description))
+                                    {
+                                        <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
+                                             src="assets/icon-info-16.png" />
+                                    }
                                 }
-                            </label>
-                            @Html.Raw(ControlsService.ControlByPropertyModel(model))
+                            </div>
+                            @Html.Raw(ControlsService.ControlByPropertyModel(Model.TypeName, model))
                             <div class="invalid-feedback"></div>
                         </div>
                     }
@@ -69,7 +89,7 @@
     </div>
 
     <div class="div-save-cancel">
-        <button id="btn-save" class="btn btn-sm btn-success">Save</button>
+        <button id="btn-save" class="btn btn-sm btn-save">Save</button>
         @if (ViewBag.isEmbedded)
         {
             <button id="btn-cancel" class="btn btn-sm btn-secondary">Reset</button>

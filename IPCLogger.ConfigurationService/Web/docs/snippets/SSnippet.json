@@ -1,7 +1,7 @@
 [
   {
     "ObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
-    "Type": "Snippet",
+    "ObjectSubId": "Snippet",
     "DisplayName": "SSnippet",
     "Description": "SSnippet description",
     "Params": [

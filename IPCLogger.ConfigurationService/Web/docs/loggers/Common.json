@@ -1,0 +1,40 @@
+[
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "Enabled",
+    "Description": "Whether logger is enabled or not"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "Name",
+    "Description": "Logger name. Must be empty or unique for each logger type"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "AllowEvents",
+    "Description": "List of allowed events, comma separated. If declared, 'Deny events' setting will be ignored"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "DenyEvents",
+    "Description": "List of denied events, comma separated"
+  },
+
+  {
+    "ObjectId": "IPCLogger",
+    "ObjectSubId": "Enabled",
+    "Description": "Whether logging is enabled or not"
+  },
+  {
+    "ObjectId": "IPCLogger",
+    "ObjectSubId": "NoLock",
+    "DisplayName": "No-Lock Mode",
+    "Description": "Enabling this mode you grant that your application has single thread model and IPLogger will use non-blocking operations.<br/>Enable this mode to increase logger performance"
+  },
+  {
+    "ObjectId": "IPCLogger",
+    "ObjectSubId": "AutoReload",
+    "DisplayName": "Auto Reload Configuration",
+    "Description": "Configuration file will be monitored for changes. All changes will be applied on the fly"
+  }
+]
