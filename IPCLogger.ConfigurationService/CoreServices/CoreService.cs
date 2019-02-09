@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using IPCLogger.Core.Patterns;
 using static IPCLogger.Core.Loggers.Base.BaseSettings;
 
 namespace IPCLogger.ConfigurationService.CoreServices
@@ -33,6 +34,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public DeclaredLoggerModel FactoryLogger { get; set; }
 
+        public List<DeclaredPatternModel> DeclaredPatterns { get; set; }
+
         public Dictionary<SnippetType, List<BaseSnippet>> Snippets { get; set; }
 
 #endregion
@@ -42,8 +45,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
         public CoreService(int applicationId, string configurationFile)
         {
             _applicationId = applicationId;
-            LoadConfiguration(_configurationFile = configurationFile);
+            LoadConfigurationFile(_configurationFile = configurationFile);
             ReadLoggers();
+            ReadPatterns();
             ReadSnippets();
         }
 
@@ -51,7 +55,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Configuration methods
 
-        private void LoadConfiguration(string configurationFile)
+        private void LoadConfigurationFile(string configurationFile)
         {
             //Validate configuration file
             if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
@@ -104,7 +108,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             IEnumerable<Type> availableTypes = AvailableLoggers.Select(l => l.Type);
             DeclaredLoggers = LFactorySettings.
                 GetDeclaredLoggers(ConfigurationXml, true).
-                Select(s => DeclaredLoggerModel.FromCoreDeclaredLogger(s, availableTypes)).
+                Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
                 ToList();
 
             DeclaredLogger dlFactory = LFactorySettings.GetDeclaredFactoryLogger(ConfigurationXml);
@@ -113,7 +117,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 dlFactory = LFactorySettings.CreateFactoryLogger(ConfigurationXml);
                 SaveConfiguration();
             }
-            FactoryLogger = DeclaredLoggerModel.FromCoreDeclaredLogger(dlFactory, typeof(LFactory));
+            FactoryLogger = DeclaredLoggerModel.FromDeclaredLogger(dlFactory, typeof(LFactory));
         }
 
         private void ReadLoggers()
@@ -185,6 +189,18 @@ namespace IPCLogger.ConfigurationService.CoreServices
             DeclaredLoggers.Remove(loggerModel);
             loggerModel.RootXmlNode.ParentNode?.RemoveChild(loggerModel.RootXmlNode);
             SaveConfiguration();
+        }
+
+#endregion
+
+#region Patterns methods
+
+        private void ReadPatterns()
+        {
+            DeclaredPatterns = PFactory.
+                GetDeclaredPatterns(ConfigurationXml).
+                Select(DeclaredPatternModel.FromDeclaredPattern).
+                ToList();
         }
 
 #endregion

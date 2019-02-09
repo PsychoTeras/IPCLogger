@@ -214,12 +214,10 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             CfgNode = cfgNode;
             TypeName = cfgNode.Name;
-            XmlAttribute aNamespace = cfgNode.Attributes["namespace"];
-            Namespace = aNamespace?.Value;
+            Namespace = cfgNode.Attributes["namespace"]?.Value;
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out Enabled) || Enabled;
-            XmlAttribute aName = cfgNode.Attributes["name"];
-            string name = aName?.Value;
+            string name = cfgNode.Attributes["name"]?.Value;
             UniqueId = Helpers.CalculateUniqueId(name, TypeName, Namespace);
         }
     }

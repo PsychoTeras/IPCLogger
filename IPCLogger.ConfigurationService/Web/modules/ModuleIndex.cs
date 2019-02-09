@@ -33,8 +33,9 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 CoreService coreService = GetCoreService(applicationModel.Id, applicationModel);
                 ViewBag.loggerId = coreService.FactoryLogger.Id;
 
-                DeclaredLoggersModel model = new DeclaredLoggersModel(coreService.DeclaredLoggers, coreService.FactoryLogger);
-                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, model, PageModel));
+                AppSettingsModel appSettingsModel = new AppSettingsModel(coreService.DeclaredLoggers, 
+                    coreService.DeclaredPatterns, coreService.FactoryLogger);
+                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, appSettingsModel, PageModel));
                 return View["index", pageModel];
             };
 

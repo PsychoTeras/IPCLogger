@@ -38,13 +38,13 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return model;
         }
 
-        internal static DeclaredLoggerModel FromCoreDeclaredLogger(DeclaredLogger source, IEnumerable<Type> availableLoggers)
+        internal static DeclaredLoggerModel FromDeclaredLogger(DeclaredLogger source, IEnumerable<Type> availableLoggers)
         {
             Type loggerType = FindLoggerType(source.TypeName, source.Namespace, availableLoggers);
-            return FromCoreDeclaredLogger(source, loggerType);
+            return FromDeclaredLogger(source, loggerType);
         }
 
-        internal static DeclaredLoggerModel FromCoreDeclaredLogger(DeclaredLogger source, Type loggerType)
+        internal static DeclaredLoggerModel FromDeclaredLogger(DeclaredLogger source, Type loggerType)
         {
             DeclaredLoggerModel model = new DeclaredLoggerModel();
             model.TypeName = source.TypeName;

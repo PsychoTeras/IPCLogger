@@ -6,20 +6,22 @@ namespace IPCLogger.Core.Patterns.Base
     {
         private static int _idCounter;
 
-        public int Id { get; }
+        public int Id { get; private set; }
 
-        public string Description { get; }
+        public string Content;
 
-        public string Content { get; }
+        public bool ImmediateFlush;
 
-        public bool ImmediateFlush { get; }
-
-        public Pattern(string description, string content, bool immediateFlush)
+        public Pattern(string content, bool immediateFlush)
         {
             Id = Interlocked.Increment(ref _idCounter);
-            Description = description;
             Content = content;
             ImmediateFlush = immediateFlush;
+        }
+
+        public void SetChanged()
+        {
+            Id = Interlocked.Increment(ref _idCounter);
         }
     }
 }

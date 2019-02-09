@@ -87,7 +87,7 @@ namespace IPCLogger.ConfigurationService.Entities
             return GetPageModel(PageType.Applications, applications);
         }
 
-        public static PageModel Loggers(ApplicationModel application, DeclaredLoggersModel declaredLoggers, 
+        public static PageModel Loggers(ApplicationModel application, AppSettingsModel declaredLoggers, 
             PageModel previousPageModel)
         {
             string pagePath = $"/applications/{application.Id}";
