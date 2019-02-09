@@ -1,6 +1,22 @@
 [
   {
     "ObjectId": "LDB",
-    "Description": "Writes logging events to the table within MS SQL database"
+    "Description": "Appends logging events to the table within MS SQL database"
+  },
+  {
+    "ObjectId": "LDB",
+    "ObjectSubId": "ConnectionString",
+    "Description": "The database connection string that is used to connect to the database"
+  },
+  {
+    "ObjectId": "LDB",
+    "ObjectSubId": "TableName",
+    "Description": "The table that is used to store logging events"
+  },
+  {
+    "ObjectId": "LDB",
+    "ObjectSubId": "Parameters",
+    "DisplayName": "Columns Mapping",
+    "Description": "List of the table columns and logging values that will be stored"
   }
 ]

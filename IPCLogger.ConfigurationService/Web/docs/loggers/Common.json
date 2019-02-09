@@ -20,6 +20,20 @@
     "Description": "List of denied events, comma separated"
   },
 
+
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "MaxQueueAge",
+    "DisplayName": "Buffer Flush Interval (msec)",
+    "Description": "Periodically flush logging events buffer after set the time. Set zero to disable periodic flushing"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "QueueSize",
+    "DisplayName": "Buffer Size (logging events)",
+    "Description": "Automatically flush logging events buffer after reaching the size.<br/>Set zero to disable buffering"
+  },
+
   {
     "ObjectId": "IPCLogger",
     "ObjectSubId": "Enabled",
