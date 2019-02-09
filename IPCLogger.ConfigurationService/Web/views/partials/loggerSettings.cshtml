@@ -11,11 +11,11 @@
     <input type="hidden" id="is-new" value="@ViewBag.isNew" />
     <input type="hidden" id="is-embedded" value="@ViewBag.isEmbedded" />
     <input type="hidden" id="hide-headers" value="@ViewBag.hideHeaders" />
-    
+
     <div class="card bg-light">
 
         <div class="card-container">
-            
+
             @if (!ViewBag.hideHeaders)
             {
                 <div class="card-header">Common settings</div>
@@ -39,8 +39,8 @@
                                 {
                                     <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
                                          src="assets/icon-info-16.png" />
-                                    }
                                 }
+                            }
                         </div>
                         @Html.Raw(ControlsService.ControlByPropertyModel(Model.TypeName, model))
                         <div class="invalid-feedback"></div>
@@ -105,10 +105,10 @@
             </div>
         }
     </div>
-    
+
 </div>
 
 <script src="../../js/views/loggerSettings.js" type="text/javascript"></script>
+<script src="../../js/controllers/loggerSettingsController.js" type="text/javascript"></script>
 <script src="../../js/controllers/applicationsController.js" type="text/javascript"></script>
-<script src="../../js/controllers/loggerSettingsControllers.js" type="text/javascript"></script>
 <script src="../../js/controllers/popupController.js" type="text/javascript"></script>

@@ -198,11 +198,13 @@
     <Content Include="Web\css\views\patternSettings.css" />
     <Content Include="Web\css\views\popups\popupSnippetsInfo.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
+    <Content Include="Web\js\controllers\patternSettingsController.js" />
     <Content Include="Web\js\controllers\popupController.js" />
     <Content Include="Web\js\controls\Alert.js" />
     <Content Include="Web\js\controls\TableSelect.js" />
     <Content Include="Web\js\libraries\bootstrap\bootbox.min.js" />
     <Content Include="Web\js\libraries\jquery\jquery-ui.min.js" />
+    <Content Include="Web\js\views\patternSettings.js" />
     <Content Include="Web\js\views\popups\popupSnippetsInfo.js" />
     <Content Include="Web\js\views\popups\popupAddLogger.js" />
     <Content Include="_cutted_off\PropertyTable.js.txt" />
@@ -227,7 +229,7 @@
     <Content Include="Web\js\controls\TimeSpanPicker.js" />
     <Content Include="Web\js\classes\Size.js" />
     <Content Include="Web\js\classes\TimeSpan.js" />
-    <Content Include="Web\js\controllers\loggerSettingsControllers.js" />
+    <Content Include="Web\js\controllers\loggerSettingsController.js" />
     <Content Include="Web\js\controllers\applicationsController.js" />
     <Content Include="Web\js\controllers\appSettingsController.js" />
     <Content Include="Web\js\controls\PropertyBase.js" />
