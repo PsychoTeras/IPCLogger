@@ -97,6 +97,7 @@
     <Compile Include="Loggers\Base\QueueableSettings.cs" />
     <Compile Include="Loggers\Base\SimpleLogger.cs" />
     <Compile Include="Loggers\LConsole\ConsoleHighlightsConversionAttribute.cs" />
+    <Compile Include="Loggers\LConsole\ConsoleStreamType.cs" />
     <Compile Include="Loggers\LConsole\LConsoleSettings.cs" />
     <Compile Include="Loggers\LDB\DAL\LoggerDAL.cs" />
     <Compile Include="Loggers\LDB\DAL\ColumnInfo.cs" />

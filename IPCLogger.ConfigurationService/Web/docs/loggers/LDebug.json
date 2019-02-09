@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LDebug",
+    "Description": "Writes logging event to the Debug/Trace system"
+  }
+]

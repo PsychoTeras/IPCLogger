@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LEventLog",
+    "Description": "Writes logging event to the Windows event logs system"
+  }
+]

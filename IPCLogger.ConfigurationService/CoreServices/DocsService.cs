@@ -214,7 +214,15 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Logger methods
 
-        public DocItemModel GetLoggerDoc(string loggerType, string propertyName)
+        public DocItemModel GetLoggerDoc(string loggerType)
+        {
+            return _docLoggers.FirstOrDefault
+            (
+                d => d.ObjectId.ToString() == loggerType && string.IsNullOrEmpty(d.ObjectSubId)
+            );
+        }
+
+        public DocItemModel GetLoggerPropertyDoc(string loggerType, string propertyName)
         {
             return _docLoggers.FirstOrDefault
             (

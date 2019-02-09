@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LIPC",
+    "Description": "Writes logging events to the ring-buffered memory mapped file"
+  }
+]

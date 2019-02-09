@@ -1,10 +1,11 @@
 ﻿@using IPCLogger.ConfigurationService.Entities.Models;
+@using IPCLogger.ConfigurationService.CoreServices;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<System.Collections.Generic.List<LoggerModel>>
 
 <link href="../../css/views/popups/popupAddLogger.css" rel="stylesheet">
 
 <div class="modal-content">
-    
+
     <input type="hidden" id="logger-id" />
 
     <div class="modal-header">
@@ -16,21 +17,33 @@
         <div class="card bg-light table-wrap">
             <table id="table-loggers" class="table table-sm ui-table-select table-hover">
                 <thead class="card-header">
-                <tr>
-                    <th style="width: 25%">Logger type</th>
-                    <th style="width: auto">Namespace</th>
-                    <th style="width: auto">Description</th>
-                </tr>
+                    <tr>
+                        <th style="width: 25%">Logger type</th>
+                        <th style="width: auto">Namespace</th>
+                        <th style="width: auto">Description</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (LoggerModel model in Model)
-                {
-                    <tr id="row-logger" modelId="@(model.Id)">
-                        <td id="cell-logger-type">@(model.TypeName)</td>
-                        <td id="cell-desciption">@(model.Namespace)</td>
-                        <td id="cell-logger-type">@(model.Description)</td>
-                    </tr>
-                }
+                    @foreach (LoggerModel model in Model)
+                    {
+                        <tr id="row-logger" modelId="@(model.Id)">
+                            <td id="cell-logger-type">
+                                <div style="display: flex">
+                                    <a>@(model.TypeName)</a>
+                                    @{
+                                        string description = ControlsService.GetLoggerDescription(model.TypeName);
+                                        if (!string.IsNullOrEmpty(description))
+                                        {
+                                            <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
+                                                 src="assets/icon-info-16.png" />
+                                        }
+                                    }
+                                </div>
+                            </td>
+                            <td id="cell-desciption">@(model.Namespace)</td>
+                            <td id="cell-logger-type">@(model.Description)</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -40,6 +53,8 @@
         <button class="btn btn-sm btn-save disabled" id="btn-add">Add</button>
         <button class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
     </div>
+
+    @Html.Partial("partials/_footer_popup.cshtml", Model)
 
 </div>
 

@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LFile",
+    "Description": "Writes logging events to the file"
+  }
+]

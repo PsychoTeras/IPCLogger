@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LVoid",
+    "Description": "Sends logging events to NUL"
+  }
+]

@@ -36,7 +36,7 @@
     UI.PropertyCombo.prototype.value = function (val) {
         var me = this;
         if (val) {
-            me.Element.val(val);
+            me.Element.val(val).change();
         }
         return me.Element.val();
     };

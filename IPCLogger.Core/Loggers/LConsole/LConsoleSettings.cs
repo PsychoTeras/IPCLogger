@@ -32,6 +32,8 @@ namespace IPCLogger.Core.Loggers.LConsole
         [FormattableSetting]
         public string Title { get; set; }
 
+        public ConsoleStreamType StreamType { get; set; }
+
         [ConsoleHighlightsConversion]
         public HighlightSettings Highlights { get; set; }
 

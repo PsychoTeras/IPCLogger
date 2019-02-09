@@ -5,13 +5,15 @@
     --sc-selection-color: white;
     --sc-selection-back-color: steelblue;
     --sc-tab-color: var(--sc-selection-back-color);
-    --sc-btn-action-color: var(--sc-selection-back-color);
+    --sc-tooltip-color: var(--sc-navbar-color);
+    /* btn-action */
+    --sc-btn-action-color: steelblue;
     --sc-btn-action-color-hover: #3f75a2;
     --sc-btn-action-color-focus: #386890;
+    /* btn-save */
     --sc-btn-save-color: seagreen;
     --sc-btn-save-color-hover: #28784b;
     --sc-btn-save-color-focus: #21653f;
-    --sc-tooltip-color: seagreen;
 }
 
 body,
@@ -394,6 +396,7 @@ body.locked .page-lock {
 }
 
 .tooltip .arrow::before {
+    border-top-color: var(--sc-tooltip-color);
     border-bottom-color: var(--sc-tooltip-color);
 }
 
@@ -402,7 +405,7 @@ body.locked .page-lock {
 }
 
 .tooltip-inner {
-    max-width: 350px;
+    max-width: 380px;
     width: auto;
     color: white;
     text-align: left;
@@ -413,6 +416,6 @@ img.icon-info {
     width: 14px;
     height: 14px;
     margin-top: 4px;
-    margin-left: 5px;
+    margin-left: 6px;
     cursor: help;
 }

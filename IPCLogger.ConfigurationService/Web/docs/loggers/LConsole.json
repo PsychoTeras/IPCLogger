@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LConsole",
+    "Description": "Writes logging events to the console's standard output stream or the error output stream"
+  }
+]

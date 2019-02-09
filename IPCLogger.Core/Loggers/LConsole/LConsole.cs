@@ -1,6 +1,7 @@
 ﻿using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Snippets;
 using System;
+using System.IO;
 
 namespace IPCLogger.Core.Loggers.LConsole
 {
@@ -8,6 +9,8 @@ namespace IPCLogger.Core.Loggers.LConsole
     {
 
 #region Private fields
+
+        private TextWriter _consoleWriter;
 
         private bool _eventIsHappend;
         private string _prewEventName;
@@ -41,6 +44,10 @@ namespace IPCLogger.Core.Loggers.LConsole
                 Console.Title = SFactory.Process(Settings.Title, Patterns);
             }
 
+            _consoleWriter = Settings.StreamType == ConsoleStreamType.Error
+                ? Console.Error
+                : Console.Out;
+
             LConsoleSettings.HighlightSettings highlights = Settings.Highlights;
             highlights.DefConsoleForeColor = highlights.DefConsoleForeColor ?? _defForeColor;
             highlights.DefConsoleBackColor = highlights.DefConsoleBackColor ?? _defBackColor;
@@ -62,11 +69,11 @@ namespace IPCLogger.Core.Loggers.LConsole
 
             if (writeLine)
             {
-                Console.WriteLine(text);
+                _consoleWriter.WriteLine(text);
             }
             else
             {
-                Console.Write(text);
+                _consoleWriter.Write(text);
             }
         }
 
@@ -125,21 +132,6 @@ namespace IPCLogger.Core.Loggers.LConsole
 
             _eventIsHappend = true;
             _prewEventName = eventName;
-        }
-
-        public int Read()
-        {
-            return _initialized ? Console.Read() : -1;
-        }
-
-        public string ReadLine()
-        {
-            return _initialized ? Console.ReadLine() : null;
-        }
-
-        public ConsoleKeyInfo ReadKey()
-        {
-            return _initialized ? Console.ReadKey() : default(ConsoleKeyInfo);
         }
 
 #endregion

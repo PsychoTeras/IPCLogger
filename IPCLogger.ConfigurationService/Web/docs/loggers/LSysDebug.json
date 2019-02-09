@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LSysDebug",
+    "Description": "Writes logging events to the OutputDebugString system"
+  }
+]

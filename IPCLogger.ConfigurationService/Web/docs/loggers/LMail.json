@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LMail",
+    "Description": "Sends logging events to the SMTP server"
+  }
+]

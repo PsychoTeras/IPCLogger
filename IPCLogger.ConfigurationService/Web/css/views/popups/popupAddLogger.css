@@ -7,3 +7,13 @@
     max-height: 500px;
     -ms-overflow-style: -ms-autohiding-scrollbar;
 }
+
+#popup-add-logger tbody td label {
+    margin-bottom: 0;
+}
+
+img.icon-info {
+    margin-top: 3px;
+    margin-left: 6px;
+    cursor: help;
+}

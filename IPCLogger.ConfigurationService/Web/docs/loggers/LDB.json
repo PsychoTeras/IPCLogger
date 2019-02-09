@@ -1,0 +1,6 @@
+[
+  {
+    "ObjectId": "LDB",
+    "Description": "Writes logging events to the table within MS SQL database"
+  }
+]
