@@ -68,7 +68,9 @@ namespace IPCLogger.Core.Loggers.LConsole
         {
             return string.IsNullOrWhiteSpace(sEvents)
                 ? new[] {Constants.ApplicableForAllMark}
-                : sEvents.Split(Constants.Splitter).Select(s => s.Trim());
+                : sEvents.Split(Constants.Splitter).
+                          Select(s => s.Trim()).
+                          Where(s => s != string.Empty);
         }
 
         private LConsoleSettings.HighlightSettings ReadHighlightSettings(IEnumerable<XmlNode> highlightNodes)
@@ -82,8 +84,6 @@ namespace IPCLogger.Core.Loggers.LConsole
 
                 foreach (string eventName in events)
                 {
-                    if (string.IsNullOrEmpty(eventName)) continue;
-
                     ReadAndSetColor(highlightNode, FORECOLOR_NODE_NAME, eventName, ref settings.DefConsoleForeColor,
                         settings.ConsoleForeColors);
                     ReadAndSetColor(highlightNode, BACKCOLOR_NODE_NAME, eventName, ref settings.DefConsoleBackColor,
@@ -264,8 +264,6 @@ namespace IPCLogger.Core.Loggers.LConsole
                 IEnumerable<string> events = SplitEvents(sEvents);
                 foreach (string eventName in events)
                 {
-                    if (string.IsNullOrEmpty(eventName)) continue;
-
                     string sForeColor = dict["col2"];
                     SetColor(sForeColor, FORECOLOR_NODE_NAME, eventName, ref settings.DefConsoleForeColor,
                         settings.ConsoleForeColors);

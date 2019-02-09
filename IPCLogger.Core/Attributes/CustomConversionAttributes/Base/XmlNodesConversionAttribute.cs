@@ -23,7 +23,7 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
         protected XmlNodesConversionAttribute(string[] exclusiveNodeNames)
         {
             exclusiveNodeNames = exclusiveNodeNames?.Length == 0
-                ? exclusiveNodeNames.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray()
+                ? exclusiveNodeNames.Select(s => s.Trim()).Where(s => s != string.Empty).ToArray()
                 : null;
 
             if (exclusiveNodeNames?.Length == 0)
