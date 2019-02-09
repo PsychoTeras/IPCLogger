@@ -2,5 +2,22 @@
   {
     "ObjectId": "LConsole",
     "Description": "Writes logging events to the console's standard output stream or the error output stream"
+  },
+  {
+    "ObjectId": "LConsole",
+    "ObjectSubId": "Title",
+    "Description": "The title to display in the console title bar"
+  },
+  {
+    "ObjectId": "LConsole",
+    "ObjectSubId": "StreamType",
+    "DisplayName": "Output Stream",
+    "Description": "Output stream type"
+  },
+  {
+    "ObjectId": "LConsole",
+    "ObjectSubId": "Highlights",
+    "DisplayName": "Colors",
+    "Description": "Setting color of a specific type of message"
   }
 ]

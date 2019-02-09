@@ -418,4 +418,5 @@ img.icon-info {
     margin-top: 4px;
     margin-left: 6px;
     cursor: help;
+    opacity: .8;
 }
