@@ -3,6 +3,7 @@ using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 
@@ -55,7 +56,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         internal static List<DeclaredLogger> GetDeclaredLoggers(string configurationFile, bool includeDisabled = false)
         {
             List<DeclaredLogger> loggers = new List<DeclaredLogger>();
-            if (string.IsNullOrEmpty(configurationFile) || !System.IO.File.Exists(configurationFile))
+            if (string.IsNullOrEmpty(configurationFile) || !File.Exists(configurationFile))
             {
                 return loggers;
             }
@@ -95,7 +96,57 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             string loggersXPath = $"{Constants.RootLoggerCfgPath}";
             XmlNode cfgNode = xmlCfg.SelectSingleNode(loggersXPath);
-            return new DeclaredLogger(cfgNode);
+            return cfgNode != null ? new DeclaredLogger(cfgNode) : null;
+        }
+
+        internal static DeclaredLogger CreateFactoryLogger(XmlDocument xmlCfg)
+        {
+            XmlNode AppendXmlNode(XmlNode parentNode, string nodeName, string nodePath = null)
+            {
+                XmlNode valNode = parentNode.SelectSingleNode(nodePath ?? nodeName);
+                if (valNode == null)
+                {
+                    XmlDocument xmlDoc = parentNode.OwnerDocument;
+                    valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
+                    parentNode.AppendChild(valNode);
+                }
+                return valNode;
+            }
+
+            void AppendXmlAttribute(XmlNode parentNode, string attributeName, string value)
+            {
+                XmlAttribute valAttribute = parentNode.Attributes[attributeName];
+                if (valAttribute == null)
+                {
+                    XmlDocument xmlDoc = parentNode.OwnerDocument;
+                    valAttribute = xmlDoc.CreateAttribute(attributeName);
+                    parentNode.Attributes.Append(valAttribute);
+                }
+
+                valAttribute.InnerText = value;
+            }
+
+            // Append config root node
+            XmlNode rootCfgNode = AppendXmlNode(xmlCfg.SelectSingleNode("/"), "configuration");
+
+            // Append emtpy logger config handler
+            XmlNode rootCSectionsNode = AppendXmlNode(rootCfgNode, "configSections");
+            XmlNode loggerCSectionNode = AppendXmlNode(rootCSectionsNode, "section",
+                $"section[@name='{Constants.LoggerName}']");
+            AppendXmlAttribute(loggerCSectionNode, "name", Constants.LoggerName);
+            AppendXmlAttribute(loggerCSectionNode, "type", "System.Configuration.IgnoreSectionHandler");
+
+            // Create logger section
+            XmlNode loggerNode = AppendXmlNode(rootCfgNode, Constants.LoggerName);
+            AppendXmlNode(loggerNode, "Patterns");
+            AppendXmlNode(loggerNode, "Loggers");
+
+            // Initialize settings
+            LFactorySettings settings = new LFactorySettings(typeof(LFactory), null);
+            settings.ApplyCommonSettings(loggerNode);
+            settings.Save(loggerNode);
+
+            return new DeclaredLogger(loggerNode);
         }
 
         internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
@@ -151,7 +202,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
     }
 
-    internal struct DeclaredLogger
+    internal class DeclaredLogger
     {
         public string TypeName;
         public string Namespace;

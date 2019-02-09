@@ -663,7 +663,7 @@ namespace IPCLogger.Core.Loggers.Base
             return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
         }
 
-        private XmlNode AppendCfgXmlNode(XmlNode cfgNode, string nodeName)
+        protected XmlNode AppendCfgXmlNode(XmlNode cfgNode, string nodeName)
         {
             XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
             if (valNode == null)

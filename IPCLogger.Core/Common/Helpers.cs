@@ -246,7 +246,7 @@ namespace IPCLogger.Core.Common
                 sTime += $"{timeSpan.Minutes}m ";
             }
 
-            if (timeSpan.Seconds > 0)
+            if (timeSpan.Seconds > 0 || sTime == string.Empty)
             {
                 sTime += $"{timeSpan.Seconds}s";
             }

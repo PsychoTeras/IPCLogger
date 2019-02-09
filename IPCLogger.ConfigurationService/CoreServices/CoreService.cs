@@ -108,6 +108,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 ToList();
 
             DeclaredLogger dlFactory = LFactorySettings.GetDeclaredFactoryLogger(ConfigurationXml);
+            if (dlFactory == null)
+            {
+                dlFactory = LFactorySettings.CreateFactoryLogger(ConfigurationXml);
+                SaveConfiguration();
+            }
             FactoryLogger = DeclaredLoggerModel.FromCoreDeclaredLogger(dlFactory, typeof(LFactory));
         }
 
