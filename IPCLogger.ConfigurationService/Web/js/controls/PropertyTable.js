@@ -128,7 +128,12 @@
         }
 
         if ($RowEditing && $RowEditing[0] !== $tr[0]) {
-            saveChanges();
+            if ($RowEditing.hasAttr("is-new-row")) {
+                deleteRow($RowEditing);
+                $RowEditing = null;
+            } else {
+                saveChanges();
+            }
         }
 
         if (!$RowEditing) {
