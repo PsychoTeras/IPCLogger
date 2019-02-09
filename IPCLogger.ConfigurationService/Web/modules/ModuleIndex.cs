@@ -35,7 +35,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                 AppSettingsModel appSettingsModel = new AppSettingsModel(coreService.DeclaredLoggers, 
                     coreService.DeclaredPatterns, coreService.FactoryLogger);
-                PageModel pageModel = SetPageModel(PageModel.Loggers(applicationModel, appSettingsModel, PageModel));
+                PageModel pageModel = SetPageModel(PageModel.AppSettings(applicationModel, appSettingsModel, PageModel));
                 return View["index", pageModel];
             };
 

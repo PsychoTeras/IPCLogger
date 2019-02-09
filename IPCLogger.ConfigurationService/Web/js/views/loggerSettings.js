@@ -106,7 +106,7 @@
         }
 
         var applicationId = getApplicationId();
-        ApplicationController.manageApplication(applicationId, "loggers");
+        ApplicationsController.applicationSettings(applicationId, "loggers");
         return true;
     }
 

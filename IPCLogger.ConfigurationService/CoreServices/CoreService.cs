@@ -128,26 +128,26 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public LoggerModel GetAvailableLogger(string loggerId)
         {
-            LoggerModel loggerModel = AvailableLoggers.FirstOrDefault(l => l.Id == loggerId);
-            if (loggerModel == null)
+            LoggerModel model = AvailableLoggers.FirstOrDefault(l => l.Id == loggerId);
+            if (model == null)
             {
                 throw new InvalidRequestException();
             }
 
-            return loggerModel;
+            return model;
         }
 
         public DeclaredLoggerModel GetDeclaredLogger(string loggerId)
         {
-            DeclaredLoggerModel loggerModel = FactoryLogger.Id == loggerId
+            DeclaredLoggerModel model = FactoryLogger.Id == loggerId
                 ? FactoryLogger
                 : DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
-            if (loggerModel == null)
+            if (model == null)
             {
                 throw new InvalidRequestException();
             }
 
-            return loggerModel;
+            return model;
         }
 
         internal void ValidateLoggerUniqueness(DeclaredLoggerModel loggerModel, PropertyObjectDTO[] propertyObjs,
@@ -180,14 +180,14 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public void RemoveLogger(string loggerId)
         {
-            DeclaredLoggerModel loggerModel = DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
-            if (loggerModel == null)
+            DeclaredLoggerModel model = DeclaredLoggers.FirstOrDefault(l => l.Id == loggerId);
+            if (model == null)
             {
                 throw new InvalidRequestException();
             }
 
-            DeclaredLoggers.Remove(loggerModel);
-            loggerModel.RootXmlNode.ParentNode?.RemoveChild(loggerModel.RootXmlNode);
+            DeclaredLoggers.Remove(model);
+            model.RootXmlNode.ParentNode?.RemoveChild(model.RootXmlNode);
             SaveConfiguration();
         }
 
@@ -201,6 +201,17 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 GetDeclaredPatterns(ConfigurationXml).
                 Select(DeclaredPatternModel.FromDeclaredPattern).
                 ToList();
+        }
+
+        public DeclaredPatternModel GetDeclaredPattern(string patternId)
+        {
+            DeclaredPatternModel model = DeclaredPatterns.FirstOrDefault(l => l.Id == patternId);
+            if (model == null)
+            {
+                throw new InvalidRequestException();
+            }
+
+            return model;
         }
 
 #endregion

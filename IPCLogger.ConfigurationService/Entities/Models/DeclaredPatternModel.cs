@@ -49,5 +49,10 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             model.InitializeSettings(source.CfgNode);
             return model;
         }
+
+        public override string ToString()
+        {
+            return Description ?? "[Pattern]";
+        }
     }
 }

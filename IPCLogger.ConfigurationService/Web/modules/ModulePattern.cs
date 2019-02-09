@@ -15,37 +15,28 @@ namespace IPCLogger.ConfigurationService.Web.modules
 {
     using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
-    public class ModuleLoggerSettings : ModuleBase
+    public class ModulePatternSettings : ModuleBase
     {
-        public ModuleLoggerSettings()
+        public ModulePatternSettings()
         {
             Negotiator NewOrGet(dynamic x, bool isNew)
             {
                 VerifyAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
-                string loggerId = ViewBag.loggerId = x.lid;
+                string patternId = ViewBag.patternId = x.lid;
                 ViewBag.isNew = isNew;
 
                 CoreService coreService = GetCoreService(applicationId);
-                DeclaredLoggerModel model;
-                if (isNew)
-                {
-                    LoggerModel availableLoggerModel = coreService.GetAvailableLogger(loggerId);
-                    model = DeclaredLoggerModel.FromLogger(availableLoggerModel);
-                }
-                else
-                {
-                    model = coreService.GetDeclaredLogger(loggerId);
-                }
-
-                ViewBag.typeName = model.TypeName;
+                DeclaredPatternModel model = isNew
+                    ? new DeclaredPatternModel()
+                    : coreService.GetDeclaredPattern(patternId);
 
                 PageModel pageModel = SetPageModel
                 (
                     isNew
-                        ? PageModel.AddLogger(applicationId, model, PageModel)
-                        : PageModel.LoggerSettings(applicationId, model, PageModel)
+                        ? PageModel.AddPattern(applicationId, model, PageModel)
+                        : PageModel.PatternSettings(applicationId, model, PageModel)
                 );
                 return View["index", pageModel];
             }
@@ -78,35 +69,35 @@ namespace IPCLogger.ConfigurationService.Web.modules
 
                     CoreService coreService = GetCoreService(applicationId);
 
-                    DeclaredLoggerModel model;
+                    DeclaredLoggerModel loggerModel;
                     if (create)
                     {
                         LoggerModel availableLoggerModel = coreService.GetAvailableLogger(loggerId);
-                        model = DeclaredLoggerModel.FromLogger(availableLoggerModel);
+                        loggerModel = DeclaredLoggerModel.FromLogger(availableLoggerModel);
                     }
                     else
                     {
-                        model = coreService.GetDeclaredLogger(loggerId);
+                        loggerModel = coreService.GetDeclaredLogger(loggerId);
                     }
 
-                    PropertyValidationResult[] validationResult = model.ValidateProperties(propertyObjs);
-                    coreService.ValidateLoggerUniqueness(model, propertyObjs, ref validationResult);
+                    PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
+                    coreService.ValidateLoggerUniqueness(loggerModel, propertyObjs, ref validationResult);
 
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
                         Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
                     if (!invalidProperties.Any())
                     {
-                        if (model.UpdateSettings(validationResult, propertyObjs))
+                        if (loggerModel.UpdateSettings(validationResult, propertyObjs))
                         {
                             if (create)
                             {
-                                model.RootXmlNode = coreService.AppendConfigurationNode(model.RootXmlNode);
-                                model.ReinitializeSettings();
-                                coreService.AppendLogger(model);
+                                loggerModel.RootXmlNode = coreService.AppendConfigurationNode(loggerModel.RootXmlNode);
+                                loggerModel.ReinitializeSettings();
+                                coreService.AppendLogger(loggerModel);
                             }
                             coreService.SaveConfiguration();
-                            model.ReloadProperties();
+                            loggerModel.ReloadProperties();
                         }
                         else
                         {
@@ -124,15 +115,15 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
             }
 
-            Get["/applications/{appid:int}/loggers/{lid}"] = x => NewOrGet(x, true);
+            Get["/applications/{appid:int}/patterns/{lid}"] = x => NewOrGet(x, true);
 
-            Get["/applications/{appid:int}/loggers/{lid}/settings"] = x => NewOrGet(x, false);
+            Get["/applications/{appid:int}/patterns/{lid}/settings"] = x => NewOrGet(x, false);
 
-            Post["/applications/{appid:int}/loggers/{lid}"] = x => CreateOrUpdate(x, true);
+            Post["/applications/{appid:int}/patterns/{lid}"] = x => CreateOrUpdate(x, true);
 
-            Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
+            Post["/applications/{appid:int}/patterns/{lid}/settings"] = x => CreateOrUpdate(x, false);
 
-            Delete["/applications/{appid:int}/loggers/{lid}"] = x =>
+            Delete["/applications/{appid:int}/patterns/{lid}"] = x =>
             {
                 VerifyAuthentication();
 

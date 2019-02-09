@@ -133,6 +133,7 @@
     <Compile Include="Web\modules\common\CookieSerializer.cs" />
     <Compile Include="Web\modules\ModuleBase.cs" />
     <Compile Include="Web\modules\ModuleIndex.cs" />
+    <Compile Include="Web\modules\ModulePattern.cs" />
     <Compile Include="Web\modules\ModuleLogin.cs" />
     <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
@@ -194,6 +195,7 @@
     <Content Include="Web\assets\icon-info-16.png" />
     <Content Include="Web\css\controls\Alert.css" />
     <Content Include="Web\css\controls\TableSelect.css" />
+    <Content Include="Web\css\views\patternSettings.css" />
     <Content Include="Web\css\views\popups\popupSnippetsInfo.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
     <Content Include="Web\js\controllers\popupController.js" />
@@ -226,8 +228,8 @@
     <Content Include="Web\js\classes\Size.js" />
     <Content Include="Web\js\classes\TimeSpan.js" />
     <Content Include="Web\js\controllers\loggerSettingsControllers.js" />
-    <Content Include="Web\js\controllers\applicationController.js" />
-    <Content Include="Web\js\controllers\loggerController.js" />
+    <Content Include="Web\js\controllers\applicationsController.js" />
+    <Content Include="Web\js\controllers\appSettingsController.js" />
     <Content Include="Web\js\controls\PropertyBase.js" />
     <Content Include="Web\js\controls\PropertyBoolean.js" />
     <Content Include="Web\js\controls\PropertyNumeric.js" />
@@ -241,10 +243,11 @@
     <Content Include="Web\js\settings.js" />
     <Content Include="Web\js\views\loggerSettings.js" />
     <Content Include="Web\js\views\applications.js" />
-    <Content Include="Web\js\views\loggers.js" />
+    <Content Include="Web\js\views\appSettings.js" />
     <None Include="Web\views\partials\applications.cshtml" />
+    <None Include="Web\views\partials\patternSettings.cshtml" />
     <None Include="Web\views\partials\loggerSettings.cshtml" />
-    <None Include="Web\views\partials\loggers.cshtml" />
+    <None Include="Web\views\partials\appSettings.cshtml" />
     <None Include="Web\views\partials\users.cshtml" />
     <None Include="Web\views\partials\_footer_popup.cshtml" />
     <None Include="Web\views\partials\_footer.cshtml" />

@@ -7,7 +7,7 @@
     function applicationConfigure(e) {
         var caller = e.target;
         var applicationId = getApplicationId(caller);
-        ApplicationController.manageApplication(applicationId);
+        ApplicationsController.applicationSettings(applicationId);
     }
 
     function initialize() {

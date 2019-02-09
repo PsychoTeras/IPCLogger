@@ -11,9 +11,10 @@ namespace IPCLogger.ConfigurationService.Entities
     public enum PageType
     {
         Applications,
-        Loggers,
+        AppSettings,
         LoggerSettings,
-        Users,        
+        PatternSettings,
+        Users
     }
 
     public class PageModel : IEnumerable<PageModel>
@@ -65,7 +66,8 @@ namespace IPCLogger.ConfigurationService.Entities
             return GetPageModel(pageType, null, null, null, model, null);
         }
 
-        private static PageModel GetPageModel(PageType pageType, string pagePath, string caption, object model, PageModel previousPageModel)
+        private static PageModel GetPageModel(PageType pageType, string pagePath, string caption, object model,
+            PageModel previousPageModel)
         {
             return GetPageModel(pageType, null, pagePath, caption, model, previousPageModel);
         }
@@ -87,23 +89,36 @@ namespace IPCLogger.ConfigurationService.Entities
             return GetPageModel(PageType.Applications, applications);
         }
 
-        public static PageModel Loggers(ApplicationModel application, AppSettingsModel declaredLoggers, 
+        public static PageModel AppSettings(ApplicationModel applicationModel, AppSettingsModel appSettingsModel, 
             PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{application.Id}";
-            return GetPageModel(PageType.Loggers, pagePath, application.ToString(), declaredLoggers, previousPageModel);
+            string pagePath = $"/applications/{applicationModel.Id}";
+            return GetPageModel(PageType.AppSettings, pagePath, applicationModel.ToString(), appSettingsModel, 
+                previousPageModel);
         }
 
-        public static PageModel AddLogger(int applicationId, DeclaredLoggerModel logger, PageModel previousPageModel)
+        public static PageModel AddLogger(int applicationId, DeclaredLoggerModel loggerModel, PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{applicationId}/loggers/{logger.Id}";
-            return GetPageModel(PageType.LoggerSettings, pagePath, logger.ToString(), logger, previousPageModel);
+            string pagePath = $"/applications/{applicationId}/loggers/{loggerModel.Id}";
+            return GetPageModel(PageType.LoggerSettings, pagePath, loggerModel.ToString(), loggerModel, previousPageModel);
         }
 
-        public static PageModel LoggerSettings(int applicationId, DeclaredLoggerModel logger, PageModel previousPageModel)
+        public static PageModel LoggerSettings(int applicationId, DeclaredLoggerModel loggerModel, PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{applicationId}/loggers/{logger.Id}/settings";
-            return GetPageModel(PageType.LoggerSettings, pagePath, logger.ToString(), logger, previousPageModel);
+            string pagePath = $"/applications/{applicationId}/loggers/{loggerModel.Id}/settings";
+            return GetPageModel(PageType.LoggerSettings, pagePath, loggerModel.ToString(), loggerModel, previousPageModel);
+        }
+
+        public static PageModel AddPattern(int applicationId, DeclaredPatternModel patternModel, PageModel previousPageModel)
+        {
+            string pagePath = $"/applications/{applicationId}/patterns";
+            return GetPageModel(PageType.PatternSettings, pagePath, patternModel.ToString(), patternModel, previousPageModel);
+        }
+
+        public static PageModel PatternSettings(int applicationId, DeclaredPatternModel patternModel, PageModel previousPageModel)
+        {
+            string pagePath = $"/applications/{applicationId}/patterns/{patternModel.Id}/settings";
+            return GetPageModel(PageType.PatternSettings, pagePath, patternModel.ToString(), patternModel, previousPageModel);
         }
 
         public static PageModel Users(List<UserModel> users)
