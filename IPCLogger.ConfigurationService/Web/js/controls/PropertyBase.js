@@ -143,7 +143,8 @@
             var $target = $parentElement.children(nodeType);
 
             if (isFormattable) {
-                var $div = $("<div class='div-formattable'>").insertAfter($parentElement.children("label"));
+                var $divToInsertAfter = $parentElement.children("div[class='group-param-info']");
+                var $div = $("<div class='div-formattable'>").insertAfter($divToInsertAfter);
                 $target.appendTo($div);
                 var $btnFmtShow = $("<button class='btn btn-sm btn-glyph btn-light fa fa-info-circle'>");
                 $btnFmtShow.click(function () {

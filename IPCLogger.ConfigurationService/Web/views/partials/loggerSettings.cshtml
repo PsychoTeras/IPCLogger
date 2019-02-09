@@ -25,7 +25,7 @@
                 @foreach (PropertyModel model in Model.CommonProperties)
                 {
                     <div class="mt-2">
-                        <div style="display: flex">
+                        <div class="group-param-info">
                             <label>
                                 @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
                                 @if (model.IsRequired)
@@ -60,7 +60,7 @@
                     @foreach (PropertyModel model in Model.Properties)
                     {
                         <div class="mt-2">
-                            <div style="display: flex">
+                            <div class="group-param-info">
                                 <label>
                                     @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
                                     @if (model.IsRequired)

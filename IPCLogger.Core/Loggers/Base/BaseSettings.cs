@@ -81,7 +81,6 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Constants
 
-        protected const string RootLoggersCfgPath = Constants.RootLoggerCfgPath + "/Loggers";
         protected const string ValidationErrorMessage = "{0} is required";
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
@@ -278,7 +277,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual string GetLoggerSettingsNodeName(string loggerName = null)
         {
             loggerName = !string.IsNullOrEmpty(loggerName) ? $"[@name='{loggerName}']" : string.Empty;
-            return $"{RootLoggersCfgPath}/{_loggerType.Name}{loggerName}";
+            return $"{Constants.RootLoggersCfgPath}/{_loggerType.Name}{loggerName}";
         }
 
         protected virtual XmlNode GetLoggerSettingsNode(XmlDocument xmlCfg, string loggerName = null)

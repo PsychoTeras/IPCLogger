@@ -420,3 +420,7 @@ img.icon-info {
     cursor: help;
     opacity: .8;
 }
+
+div.group-param-info {
+    display: flex;
+}

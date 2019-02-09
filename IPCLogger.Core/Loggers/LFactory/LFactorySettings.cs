@@ -78,7 +78,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             List<DeclaredLogger> loggers = new List<DeclaredLogger>();
 
-            string loggersXPath = $"{RootLoggersCfgPath}/*";
+            string loggersXPath = $"{Constants.RootLoggersCfgPath}/*";
             XmlNodeList cfgNodes = xmlCfg.SelectNodes(loggersXPath);
             foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
             {
@@ -94,7 +94,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         internal static DeclaredLogger GetDeclaredFactoryLogger(XmlDocument xmlCfg)
         {
-            string loggersXPath = $"{Constants.RootLoggerCfgPath}";
+            string loggersXPath = $"{Constants.RootAppCfgPath}";
             XmlNode cfgNode = xmlCfg.SelectSingleNode(loggersXPath);
             return cfgNode != null ? new DeclaredLogger(cfgNode) : null;
         }
@@ -151,7 +151,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
         {
-            XmlNode rootNode = xmlCfg.SelectSingleNode(RootLoggersCfgPath);
+            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootLoggersCfgPath);
             XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
             rootNode.AppendChild(newNode);
             return newNode;
@@ -173,7 +173,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         protected override string GetLoggerSettingsNodeName(string loggerName = null)
         {
-            return Constants.RootLoggerCfgPath;
+            return Constants.RootAppCfgPath;
         }
 
         protected override void ApplyCommonSettings(XmlNode cfgNode)

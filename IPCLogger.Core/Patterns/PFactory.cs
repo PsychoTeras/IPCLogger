@@ -1,25 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using IPCLogger.Core.Common;
+using IPCLogger.Core.Patterns.Base;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Patterns.Base;
-using System.Collections.Generic;
 
 namespace IPCLogger.Core.Patterns
 {
     // ReSharper disable PossibleNullReferenceException
     public sealed class PFactory
     {
-
-#region Constants
-
-        private const string ROOT_PATTERNS_CFG_PATH   = Constants.RootLoggerCfgPath + "/Patterns/Pattern";
-        private const string PATTERN_CONTENT_CFG_PATH = "./Content";
-
-
-#endregion
 
 #region Private fields
 
@@ -185,7 +177,8 @@ get_generic_pattern:
 
         public void Setup(XmlDocument xmlCfg)
         {
-            XmlNodeList patternNodes = xmlCfg.SelectNodes(ROOT_PATTERNS_CFG_PATH);
+            string patternXPath = $"{Constants.RootPatternsCfgPath}/Pattern";
+            XmlNodeList patternNodes = xmlCfg.SelectNodes(patternXPath);
             if (patternNodes == null)
             {
                 ReinitializeDictionaries();
@@ -200,10 +193,12 @@ get_generic_pattern:
             var tmpRawPatterns = new Dictionary<string, RawPatterns>();
             var tmpCompiledUntypedPatterns = new Dictionary<string, Pattern>();
 
+            string patternContentXPath = "./Content";
+
             foreach (XmlNode patternNode in patternNodes)
             {
                 IEnumerable<XmlNode> contentNodes = patternNode.
-                    SelectNodes(PATTERN_CONTENT_CFG_PATH).
+                    SelectNodes(patternContentXPath).
                     Cast<XmlNode>().
                     Where(n => !string.IsNullOrWhiteSpace(n.InnerText));
                 if (!contentNodes.Any())
@@ -220,7 +215,13 @@ get_generic_pattern:
                 }
 
                 XmlAttribute aImmediateFlush = patternNode.Attributes["immediate-flush"];
-                bool immediateFlush = aImmediateFlush != null && bool.TryParse(aImmediateFlush.Value, out immediateFlush) && immediateFlush;
+                bool immediateFlush = 
+                    aImmediateFlush != null && 
+                    bool.TryParse(aImmediateFlush.Value, out immediateFlush) && 
+                    immediateFlush;
+
+                XmlAttribute aDescription = patternNode.Attributes["description"];
+                string description = aDescription?.Value;
 
                 foreach (string s in events.Split(Constants.Splitter))
                 {
@@ -232,7 +233,8 @@ get_generic_pattern:
                         ? new RawPatterns(eventName)
                         : tmpRawPatterns[eventName];
 
-                    SetupContent(rawPattern, contentNodes, tmpCompiledUntypedPatterns, immediateFlush);
+                    SetupContent(rawPattern, contentNodes, tmpCompiledUntypedPatterns, description, 
+                        immediateFlush);
                     if (newPattern && !rawPattern.Empty)
                     {
                         tmpRawPatterns.Add(eventName, rawPattern);
@@ -248,7 +250,8 @@ get_generic_pattern:
         }
 
         private void SetupContent(RawPatterns rawPattern, IEnumerable<XmlNode> contentNodes,
-            Dictionary<string, Pattern> compiledUntypedPatterns, bool immediateFlush)
+            Dictionary<string, Pattern> compiledUntypedPatterns, string description, 
+            bool immediateFlush)
         {
             foreach (XmlNode contentNode in contentNodes)
             {
@@ -266,7 +269,8 @@ get_generic_pattern:
                     if (ReferenceEquals(classMask, Constants.ApplicableForAllMark) &&
                         !compiledUntypedPatterns.ContainsKey(rawPattern.EventName))
                     {
-                        compiledUntypedPatterns.Add(rawPattern.EventName, new Pattern(content, immediateFlush));
+                        compiledUntypedPatterns.Add(rawPattern.EventName, new Pattern(description, content,
+                            immediateFlush));
                         continue;
                     }
                     
@@ -277,11 +281,11 @@ get_generic_pattern:
                         {
                             string regexClassMask = Regex.Escape(classMask).Replace(@"\*", ".*?");
                             Regex regexMask = new Regex(regexClassMask, RegexOptions.Compiled);
-                            rawPattern.Masked.Add(regexMask, new Pattern(content, immediateFlush));
+                            rawPattern.Masked.Add(regexMask, new Pattern(description, content, immediateFlush));
                         }
                         else
                         {
-                            rawPattern.Strong.Add(classMask, new Pattern(content, immediateFlush));
+                            rawPattern.Strong.Add(classMask, new Pattern(description, content, immediateFlush));
                         }
                         continue;
                     }
@@ -314,6 +318,7 @@ get_generic_pattern:
             return val >= 0 ? val : int.MaxValue;
         }
 
+        // ReSharper disable PossibleNullReferenceException
         public int Compare(string a, string b)
         {
             int maskAIdx = 0, maskBIdx = 0;
@@ -328,5 +333,6 @@ get_generic_pattern:
             } while (maskAIdx == maskBIdx && maskAIdx != -1);
             return b.CompareTo(a);
         }
+        // ReSharper restore PossibleNullReferenceException
     }
 }

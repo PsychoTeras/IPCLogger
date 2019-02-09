@@ -28,7 +28,7 @@
                     {
                         <tr id="row-logger" modelId="@(model.Id)">
                             <td id="cell-logger-type">
-                                <div style="display: flex">
+                                <div class="group-param-info">
                                     <a>@(model.TypeName)</a>
                                     @{
                                         string description = ControlsService.GetLoggerDescription(model.TypeName);
