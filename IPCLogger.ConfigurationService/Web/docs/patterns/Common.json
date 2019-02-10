@@ -13,6 +13,6 @@
   {
     "ObjectId": "*",
     "ObjectSubId": "ImmediateFlush",
-    "Description": "Whether a logging event will be flushed immediately, no matter to a logger configuration"
+    "Description": "Whether a logging event will be flushed immediately, no matter of how a logger is configured"
   }
 ]

@@ -206,7 +206,7 @@ input, select, textarea, .custom-checkbox > label:before {
     max-width: 250px;
     background-color: #000000;
     background-color: rgba(0, 0, 0, .15);
-    padding: 0.6rem 0.3rem 0.6rem 0.3rem;
+    padding: 0.55rem 0.3rem 0.55rem 0.3rem;
 }
 
     .navbar-caption a {

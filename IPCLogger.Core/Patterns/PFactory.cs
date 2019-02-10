@@ -66,6 +66,29 @@ namespace IPCLogger.Core.Patterns
             return patterns;
         }
 
+        internal static List<PatternContent> GetPatternContent(XmlNode cfgNode)
+        {
+            string patternContentXPath = "./Content";
+            List<PatternContent> content = new List<PatternContent>();
+            IEnumerable<XmlNode> contentNodes = cfgNode.
+                SelectNodes(patternContentXPath).
+                Cast<XmlNode>().
+                Where(n => !string.IsNullOrWhiteSpace(n.InnerText));
+            foreach (XmlNode node in contentNodes)
+            {
+                content.Add(new PatternContent(node));
+            }
+            return content;
+        }
+
+        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
+        {
+            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootPatternsCfgPath);
+            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
+            rootNode.AppendChild(newNode);
+            return newNode;
+        }
+
 #endregion
 
 #region Class methods
@@ -209,7 +232,6 @@ get_generic_pattern:
             var tmpCompiledUntypedPatterns = new Dictionary<string, Pattern>();
 
             string patternContentXPath = "./Content";
-
             foreach (XmlNode patternNode in patternNodes)
             {
                 IEnumerable<XmlNode> contentNodes = patternNode.
@@ -359,6 +381,20 @@ get_generic_pattern:
                 aImmediateFlush != null &&
                 bool.TryParse(aImmediateFlush.Value, out ImmediateFlush) &&
                 ImmediateFlush;
+        }
+    }
+
+    internal class PatternContent
+    {
+        public string ApplicableFor;
+        public string Content;
+        public XmlNode CfgNode;
+
+        public PatternContent(XmlNode cfgNode)
+        {
+            CfgNode = cfgNode;
+            ApplicableFor = cfgNode.Attributes["applicable-for"]?.Value;
+            Content = cfgNode.InnerText.Trim();
         }
     }
     // ReSharper restore PossibleNullReferenceException

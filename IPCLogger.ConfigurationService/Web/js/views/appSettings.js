@@ -15,8 +15,6 @@
     }
 
     function addLogger() {
-        changeTab("#loggers");
-
         var applicationId = getApplicationId();
         PopupController.addLogger(applicationId, function (html) {
             var divAddLogger = $("#popup-add-logger");
@@ -62,8 +60,6 @@
     }
 
     function addPattern() {
-        changeTab("#patterns");
-
         var applicationId = getApplicationId();
         AppSettingsController.addPattern(applicationId);
     }
@@ -84,7 +80,7 @@
         showDialog.confirmation(msg, function (result) {
             if (!result) return;
             AppSettingsController.removePattern(applicationId, patternId, function () {
-                getLoggerRow(caller).remove();
+                getPatternRow(caller).remove();
             });
         });
     }

@@ -15,9 +15,26 @@ namespace IPCLogger.ConfigurationService.Entities.Models
     using PropertyData = BaseSettings.PropertyData;
     using PropertyValidationResult = BaseSettings.PropertyValidationResult;
 
+    public class PatternContentModel
+    {
+        public string ApplicableFor { get; set; }
+
+        public string Content { get; set; }
+
+        internal static PatternContentModel FromPatternContent(PatternContent source)
+        {
+            return new PatternContentModel
+            {
+                ApplicableFor = source.ApplicableFor,
+                Content = source.Content
+            };
+        }
+    }
+
     public class DeclaredPatternModel
     {
         private PropertyModel[] _properties;
+        private List<PatternContentModel> _content;
 
         [NonSetting]
         public string Id { get; protected set; }
@@ -37,13 +54,16 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get { return _properties; }
         }
 
-        private DeclaredPatternModel()
+        public IEnumerable<PatternContentModel> Content
         {
+            get { return _content; }
         }
+
+        private DeclaredPatternModel() {}
 
         public void ReloadProperties()
         {
-            PropertyModel PropertyDataToModel(PropertyData data, bool isCommon)
+            PropertyModel PropertyDataToModel(PropertyData data)
             {
                 return new PropertyModel
                 (
@@ -62,7 +82,14 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             ).Select
             (
                 p => new PropertyData(p)
-            ).Select(data => PropertyDataToModel(data, false)).ToArray();
+            ).Select(PropertyDataToModel).ToArray();
+        }
+
+        public void ReloadContent()
+        {
+            _content = PFactory.GetPatternContent(RootXmlNode).
+                Select(PatternContentModel.FromPatternContent).
+                ToList();
         }
 
         private void RecalculateId()
@@ -81,6 +108,12 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         {
             RecalculateId();
             ReloadProperties();
+            ReloadContent();
+        }
+
+        public void ReinitializeSettings()
+        {
+            InitializeSettings();
         }
 
         internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)

@@ -84,7 +84,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
                         {
                             if (create)
                             {
-                                //model.RootXmlNode = coreService.AppendLoggerNode(model.RootXmlNode);
+                                model.RootXmlNode = coreService.AppendPatternNode(model.RootXmlNode);
+                                model.ReinitializeSettings();
                                 coreService.AppendPattern(model);
                             }
                             coreService.SaveConfiguration();

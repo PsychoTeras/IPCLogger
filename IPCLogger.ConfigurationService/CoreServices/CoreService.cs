@@ -214,6 +214,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
             return model;
         }
 
+        public XmlNode AppendPatternNode(XmlNode cfgNode)
+        {
+            return PFactory.AppendConfigurationNode(ConfigurationXml, cfgNode);
+        }
+
         public void AppendPattern(DeclaredPatternModel patternModel)
         {
             DeclaredPatterns.Add(patternModel);
