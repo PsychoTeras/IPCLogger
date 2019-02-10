@@ -13,6 +13,33 @@ namespace IPCLogger.Core.Patterns
     public sealed class PFactory
     {
 
+#region Definitions
+
+    class ContentComparer : IComparer<string>
+    {
+        private int PosOrMax(int val)
+        {
+            return val >= 0 ? val : int.MaxValue;
+        }
+
+        public int Compare(string a, string b)
+        {
+            int maskAIdx = 0, maskBIdx = 0;
+            do
+            {
+                maskAIdx = a.IndexOf(Constants.ApplicableForAllMark, maskAIdx + 1);
+                maskBIdx = b.IndexOf(Constants.ApplicableForAllMark, maskBIdx + 1);
+                if (maskAIdx != maskBIdx)
+                {
+                    return PosOrMax(maskBIdx).CompareTo(PosOrMax(maskAIdx));
+                }
+            } while (maskAIdx == maskBIdx && maskAIdx != -1);
+            return b.CompareTo(a);
+        }
+    }
+
+#endregion
+
 #region Private fields
 
         private bool _isGenericPatternAvailable;
@@ -51,87 +78,11 @@ namespace IPCLogger.Core.Patterns
             return new PFactory();
         }
 
-        internal static List<DeclaredPattern> GetDeclaredPatterns(XmlDocument xmlCfg)
-        {
-            List<DeclaredPattern> patterns = new List<DeclaredPattern>();
-
-            string patternsXPath = $"{Constants.RootPatternsCfgPath}/*";
-            XmlNodeList cfgNodes = xmlCfg.SelectNodes(patternsXPath);
-            foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
-            {
-                DeclaredPattern declaredPattern = new DeclaredPattern(cfgNode);
-                patterns.Add(declaredPattern);
-            }
-
-            return patterns;
-        }
-
-        internal static List<PatternContent> GetPatternContent(XmlNode cfgNode)
-        {
-            string patternContentXPath = "./Content";
-            List<PatternContent> content = new List<PatternContent>();
-            IEnumerable<XmlNode> contentNodes = cfgNode.
-                SelectNodes(patternContentXPath).
-                Cast<XmlNode>().
-                Where(n => !string.IsNullOrWhiteSpace(n.InnerText));
-            foreach (XmlNode node in contentNodes)
-            {
-                content.Add(new PatternContent(node));
-            }
-            return content;
-        }
-
-        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
-        {
-            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootPatternsCfgPath);
-            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
-            rootNode.AppendChild(newNode);
-            return newNode;
-        }
-
 #endregion
 
-#region Class methods
+#region Public methods
 
-        private void ReinitializeDictionaries()
-        {
-            _isGenericPatternAvailable = false;
-            _compiledTypedPatterns = new Dictionary<string, Dictionary<Type, Pattern>>();
-            _compiledUntypedPatterns = new Dictionary<string, Pattern>();
-            _rawPatterns = new Dictionary<string, RawPatterns>();
-            _missingPatterns = new HashSet<string>();
-        }
-
-        private Pattern AppendCompiledTypedPattern(string patternName, Type type, Pattern pattern)
-        {
-            lock (_compiledTypedPatterns)
-            {
-                Dictionary<Type, Pattern> compiledTyped;
-                if (!_compiledTypedPatterns.TryGetValue(patternName, out compiledTyped))
-                {
-                    compiledTyped = new Dictionary<Type, Pattern>();
-                    _compiledTypedPatterns.Add(patternName, compiledTyped);
-                }
-                if (!compiledTyped.ContainsKey(type))
-                {
-                    compiledTyped.Add(type, pattern);
-                }
-            }
-            return pattern;
-        }
-
-        private void AppendMissingPattern(string patternName)
-        {
-            lock (_missingPatterns)
-            {
-                if (!_missingPatterns.Contains(patternName))
-                {
-                    _missingPatterns.Add(patternName);
-                }
-            }
-        }
-
-        public Pattern Get(Type callerType, string patternName)
+       public Pattern Get(Type callerType, string patternName)
         {
             if (patternName.Length == 0 || _missingPatterns.Contains(patternName)) return null;
 
@@ -224,6 +175,48 @@ get_generic_pattern:
             }
 
             Setup(patternNodes);
+        }
+
+#endregion
+
+#region Private methods
+
+        private void ReinitializeDictionaries()
+        {
+            _isGenericPatternAvailable = false;
+            _compiledTypedPatterns = new Dictionary<string, Dictionary<Type, Pattern>>();
+            _compiledUntypedPatterns = new Dictionary<string, Pattern>();
+            _rawPatterns = new Dictionary<string, RawPatterns>();
+            _missingPatterns = new HashSet<string>();
+        }
+
+        private Pattern AppendCompiledTypedPattern(string patternName, Type type, Pattern pattern)
+        {
+            lock (_compiledTypedPatterns)
+            {
+                Dictionary<Type, Pattern> compiledTyped;
+                if (!_compiledTypedPatterns.TryGetValue(patternName, out compiledTyped))
+                {
+                    compiledTyped = new Dictionary<Type, Pattern>();
+                    _compiledTypedPatterns.Add(patternName, compiledTyped);
+                }
+                if (!compiledTyped.ContainsKey(type))
+                {
+                    compiledTyped.Add(type, pattern);
+                }
+            }
+            return pattern;
+        }
+
+        private void AppendMissingPattern(string patternName)
+        {
+            lock (_missingPatterns)
+            {
+                if (!_missingPatterns.Contains(patternName))
+                {
+                    _missingPatterns.Add(patternName);
+                }
+            }
         }
 
         private void Setup(XmlNodeList patternNodes)
@@ -339,29 +332,48 @@ get_generic_pattern:
 
 #endregion
 
-    }
+#region Configuration Service methods
 
-    internal class ContentComparer : IComparer<string>
-    {
-        private int PosOrMax(int val)
+        internal static List<DeclaredPattern> GetDeclaredPatterns(XmlDocument xmlCfg)
         {
-            return val >= 0 ? val : int.MaxValue;
-        }
+            List<DeclaredPattern> patterns = new List<DeclaredPattern>();
 
-        public int Compare(string a, string b)
-        {
-            int maskAIdx = 0, maskBIdx = 0;
-            do
+            string patternsXPath = $"{Constants.RootPatternsCfgPath}/*";
+            XmlNodeList cfgNodes = xmlCfg.SelectNodes(patternsXPath);
+            foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
             {
-                maskAIdx = a.IndexOf(Constants.ApplicableForAllMark, maskAIdx + 1);
-                maskBIdx = b.IndexOf(Constants.ApplicableForAllMark, maskBIdx + 1);
-                if (maskAIdx != maskBIdx)
-                {
-                    return PosOrMax(maskBIdx).CompareTo(PosOrMax(maskAIdx));
-                }
-            } while (maskAIdx == maskBIdx && maskAIdx != -1);
-            return b.CompareTo(a);
+                DeclaredPattern declaredPattern = new DeclaredPattern(cfgNode);
+                patterns.Add(declaredPattern);
+            }
+
+            return patterns;
         }
+
+        internal static List<PatternContent> GetPatternContent(XmlNode cfgNode)
+        {
+            string patternContentXPath = "./Content";
+            List<PatternContent> content = new List<PatternContent>();
+            IEnumerable<XmlNode> contentNodes = cfgNode.
+                SelectNodes(patternContentXPath).
+                Cast<XmlNode>().
+                Where(n => !string.IsNullOrWhiteSpace(n.InnerText));
+            foreach (XmlNode node in contentNodes)
+            {
+                content.Add(new PatternContent(node));
+            }
+            return content;
+        }
+
+        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
+        {
+            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootPatternsCfgPath);
+            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
+            rootNode.AppendChild(newNode);
+            return newNode;
+        }
+
+#endregion
+
     }
 
     internal class DeclaredPattern

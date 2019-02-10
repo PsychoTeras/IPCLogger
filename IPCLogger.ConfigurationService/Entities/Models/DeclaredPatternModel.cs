@@ -2,7 +2,6 @@
 using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Patterns;
 using System;
 using System.Collections.Generic;
@@ -12,9 +11,6 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using PropertyData = BaseSettings.PropertyData;
-    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
-
     public class PatternContentModel
     {
         public string ApplicableFor { get; set; }

@@ -2,7 +2,7 @@
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Core.Common;
 using Nancy;
 using Nancy.Extensions;
 using Nancy.Responses.Negotiation;
@@ -13,8 +13,6 @@ using System.Linq;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
-    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
-
     public class ModulePatternSettings : ModuleBase
     {
         public ModulePatternSettings()

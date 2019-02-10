@@ -92,6 +92,10 @@ namespace IPCLogger.Core.Loggers.LFactory
             return loggers;
         }
 
+#endregion
+
+#region Configuration Service methods
+
         internal static DeclaredLogger GetDeclaredFactoryLogger(XmlDocument xmlCfg)
         {
             string loggersXPath = $"{Constants.RootAppCfgPath}";
@@ -99,7 +103,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             return cfgNode != null ? new DeclaredLogger(cfgNode) : null;
         }
 
-        internal static DeclaredLogger CreateFactoryLogger(XmlDocument xmlCfg)
+        internal static DeclaredLogger AppendFactoryLogger(XmlDocument xmlCfg)
         {
             XmlNode AppendXmlNode(XmlNode parentNode, string nodeName, string nodePath = null)
             {
@@ -159,7 +163,7 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #endregion
 
-#region Class methods
+#region Overrided methods
 
         protected override Dictionary<string, string> GetCommonPropertiesSet()
         {

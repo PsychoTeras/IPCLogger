@@ -1,6 +1,7 @@
 ﻿using IPCLogger.ConfigurationService.Common.Exceptions;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.LFactory;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets;
@@ -10,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using static IPCLogger.Core.Loggers.Base.BaseSettings;
 
 namespace IPCLogger.ConfigurationService.CoreServices
 {
@@ -109,7 +109,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             DeclaredLogger dlFactory = LFactorySettings.GetDeclaredFactoryLogger(ConfigurationXml);
             if (dlFactory == null)
             {
-                dlFactory = LFactorySettings.CreateFactoryLogger(ConfigurationXml);
+                dlFactory = LFactorySettings.AppendFactoryLogger(ConfigurationXml);
                 SaveConfiguration();
             }
             FactoryLogger = DeclaredLoggerModel.FromDeclaredLogger(dlFactory, typeof(LFactory));

@@ -1,5 +1,6 @@
 ﻿using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Helpers;
+using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,6 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using PropertyData = BaseSettings.PropertyData;
-    using PropertyValidationResult = BaseSettings.PropertyValidationResult;
-
     public class LoggerModel
     {
         private PropertyModel[] _properties;

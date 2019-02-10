@@ -88,6 +88,8 @@
     <Compile Include="Common\JSONWriter.cs" />
     <Compile Include="Common\LightLock.cs" />
     <Compile Include="Common\LogEvent.cs" />
+    <Compile Include="Common\PropertyData.cs" />
+    <Compile Include="Common\PropertyValidationResult.cs" />
     <Compile Include="Loggers\Base\BaseLogger.cs" />
     <Compile Include="Loggers\Base\BaseSettings.cs" />
     <Compile Include="Common\Helpers.cs" />

@@ -18,72 +18,6 @@ namespace IPCLogger.Core.Loggers.Base
     public abstract class BaseSettings
     {
 
-#region Definitions
-
-        protected internal class PropertyData
-        {
-            public PropertyInfo PropertyInfo { get; }
-
-            public CustomConversionAttribute ConversionAttribute { get; }
-
-            public bool IsRequired { get; }
-
-            public bool IsFormattable { get; }
-
-            public PropertyData(PropertyInfo propertyInfo, CustomConversionAttribute conversionAttribute,
-                bool isRequired, bool isFormattable)
-            {
-                PropertyInfo = propertyInfo;
-                ConversionAttribute = conversionAttribute;
-                IsRequired = isRequired;
-                IsFormattable = isFormattable;
-            }
-
-            public PropertyData(PropertyInfo propertyInfo)
-                : this(propertyInfo, null, false, false)
-            {
-            }
-        }
-
-        protected internal class PropertyValidationResult
-        {
-            public string Name;
-            public object Value;
-            public bool IsCommon;
-            public bool IsValid;
-            public string ErrorMessage;
-
-            public void SetInvalid(string errorMessage)
-            {
-                Value = null;
-                IsValid = false;
-                ErrorMessage = errorMessage;
-            }
-
-            public static PropertyValidationResult Valid(string name, object value, bool isCommon)
-            {
-                return new PropertyValidationResult
-                {
-                    Name = name,
-                    Value = value,
-                    IsCommon = isCommon,
-                    IsValid = true
-                };
-            }
-
-            public static PropertyValidationResult Invalid(string name, bool isCommon, string errorMessage)
-            {
-                return new PropertyValidationResult
-                {
-                    Name = name,
-                    IsCommon = isCommon,
-                    ErrorMessage = errorMessage
-                };
-            }
-        }
-
-#endregion
-
 #region Constants
 
         protected const string ValidationErrorMessage = "{0} is required";
@@ -496,26 +430,66 @@ namespace IPCLogger.Core.Loggers.Base
 
 #endregion
 
+#region Private methods
+
+        private void ApplyChanges()
+        {
+            _onApplyChanges?.Invoke();
+        }
+
+        private Dictionary<TK, TV> MergeDictionaries<TK, TV>(Dictionary<TK, TV> dict1, Dictionary<TK, TV> dict2)
+        {
+            return dict1.Union(dict2).ToDictionary(k => k.Key, v => v.Value);
+        }
+
+        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
+        {
+            set = null;
+            XmlAttribute aAllowEvents = cfgNode.Attributes[attributeName];
+            if (aAllowEvents != null)
+            {
+                string[] allowedEvents = aAllowEvents.InnerText.Split
+                    (
+                        new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries
+                    );
+                set = new HashSet<string>
+                    (
+                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty).Distinct()
+                    );
+                if (set.Count == 0)
+                {
+                    set = null;
+                }
+            }
+        }
+
+        private void RecalculateHash(XmlNode cfgNode)
+        {
+            Hash = CalculateHash(cfgNode);
+        }
+
+#endregion
+
 #region Configuration Service methods
 
-        protected internal virtual IEnumerable<PropertyData> GetCommonProperties()
+        internal virtual IEnumerable<PropertyData> GetCommonProperties()
         {
             return _commonProperties.Values;
         }
 
-        protected internal virtual IEnumerable<PropertyData> GetProperties()
+        internal virtual IEnumerable<PropertyData> GetProperties()
         {
             return _properties.Values;
         }
 
-        protected internal virtual string GetPropertyValue(PropertyInfo property, CustomConversionAttribute converter)
+        internal virtual string GetPropertyValue(PropertyInfo property, CustomConversionAttribute converter)
         {
             return converter != null
                 ? converter.ValueToCSString(property.GetValue(this, null)) ?? string.Empty
                 : property.GetValue(this, null)?.ToString() ?? string.Empty;
         }
 
-        protected internal virtual string GetPropertyValues(PropertyInfo property)
+        internal virtual string GetPropertyValues(PropertyInfo property)
         {
             string[] names;
             Type type = property.PropertyType;
@@ -524,7 +498,7 @@ namespace IPCLogger.Core.Loggers.Base
                 : null;
         }
 
-        protected internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,
+        internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,
             bool isCommon, bool isChanged)
         {
             object ConvertValue(string value, Type type)
@@ -569,7 +543,7 @@ namespace IPCLogger.Core.Loggers.Base
             throw new Exception($"Invalid property name '{propertyName}'");
         }
 
-        protected internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value,
+        internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value,
             bool isCommon)
         {
             Dictionary<string, PropertyData> dictProps = isCommon
@@ -615,46 +589,6 @@ namespace IPCLogger.Core.Loggers.Base
                         break;
                 }
             }
-        }
-
-#endregion
-
-#region Private methods
-
-        private void ApplyChanges()
-        {
-            _onApplyChanges?.Invoke();
-        }
-
-        private Dictionary<TK, TV> MergeDictionaries<TK, TV>(Dictionary<TK, TV> dict1, Dictionary<TK, TV> dict2)
-        {
-            return dict1.Union(dict2).ToDictionary(k => k.Key, v => v.Value);
-        }
-
-        private void LoadEventsApplicableSet(XmlNode cfgNode, string attributeName, out HashSet<string> set)
-        {
-            set = null;
-            XmlAttribute aAllowEvents = cfgNode.Attributes[attributeName];
-            if (aAllowEvents != null)
-            {
-                string[] allowedEvents = aAllowEvents.InnerText.Split
-                    (
-                        new[] {Constants.Splitter}, StringSplitOptions.RemoveEmptyEntries
-                    );
-                set = new HashSet<string>
-                    (
-                        allowedEvents.Select(s => s.Trim()).Where(s => s != string.Empty).Distinct()
-                    );
-                if (set.Count == 0)
-                {
-                    set = null;
-                }
-            }
-        }
-
-        private void RecalculateHash(XmlNode cfgNode)
-        {
-            Hash = CalculateHash(cfgNode);
         }
 
 #endregion
@@ -721,6 +655,5 @@ namespace IPCLogger.Core.Loggers.Base
 #endregion
 
     }
-
     // ReSharper restore PossibleNullReferenceException
 }
