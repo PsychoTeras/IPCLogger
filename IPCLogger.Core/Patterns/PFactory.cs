@@ -49,6 +49,15 @@ namespace IPCLogger.Core.Patterns
         private Dictionary<string, RawPatterns> _rawPatterns;
         private HashSet<string> _missingPatterns;
 
+        private static readonly Dictionary<string, string> _dictPropertyAttributes = 
+            new Dictionary<string, string>
+        {
+            {"Description", "description"},
+            {"Events", "events"},
+            {"ImmediateFlush", "immediate-flush"},
+            {"ApplicableFor", "applicable-for"}
+        };
+
 #endregion
 
 #region Static properties
@@ -355,8 +364,7 @@ get_generic_pattern:
             List<PatternContent> content = new List<PatternContent>();
             IEnumerable<XmlNode> contentNodes = cfgNode.
                 SelectNodes(patternContentXPath).
-                Cast<XmlNode>().
-                Where(n => !string.IsNullOrWhiteSpace(n.InnerText));
+                Cast<XmlNode>();
             foreach (XmlNode node in contentNodes)
             {
                 content.Add(new PatternContent(node));
@@ -370,6 +378,11 @@ get_generic_pattern:
             XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
             rootNode.AppendChild(newNode);
             return newNode;
+        }
+
+        internal static string GetPropertyAttributeName(string propertyName)
+        {
+            return _dictPropertyAttributes[propertyName];
         }
 
 #endregion

@@ -86,8 +86,11 @@ namespace IPCLogger.ConfigurationService.Web.modules
                                 model.ReinitializeSettings();
                                 coreService.AppendPattern(model);
                             }
+                            else
+                            {
+                                model.ReloadProperties();
+                            }
                             coreService.SaveConfiguration();
-                            model.ReloadProperties();
                         }
                         else
                         {

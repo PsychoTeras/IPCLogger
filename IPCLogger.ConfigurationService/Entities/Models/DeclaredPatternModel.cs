@@ -27,6 +27,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         }
     }
 
+    // ReSharper disable PossibleNullReferenceException
     public class DeclaredPatternModel
     {
         private PropertyModel[] _properties;
@@ -71,7 +72,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
             _properties = GetType().GetProperties
             (
-                BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
+                BindingFlags.Public | BindingFlags.Instance
             ).Where
             (
                 p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()
@@ -114,11 +115,45 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
         {
-            return null;
+            List<PropertyValidationResult> result = new List<PropertyValidationResult>();
+            PropertyInfo[] propertyInfos = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray();
+            foreach (PropertyObjectDTO dto in properties)
+            {
+                if (dto.Name != "Content")
+                {
+                    PropertyInfo pi = propertyInfos.FirstOrDefault(p => p.Name == dto.Name);
+                    if (pi == null)
+                    {
+                        throw new Exception($"Invlid property name '{dto.Name}'");
+                    }
+
+                    result.Add(PropertyValidationResult.Valid
+                    (
+                        dto.Name,
+                        Convert.ChangeType(dto.Value, pi.PropertyType),
+                        false
+                    ));
+                }
+            }
+
+            return result.ToArray();
         }
 
         internal bool UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
         {
+            void SetCfgAttributeValue(string attributeName, object value)
+            {
+                XmlAttribute valAttribute = RootXmlNode.Attributes[attributeName];
+                if (valAttribute == null)
+                {
+                    XmlDocument xmlDoc = RootXmlNode.OwnerDocument;
+                    valAttribute = xmlDoc.CreateAttribute(attributeName);
+                    RootXmlNode.Attributes.Append(valAttribute);
+                }
+
+                valAttribute.InnerText = value?.ToString() ?? string.Empty;
+            }
+
             bool wasUpdated = false, hasError = false;
             string bakRootXmlNode = RootXmlNode.InnerXml;
             foreach (PropertyValidationResult result in validationResult)
@@ -128,7 +163,15 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 {
                     try
                     {
-                        //BaseSettings.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
+                        if (result.Name != "Content")
+                        {
+                            string attributeName = PFactory.GetPropertyAttributeName(result.Name);
+                            SetCfgAttributeValue(attributeName, result.Value);
+                        }
+                        else
+                        {
+
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -171,4 +214,5 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return Description ?? "[Pattern]";
         }
     }
+    // ReSharper restore PossibleNullReferenceException
 }
