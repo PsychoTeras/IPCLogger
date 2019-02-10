@@ -1,7 +1,7 @@
 ﻿function AppSettingsController() {
 
     this.addLogger = function (applicationId, loggerId) {
-        var url = getApiUrl("applications", applicationId, "loggers", loggerId);
+        var url = getApiUrl("applications", applicationId, "loggers", loggerId, "new");
         navigate(url);
     };
 
@@ -20,7 +20,7 @@
     };
 
     this.addPattern = function (applicationId) {
-        var url = getApiUrl("applications", applicationId, "patterns");
+        var url = getApiUrl("applications", applicationId, "patterns", "new");
         navigate(url);
     };
 

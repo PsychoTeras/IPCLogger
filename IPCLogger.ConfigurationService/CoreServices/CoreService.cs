@@ -2,6 +2,7 @@
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Loggers.LFactory;
+using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets;
 using IPCLogger.Core.Snippets.Base;
 using System;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using IPCLogger.Core.Patterns;
 using static IPCLogger.Core.Loggers.Base.BaseSettings;
 
 namespace IPCLogger.ConfigurationService.CoreServices
@@ -68,11 +68,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
             ConfigurationXml = new XmlDocument();
             ConfigurationXml.PreserveWhitespace = true;
             ConfigurationXml.Load(configurationFile);
-        }
-
-        public XmlNode AppendConfigurationNode(XmlNode cfgNode)
-        {
-            return LFactorySettings.AppendConfigurationNode(ConfigurationXml, cfgNode);
         }
 
         public void SaveConfiguration()
@@ -173,6 +168,11 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
         }
 
+        public XmlNode AppendLoggerNode(XmlNode cfgNode)
+        {
+            return LFactorySettings.AppendConfigurationNode(ConfigurationXml, cfgNode);
+        }
+
         public void AppendLogger(DeclaredLoggerModel loggerModel)
         {
             DeclaredLoggers.Add(loggerModel);
@@ -212,6 +212,24 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             return model;
+        }
+
+        public void AppendPattern(DeclaredPatternModel patternModel)
+        {
+            DeclaredPatterns.Add(patternModel);
+        }
+
+        public void RemovePattern(string patternId)
+        {
+            DeclaredPatternModel model = DeclaredPatterns.FirstOrDefault(l => l.Id == patternId);
+            if (model == null)
+            {
+                throw new InvalidRequestException();
+            }
+
+            DeclaredPatterns.Remove(model);
+            model.RootXmlNode.ParentNode?.RemoveChild(model.RootXmlNode);
+            SaveConfiguration();
         }
 
 #endregion

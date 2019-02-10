@@ -19,6 +19,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 #region Constants
 
         private const string FOLDER_LOGGERS = "loggers";
+        private const string FOLDER_PATTERNS = "patterns";
         private const string FOLDER_SNIPPETS = "snippets";
 
 #endregion
@@ -28,6 +29,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private static readonly Lazy<DocsService> _instance = new Lazy<DocsService>(() => new DocsService());
 
         private List<DocItemModel> _docLoggers;
+        private List<DocItemModel> _docPatterns;
         private List<DocItemModel> _docSnippets;
 
 
@@ -199,11 +201,16 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private void Initialize(string docsPath)
         {
             _docLoggers = new List<DocItemModel>();
+            _docPatterns = new List<DocItemModel>();
             _docSnippets = new List<DocItemModel>();
 
             //Read docs for loggers
             string loggersPath = Path.Combine(docsPath, FOLDER_LOGGERS);
             ReadDocsItems(loggersPath, _docLoggers);
+
+            //Read docs for patterns
+            string patternsPath = Path.Combine(docsPath, FOLDER_PATTERNS);
+            ReadDocsItems(patternsPath, _docPatterns);
 
             //Read docs for snippets
             string snippetsPath = Path.Combine(docsPath, FOLDER_SNIPPETS);
@@ -229,6 +236,18 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 d => d.ObjectId.ToString() == loggerType && d.ObjectSubId == propertyName
             ) ??
             _docLoggers.FirstOrDefault
+            (
+                d => d.ObjectId.ToString() == Constants.ApplicableForAllMark && d.ObjectSubId == propertyName
+            );
+        }
+
+#endregion
+
+#region Logger methods
+
+        public DocItemModel GetPatternPropertyDoc(string propertyName)
+        {
+            return _docPatterns.FirstOrDefault
             (
                 d => d.ObjectId.ToString() == Constants.ApplicableForAllMark && d.ObjectSubId == propertyName
             );

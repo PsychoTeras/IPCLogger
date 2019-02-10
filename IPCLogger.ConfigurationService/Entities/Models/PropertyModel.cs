@@ -46,14 +46,9 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             DisplayName = DisplayName.TrimEnd();
         }
 
-        public void SetDisplayName(string displayName)
+        public PropertyModel(string name, Type type, string value)
+        : this(name, type, null, value, null, false, false, false)
         {
-            DisplayName = displayName;
-        }
-
-        public void UpdateValue(string newValue)
-        {
-            Value = newValue;
         }
 
         public override string ToString()

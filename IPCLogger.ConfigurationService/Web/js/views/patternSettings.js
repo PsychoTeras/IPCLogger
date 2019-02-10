@@ -45,8 +45,7 @@
     function highlightValidationErroredControls(failedProps) {
         $.each(failedProps,
             function(_, p) {
-                var pName = p.isCommon ? "#" + p.name : p.name;
-                var control = $.grep(dictControls, function(c) { return c.name === pName; })[0].control;
+                var control = $.grep(dictControls, function(c) { return c.name === p.Name; })[0].control;
                 control.setValidity(false, p.errorMessage);
             });
     }
@@ -67,10 +66,10 @@
 
     function savePropertyObjs(propertyObjs) {
         var applicationId = getApplicationId();
-        var patternId = getPatternId();
         if (isNew()) {
-            PatternSettingsController.create(applicationId, patternId, propertyObjs, processSaveResult);
+            PatternSettingsController.create(applicationId, propertyObjs, processSaveResult);
         } else {
+            var patternId = getPatternId();
             PatternSettingsController.update(applicationId, patternId, propertyObjs, processSaveResult);
         }
     }
@@ -108,6 +107,12 @@
                 item.control.resetValue();
                 item.control.setValidity(true);
             });
+    }
+
+    function showFormattablePopup(e, element) {
+        var applicationId = getApplicationId();
+        PopupController.snippetsInfo(applicationId, function (data) {
+        });
     }
 
     function initialize() {

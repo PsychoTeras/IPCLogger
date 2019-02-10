@@ -38,6 +38,11 @@ namespace IPCLogger.Core.Loggers.Base
                 IsRequired = isRequired;
                 IsFormattable = isFormattable;
             }
+
+            public PropertyData(PropertyInfo propertyInfo)
+                : this(propertyInfo, null, false, false)
+            {
+            }
         }
 
         protected internal class PropertyValidationResult

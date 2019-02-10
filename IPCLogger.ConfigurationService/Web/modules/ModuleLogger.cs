@@ -101,7 +101,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                         {
                             if (create)
                             {
-                                model.RootXmlNode = coreService.AppendConfigurationNode(model.RootXmlNode);
+                                model.RootXmlNode = coreService.AppendLoggerNode(model.RootXmlNode);
                                 model.ReinitializeSettings();
                                 coreService.AppendLogger(model);
                             }
@@ -124,11 +124,11 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
             }
 
-            Get["/applications/{appid:int}/loggers/{lid}"] = x => NewOrGet(x, true);
+            Get["/applications/{appid:int}/loggers/{lid}/new"] = x => NewOrGet(x, true);
 
             Get["/applications/{appid:int}/loggers/{lid}/settings"] = x => NewOrGet(x, false);
 
-            Post["/applications/{appid:int}/loggers/{lid}"] = x => CreateOrUpdate(x, true);
+            Post["/applications/{appid:int}/loggers/{lid}/new"] = x => CreateOrUpdate(x, true);
 
             Post["/applications/{appid:int}/loggers/{lid}/settings"] = x => CreateOrUpdate(x, false);
 

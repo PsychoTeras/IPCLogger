@@ -15,7 +15,7 @@
     }
 
     this.create = function (applicationId, loggerId, propertyObjs, callback) {
-        createOrUpdate(applicationId, loggerId, undefined, propertyObjs, callback);
+        createOrUpdate(applicationId, loggerId, "new", propertyObjs, callback);
     };
 
     this.update = function (applicationId, loggerId, propertyObjs, callback) {

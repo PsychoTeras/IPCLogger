@@ -62,7 +62,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 );
             }
 
-            var commonProperties = BaseSettings.GetCommonProperties().
+            IEnumerable<PropertyModel> commonProperties = BaseSettings.GetCommonProperties().
                 Select(data => PropertyDataToModel(data, true));
             _properties = BaseSettings.GetProperties().
                 Select(data => PropertyDataToModel(data, false)).

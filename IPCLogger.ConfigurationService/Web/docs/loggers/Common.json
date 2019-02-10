@@ -12,12 +12,12 @@
   {
     "ObjectId": "*",
     "ObjectSubId": "AllowEvents",
-    "Description": "List of allowed events, comma separated. If declared, 'Deny events' setting will be ignored"
+    "Description": "List of allowed events (comma separated). If declared, 'Deny events' setting will be ignored"
   },
   {
     "ObjectId": "*",
     "ObjectSubId": "DenyEvents",
-    "Description": "List of denied events, comma separated"
+    "Description": "List of denied events (comma separated)"
   },
 
 

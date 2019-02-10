@@ -99,7 +99,7 @@ namespace IPCLogger.ConfigurationService.Entities
 
         public static PageModel AddLogger(int applicationId, DeclaredLoggerModel loggerModel, PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{applicationId}/loggers/{loggerModel.Id}";
+            string pagePath = $"/applications/{applicationId}/loggers/{loggerModel.Id}/new";
             return GetPageModel(PageType.LoggerSettings, pagePath, loggerModel.ToString(), loggerModel, previousPageModel);
         }
 
@@ -111,7 +111,7 @@ namespace IPCLogger.ConfigurationService.Entities
 
         public static PageModel AddPattern(int applicationId, DeclaredPatternModel patternModel, PageModel previousPageModel)
         {
-            string pagePath = $"/applications/{applicationId}/patterns";
+            string pagePath = $"/applications/{applicationId}/patterns/new";
             return GetPageModel(PageType.PatternSettings, pagePath, patternModel.ToString(), patternModel, previousPageModel);
         }
 

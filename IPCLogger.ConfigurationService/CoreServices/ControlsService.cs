@@ -65,22 +65,32 @@ namespace IPCLogger.ConfigurationService.CoreServices
             return doc?.Description;
         }
 
-        public static string GetPropertyDisplayName(string loggerType, PropertyModel propertyModel)
+        public static string GetLoggerPropertyDisplayName(string loggerType, PropertyModel propertyModel)
         {
             DocItemModel doc = DocsService.Instance.GetLoggerPropertyDoc(loggerType, propertyModel.Name);
             return doc != null && doc.DisplayName != null ? doc.DisplayName : propertyModel.DisplayName;
         }
 
-        public static string GetPropertyDescription(string loggerType, PropertyModel propertyModel)
+        public static string GetLoggerPropertyDescription(string loggerType, PropertyModel propertyModel)
         {
             DocItemModel doc = DocsService.Instance.GetLoggerPropertyDoc(loggerType, propertyModel.Name);
             return doc?.Description;
         }
 
-        public static string ControlByPropertyModel(string loggerType, PropertyModel propertyModel)
+        public static string GetPatternPropertyDisplayName(PropertyModel propertyModel)
         {
-            DocItemModel doc = DocsService.Instance.GetLoggerPropertyDoc(loggerType, propertyModel.Name);
+            DocItemModel doc = DocsService.Instance.GetPatternPropertyDoc(propertyModel.Name);
+            return doc != null && doc.DisplayName != null ? doc.DisplayName : propertyModel.DisplayName;
+        }
 
+        public static string GetPatternPropertyDescription(PropertyModel propertyModel)
+        {
+            DocItemModel doc = DocsService.Instance.GetPatternPropertyDoc(propertyModel.Name);
+            return doc?.Description;
+        }
+
+        public static string ControlByPropertyModel(PropertyModel propertyModel)
+        {
             Type GetBasePropertyType(Type type)
             {
                 if (type.IsEnum)

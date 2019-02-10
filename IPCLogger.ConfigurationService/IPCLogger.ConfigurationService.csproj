@@ -186,6 +186,7 @@
     <None Include="Web\docs\loggers\LConsole.json" />
     <None Include="Web\docs\loggers\LFile.json" />
     <None Include="Web\docs\loggers\Common.json" />
+    <None Include="Web\docs\patterns\Common.json" />
     <None Include="Web\docs\snippets\SSnippet.json" />
     <None Include="Web\fonts\fontawesome-webfont.eot" />
     <None Include="Web\fonts\fontawesome-webfont.ttf" />
@@ -195,7 +196,6 @@
     <Content Include="Web\assets\icon-info-16.png" />
     <Content Include="Web\css\controls\Alert.css" />
     <Content Include="Web\css\controls\TableSelect.css" />
-    <Content Include="Web\css\views\patternSettings.css" />
     <Content Include="Web\css\views\popups\popupSnippetsInfo.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
     <Content Include="Web\js\controllers\patternSettingsController.js" />
@@ -222,7 +222,7 @@
     <Content Include="Web\css\libraries\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\libraries\font-awesome\font-awesome.min.css" />
-    <Content Include="Web\css\views\loggerSettings.css" />
+    <Content Include="Web\css\views\manageSettings.css" />
     <Content Include="Web\fonts\fontawesome-webfont.svg" />
     <Content Include="Web\js\controls\PropertyTable.js" />
     <Content Include="Web\js\controls\SizePicker.js" />

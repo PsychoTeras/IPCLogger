@@ -15,6 +15,11 @@
             ErrorMessage = errorMessage;
         }
 
+        public InvalidPropertyValueDTO(string name, string errorMessage)
+            : this(name, false, errorMessage)
+        {
+        }
+
         public override string ToString()
         {
             return IsCommon ? "#" + Name : Name;

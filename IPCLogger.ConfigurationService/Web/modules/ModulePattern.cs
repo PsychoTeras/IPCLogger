@@ -24,12 +24,12 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 VerifyAuthentication();
 
                 int applicationId = ViewBag.applicationId = int.Parse(x.appid);
-                string patternId = ViewBag.patternId = x.lid;
+                string patternId = ViewBag.patternId = x.pid;
                 ViewBag.isNew = isNew;
 
                 CoreService coreService = GetCoreService(applicationId);
                 DeclaredPatternModel model = isNew
-                    ? new DeclaredPatternModel()
+                    ? DeclaredPatternModel.CreateNew()
                     : coreService.GetDeclaredPattern(patternId);
 
                 PageModel pageModel = SetPageModel
@@ -65,39 +65,30 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 try
                 {
                     int applicationId = int.Parse(x.appid);
-                    string loggerId = x.lid;
+                    string patternId = x.pid;
 
                     CoreService coreService = GetCoreService(applicationId);
 
-                    DeclaredLoggerModel loggerModel;
-                    if (create)
-                    {
-                        LoggerModel availableLoggerModel = coreService.GetAvailableLogger(loggerId);
-                        loggerModel = DeclaredLoggerModel.FromLogger(availableLoggerModel);
-                    }
-                    else
-                    {
-                        loggerModel = coreService.GetDeclaredLogger(loggerId);
-                    }
+                    DeclaredPatternModel model = create
+                        ? DeclaredPatternModel.CreateNew()
+                        : coreService.GetDeclaredPattern(patternId);
 
-                    PropertyValidationResult[] validationResult = loggerModel.ValidateProperties(propertyObjs);
-                    coreService.ValidateLoggerUniqueness(loggerModel, propertyObjs, ref validationResult);
+                    PropertyValidationResult[] validationResult = model.ValidateProperties(propertyObjs);
 
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).
-                        Select(r => new InvalidPropertyValueDTO(r.Name, r.IsCommon, r.ErrorMessage));
+                        Select(r => new InvalidPropertyValueDTO(r.Name, r.ErrorMessage));
                     if (!invalidProperties.Any())
                     {
-                        if (loggerModel.UpdateSettings(validationResult, propertyObjs))
+                        if (model.UpdateSettings(validationResult, propertyObjs))
                         {
                             if (create)
                             {
-                                loggerModel.RootXmlNode = coreService.AppendConfigurationNode(loggerModel.RootXmlNode);
-                                loggerModel.ReinitializeSettings();
-                                coreService.AppendLogger(loggerModel);
+                                //model.RootXmlNode = coreService.AppendLoggerNode(model.RootXmlNode);
+                                coreService.AppendPattern(model);
                             }
                             coreService.SaveConfiguration();
-                            loggerModel.ReloadProperties();
+                            model.ReloadProperties();
                         }
                         else
                         {
@@ -115,24 +106,24 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
             }
 
-            Get["/applications/{appid:int}/patterns/{lid}"] = x => NewOrGet(x, true);
+            Get["/applications/{appid:int}/patterns/new"] = x => NewOrGet(x, true);
 
-            Get["/applications/{appid:int}/patterns/{lid}/settings"] = x => NewOrGet(x, false);
+            Get["/applications/{appid:int}/patterns/{pid}/settings"] = x => NewOrGet(x, false);
 
-            Post["/applications/{appid:int}/patterns/{lid}"] = x => CreateOrUpdate(x, true);
+            Post["/applications/{appid:int}/patterns/new"] = x => CreateOrUpdate(x, true);
 
-            Post["/applications/{appid:int}/patterns/{lid}/settings"] = x => CreateOrUpdate(x, false);
+            Post["/applications/{appid:int}/patterns/{pid}/settings"] = x => CreateOrUpdate(x, false);
 
-            Delete["/applications/{appid:int}/patterns/{lid}"] = x =>
+            Delete["/applications/{appid:int}/patterns/{pid}"] = x =>
             {
                 VerifyAuthentication();
 
                 try
                 {
                     int applicationId = int.Parse(x.appid);
-                    string loggerId = x.lid;
+                    string patternId = x.pid;
                     CoreService coreService = GetCoreService(applicationId);
-                    coreService.RemoveLogger(loggerId);
+                    coreService.RemovePattern(patternId);
                     return null;
                 }
                 catch (Exception ex)

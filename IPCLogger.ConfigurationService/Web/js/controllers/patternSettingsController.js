@@ -14,8 +14,8 @@
             JSON.stringify(propertyObjs));
     }
 
-    this.create = function (applicationId, patternId, propertyObjs, callback) {
-        createOrUpdate(applicationId, patternId, undefined, propertyObjs, callback);
+    this.create = function (applicationId, propertyObjs, callback) {
+        createOrUpdate(applicationId, "new", undefined, propertyObjs, callback);
     };
 
     this.update = function (applicationId, patternId, propertyObjs, callback) {

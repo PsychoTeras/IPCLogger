@@ -1,42 +1,42 @@
-﻿#logger-settings {
+﻿.manage-settings {
     margin-bottom: 15px;
 }
 
-    #logger-settings .card-container {
+    .manage-settings .card-container {
         max-height: calc(100vh - 180px);
         overflow: auto;
     }
 
-    #logger-settings .card-header:not(:first-child) {
+    .manage-settings .card-header:not(:first-child) {
         border-top: 1px solid #000000;
         border-top: 1px solid rgba(0, 0, 0, .125);
     }
 
-    #logger-settings .card-body {
+    .manage-settings .card-body {
         padding: 0 1rem 1rem 1rem !important;
     }
 
-        #logger-settings .card-body *[changed] {
+        .manage-settings .card-body *[changed] {
             background-color: cornsilk;
         }
 
-    #logger-settings .table-wrap {
+    .manage-settings .table-wrap {
         height: auto;
         /*max-height: 194px;*/
         overflow: auto;
         padding: 0;
     }
 
-        #logger-settings .table-wrap table {
+        .manage-settings .table-wrap table {
             font-size: var(--sc-font-size);
             margin-bottom: 0;
         }
 
-            #logger-settings .table-wrap table thead td {
+            .manage-settings .table-wrap table thead td {
                 border-top-width: 0;
             }
 
-            #logger-settings .table-wrap table tbody .no-records {
+            .manage-settings .table-wrap table tbody .no-records {
                 font-style: italic;
                 background-color: white !important;
                 cursor: auto;
@@ -45,96 +45,96 @@
                 text-align: center;
             }
 
-            #logger-settings .table-wrap table tbody td {
+            .manage-settings .table-wrap table tbody td {
                 vertical-align: middle;
                 cursor: pointer;
                 padding: 1px 1px 1px 5px;
             }
 
-            #logger-settings .table-wrap table.editing tbody tr.editing td {
+            .manage-settings .table-wrap table.editing tbody tr.editing td {
                 padding-left: 3px;
             }
 
-            #logger-settings .table-wrap table tbody td[is-empty] {
+            .manage-settings .table-wrap table tbody td[is-empty] {
                 color: #000000;
                 color: rgba(0, 0, 0, .2);
                 font-style: italic;
             }
 
-            #logger-settings .table-wrap table tbody td select,
-            #logger-settings .table-wrap table tbody td input {
+            .manage-settings .table-wrap table tbody td select,
+            .manage-settings .table-wrap table tbody td input {
                 height: auto !important;
             }
 
-            #logger-settings .table-wrap table tbody .td-actions {
+            .manage-settings .table-wrap table tbody .td-actions {
                 opacity: 0.05;
                 text-align: right;
                 height: 33px;
             }
 
-                #logger-settings .table-wrap table tbody .td-actions.mouseover,
-                #logger-settings .table-wrap table.editing tbody tr.editing .td-actions {
+                .manage-settings .table-wrap table tbody .td-actions.mouseover,
+                .manage-settings .table-wrap table.editing tbody tr.editing .td-actions {
                     opacity: 1;
                 }
 
-                #logger-settings .table-wrap table tbody .td-actions button {
+                .manage-settings .table-wrap table tbody .td-actions button {
                     height: 30px;
                     width: 31px;
                 }
 
-            #logger-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button {
+            .manage-settings .table-wrap table.editing tbody tr:not(.editing) .td-actions button {
                 display: none;
             }
 
-            #logger-settings .table-wrap table.editing tbody tr.editing {
+            .manage-settings .table-wrap table.editing tbody tr.editing {
                 background-color: #000000;
                 background-color: rgba(0, 0, 0, .075);
             }
 
-    #logger-settings div.div-formattable {
+    .manage-settings div.div-formattable {
         display: flex;
     }
 
-        #logger-settings div.div-formattable button {
+        .manage-settings div.div-formattable button {
             border: 1px solid #ced4da;
             margin-left: 4px;
             height: 32px;
             width: 32px;
         }
 
-    #logger-settings div.custom-checkbox {
+    .manage-settings div.custom-checkbox {
         padding-top: 5px;
         height: 32px;
     }
 
-        #logger-settings div.custom-checkbox label {
+        .manage-settings div.custom-checkbox label {
             margin-left: 8px;
             cursor: pointer;
         }
 
-            #logger-settings div.custom-checkbox label,
-            #logger-settings div.custom-checkbox label:before,
-            #logger-settings div.custom-checkbox label:after {
+            .manage-settings div.custom-checkbox label,
+            .manage-settings div.custom-checkbox label:before,
+            .manage-settings div.custom-checkbox label:after {
                 margin-top: -1px;
             }
 
-    #logger-settings select.custom-select {
+    .manage-settings select.custom-select {
         height: 32px;
         padding: 0 0 2px 12px;
     }
 
-    #logger-settings *[invalid] {
+    .manage-settings *[invalid] {
         border-color: #dc3545;
     }
 
-    #logger-settings .invalid-feedback.visible {
+    .manage-settings .invalid-feedback.visible {
         display: block;
     }
 
-    #logger-settings hr {
+    .manage-settings hr {
         margin-bottom: .5rem;
     }
 
-    #logger-settings .div-save-cancel {
+    .manage-settings .div-save-cancel {
         margin-top: 15px;
     }

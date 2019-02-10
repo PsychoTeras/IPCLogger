@@ -1,0 +1,18 @@
+[
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "Description",
+    "Description": "Custom description for the pattern"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "Events",
+    "DisplayName": "Responds To Events",
+    "Description": "List of allowed events that the pattern will respond to (comma separated)"
+  },
+  {
+    "ObjectId": "*",
+    "ObjectSubId": "ImmediateFlush",
+    "Description": "Whether a logging event will be flushed immediately, no matter to a logger configuration"
+  }
+]

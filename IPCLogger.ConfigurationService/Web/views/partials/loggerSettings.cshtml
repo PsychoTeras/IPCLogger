@@ -2,9 +2,9 @@
 @using IPCLogger.ConfigurationService.CoreServices;
 @inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<DeclaredLoggerModel>
 
-<link href="../../css/views/loggerSettings.css" rel="stylesheet">
+<link href="../../css/views/manageSettings.css" rel="stylesheet">
 
-<div id="logger-settings">
+<div id="logger-settings" class="manage-settings">
 
     <input type="hidden" id="application-id" value="@ViewBag.applicationId" />
     <input type="hidden" id="logger-id" value="@ViewBag.loggerId" />
@@ -27,14 +27,14 @@
                     <div class="mt-2">
                         <div class="group-param-info">
                             <label>
-                                @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
+                                @(ControlsService.GetLoggerPropertyDisplayName(Model.TypeName, model))
                                 @if (model.IsRequired)
                                 {
                                     <a style="color: red; font-weight: bold"> * </a>
                                 }
                             </label>
                             @{
-                                string description = ControlsService.GetPropertyDescription(Model.TypeName, model);
+                                string description = ControlsService.GetLoggerPropertyDescription(Model.TypeName, model);
                                 if (!string.IsNullOrEmpty(description))
                                 {
                                     <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
@@ -42,7 +42,7 @@
                                 }
                             }
                         </div>
-                        @Html.Raw(ControlsService.ControlByPropertyModel(Model.TypeName, model))
+                        @Html.Raw(ControlsService.ControlByPropertyModel(model))
                         <div class="invalid-feedback"></div>
                     </div>
                 }
@@ -62,14 +62,14 @@
                         <div class="mt-2">
                             <div class="group-param-info">
                                 <label>
-                                    @(ControlsService.GetPropertyDisplayName(Model.TypeName, model))
+                                    @(ControlsService.GetLoggerPropertyDisplayName(Model.TypeName, model))
                                     @if (model.IsRequired)
                                     {
                                         <a style="color: red; font-weight: bold"> * </a>
                                     }
                                 </label>
                                 @{
-                                    string description = ControlsService.GetPropertyDescription(Model.TypeName, model);
+                                    string description = ControlsService.GetLoggerPropertyDescription(Model.TypeName, model);
                                     if (!string.IsNullOrEmpty(description))
                                     {
                                         <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
@@ -77,7 +77,7 @@
                                     }
                                 }
                             </div>
-                            @Html.Raw(ControlsService.ControlByPropertyModel(Model.TypeName, model))
+                            @Html.Raw(ControlsService.ControlByPropertyModel(model))
                             <div class="invalid-feedback"></div>
                         </div>
                     }
