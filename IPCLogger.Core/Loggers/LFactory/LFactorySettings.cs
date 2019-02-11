@@ -94,78 +94,9 @@ namespace IPCLogger.Core.Loggers.LFactory
 
 #endregion
 
-#region Configuration Service methods
-
-        internal static DeclaredLogger GetDeclaredFactoryLogger(XmlDocument xmlCfg)
-        {
-            string loggersXPath = $"{Constants.RootAppCfgPath}";
-            XmlNode cfgNode = xmlCfg.SelectSingleNode(loggersXPath);
-            return cfgNode != null ? new DeclaredLogger(cfgNode) : null;
-        }
-
-        internal static DeclaredLogger AppendFactoryLogger(XmlDocument xmlCfg)
-        {
-            XmlNode AppendXmlNode(XmlNode parentNode, string nodeName, string nodePath = null)
-            {
-                XmlNode valNode = parentNode.SelectSingleNode(nodePath ?? nodeName);
-                if (valNode == null)
-                {
-                    XmlDocument xmlDoc = parentNode.OwnerDocument;
-                    valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
-                    parentNode.AppendChild(valNode);
-                }
-                return valNode;
-            }
-
-            void AppendXmlAttribute(XmlNode parentNode, string attributeName, string value)
-            {
-                XmlAttribute valAttribute = parentNode.Attributes[attributeName];
-                if (valAttribute == null)
-                {
-                    XmlDocument xmlDoc = parentNode.OwnerDocument;
-                    valAttribute = xmlDoc.CreateAttribute(attributeName);
-                    parentNode.Attributes.Append(valAttribute);
-                }
-
-                valAttribute.InnerText = value;
-            }
-
-            // Append config root node
-            XmlNode rootCfgNode = AppendXmlNode(xmlCfg.SelectSingleNode("/"), "configuration");
-
-            // Append emtpy logger config handler
-            XmlNode rootCSectionsNode = AppendXmlNode(rootCfgNode, "configSections");
-            XmlNode loggerCSectionNode = AppendXmlNode(rootCSectionsNode, "section",
-                $"section[@name='{Constants.LoggerName}']");
-            AppendXmlAttribute(loggerCSectionNode, "name", Constants.LoggerName);
-            AppendXmlAttribute(loggerCSectionNode, "type", "System.Configuration.IgnoreSectionHandler");
-
-            // Create logger section
-            XmlNode loggerNode = AppendXmlNode(rootCfgNode, Constants.LoggerName);
-            AppendXmlNode(loggerNode, "Patterns");
-            AppendXmlNode(loggerNode, "Loggers");
-
-            // Initialize settings
-            LFactorySettings settings = new LFactorySettings(typeof(LFactory), null);
-            settings.ApplyCommonSettings(loggerNode);
-            settings.Save(loggerNode);
-
-            return new DeclaredLogger(loggerNode);
-        }
-
-        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
-        {
-            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootLoggersCfgPath);
-            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
-            rootNode.AppendChild(newNode);
-            return newNode;
-        }
-
-#endregion
-
 #region Overrided methods
 
-        protected override Dictionary<string, string> GetCommonPropertiesSet()
+        protected override Dictionary<string, string> GetCommonPropertiesNames()
         {
             return new Dictionary<string, string>
             {
@@ -193,13 +124,6 @@ namespace IPCLogger.Core.Loggers.LFactory
         protected override Dictionary<string, XmlNode> GetSettingsDictionary(XmlNode cfgNode)
         {
             return new Dictionary<string, XmlNode>();
-        }
-
-        protected override void Save(XmlNode cfgNode)
-        {
-            SetCfgAttributeValue(cfgNode, "enabled", Enabled);
-            SetCfgAttributeValue(cfgNode, "no-lock", _noLock);
-            SetCfgAttributeValue(cfgNode, "auto-reload", _autoReload);
         }
 
 #endregion

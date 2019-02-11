@@ -49,7 +49,13 @@ namespace IPCLogger.Core.Patterns
         private Dictionary<string, RawPatterns> _rawPatterns;
         private HashSet<string> _missingPatterns;
 
-        private static readonly Dictionary<string, string> _dictPropertyAttributes = 
+#endregion
+
+#region Static properties
+
+        public static PFactory Instance { get; private set; }
+
+        internal static Dictionary<string, string> PropertyAttributes { get; } = 
             new Dictionary<string, string>
         {
             {"Description", "description"},
@@ -57,12 +63,6 @@ namespace IPCLogger.Core.Patterns
             {"ImmediateFlush", "immediate-flush"},
             {"ApplicableFor", "applicable-for"}
         };
-
-#endregion
-
-#region Static properties
-
-        public static PFactory Instance { get; private set; }
 
 #endregion
 
@@ -85,6 +85,35 @@ namespace IPCLogger.Core.Patterns
         public static PFactory CreateNewInstance()
         {
             return new PFactory();
+        }
+
+        internal static List<DeclaredPattern> GetDeclaredPatterns(XmlDocument xmlCfg)
+        {
+            List<DeclaredPattern> patterns = new List<DeclaredPattern>();
+
+            string patternsXPath = $"{Constants.RootPatternsCfgPath}/*";
+            XmlNodeList cfgNodes = xmlCfg.SelectNodes(patternsXPath);
+            foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
+            {
+                DeclaredPattern declaredPattern = new DeclaredPattern(cfgNode);
+                patterns.Add(declaredPattern);
+            }
+
+            return patterns;
+        }
+
+        internal static List<PatternContent> GetPatternContent(XmlNode cfgNode)
+        {
+            string patternContentXPath = "./Content";
+            List<PatternContent> content = new List<PatternContent>();
+            IEnumerable<XmlNode> contentNodes = cfgNode.
+                SelectNodes(patternContentXPath).
+                Cast<XmlNode>();
+            foreach (XmlNode node in contentNodes)
+            {
+                content.Add(new PatternContent(node));
+            }
+            return content;
         }
 
 #endregion
@@ -337,52 +366,6 @@ get_generic_pattern:
                     OrderBy(s => s.Key, new ContentComparer()).
                     ToDictionary(kv => kv.Key, kv => kv.Value);
             }
-        }
-
-#endregion
-
-#region Configuration Service methods
-
-        internal static List<DeclaredPattern> GetDeclaredPatterns(XmlDocument xmlCfg)
-        {
-            List<DeclaredPattern> patterns = new List<DeclaredPattern>();
-
-            string patternsXPath = $"{Constants.RootPatternsCfgPath}/*";
-            XmlNodeList cfgNodes = xmlCfg.SelectNodes(patternsXPath);
-            foreach (XmlNode cfgNode in cfgNodes.OfType<XmlNode>())
-            {
-                DeclaredPattern declaredPattern = new DeclaredPattern(cfgNode);
-                patterns.Add(declaredPattern);
-            }
-
-            return patterns;
-        }
-
-        internal static List<PatternContent> GetPatternContent(XmlNode cfgNode)
-        {
-            string patternContentXPath = "./Content";
-            List<PatternContent> content = new List<PatternContent>();
-            IEnumerable<XmlNode> contentNodes = cfgNode.
-                SelectNodes(patternContentXPath).
-                Cast<XmlNode>();
-            foreach (XmlNode node in contentNodes)
-            {
-                content.Add(new PatternContent(node));
-            }
-            return content;
-        }
-
-        internal static XmlNode AppendConfigurationNode(XmlDocument xmlCfg, XmlNode cfgNode)
-        {
-            XmlNode rootNode = xmlCfg.SelectSingleNode(Constants.RootPatternsCfgPath);
-            XmlNode newNode = xmlCfg.ImportNode(cfgNode, true);
-            rootNode.AppendChild(newNode);
-            return newNode;
-        }
-
-        internal static string GetPropertyAttributeName(string propertyName)
-        {
-            return _dictPropertyAttributes[propertyName];
         }
 
 #endregion

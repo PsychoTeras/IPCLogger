@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
+using IPCLogger.Core.Loggers;
 
 namespace IPCLogger.TestService
 {

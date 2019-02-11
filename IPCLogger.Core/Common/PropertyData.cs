@@ -1,5 +1,5 @@
-﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
-using System.Reflection;
+﻿using System.Reflection;
+using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.Core.Common
 {

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IPCLogger.Core.Common
 {
-    public static class JSONParser
+    internal static class JSONParser
     {
         [ThreadStatic] static Stack<List<string>> splitArrayPool;
         [ThreadStatic] static StringBuilder stringBuilder;

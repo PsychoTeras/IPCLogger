@@ -8,8 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml;
 
 namespace IPCLogger.Core.Loggers.Base
@@ -19,8 +17,6 @@ namespace IPCLogger.Core.Loggers.Base
     {
 
 #region Constants
-
-        protected const string ValidationErrorMessage = "{0} is required";
 
         private static readonly Func<string, bool> _defCheckApplicableEvent = s => true;
 
@@ -33,8 +29,6 @@ namespace IPCLogger.Core.Loggers.Base
         private HashSet<string> _allowEvents;
         private HashSet<string> _denyEvents;
 
-        private Dictionary<string, PropertyData> _commonProperties;
-        private Dictionary<string, PropertyData> _properties;
         private HashSet<string> _exclusivePropertyNodeNames;
 
 #endregion
@@ -68,6 +62,15 @@ namespace IPCLogger.Core.Loggers.Base
         {
             get { return _denyEvents; }
             protected set { _denyEvents = value; }
+        }
+
+        internal Dictionary<string, PropertyData> CommonProperties { get; private set; }
+
+        internal Dictionary<string, PropertyData> Properties { get; private set; }
+
+        internal Dictionary<string, string> CommonPropertiesNames
+        {
+            get { return GetCommonPropertiesNames(); }
         }
 
 #endregion
@@ -116,7 +119,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         public void Setup(XmlNode cfgNode)
         {
-            byte[] newHash = CalculateHash(cfgNode);
+            byte[] newHash = Helpers.CalculateHash(cfgNode);
             if (newHash != null && !Helpers.ByteArrayEquals(newHash, Hash)) //Setup if changed
             {
                 BeginSetup();
@@ -147,7 +150,7 @@ namespace IPCLogger.Core.Loggers.Base
 
 #region Initialization methods
 
-        protected virtual Dictionary<string, string> GetCommonPropertiesSet()
+        protected virtual Dictionary<string, string> GetCommonPropertiesNames()
         {
             return new Dictionary<string, string>
             {
@@ -160,15 +163,15 @@ namespace IPCLogger.Core.Loggers.Base
 
         protected virtual void BeginSetup()
         {
-            Dictionary<string, string> commonPropertiesSet = GetCommonPropertiesSet();
+            Dictionary<string, string> commonPropertiesNames = GetCommonPropertiesNames();
 
-            _commonProperties = GetType().
+            CommonProperties = GetType().
                 GetProperties
                 (
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
                 ).Where
                 (
-                    p => commonPropertiesSet.ContainsKey(p.Name)
+                    p => commonPropertiesNames.ContainsKey(p.Name)
                 ).OrderByDescending
                 (
                     p => p.DeclaringType.MetadataToken
@@ -184,7 +187,7 @@ namespace IPCLogger.Core.Loggers.Base
                     )
                 );
 
-            _properties = GetType().
+            Properties = GetType().
                 GetProperties
                 (
                     BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
@@ -205,7 +208,7 @@ namespace IPCLogger.Core.Loggers.Base
 
             _exclusivePropertyNodeNames = new HashSet<string>
             (
-                _properties.Concat(_commonProperties).
+                Properties.Concat(CommonProperties).
                     Select(d => d.Value.ConversionAttribute).
                     OfType<XmlNodesConversionAttribute>().
                     SelectMany(p => p.ExclusiveNodeNames).
@@ -274,7 +277,7 @@ namespace IPCLogger.Core.Loggers.Base
                     continue;
                 }
 
-                if (!_properties.ContainsKey(settingNode.Name))
+                if (!Properties.ContainsKey(settingNode.Name))
                 {
                     string msg = $"Undefined settings node '{settingNode.Name}'";
                     throw new Exception(msg);
@@ -297,7 +300,7 @@ namespace IPCLogger.Core.Loggers.Base
             Dictionary<string, object> valuesDict = new Dictionary<string, object>(settingsDict.Count);
             foreach (KeyValuePair<string, XmlNode> setting in settingsDict)
             {
-                PropertyData data = _properties[setting.Key];
+                PropertyData data = Properties[setting.Key];
                 Type propertyType = data.PropertyInfo.PropertyType;
 
                 try
@@ -356,7 +359,7 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual Dictionary<string, object> GetExclusiveSettingsValues(XmlNode cfgNode)
         {
             Dictionary<string, object> valuesDict = new Dictionary<string, object>();
-            IEnumerable<PropertyData> exclusiveProperties = _properties.Values.
+            IEnumerable<PropertyData> exclusiveProperties = Properties.Values.
                 Where(p => p.ConversionAttribute is XmlNodesConversionAttribute);
 
             foreach (PropertyData data in exclusiveProperties)
@@ -393,7 +396,7 @@ namespace IPCLogger.Core.Loggers.Base
         {
             foreach (KeyValuePair<string, object> value in valuesDict)
             {
-                PropertyInfo property = _properties[value.Key].PropertyInfo;
+                PropertyInfo property = Properties[value.Key].PropertyInfo;
                 property.SetValue(this, value.Value, null);
             }
         }
@@ -401,32 +404,6 @@ namespace IPCLogger.Core.Loggers.Base
         protected virtual void VerifySettingsValues(Dictionary<string, object> valuesDict) { }
 
         protected virtual void FinalizeSetup() { }
-
-        protected virtual void Save(XmlNode cfgNode)
-        {
-            foreach (PropertyData data in _properties.Values)
-            {
-                PropertyInfo property = data.PropertyInfo;
-                object value = property.GetValue(this, null);
-
-                switch (data.ConversionAttribute)
-                {
-                    case ValueConversionAttribute vcAttr:
-                        value = vcAttr.ValueToString(value);
-                        SetCfgNodeValue(cfgNode, property.Name, value);
-                        break;
-                    case XmlNodeConversionAttribute xmlnAttr:
-                        SetCfgNodeData(cfgNode, property.Name, value, xmlnAttr);
-                        break;
-                    case XmlNodesConversionAttribute xmlnsAttr:
-                        SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
-                        break;
-                    default:
-                        SetCfgNodeValue(cfgNode, property.Name, value);
-                        break;
-                }
-            }
-        }
 
 #endregion
 
@@ -465,191 +442,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void RecalculateHash(XmlNode cfgNode)
         {
-            Hash = CalculateHash(cfgNode);
-        }
-
-#endregion
-
-#region Configuration Service methods
-
-        internal virtual IEnumerable<PropertyData> GetCommonProperties()
-        {
-            return _commonProperties.Values;
-        }
-
-        internal virtual IEnumerable<PropertyData> GetProperties()
-        {
-            return _properties.Values;
-        }
-
-        internal virtual string GetPropertyValue(PropertyInfo property, CustomConversionAttribute converter)
-        {
-            return converter != null
-                ? converter.ValueToCSString(property.GetValue(this, null)) ?? string.Empty
-                : property.GetValue(this, null)?.ToString() ?? string.Empty;
-        }
-
-        internal virtual string GetPropertyValues(PropertyInfo property)
-        {
-            string[] names;
-            Type type = property.PropertyType;
-            return type.IsEnum && (names = Enum.GetNames(type)).Any()
-                ? names.Aggregate((current, next) => current + "," + next)
-                : null;
-        }
-
-        internal virtual PropertyValidationResult ValidatePropertyValue(string propertyName, string sValue,
-            bool isCommon, bool isChanged)
-        {
-            object ConvertValue(string value, Type type)
-            {
-                return type.IsEnum
-                    ? Enum.Parse(type, value)
-                    : Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
-            }
-
-            bool IsDefaultValue(object value, Type type)
-            {
-                object defValue = type.IsValueType ? Activator.CreateInstance(type) : null;
-                return type == typeof(string) ? string.IsNullOrEmpty((string) value) : value.Equals(defValue);
-            }
-
-            try
-            {
-                Dictionary<string, PropertyData> dictProps = isCommon
-                    ? _commonProperties
-                    : _properties;
-
-                if (dictProps.TryGetValue(propertyName, out var data))
-                {
-                    object value = data.ConversionAttribute != null
-                        ? data.ConversionAttribute.CSStringToValue(sValue)
-                        : ConvertValue(sValue, data.PropertyInfo.PropertyType);
-
-                    if (value == null || data.IsRequired && IsDefaultValue(value, data.PropertyInfo.PropertyType))
-                    {
-                        string errorMessage = string.Format(ValidationErrorMessage, propertyName);
-                        return PropertyValidationResult.Invalid(propertyName, isCommon, errorMessage);
-                    }
-
-                    return PropertyValidationResult.Valid(propertyName, value, isCommon);
-                }
-            }
-            catch (Exception ex)
-            {
-                return PropertyValidationResult.Invalid(propertyName, isCommon, ex.Message);
-            }
-
-            throw new Exception($"Invalid property name '{propertyName}'");
-        }
-
-        internal virtual void UpdatePropertyValue(XmlNode cfgNode, string propertyName, object value,
-            bool isCommon)
-        {
-            Dictionary<string, PropertyData> dictProps = isCommon
-                ? _commonProperties
-                : _properties;
-
-            Dictionary<string, string> commonPropertiesSet = GetCommonPropertiesSet();
-
-            if (dictProps.TryGetValue(propertyName, out var data))
-            {
-                data.PropertyInfo.SetValue(this, value, null);
-
-                switch (data.ConversionAttribute)
-                {
-                    case ValueConversionAttribute vcAttr:
-                        value = vcAttr.ValueToString(value);
-                        if (isCommon)
-                        {
-                            string attrName = commonPropertiesSet[propertyName];
-                            SetCfgAttributeValue(cfgNode, attrName, value);
-                        }
-                        else
-                        {
-                            SetCfgNodeValue(cfgNode, propertyName, value);
-                        }
-                        break;
-                    case XmlNodeConversionAttribute xmlnAttr:
-                        SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
-                        break;
-                    case XmlNodesConversionAttribute xmlnsAttr:
-                        SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
-                        break;
-                    default:
-                        if (isCommon)
-                        {
-                            string attrName = commonPropertiesSet[propertyName];
-                            SetCfgAttributeValue(cfgNode, attrName, value);
-                        }
-                        else
-                        {
-                            SetCfgNodeValue(cfgNode, propertyName, value);
-                        }
-                        break;
-                }
-            }
-        }
-
-#endregion
-
-#region Helpers
-
-        protected byte[] CalculateHash(XmlNode cfgNode)
-        {
-            byte[] bXmlData = Encoding.ASCII.GetBytes(cfgNode.OuterXml);
-            return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
-        }
-
-        protected XmlNode AppendCfgXmlNode(XmlNode cfgNode, string nodeName)
-        {
-            XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
-            if (valNode == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
-                cfgNode.AppendChild(valNode);
-            }
-            return valNode;
-        }
-
-        protected void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
-            XmlNodeConversionAttribute xmlnAttr)
-        {
-            XmlNode valNode = AppendCfgXmlNode(cfgNode, nodeName);
-            xmlnAttr.ValueToXmlNode(value, valNode);
-        }
-
-        protected void SetExclusiveCfgNodeData(XmlNode cfgNode, object value,
-            XmlNodesConversionAttribute xmlnsAttr)
-        {
-            xmlnsAttr.ValueToXmlNodes(value, cfgNode);
-        }
-
-        protected void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
-        {
-            XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
-            if (valNode == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
-                cfgNode.AppendChild(valNode);
-            }
-
-            valNode.InnerText = value?.ToString() ?? string.Empty;
-        }
-
-        protected void SetCfgAttributeValue(XmlNode cfgNode, string attributeName, object value)
-        {
-            XmlAttribute valAttribute = cfgNode.Attributes[attributeName];
-            if (valAttribute == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valAttribute = xmlDoc.CreateAttribute(attributeName);
-                cfgNode.Attributes.Append(valAttribute);
-            }
-
-            valAttribute.InnerText = value?.ToString() ?? string.Empty;
+            Hash = Helpers.CalculateHash(cfgNode);
         }
 
 #endregion

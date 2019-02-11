@@ -1,4 +1,4 @@
-﻿namespace IPCLogger.Core.Common
+﻿namespace IPCLogger.ConfigurationService.CoreInterops
 {
     internal class PropertyValidationResult
     {

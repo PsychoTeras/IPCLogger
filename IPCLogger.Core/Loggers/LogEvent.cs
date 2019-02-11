@@ -1,4 +1,4 @@
-﻿namespace IPCLogger.Core.Common
+﻿namespace IPCLogger.Core.Loggers
 {
     public enum LogEvent
     {

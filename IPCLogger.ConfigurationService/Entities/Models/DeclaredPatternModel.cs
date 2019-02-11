@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.Entities.DTO;
+﻿using IPCLogger.ConfigurationService.CoreInterops;
+using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Common;
@@ -11,6 +12,8 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
+    using CoreHelpers = Core.Common.Helpers;
+
     public class PatternContentModel
     {
         public string ApplicableFor { get; set; }
@@ -141,19 +144,6 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal bool UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
         {
-            void SetCfgAttributeValue(string attributeName, object value)
-            {
-                XmlAttribute valAttribute = RootXmlNode.Attributes[attributeName];
-                if (valAttribute == null)
-                {
-                    XmlDocument xmlDoc = RootXmlNode.OwnerDocument;
-                    valAttribute = xmlDoc.CreateAttribute(attributeName);
-                    RootXmlNode.Attributes.Append(valAttribute);
-                }
-
-                valAttribute.InnerText = value?.ToString() ?? string.Empty;
-            }
-
             bool wasUpdated = false, hasError = false;
             string bakRootXmlNode = RootXmlNode.InnerXml;
             foreach (PropertyValidationResult result in validationResult)
@@ -165,8 +155,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                     {
                         if (result.Name != "Content")
                         {
-                            string attributeName = PFactory.GetPropertyAttributeName(result.Name);
-                            SetCfgAttributeValue(attributeName, result.Value);
+                            string attributeName = PatternInterop.GetPropertyAttributeName(result.Name);
+                            CoreHelpers.SetCfgAttributeValue(RootXmlNode, attributeName, result.Value);
                         }
                         else
                         {

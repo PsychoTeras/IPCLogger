@@ -1,7 +1,7 @@
 ﻿using IPCLogger.ConfigurationService.Common.Exceptions;
+using IPCLogger.ConfigurationService.CoreInterops;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.LFactory;
 using IPCLogger.Core.Patterns;
 using IPCLogger.Core.Snippets;
@@ -106,10 +106,10 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 Select(s => DeclaredLoggerModel.FromDeclaredLogger(s, availableTypes)).
                 ToList();
 
-            DeclaredLogger dlFactory = LFactorySettings.GetDeclaredFactoryLogger(ConfigurationXml);
+            DeclaredLogger dlFactory = LoggerInterop.GetDeclaredFactoryLogger(ConfigurationXml);
             if (dlFactory == null)
             {
-                dlFactory = LFactorySettings.AppendFactoryLogger(ConfigurationXml);
+                dlFactory = LoggerInterop.AppendFactoryLogger(ConfigurationXml);
                 SaveConfiguration();
             }
             FactoryLogger = DeclaredLoggerModel.FromDeclaredLogger(dlFactory, typeof(LFactory));
@@ -170,7 +170,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public XmlNode AppendLoggerNode(XmlNode cfgNode)
         {
-            return LFactorySettings.AppendConfigurationNode(ConfigurationXml, cfgNode);
+            return LoggerInterop.AppendConfigurationNode(ConfigurationXml, cfgNode);
         }
 
         public void AppendLogger(DeclaredLoggerModel loggerModel)
@@ -216,7 +216,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public XmlNode AppendPatternNode(XmlNode cfgNode)
         {
-            return PFactory.AppendConfigurationNode(ConfigurationXml, cfgNode);
+            return PatternInterop.AppendConfigurationNode(ConfigurationXml, cfgNode);
         }
 
         public void AppendPattern(DeclaredPatternModel patternModel)

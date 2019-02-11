@@ -88,6 +88,9 @@
     <Compile Include="Controls\TextBoxWithButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CoreInterops\LoggerInterop.cs" />
+    <Compile Include="CoreInterops\PatternInterop.cs" />
+    <Compile Include="CoreInterops\PropertyValidationResult.cs" />
     <Compile Include="CoreServices\ControlsService.cs" />
     <Compile Include="CoreServices\CoreService.cs" />
     <Compile Include="CoreServices\DocsService.cs" />

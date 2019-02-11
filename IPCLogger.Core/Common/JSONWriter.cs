@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IPCLogger.Core.Common
 {
-    public static class JSONWriter
+    internal static class JSONWriter
     {
         public static string ToJson(this object item)
         {

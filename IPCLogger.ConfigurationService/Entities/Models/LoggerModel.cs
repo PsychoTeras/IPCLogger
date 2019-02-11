@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.Entities.DTO;
+﻿using IPCLogger.ConfigurationService.CoreInterops;
+using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
@@ -53,7 +54,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                     data.PropertyInfo.PropertyType,
                     data.ConversionAttribute?.GetType(),
                     BaseSettings.GetPropertyValue(data.PropertyInfo, data.ConversionAttribute),
-                    BaseSettings.GetPropertyValues(data.PropertyInfo),
+                    LoggerInterop.GetPropertyValues(data.PropertyInfo),
                     isCommon,
                     data.IsRequired,
                     data.IsFormattable
