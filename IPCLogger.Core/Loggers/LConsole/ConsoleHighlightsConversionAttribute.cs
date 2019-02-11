@@ -141,7 +141,7 @@ namespace IPCLogger.Core.Loggers.LConsole
                 Distinct();
             foreach (string eventName in events)
             {
-                var item = MakeColorItem(
+                Tuple<ConsoleColor?, ConsoleColor?> item = MakeColorItem(
                     settings.ConsoleForeColors.TryGetValue(eventName, out var foreColor) ? foreColor : (ConsoleColor?)null,
                     settings.ConsoleBackColors.TryGetValue(eventName, out var backColor) ? backColor : (ConsoleColor?)null);
                 AddGroupedEvent(groupedEvents, item, eventName);
@@ -150,6 +150,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             return groupedEvents;
         }
 
+        // ReSharper disable PossibleNullReferenceException
         private void WriteHighlightSettings(Tuple<ConsoleColor?, ConsoleColor?> colorItem, string sEvents, XmlNode cfgNode)
         {
             XmlDocument xmlDoc = cfgNode.OwnerDocument;
@@ -176,6 +177,7 @@ namespace IPCLogger.Core.Loggers.LConsole
             AppendColorNode(FORECOLOR_NODE_NAME, colorItem.Item1, valNode);
             AppendColorNode(BACKCOLOR_NODE_NAME, colorItem.Item2, valNode);
         }
+        // ReSharper restore PossibleNullReferenceException
 
         public override void ValueToXmlNodes(object value, XmlNode cfgNode)
         {

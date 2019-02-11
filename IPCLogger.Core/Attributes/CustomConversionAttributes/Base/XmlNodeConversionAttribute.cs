@@ -4,7 +4,10 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
 {
     public abstract class XmlNodeConversionAttribute : CustomConversionAttribute
     {
-        public override sealed ConversionSource SourceType { get => ConversionSource.XmlNode; }
+        public sealed override ConversionSource SourceType
+        {
+            get { return ConversionSource.XmlNode; }
+        }
 
         public abstract object XmlNodeToValue(XmlNode xmlNode);
 

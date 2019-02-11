@@ -8,7 +8,10 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes.Base
     {
         public string[] ExclusiveNodeNames { get; }
 
-        public sealed override ConversionSource SourceType { get => ConversionSource.XmlNodes; }
+        public sealed override ConversionSource SourceType
+        {
+            get { return ConversionSource.XmlNodes; }
+        }
 
         protected XmlNodesConversionAttribute(string exclusiveNodeName)
         {

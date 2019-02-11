@@ -2,7 +2,10 @@
 {
     public abstract class ValueConversionAttribute : CustomConversionAttribute
     {
-        public override sealed ConversionSource SourceType { get => ConversionSource.Value; }
+        public sealed override ConversionSource SourceType
+        {
+            get { return ConversionSource.Value; }
+        }
 
         public abstract object StringToValue(string sValue);
 
