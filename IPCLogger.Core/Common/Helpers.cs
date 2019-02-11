@@ -443,22 +443,42 @@ namespace IPCLogger.Core.Common
 
         public static string KeyValueToJson(Type dataType, string keyName, string valueName, object value)
         {
-            switch (dataType.Name)
-            {
-                case "Dictionary`2":
-                    return DictionaryToJson(keyName, valueName, value as IDictionary);
-                default:
-                    string msg = $"Type '{dataType.Name}' is not supported";
-                    throw new Exception(msg);
-            }
-        }
-
-        private static string DictionaryToJson(string keyName, string valueName, IDictionary dict)
-        {
             StringBuilder sbJson = new StringBuilder();
             sbJson.Append($"{{ \"colsNumber\": 2, \"col1\": \"{keyName}\", \"col2\": \"{valueName}\"");
 
             List<string> entries = new List<string>();
+            switch (dataType.Name)
+            {
+                case "List`1":
+                    KVListToJson(keyName, valueName, entries, value as IList);
+                    break;
+                case "Dictionary`2":
+                    DictionaryToJson(keyName, valueName, entries, value as IDictionary);
+                    break;
+                default:
+                    string msg = $"Type '{dataType.Name}' is not supported";
+                    throw new Exception(msg);
+            }
+
+            sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
+            return sbJson.ToString();
+        }
+
+        private static void KVListToJson(string keyName, string valueName, List<string> entries,
+            IList list)
+        {
+            if (list != null)
+            {
+                foreach (KeyValuePair<string, string> d in list)
+                {
+                    entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
+                }
+            }
+        }
+
+        private static void DictionaryToJson(string keyName, string valueName, List<string> entries,
+            IDictionary dict)
+        {
             if (dict != null)
             {
                 foreach (DictionaryEntry d in dict)
@@ -466,9 +486,6 @@ namespace IPCLogger.Core.Common
                     entries.Add($"{{ \"col1\": \"{d.Key}\", \"col2\": \"{d.Value}\" }}");
                 }
             }
-            sbJson.Append($", \"values\":[ {string.Join(",", entries)}] }}");
-
-            return sbJson.ToString();
         }
 
         public static object JsonToKeyValue(Type dataType, string sJson)
@@ -476,6 +493,10 @@ namespace IPCLogger.Core.Common
             if (dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 return JsonToDictionary(dataType, sJson);
+            }
+            if (dataType.IsGenericType && dataType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                return JsonToKVList(dataType, sJson);
             }
 
             string msg = $"Type '{dataType.Name}' is not supported";
@@ -498,6 +519,17 @@ namespace IPCLogger.Core.Common
             foreach (IDictionary dict in jsonObject)
             {
                 AddKeyValueToDictionary(result, (string) dict["col1"], dict["col2"], arguments[1]);
+            }
+
+            return result;
+        }
+
+        private static object JsonToKVList(Type dataType, string sJson)
+        {
+            List<KeyValuePair<string, string>> result = sJson?.FromJson<List<KeyValuePair<string, string>>>();
+            if (result == null)
+            {
+                throw new Exception("Invalid JSON string");
             }
 
             return result;

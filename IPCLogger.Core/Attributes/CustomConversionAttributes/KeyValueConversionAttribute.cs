@@ -1,11 +1,11 @@
-﻿using System;
-using System.Xml;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
+﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Common;
+using System;
+using System.Xml;
 
 namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 {
-    public sealed class KeyValueConversionAttribute : XmlNodeConversionAttribute
+    public class KeyValueConversionAttribute : XmlNodeConversionAttribute
     {
         private Type _dataType;
         private string _keyName;
@@ -37,5 +37,5 @@ namespace IPCLogger.Core.Attributes.CustomConversionAttributes
         {
             return Helpers.JsonToKeyValue(_dataType, sValue);
         }
-    }
+    }  
 }

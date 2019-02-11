@@ -16,8 +16,6 @@ namespace IPCLogger.ConfigurationService.CoreInterops
     // ReSharper disable PossibleNullReferenceException
     internal static class LoggerInterop
     {
-        private const string ValidationErrorMessage = "{0} is required";
-
         public static IEnumerable<PropertyData> GetCommonProperties(this BaseSettings settings)
         {
             return settings.CommonProperties.Values;
@@ -73,10 +71,11 @@ namespace IPCLogger.ConfigurationService.CoreInterops
                         ? data.ConversionAttribute.CSStringToValue(sValue)
                         : ConvertValue(sValue, data.PropertyInfo.PropertyType);
 
-                    if (value == null || data.IsRequired && IsDefaultValue(value, data.PropertyInfo.PropertyType))
+                    if (value == null || 
+                        data.IsRequired && IsDefaultValue(value, data.PropertyInfo.PropertyType))
                     {
-                        string errorMessage = string.Format(ValidationErrorMessage, propertyName);
-                        return PropertyValidationResult.Invalid(propertyName, isCommon, errorMessage);
+                        string msg = string.Format($"{propertyName} is required");
+                        return PropertyValidationResult.Invalid(propertyName, isCommon, msg);
                     }
 
                     return PropertyValidationResult.Valid(propertyName, value, isCommon);
@@ -90,8 +89,8 @@ namespace IPCLogger.ConfigurationService.CoreInterops
             throw new Exception($"Invalid property name '{propertyName}'");
         }
 
-        public static void UpdatePropertyValue(this BaseSettings settings, XmlNode cfgNode, string propertyName, 
-            object value, bool isCommon)
+        public static void UpdatePropertyValue(this BaseSettings settings, XmlNode cfgNode, 
+            string propertyName, object value, bool isCommon)
         {
             Dictionary<string, PropertyData> dictProps = isCommon
                 ? settings.CommonProperties

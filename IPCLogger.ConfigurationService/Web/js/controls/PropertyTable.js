@@ -102,6 +102,7 @@
             setTdValue($(this), value);
         });
         endEditing();
+        $(thisControl.Element).trigger("change");
     }
 
     function cancelChanges() {
@@ -362,6 +363,12 @@
             setRows($Table, jsonData, $ColsNumber);
         }
     }
+
+    UI.PropertyTable.prototype.onChangeEvent = function (e) {
+        if (e.target === e.delegateTarget) {
+            $.proxy(UI.PropertyBase.prototype.onChangeEvent, this)();
+        }
+    };
 
     UI.PropertyTable.prototype.getPropertyType = function () {
         return "ui-property-table";

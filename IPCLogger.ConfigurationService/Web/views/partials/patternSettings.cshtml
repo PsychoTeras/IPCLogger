@@ -15,10 +15,8 @@
         <div class="card-container">
 
             <div class="card-header">Base settings</div>
-
             <div class="card-body">
-
-                @foreach (PropertyModel model in Model.Properties)
+                @foreach (PropertyModel model in Model.CommonProperties)
                 {
                     <div class="mt-2">
                         <div class="group-param-info">
@@ -44,8 +42,34 @@
                 }
             </div>
 
+            <div class="card-header">Content</div>
+            <div class="card-body">
+                @foreach (PropertyModel model in Model.Properties)
+                {
+                    <div class="mt-2">
+                        <div class="group-param-info">
+                            <label>
+                                @(ControlsService.GetPatternPropertyDisplayName(model))
+                                @if (model.IsRequired)
+                                {
+                                    <a style="color: red; font-weight: bold"> * </a>
+                                }
+                            </label>
+                            @{
+                                string description = ControlsService.GetPatternPropertyDescription(model);
+                                if (!string.IsNullOrEmpty(description))
+                                {
+                                    <img class="icon-info" data-toggle="tooltip" data-html="true" title="@description"
+                                         src="assets/icon-info-16.png" />
+                                }
+                            }
+                        </div>
+                        @Html.Raw(ControlsService.ControlByPropertyModel(model))
+                        <div class="invalid-feedback"></div>
+                    </div>
+                }
+            </div>
         </div>
-
     </div>
 
     <div class="div-save-cancel">

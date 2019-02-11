@@ -5,7 +5,7 @@ using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 {
-    public sealed class StringListConversionAttribute : ValueConversionAttribute
+    public class StringListConversionAttribute : ValueConversionAttribute
     {
         private Type _dataType;
         private bool _removeEmpty;

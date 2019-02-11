@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Exceptions\InvalidRequestException.cs" />
+    <Compile Include="Common\PatternContentConversionAttribute.cs" />
     <Compile Include="Controls\BorderedListView.cs">
       <SubType>Component</SubType>
     </Compile>

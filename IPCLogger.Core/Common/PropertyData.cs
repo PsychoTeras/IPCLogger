@@ -21,10 +21,5 @@ namespace IPCLogger.Core.Common
             IsRequired = isRequired;
             IsFormattable = isFormattable;
         }
-
-        public PropertyData(PropertyInfo propertyInfo)
-            : this(propertyInfo, null, false, false)
-        {
-        }
     }
 }

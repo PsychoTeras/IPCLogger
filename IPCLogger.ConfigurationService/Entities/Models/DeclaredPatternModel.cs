@@ -12,49 +12,48 @@ using System.Xml;
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     using Common;
-
-    public class PatternContentModel
-    {
-        public string ApplicableFor { get; set; }
-
-        public string Content { get; set; }
-
-        internal static PatternContentModel FromPatternContent(PatternContent source)
-        {
-            return new PatternContentModel
-            {
-                ApplicableFor = source.ApplicableFor,
-                Content = source.Content
-            };
-        }
-    }
+    using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
     public class DeclaredPatternModel
     {
+        private PropertyData[] _commonPropertyDatas;
+        private PropertyData[] _propertyDatas;
         private PropertyModel[] _properties;
-        private List<PatternContentModel> _content;
 
         [NonSetting]
-        public string Id { get; protected set; }
+        public string Id { get; set; }
 
-        public string Description { get; protected set; }
+        public string Description { get; set; }
 
-        public string Events { get; protected set; }
+        public string Events { get; set; }
 
-        public bool ImmediateFlush { get; protected set; }
+        public bool ImmediateFlush { get; set; }
+
+        [RequiredSetting, PatternContentConversion(typeof(List<KeyValuePair<string, string>>),
+            "Applicable for class name (regex allowed)", "Pattern string")]
+        public List<KeyValuePair<string, string>> Content { get; set; }
 
         [NonSetting]
         public XmlNode RootXmlNode { get; set; }
 
-        [NonSetting]
-        public IEnumerable<PropertyModel> Properties
+        internal IEnumerable<PropertyData> CommonPropertyDatas
         {
-            get { return _properties; }
+            get { return _commonPropertyDatas; }
         }
 
-        public IEnumerable<PatternContentModel> Content
+        internal IEnumerable<PropertyData> PropertyDatas
         {
-            get { return _content; }
+            get { return _propertyDatas; }
+        }
+
+        public IEnumerable<PropertyModel> CommonProperties
+        {
+            get { return _properties.Where(p => p.IsCommon); }
+        }
+
+        public IEnumerable<PropertyModel> Properties
+        {
+            get { return _properties.Where(p => !p.IsCommon); }
         }
 
         private DeclaredPatternModel() {}
@@ -67,11 +66,16 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 (
                     data.PropertyInfo.Name,
                     data.PropertyInfo.PropertyType,
-                    data.PropertyInfo.GetValue(this, null)?.ToString() ?? string.Empty
+                    data.ConversionAttribute?.GetType(),
+                    this.GetPropertyValue(data.PropertyInfo, data.ConversionAttribute),
+                    PatternInterop.GetPropertyValues(data.PropertyInfo),
+                    data.PropertyInfo.Name != PatternInterop.PROP_CONTENT_NAME,
+                    data.IsRequired,
+                    data.IsFormattable
                 );
             }
 
-            _properties = GetType().GetProperties
+            IEnumerable<PropertyData> propertyDatas = GetType().GetProperties
             (
                 BindingFlags.Public | BindingFlags.Instance
             ).Where
@@ -79,14 +83,30 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()
             ).Select
             (
-                p => new PropertyData(p)
-            ).Select(PropertyDataToModel).ToArray();
+                p => new PropertyData
+                (
+                    p,
+                    p.GetAttribute<CustomConversionAttribute>(),
+                    p.IsDefined<RequiredSettingAttribute>(),
+                    p.IsDefined<FormattableSettingAttribute>()
+                )
+            );
+
+            _commonPropertyDatas = propertyDatas.
+                Where(p => p.PropertyInfo.Name != PatternInterop.PROP_CONTENT_NAME).
+                ToArray();
+
+            _propertyDatas = propertyDatas.
+                Where(p => p.PropertyInfo.Name == PatternInterop.PROP_CONTENT_NAME).
+                ToArray();
+
+            _properties = propertyDatas.Select(PropertyDataToModel).ToArray();
         }
 
         public void ReloadContent()
         {
-            _content = PFactory.GetPatternContent(RootXmlNode).
-                Select(PatternContentModel.FromPatternContent).
+            Content = PFactory.GetPatternContent(RootXmlNode).
+                Select(c => new KeyValuePair<string, string>(c.ApplicableFor, c.Content)).
                 ToList();
         }
 
@@ -105,8 +125,8 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         private void InitializeSettings()
         {
             RecalculateId();
-            ReloadProperties();
             ReloadContent();
+            ReloadProperties();
         }
 
         public void ReinitializeSettings()
@@ -116,28 +136,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         internal PropertyValidationResult[] ValidateProperties(PropertyObjectDTO[] properties)
         {
-            List<PropertyValidationResult> result = new List<PropertyValidationResult>();
-            PropertyInfo[] propertyInfos = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).ToArray();
-            foreach (PropertyObjectDTO dto in properties)
-            {
-                if (dto.Name != "Content")
-                {
-                    PropertyInfo pi = propertyInfos.FirstOrDefault(p => p.Name == dto.Name);
-                    if (pi == null)
-                    {
-                        throw new Exception($"Invlid property name '{dto.Name}'");
-                    }
-
-                    result.Add(PropertyValidationResult.Valid
-                    (
-                        dto.Name,
-                        Convert.ChangeType(dto.Value, pi.PropertyType),
-                        false
-                    ));
-                }
-            }
-
-            return result.ToArray();
+            return properties.Select(p => this.ValidatePropertyValue(p.Name, p.Value, p.IsCommon, p.IsChanged)).ToArray();
         }
 
         internal bool UpdateSettings(PropertyValidationResult[] validationResult, PropertyObjectDTO[] propertyObjs)
@@ -151,15 +150,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 {
                     try
                     {
-                        if (result.Name != "Content")
-                        {
-                            string attributeName = PatternInterop.GetPropertyAttributeName(result.Name);
-                            Helpers.SetCfgAttributeValue(RootXmlNode, attributeName, result.Value);
-                        }
-                        else
-                        {
-
-                        }
+                        this.UpdatePropertyValue(RootXmlNode, result.Name, result.Value, result.IsCommon);
                     }
                     catch (Exception ex)
                     {

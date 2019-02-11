@@ -4,7 +4,7 @@ using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 {
-    public sealed class TimeSpanStringConversionAttribute : ValueConversionAttribute
+    public class TimeSpanStringConversionAttribute : ValueConversionAttribute
     {
         public override object StringToValue(string sValue)
         {

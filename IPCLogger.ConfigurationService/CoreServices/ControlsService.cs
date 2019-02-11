@@ -1,4 +1,5 @@
-﻿using IPCLogger.ConfigurationService.Entities.Models;
+﻿using IPCLogger.ConfigurationService.Common;
+using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.Core.Attributes.CustomConversionAttributes;
 using IPCLogger.Core.Loggers.LConsole;
 using System;
@@ -54,6 +55,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
             { typeof(StringListConversionAttribute), PROPERTY_STRING },
             { typeof(KeyValueConversionAttribute), PROPERTY_TABLE },
+            { typeof(PatternContentConversionAttribute), PROPERTY_TABLE },
             { typeof(ConsoleHighlightsConversionAttribute), PROPERTY_TABLE }
         };
 

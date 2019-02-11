@@ -45,7 +45,8 @@
     function highlightValidationErroredControls(failedProps) {
         $.each(failedProps,
             function(_, p) {
-                var control = $.grep(dictControls, function(c) { return c.name === p.Name; })[0].control;
+                var pName = p.isCommon ? "#" + p.name : p.name;
+                var control = $.grep(dictControls, function (c) { return c.name === pName; })[0].control;
                 control.setValidity(false, p.errorMessage);
             });
     }

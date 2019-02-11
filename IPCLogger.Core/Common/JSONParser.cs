@@ -236,6 +236,31 @@ namespace IPCLogger.Core.Common
                 }
                 return dictionary;
             }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            {
+                Type keyType, valueType;
+                {
+                    Type[] args = type.GetGenericArguments();
+                    keyType = args[0];
+                    valueType = args[1];
+                }
+
+                //Refuse to parse dictionary keys that aren't of type string
+                if (keyType != typeof(string))
+                    return null;
+                //Must be a valid dictionary element
+                if (json[0] != '{' || json[json.Length - 1] != '}')
+                    return null;
+                //The list is split into key/value pairs only, this means the split must be divisible by 2 to be valid JSON
+                List<string> elems = Split(json);
+                if (elems.Count != 4)
+                    return null;
+
+                Type kvType = typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType);
+                string key = elems[1].Substring(1, elems[1].Length - 2);
+                object val = elems[3].Substring(1, elems[3].Length - 2);
+                return kvType.GetConstructor(new[] { keyType, valueType }).Invoke(new[] { key, val });
+            }
             if (type == typeof(object))
             {
                 return ParseAnonymousValue(json);

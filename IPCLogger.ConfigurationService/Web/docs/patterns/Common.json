@@ -8,7 +8,7 @@
     "ObjectId": "*",
     "ObjectSubId": "Events",
     "DisplayName": "Responds To Events",
-    "Description": "List of allowed events that the pattern will respond to (comma separated)"
+    "Description": "List of allowed events that the pattern will respond to, comma separated"
   },
   {
     "ObjectId": "*",

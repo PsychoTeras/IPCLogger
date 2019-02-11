@@ -168,7 +168,7 @@ namespace IPCLogger.Core.Loggers.Base
             CommonProperties = GetType().
                 GetProperties
                 (
-                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance
+                    BindingFlags.Public | BindingFlags.Instance
                 ).Where
                 (
                     p => commonPropertiesNames.ContainsKey(p.Name)
@@ -190,7 +190,7 @@ namespace IPCLogger.Core.Loggers.Base
             Properties = GetType().
                 GetProperties
                 (
-                    BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
                 ).Where
                 (
                     p => p.CanRead && p.CanWrite && !p.IsDefined<NonSettingAttribute>()

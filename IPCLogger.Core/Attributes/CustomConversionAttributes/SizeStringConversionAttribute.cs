@@ -3,7 +3,7 @@ using IPCLogger.Core.Common;
 
 namespace IPCLogger.Core.Attributes.CustomConversionAttributes
 {
-    public sealed class SizeStringConversionAttribute : ValueConversionAttribute
+    public class SizeStringConversionAttribute : ValueConversionAttribute
     {
         public override object StringToValue(string sValue)
         {
