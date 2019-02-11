@@ -131,7 +131,7 @@
     <Compile Include="Forms\frmManageUser.Designer.cs">
       <DependentUpon>frmManageUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\BaseHelpers.cs" />
+    <Compile Include="Common\Helpers.cs" />
     <Compile Include="Web\modules\common\BootstrapperCommon.cs" />
     <Compile Include="Web\modules\common\CookieSerializer.cs" />
     <Compile Include="Web\modules\ModuleBase.cs" />

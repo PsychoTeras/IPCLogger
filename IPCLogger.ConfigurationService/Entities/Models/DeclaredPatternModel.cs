@@ -1,6 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.CoreInterops;
 using IPCLogger.ConfigurationService.Entities.DTO;
-using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Attributes;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Patterns;
@@ -12,7 +11,7 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using CoreHelpers = Core.Common.Helpers;
+    using Common;
 
     public class PatternContentModel
     {
@@ -101,7 +100,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 uniqueId += prewNode.InnerXml.Length;
                 prewNode = prewNode.PreviousSibling;
             } while (prewNode != null);
-            Id = BaseHelpers.CalculateMD5(uniqueId.ToString());
+            Id = Common.Helpers.CalculateMD5(uniqueId.ToString());
         }
 
         private void InitializeSettings()
@@ -156,7 +155,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                         if (result.Name != "Content")
                         {
                             string attributeName = PatternInterop.GetPropertyAttributeName(result.Name);
-                            CoreHelpers.SetCfgAttributeValue(RootXmlNode, attributeName, result.Value);
+                            Helpers.SetCfgAttributeValue(RootXmlNode, attributeName, result.Value);
                         }
                         else
                         {

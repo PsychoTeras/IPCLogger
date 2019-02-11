@@ -11,7 +11,7 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.CoreInterops
 {
-    using CoreHelpers = Core.Common.Helpers;
+    using Common;
 
     // ReSharper disable PossibleNullReferenceException
     internal static class LoggerInterop
@@ -110,28 +110,28 @@ namespace IPCLogger.ConfigurationService.CoreInterops
                         if (isCommon)
                         {
                             string attrName = commonPropertiesNames[propertyName];
-                            CoreHelpers.SetCfgAttributeValue(cfgNode, attrName, value);
+                            Helpers.SetCfgAttributeValue(cfgNode, attrName, value);
                         }
                         else
                         {
-                            CoreHelpers.SetCfgNodeValue(cfgNode, propertyName, value);
+                            Helpers.SetCfgNodeValue(cfgNode, propertyName, value);
                         }
                         break;
                     case XmlNodeConversionAttribute xmlnAttr:
-                        CoreHelpers.SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
+                        Helpers.SetCfgNodeData(cfgNode, propertyName, value, xmlnAttr);
                         break;
                     case XmlNodesConversionAttribute xmlnsAttr:
-                        CoreHelpers.SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
+                        Helpers.SetExclusiveCfgNodeData(cfgNode, value, xmlnsAttr);
                         break;
                     default:
                         if (isCommon)
                         {
                             string attrName = commonPropertiesNames[propertyName];
-                            CoreHelpers.SetCfgAttributeValue(cfgNode, attrName, value);
+                            Helpers.SetCfgAttributeValue(cfgNode, attrName, value);
                         }
                         else
                         {
-                            CoreHelpers.SetCfgNodeValue(cfgNode, propertyName, value);
+                            Helpers.SetCfgNodeValue(cfgNode, propertyName, value);
                         }
                         break;
                 }
@@ -148,28 +148,28 @@ namespace IPCLogger.ConfigurationService.CoreInterops
         internal static DeclaredLogger AppendFactoryLogger(XmlDocument xmlCfg)
         {
             // Append config root node
-            XmlNode rootCfgNode = CoreHelpers.AppendCfgXmlNode(xmlCfg.SelectSingleNode("/"), "configuration");
+            XmlNode rootCfgNode = Helpers.AppendCfgXmlNode(xmlCfg.SelectSingleNode("/"), "configuration");
 
             // Append emtpy logger config handler
-            XmlNode rootCSectionsNode = CoreHelpers.AppendCfgXmlNode(rootCfgNode, "configSections");
-            XmlNode loggerCSectionNode = CoreHelpers.AppendCfgXmlNode(rootCSectionsNode, "section",
+            XmlNode rootCSectionsNode = Helpers.AppendCfgXmlNode(rootCfgNode, "configSections");
+            XmlNode loggerCSectionNode = Helpers.AppendCfgXmlNode(rootCSectionsNode, "section",
                 $"section[@name='{Constants.LoggerName}']");
-            CoreHelpers.SetCfgAttributeValue(loggerCSectionNode, "name", Constants.LoggerName);
-            CoreHelpers.SetCfgAttributeValue(loggerCSectionNode, "type", "System.Configuration.IgnoreSectionHandler");
+            Helpers.SetCfgAttributeValue(loggerCSectionNode, "name", Constants.LoggerName);
+            Helpers.SetCfgAttributeValue(loggerCSectionNode, "type", "System.Configuration.IgnoreSectionHandler");
 
             // Create logger section
-            XmlNode loggerNode = CoreHelpers.AppendCfgXmlNode(rootCfgNode, Constants.LoggerName);
-            CoreHelpers.AppendCfgXmlNode(loggerNode, "Patterns");
-            CoreHelpers.AppendCfgXmlNode(loggerNode, "Loggers");
+            XmlNode loggerNode = Helpers.AppendCfgXmlNode(rootCfgNode, Constants.LoggerName);
+            Helpers.AppendCfgXmlNode(loggerNode, "Patterns");
+            Helpers.AppendCfgXmlNode(loggerNode, "Loggers");
 
             // Initialize settings
             LFactorySettings settings = new LFactorySettings(typeof(LFactory), null);
             ((dynamic)settings).ApplyCommonSettings(loggerNode);
 
             // Save XML settings
-            CoreHelpers.SetCfgAttributeValue(loggerNode, "enabled", settings.Enabled);
-            CoreHelpers.SetCfgAttributeValue(loggerNode, "no-lock", settings.NoLock);
-            CoreHelpers.SetCfgAttributeValue(loggerNode, "auto-reload", settings.AutoReload);
+            Helpers.SetCfgAttributeValue(loggerNode, "enabled", settings.Enabled);
+            Helpers.SetCfgAttributeValue(loggerNode, "no-lock", settings.NoLock);
+            Helpers.SetCfgAttributeValue(loggerNode, "auto-reload", settings.AutoReload);
 
             return new DeclaredLogger(loggerNode);
         }

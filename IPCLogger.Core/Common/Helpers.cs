@@ -1,5 +1,4 @@
-﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
-using IPCLogger.Core.Loggers.Base;
+﻿using IPCLogger.Core.Loggers.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ using System.Xml;
 
 namespace IPCLogger.Core.Common
 {
-    // ReSharper disable PossibleNullReferenceException
     internal static class Helpers
     {
         private const long ONE_KBYTE = 1024;
@@ -510,57 +508,5 @@ namespace IPCLogger.Core.Common
             byte[] bXmlData = Encoding.ASCII.GetBytes(cfgNode.OuterXml);
             return new MD5CryptoServiceProvider().ComputeHash(bXmlData);
         }
-
-        public static XmlNode AppendCfgXmlNode(XmlNode cfgNode, string nodeName, string nodePath = null)
-        {
-            XmlNode valNode = cfgNode.SelectSingleNode(nodePath ?? nodeName);
-            if (valNode == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
-                cfgNode.AppendChild(valNode);
-            }
-            return valNode;
-        }
-
-        public static void SetCfgNodeData(XmlNode cfgNode, string nodeName, object value,
-            XmlNodeConversionAttribute xmlnAttr)
-        {
-            XmlNode valNode = AppendCfgXmlNode(cfgNode, nodeName);
-            xmlnAttr.ValueToXmlNode(value, valNode);
-        }
-
-        public static void SetExclusiveCfgNodeData(XmlNode cfgNode, object value,
-            XmlNodesConversionAttribute xmlnsAttr)
-        {
-            xmlnsAttr.ValueToXmlNodes(value, cfgNode);
-        }
-
-        public static void SetCfgNodeValue(XmlNode cfgNode, string nodeName, object value)
-        {
-            XmlNode valNode = cfgNode.SelectSingleNode(nodeName);
-            if (valNode == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valNode = xmlDoc.CreateNode(XmlNodeType.Element, nodeName, xmlDoc.NamespaceURI);
-                cfgNode.AppendChild(valNode);
-            }
-
-            valNode.InnerText = value?.ToString() ?? string.Empty;
-        }
-
-        public static void SetCfgAttributeValue(XmlNode cfgNode, string attributeName, object value)
-        {
-            XmlAttribute valAttribute = cfgNode.Attributes[attributeName];
-            if (valAttribute == null)
-            {
-                XmlDocument xmlDoc = cfgNode.OwnerDocument;
-                valAttribute = xmlDoc.CreateAttribute(attributeName);
-                cfgNode.Attributes.Append(valAttribute);
-            }
-
-            valAttribute.InnerText = value?.ToString() ?? string.Empty;
-        }
     }
-    // ReSharper restore PossibleNullReferenceException
 }

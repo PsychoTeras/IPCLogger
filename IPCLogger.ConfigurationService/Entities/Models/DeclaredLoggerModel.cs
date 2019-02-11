@@ -1,8 +1,8 @@
-﻿using IPCLogger.ConfigurationService.Helpers;
-using IPCLogger.Core.Loggers.LFactory;
+﻿using IPCLogger.Core.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IPCLogger.ConfigurationService.Common;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
@@ -24,7 +24,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         protected override void RecalculateId()
         {
-            Id = BaseHelpers.CalculateMD5(BaseSettings.Hash);
+            Id = Helpers.CalculateMD5(BaseSettings.Hash);
         }
 
         internal static DeclaredLoggerModel FromLogger(LoggerModel source)

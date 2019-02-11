@@ -1,6 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.CoreInterops;
 using IPCLogger.ConfigurationService.Entities.DTO;
-using IPCLogger.ConfigurationService.Helpers;
 using IPCLogger.Core.Common;
 using IPCLogger.Core.Loggers.Base;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
+using IPCLogger.ConfigurationService.Common;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
@@ -91,7 +91,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         protected virtual void RecalculateId()
         {
-            Id = BaseHelpers.CalculateMD5($"^{TypeName}%{Namespace}^");
+            Id = Common.Helpers.CalculateMD5($"^{TypeName}%{Namespace}^");
         }
 
         public void ReinitializeSettings()

@@ -1,4 +1,4 @@
-﻿using IPCLogger.ConfigurationService.Helpers;
+﻿using IPCLogger.ConfigurationService.Common;
 
 namespace IPCLogger.ConfigurationService.Entities.DTO
 {
@@ -10,7 +10,7 @@ namespace IPCLogger.ConfigurationService.Entities.DTO
 
         public string PasswordHash
         {
-            get => BaseHelpers.CalculateMD5(Password);
+            get => Helpers.CalculateMD5(Password);
         }
 
         public bool LoginFailed { get; set; }
