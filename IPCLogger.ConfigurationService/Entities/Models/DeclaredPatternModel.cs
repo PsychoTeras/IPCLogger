@@ -29,7 +29,6 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         }
     }
 
-    // ReSharper disable PossibleNullReferenceException
     public class DeclaredPatternModel
     {
         private PropertyModel[] _properties;
@@ -100,7 +99,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
                 uniqueId += prewNode.InnerXml.Length;
                 prewNode = prewNode.PreviousSibling;
             } while (prewNode != null);
-            Id = Common.Helpers.CalculateMD5(uniqueId.ToString());
+            Id = Helpers.CalculateMD5(uniqueId.ToString());
         }
 
         private void InitializeSettings()
@@ -203,5 +202,4 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             return Description ?? "[Pattern]";
         }
     }
-    // ReSharper restore PossibleNullReferenceException
 }
