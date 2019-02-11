@@ -12,6 +12,8 @@ namespace IPCLogger.ConfigurationService.Controls
         public int Left, Top, Right, Bottom;
     }
 
+
+    #pragma warning disable 0649
     struct NCCALSIZE_PARAMS
     {
         public RECT NewWindow;
