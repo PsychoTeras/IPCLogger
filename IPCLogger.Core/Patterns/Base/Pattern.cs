@@ -6,7 +6,7 @@ namespace IPCLogger.Core.Patterns.Base
     {
         private static int _idCounter;
 
-        public int Id { get; private set; }
+        public int Id;
 
         public string Content;
 
