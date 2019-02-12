@@ -26,6 +26,9 @@ namespace IPCLogger.Core.Loggers.LFactory
         private string _configurationFile;
         private FileSystemWatcher _configurationFileWatcher;
 
+        private bool _enabled;
+        private bool _shouldLock;
+
         private volatile bool _initialized;
         private volatile bool _suspended;
 
@@ -85,7 +88,7 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             if (!_initialized || _suspended) return;
 
-            _lockObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (!_initialized) return;
@@ -100,7 +103,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _lockObj.Set(Settings.ShouldLock);
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -116,9 +119,9 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override bool Suspend()
         {
-            if (!Settings.Enabled) return false;
+            if (!_enabled) return false;
 
-            _lockObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (_initialized && !_suspended)
@@ -132,16 +135,16 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _lockObj.Set(Settings.ShouldLock);
+                _lockObj.Set(_shouldLock);
             }
             return _suspended;
         }
 
         public override bool Resume()
         {
-            if (!Settings.Enabled) return false;
+            if (!_enabled) return false;
 
-            _lockObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (_initialized && _suspended)
@@ -155,16 +158,16 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _lockObj.Set(Settings.ShouldLock);
+                _lockObj.Set(_shouldLock);
             }
             return !_suspended;
         }
 
         public override void Flush()
         {
-            if (!Settings.Enabled) return;
+            if (!_enabled) return;
 
-            _lockObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(_shouldLock);
             try
             {
                 if (!_initialized) return;
@@ -176,7 +179,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _lockObj.Set(Settings.ShouldLock);
+                _lockObj.Set(_shouldLock);
             }
         }
 
@@ -186,15 +189,15 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public bool Initialize(string configurationFile)
         {
-            _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
                 if (_initialized) return false;
 
                 Settings.Setup(_configurationFile = configurationFile);
                 Patterns.Setup(_configurationFile);
+                MapSettingsParamsToLocal();
 
-                if (Settings.Enabled)
+                if (_enabled)
                 {
                     List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(configurationFile);
                     InstantiateLoggers(declaredLoggers);
@@ -213,10 +216,12 @@ namespace IPCLogger.Core.Loggers.LFactory
                 CatchLoggerException("Failed to initialize LFactory", ex);
                 return false;
             }
-            finally
-            {
-                _lockObj.Set(Settings.ShouldLock);
-            }
+        }
+
+        private void MapSettingsParamsToLocal()
+        {
+            _enabled = Settings.Enabled;
+            _shouldLock = Settings.ShouldLock;
         }
 
         private void OnceInitializedCheck()
@@ -245,11 +250,11 @@ namespace IPCLogger.Core.Loggers.LFactory
         {
             if (!configurationFileChanged)
             {
-                _lockObj.WaitOne(Settings.ShouldLock);
+                _lockObj.WaitOne(_shouldLock);
             }
             try
             {
-                if (!_initialized || !Settings.Enabled) return;
+                if (!_initialized || !_enabled) return;
 
                 foreach (BaseLoggerInt logger in _loggers)
                 {
@@ -272,14 +277,14 @@ namespace IPCLogger.Core.Loggers.LFactory
             {
                 if (!configurationFileChanged)
                 {
-                    _lockObj.Set(Settings.ShouldLock);
+                    _lockObj.Set(_shouldLock);
                 }
             }
         }
 
         private void ConfigurationFileChanged(object sender, FileSystemEventArgs e)
         {
-            _lockObj.WaitOne(Settings.ShouldLock);
+            _lockObj.WaitOne(_shouldLock);
 
             try
             {
@@ -288,9 +293,11 @@ namespace IPCLogger.Core.Loggers.LFactory
 
                 Settings.Setup(_configurationFile);
                 Patterns.Setup(_configurationFile);
+                MapSettingsParamsToLocal();
+
                 Settings.AutoReload = true;
 
-                if (Settings.Enabled)
+                if (_enabled)
                 {
                     List<DeclaredLogger> declaredLoggers = LFactorySettings.GetDeclaredLoggers(_configurationFile);
                     IEnumerable<BaseLoggerInt> intLoggers = _loggers ?? new BaseLoggerInt[0];
@@ -355,7 +362,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             finally
             {
-                _lockObj.Set(Settings.ShouldLock);
+                _lockObj.Set(_shouldLock);
             }
         }
 
