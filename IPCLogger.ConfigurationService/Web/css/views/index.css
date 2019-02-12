@@ -25,6 +25,11 @@ body,
     user-select: none;
 }
 
+a, img {
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
 [role="main"] {
     padding-left: 265px;
     padding-top: 64px;
