@@ -11,6 +11,7 @@ using System.Xml;
 namespace IPCLogger.ConfigurationService.CoreInterops
 {
     using Common;
+    using System.Collections;
     using System.Globalization;
 
     // ReSharper disable PossibleNullReferenceException
@@ -94,8 +95,16 @@ namespace IPCLogger.ConfigurationService.CoreInterops
 
             bool IsDefaultValue(object value, Type type)
             {
-                object defValue = type.IsValueType ? Activator.CreateInstance(type) : null;
-                return type == typeof(string) ? string.IsNullOrEmpty((string)value) : value.Equals(defValue);
+                switch (value)
+                {
+                    case ICollection c:
+                        return c.Count == 0;
+                    case string s:
+                        return string.IsNullOrEmpty(s);
+                    default:
+                        object defValue = type.IsValueType ? Activator.CreateInstance(type) : null;
+                        return value.Equals(defValue);
+                }
             }
 
             try

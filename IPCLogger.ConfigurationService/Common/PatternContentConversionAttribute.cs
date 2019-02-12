@@ -2,6 +2,7 @@
 using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 using IPCLogger.Core.Patterns;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -33,6 +34,12 @@ namespace IPCLogger.ConfigurationService.Common
             List<KeyValuePair<string, string>> kvList = value as List<KeyValuePair<string, string>>;
             if (kvList?.Count > 0)
             {
+                if (kvList.Any(kv => string.IsNullOrEmpty(kv.Value)))
+                {
+                    string msg = "Pattern content cannot be empty";
+                    throw new Exception(msg);
+                }
+
                 XmlDocument xmlDoc = cfgNode.OwnerDocument;
 
                 foreach (KeyValuePair<string, string> item in kvList)
