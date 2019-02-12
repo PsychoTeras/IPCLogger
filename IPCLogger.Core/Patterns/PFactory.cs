@@ -120,7 +120,7 @@ namespace IPCLogger.Core.Patterns
 
 #region Public methods
 
-       public Pattern Get(Type callerType, string patternName)
+       internal Pattern Get(Type callerType, string patternName)
         {
             if (patternName.Length == 0 || _missingPatterns.Contains(patternName)) return null;
 
@@ -288,9 +288,8 @@ get_generic_pattern:
                     bool.TryParse(aImmediateFlush.Value, out immediateFlush) && 
                     immediateFlush;
 
-                foreach (string s in events.Split(Constants.Splitter))
+                foreach (string eventName in events.Split(Constants.Splitter).Select(s => s.Trim()))
                 {
-                    string eventName = s.Trim();
                     if (string.IsNullOrEmpty(eventName)) continue;
 
                     bool newPattern = !tmpRawPatterns.ContainsKey(eventName);
