@@ -19,13 +19,15 @@
 
         bindMouseWheelIncrement($("input[type='number']"));
 
-        window.onbeforeunload = function () {
-            lockPage();
+        window.addEventListener("beforeunload", function (e) {
+            if (!e.returnValue) {
+                lockPage();
+                var apiTrackUrl = getApiUrl("trackurl");
+                var trackedUrl = location.href.replace(location.origin, "");
+                syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
+            }
+        });
 
-            var apiTrackUrl = getApiUrl("trackurl");
-            var trackedUrl = location.href.replace(location.origin, "");
-            syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
-        };
     });
 
     $(document).on({
