@@ -28,7 +28,7 @@
             .ui-table-list tbody > tr > td#cell-actions {
                 text-align: right;
                 opacity: 0.05;
-                overflow: initial;
+                overflow: visible;
             }
 
                 .ui-table-list tbody > tr > td#cell-actions.mouseover {
