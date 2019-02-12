@@ -12,7 +12,7 @@ using System.Xml;
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
     using Common;
-    using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
+    using Core.Attributes.CustomConversionAttributes.Base;
 
     public class DeclaredPatternModel
     {
@@ -35,6 +35,11 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
         [NonSetting]
         public XmlNode RootXmlNode { get; set; }
+
+        public string DisplayContent
+        {
+            get { return string.Join(", ", Content.Select(kv => kv.Value)); }
+        }
 
         internal IEnumerable<PropertyData> CommonPropertyDatas
         {

@@ -3,6 +3,13 @@
     margin-bottom: 0;
 }
 
+    .ui-table-select td {
+        max-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .ui-table-select thead > tr > th {
         vertical-align: middle;
         padding-left: .4rem;
