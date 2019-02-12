@@ -25,7 +25,7 @@ namespace IPCLogger.Core.Snippets.Template
 
 #region Ctor
 
-        public SException() : base(SnippetType.Snippet) { }
+        public SException() : base(SnippetType.Template) { }
 
 #endregion
 

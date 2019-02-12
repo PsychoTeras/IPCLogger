@@ -1,11 +1,12 @@
-﻿using System;
-using IPCLogger.Core.Patterns;
-using IPCLogger.Core.Patterns.Base;
-using IPCLogger.Core.Snippets.Base;
+﻿using IPCLogger.Core.Snippets.Base;
+using System;
 
-namespace IPCLogger.Core.Snippets.Snippet
+namespace IPCLogger.Core.Snippets.Patterns
 {
-    internal class SSnippet : BaseSnippet
+    using IPCLogger.Core.Patterns;
+    using IPCLogger.Core.Patterns.Base;
+
+    internal class SPattern : BaseSnippet
     {
 
 #region Properties
@@ -19,7 +20,7 @@ namespace IPCLogger.Core.Snippets.Snippet
 
 #region Ctor
 
-        public SSnippet() : base(SnippetType.Snippet) { }
+        public SPattern() : base(SnippetType.Pattern) { }
 
 #endregion
 
