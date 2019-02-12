@@ -14,7 +14,7 @@
 
         <div class="card-container">
 
-            <div class="card-header">Base settings</div>
+            <div class="card-header">Settings</div>
             <div class="card-body">
                 @foreach (PropertyModel model in Model.CommonProperties)
                 {
@@ -42,7 +42,8 @@
                 }
             </div>
 
-            <div class="card-header">Content</div>
+            <hr/>
+
             <div class="card-body">
                 @foreach (PropertyModel model in Model.Properties)
                 {
