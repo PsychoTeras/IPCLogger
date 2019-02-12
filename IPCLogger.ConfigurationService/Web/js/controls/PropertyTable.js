@@ -32,7 +32,7 @@
     function beginEditing($currentCell) {
         $Table.addClass("editing");
         $RowEditing.addClass("editing");
-        $RowEditing.find(".td-actions .btn-edit").removeClass("fa-pencil").addClass("fa-save");
+        $RowEditing.find(".td-actions .btn-edit").removeClass("fa-pencil").addClass("fa-check");
         $RowEditing.find(".td-actions .btn-remove").removeClass("fa-trash").addClass("fa-remove");
         $($currentCell && $currentCell.children(".td-edit")[0] || $RowEditing.find(".td-edit:first")[0]).focus();
     }
@@ -80,7 +80,7 @@
     function endEditing() {
         $Table.removeClass("editing");
         $RowEditing.removeClass("editing");
-        $RowEditing.find(".td-actions .btn-edit").removeClass("fa-save").addClass("fa-pencil");
+        $RowEditing.find(".td-actions .btn-edit").removeClass("fa-check").addClass("fa-pencil");
         $RowEditing.find(".td-actions .btn-remove").removeClass("fa-remove").addClass("fa-trash");
         $RowEditing.removeAttr("is-new-row");
         $RowEditing = null;

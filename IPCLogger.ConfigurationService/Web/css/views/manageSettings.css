@@ -63,6 +63,7 @@
 
             .manage-settings .table-wrap table tbody td select,
             .manage-settings .table-wrap table tbody td input {
+                width: 100%;
                 height: auto !important;
             }
 

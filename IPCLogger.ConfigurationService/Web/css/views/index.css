@@ -159,7 +159,8 @@ hr {
     }
 
 table thead .th-actions {
-    text-align: right;
+    max-width: 0px;
+    direction: rtl;
 }
 
     table thead .th-actions button {
