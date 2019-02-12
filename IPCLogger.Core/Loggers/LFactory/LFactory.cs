@@ -116,6 +116,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override bool Suspend()
         {
+            if (!Settings.Enabled) return false;
+
             _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
@@ -137,6 +139,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override bool Resume()
         {
+            if (!Settings.Enabled) return false;
+
             _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
@@ -158,6 +162,8 @@ namespace IPCLogger.Core.Loggers.LFactory
 
         public override void Flush()
         {
+            if (!Settings.Enabled) return;
+
             _lockObj.WaitOne(Settings.ShouldLock);
             try
             {
@@ -196,8 +202,8 @@ namespace IPCLogger.Core.Loggers.LFactory
                     {
                         logger.Initialize();
                     }
+                    _initialized = true;
                 }
-                _initialized = true;
 
                 SetupAutoReloadWatcher(configurationFile);
                 return true;
@@ -243,7 +249,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             }
             try
             {
-                if (!_initialized) return;
+                if (!_initialized || !Settings.Enabled) return;
 
                 foreach (BaseLoggerInt logger in _loggers)
                 {

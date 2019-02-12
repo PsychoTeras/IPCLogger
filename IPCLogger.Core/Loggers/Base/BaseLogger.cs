@@ -227,6 +227,8 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void WritePlain(byte[] data, string text, bool writeLine)
         {
+            if (!Settings.Enabled) return;
+
             try
             {
                 PreInitialize?.Invoke();
@@ -245,6 +247,8 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void WriteEvent(Enum eventType, byte[] data, string text, bool writeLine)
         {
+            if (!Settings.Enabled) return;
+
             try
             {
                 PreInitialize?.Invoke();
@@ -270,7 +274,7 @@ namespace IPCLogger.Core.Loggers.Base
 
         private void WriteException(Enum eventType, Exception ex, byte[] data, string text, bool writeLine)
         {
-            if (ex == null) return;
+            if (ex == null || !Settings.Enabled) return;
 
             using (LSObject lsObj = LS.Push())
             {
