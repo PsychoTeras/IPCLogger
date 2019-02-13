@@ -106,6 +106,12 @@ namespace IPCLogger.Core.Resolvers
             return resolvers;
         }
 
+        public static IResolver Get(Enum e, object tag)
+        {
+            _typedResolvers.TryGetValue(e, out ResolverList resolvers);
+            return resolvers?.GetByTag(tag);
+        }
+
 #endregion
 
     }

@@ -5,19 +5,21 @@ using System.Collections.Generic;
 
 namespace IPCLogger.Core.Resolvers
 {
-    public sealed class ResolverList : IResolver
+    internal class ResolverList : IResolver
     {
         private List<IResolver> _resolvers;
 
         public Enum Type { get; }
 
-        internal ResolverList(Enum type)
+        public object Tag { get; } = null;
+
+        public ResolverList(Enum type)
         {
             Type = type;
             _resolvers = new List<IResolver>();
         }
 
-        internal void Add(IResolver resolver)
+        public void Add(IResolver resolver)
         {
             if (resolver == null)
             {
@@ -62,6 +64,11 @@ namespace IPCLogger.Core.Resolvers
         public IEnumerable<T> GetValues<T>()
         {
             return _resolvers.SelectMany(r => r.GetValues<T>() ?? Enumerable.Empty<T>());
+        }
+
+        public IResolver GetByTag(object tag)
+        {
+            return _resolvers.FirstOrDefault(r => r.Tag == tag);
         }
     }
 }

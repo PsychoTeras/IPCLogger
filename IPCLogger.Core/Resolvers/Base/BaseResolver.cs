@@ -8,6 +8,8 @@ namespace IPCLogger.Core.Resolvers.Base
     {
         public Enum Type { get; }
 
+        public object Tag { get; } = null;
+
         protected BaseResolver(T t)
         {
             if (!typeof(T).IsEnum)

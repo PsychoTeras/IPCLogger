@@ -7,6 +7,8 @@ namespace IPCLogger.Core.Resolvers.Base
     {
         Enum Type { get; }
 
+        object Tag { get; }
+
         object Resolve(object key);
 
         string AsString(object key);
