@@ -7,7 +7,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Private fields
 
-        private IBaseResolver _valuesResolver;
+        private IResolver _valuesResolver;
         private string[] _constValues;
 
 #endregion
@@ -23,7 +23,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             get
             {
                 return _valuesResolver != null
-                    ? _valuesResolver.Resolve(Name)
+                    ? _valuesResolver.AsArray(Name)
                     : _constValues;
             }
         }
@@ -50,7 +50,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             _constValues = values;
         }
 
-        public DocItemParamModel(IBaseResolver valueResolver, string name, string description)
+        public DocItemParamModel(IResolver valueResolver, string name, string description)
             : this(name, description)
         {
             _valuesResolver = valueResolver;

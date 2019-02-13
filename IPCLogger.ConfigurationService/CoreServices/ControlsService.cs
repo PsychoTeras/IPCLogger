@@ -1,9 +1,6 @@
-﻿using IPCLogger.ConfigurationService.Common;
-using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Attributes.CustomConversionAttributes;
-using IPCLogger.Core.Loggers.LConsole;
+﻿using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Core.Resolvers;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Web.UI;
 
@@ -25,39 +22,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
         private const string PROPERTY_ATTR_FORMATTABLE = "formattable";
 
         private const string PROPERTY_CONTROL = "form-control";
-        private const string PROPERTY_STRING = "ui-property-string";
-        private const string PROPERTY_BOOL = "ui-property-boolean";
-        private const string PROPERTY_ENUM = "ui-property-combobox";
-        private const string PROPERTY_NUMERIC = "ui-property-numeric";
-        private const string PROPERTY_TIMESPAN = "ui-property-timespan";
-        private const string PROPERTY_SIZE = "ui-property-size";
-        private const string PROPERTY_TABLE = "ui-property-table";
-
-#endregion
-
-#region Types dictionary
-
-        private static readonly Dictionary<Type, string> _types = new Dictionary<Type, string>
-        {
-            { typeof(char), PROPERTY_STRING },
-            { typeof(string), PROPERTY_STRING },
-            { typeof(bool), PROPERTY_BOOL },
-            { typeof(Enum), PROPERTY_ENUM },
-            { typeof(sbyte), PROPERTY_NUMERIC },
-            { typeof(byte), PROPERTY_NUMERIC },
-            { typeof(short), PROPERTY_NUMERIC },
-            { typeof(ushort), PROPERTY_NUMERIC },
-            { typeof(int), PROPERTY_NUMERIC },
-            { typeof(uint), PROPERTY_NUMERIC },
-            { typeof(long), PROPERTY_NUMERIC },
-            { typeof(ulong), PROPERTY_NUMERIC },
-            { typeof(TimeSpanStringConversionAttribute), PROPERTY_TIMESPAN },
-            { typeof(SizeStringConversionAttribute), PROPERTY_SIZE },
-            { typeof(StringListConversionAttribute), PROPERTY_STRING },
-            { typeof(KeyValueConversionAttribute), PROPERTY_TABLE },
-            { typeof(PatternContentConversionAttribute), PROPERTY_TABLE },
-            { typeof(ConsoleHighlightsConversionAttribute), PROPERTY_TABLE }
-        };
 
 #endregion
 
@@ -103,11 +67,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             Type basePropertyType = GetBasePropertyType(propertyModel.Converter ?? propertyModel.Type);
-
-            if (!_types.TryGetValue(basePropertyType, out var controlType))
-            {
-                throw new Exception($"Unknown property type '{basePropertyType.Name}'");
-            }
+            string controlType = RFactory.Get(ResolverType.CS_UI_PropertyControl).AsString(basePropertyType);
 
             StringWriter stringWriter = new StringWriter();
             using (HtmlTextWriter html = new HtmlTextWriter(stringWriter))

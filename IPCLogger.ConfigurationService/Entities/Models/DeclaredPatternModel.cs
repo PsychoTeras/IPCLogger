@@ -30,7 +30,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
         public bool ImmediateFlush { get; set; }
 
         [RequiredSetting, PatternContentConversion(typeof(List<KeyValuePair<string, string>>),
-            "Applicable for class name (regex allowed)", "Pattern string")]
+            "Applicable for class name (regex is allowed)", "Pattern string")]
         public List<KeyValuePair<string, string>> Content { get; set; }
 
         [NonSetting]

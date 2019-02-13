@@ -11,8 +11,11 @@ namespace IPCLogger.Core.Resolvers
 
 #region Static fields
 
-        private static readonly Dictionary<string, IBaseResolver> _resolvers =
-            new Dictionary<string, IBaseResolver>();
+        private static readonly Dictionary<string, IResolver> _namedResolvers =
+            new Dictionary<string, IResolver>();
+
+        private static readonly Dictionary<Enum, ResolverList> _typedResolvers =
+            new Dictionary<Enum, ResolverList>();
 
 #endregion
 
@@ -30,7 +33,10 @@ namespace IPCLogger.Core.Resolvers
 
         private static IEnumerable<Type> GetDeclaredResolvers(Assembly assembly)
         {
-            return assembly.GetTypes().Where(t => typeof(IBaseResolver).IsAssignableFrom(t) && !t.IsInterface);
+            return assembly.GetTypes().Where
+            (
+                t => typeof(IResolver).IsAssignableFrom(t) && !t.IsAbstract && t.Name != nameof(ResolverList)
+            );
         }
 
         private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
@@ -63,13 +69,18 @@ namespace IPCLogger.Core.Resolvers
 
         private static void AppendResolvers(IEnumerable<Type> resolverTypes)
         {
-            lock (_resolvers)
+            lock (_namedResolvers)
             {
                 foreach (Type resolverType in resolverTypes)
                 {
-                    if (Activator.CreateInstance(resolverType) is IBaseResolver resolver)
+                    if (Activator.CreateInstance(resolverType) is IResolver resolver)
                     {
-                        _resolvers.Add(resolverType.FullName, resolver);
+                        if (!_typedResolvers.TryGetValue(resolver.Type, out var resolvers))
+                        {
+                            resolvers = new ResolverList(resolver.Type);
+                            _typedResolvers.Add(resolver.Type, resolvers);
+                        }
+                        resolvers.Add(resolver);
                     }
                 }
             }
@@ -79,14 +90,20 @@ namespace IPCLogger.Core.Resolvers
 
 #region Public methods
 
-        public static IBaseResolver Get(string className)
+        public static IResolver Get(string className)
         {
             if (string.IsNullOrWhiteSpace(className))
             {
                 return null;
             }
-            _resolvers.TryGetValue(className.Trim(), out IBaseResolver resolver);
+            _namedResolvers.TryGetValue(className.Trim(), out IResolver resolver);
             return resolver;
+        }
+
+        public static IResolver Get(Enum e)
+        {
+            _typedResolvers.TryGetValue(e, out ResolverList resolvers);
+            return resolvers;
         }
 
 #endregion

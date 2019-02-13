@@ -95,7 +95,7 @@
     <Compile Include="CoreServices\ControlsService.cs" />
     <Compile Include="CoreServices\CoreService.cs" />
     <Compile Include="CoreServices\DocsService.cs" />
-    <Compile Include="CoreServices\Resolvers\RSnippet.cs" />
+    <Compile Include="CoreServices\Resolvers\RUIPropertyControls.cs" />
     <Compile Include="DAL\ApplicationDAL.cs" />
     <Compile Include="DAL\BaseDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />

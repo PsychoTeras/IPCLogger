@@ -8,7 +8,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
 
 #region Private fields
 
-        private IBaseResolver _objectIdResolver;
+        private IResolver _objectIdResolver;
         private object _constObjectId;
 
 #endregion
@@ -46,7 +46,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             Params = new List<DocItemParamModel>();
         }
 
-        public DocItemModel(IBaseResolver objectIdResolver, string objectSubId, string displayName, string description)
+        public DocItemModel(IResolver objectIdResolver, string objectSubId, string displayName, string description)
             : this((string)null, objectSubId, displayName, description)
         {
             _objectIdResolver = objectIdResolver;

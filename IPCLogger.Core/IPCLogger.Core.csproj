@@ -134,7 +134,10 @@
     <Compile Include="Patterns\PFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proto\Serializer.cs" />
-    <Compile Include="Resolvers\Base\IBaseResolver.cs" />
+    <Compile Include="Resolvers\Base\BaseResolver.cs" />
+    <Compile Include="Resolvers\Base\IResolver.cs" />
+    <Compile Include="Resolvers\ResolverList.cs" />
+    <Compile Include="Resolvers\ResolverType.cs" />
     <Compile Include="Resolvers\RFactory.cs" />
     <Compile Include="Snippets\AutoKey\AutoKey.cs" />
     <Compile Include="Snippets\Base\BaseSnippet.cs" />

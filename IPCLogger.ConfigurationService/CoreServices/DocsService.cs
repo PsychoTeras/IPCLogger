@@ -75,7 +75,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
             else if (!string.IsNullOrEmpty(valueResolver))
             {
-                IBaseResolver resolver = RFactory.Get(valueResolver);
+                IResolver resolver = RFactory.Get(valueResolver);
                 if (resolver != null)
                 {
                     model = new DocItemParamModel(resolver, name, description);
@@ -126,7 +126,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
                 string objectIdResolver = jDoc["ObjectIdResolver"]?.Value<string>();
                 if (!string.IsNullOrEmpty(objectIdResolver))
                 {
-                    IBaseResolver resolver = RFactory.Get(objectIdResolver);
+                    IResolver resolver = RFactory.Get(objectIdResolver);
                     if (resolver != null)
                     {
                         model = new DocItemModel(resolver, objectSubId, displayName, description);

@@ -1,4 +1,4 @@
-﻿using IPCLogger.Core.Common;
+﻿using IPCLogger.Core.Loggers;
 using IPCLogger.Core.Loggers.Base;
 using IPCLogger.Core.Loggers.LFactory;
 using IPCLogger.Core.Storages;
@@ -14,7 +14,6 @@ using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
-using IPCLogger.Core.Loggers;
 
 namespace IPCLogger.TestService
 {
