@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace IPCLogger.Core.Resolvers.Base
 {
-    public abstract class BaseResolver<T> : IResolver
-        where T : struct, IConvertible
+    public abstract class BaseResolver : IResolver
     {
-        public Enum Type { get; }
+        public abstract ResolverType Type { get; }
 
         public object Tag { get; } = null;
-
-        protected BaseResolver(T t)
-        {
-            if (!typeof(T).IsEnum)
-            {
-                throw new ArgumentException("T must be an enumerated type");
-            }
-            Type = t as Enum;
-        }
 
         public abstract object Resolve(object key);
 
@@ -31,17 +20,17 @@ namespace IPCLogger.Core.Resolvers.Base
             return Resolve(key) as string[];
         }
 
-        public virtual TO AsObject<TO>(object key)
+        public virtual T AsObject<T>(object key)
         {
-            return (TO)Resolve(key);
+            return (T)Resolve(key);
         }
 
-        public virtual IEnumerable<TO> GetKeys<TO>()
+        public virtual IEnumerable<T> GetKeys<T>()
         {
             return null;
         }
 
-        public virtual IEnumerable<TO> GetValues<TO>()
+        public virtual IEnumerable<T> GetValues<T>()
         {
             return null;
         }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 {
-    public class RUIPropertyControls : BaseResolver<ResolverType>
+    public class RUIPropertyControls : BaseResolver
     {
 
 #region Constants
@@ -49,11 +49,13 @@ namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 
 #endregion
 
-#region Class methods
+#region Properties
 
-        public RUIPropertyControls() : base(ResolverType.CS_UI_PropertyControl)
-        {
-        }
+        public override ResolverType Type => ResolverType.CS_UI_PropertyControls;
+
+#endregion
+
+#region Class methods
 
         public override object Resolve(object key)
         {
@@ -62,16 +64,6 @@ namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
                 throw new Exception($"Unknown property type '{key}'");
             }
             return controlType;
-        }
-
-        public override IEnumerable<T> GetKeys<T>()
-        {
-            return null;
-        }
-
-        public override IEnumerable<T> GetValues<T>()
-        {
-            return null;
         }
 
 #endregion

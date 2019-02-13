@@ -1,7 +1,7 @@
 ﻿using IPCLogger.Core.Resolvers.Base;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IPCLogger.Core.Resolvers
 {
@@ -9,11 +9,11 @@ namespace IPCLogger.Core.Resolvers
     {
         private List<IResolver> _resolvers;
 
-        public Enum Type { get; }
+        public ResolverType Type { get; }
 
         public object Tag { get; } = null;
 
-        public ResolverList(Enum type)
+        public ResolverList(ResolverType type)
         {
             Type = type;
             _resolvers = new List<IResolver>();

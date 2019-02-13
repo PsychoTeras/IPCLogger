@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace IPCLogger.Core.Resolvers.Base
 {
     public interface IResolver
     {
-        Enum Type { get; }
+        ResolverType Type { get; }
 
         object Tag { get; }
 
