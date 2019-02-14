@@ -456,3 +456,7 @@ div.group-param-info {
         flex: 1 1 auto;
         white-space: nowrap;
     }
+
+.modal-header .page.caption {
+    margin-bottom: 0;
+}

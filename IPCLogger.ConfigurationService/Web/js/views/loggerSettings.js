@@ -118,19 +118,20 @@
             });
     }
 
-    function showFormattablePopup(e, element) {
-        var applicationId = getApplicationId();
-        PopupController.snippetsInfo(applicationId, function (data) {
-        });
+    function showFormattablePopup() {
+        var $panelContainer = $("#logger-settings .panel-container");
+        if ($panelContainer.attr("show-formattable") === undefined) {
+            var applicationId = getApplicationId();
+            PopupController.snippetsInfo(applicationId, function (data) {
+                $panelContainer.children(".panel-container-left").width("");
+                $panelContainer.children(".panel-container-right").html(data);
+                $panelContainer.attr("show-formattable", "");
+            });
+        }
     }
 
     function initialize() {
         initToolBar();
-
-        $(".manage-settings .panel-container-left").resizable({
-            handleSelector: ".panel-container-splitter",
-            resizeHeight: false
-        });
 
         dictControls = new UI.ControlsFactory("#logger-settings div.form-control");
         $.each(dictControls,

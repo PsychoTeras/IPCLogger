@@ -73,6 +73,11 @@
 
     <script>
         $('[data-toggle="tooltip"]').tooltip()
+
+        $(".panel-container-left").resizable({
+            handleSelector: ".panel-container-splitter",
+            resizeHeight: false
+        });
     </script>
 
 </body>

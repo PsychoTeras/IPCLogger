@@ -2,10 +2,26 @@
     margin-bottom: 15px;
 }
 
+    .manage-settings .panel-container .panel-container-splitter+.panel-container-right {
+        display: none;
+    }
+
+    .manage-settings .panel-container[show-formattable] .panel-container-splitter+.panel-container-right {
+        display: block;
+    }
+
+    .manage-settings .panel-container .panel-container-left {
+        width: 100%;
+    }
+
+    .manage-settings .panel-container[show-formattable] .panel-container-left {
+        width: 60%;
+    }
+
     .manage-settings .card-container {
+        width: 100%;
         min-width: 500px;
         max-height: calc(100vh - 180px);
-        width: 100%;
         overflow: auto;
     }
 
