@@ -51,7 +51,7 @@ namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 
 #region Properties
 
-        public override ResolverType Type => ResolverType.CS_UI_PropertyControls;
+        public override ResolverType Type => ResolverType.UI_PropertyControls;
 
 #endregion
 
@@ -67,5 +67,6 @@ namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
         }
 
 #endregion
+
     }
 }

@@ -4,9 +4,9 @@
     {
         Custom,
         Snippets,
-        CS_UI_PropertyControls,
-        CS_UI_PropertyControlJS,
-        CS_UI_PropertyControlCSS,
-        CS_UI_PropertyControlAssets
+        UI_PropertyControls,
+        UI_PropertyControlJS,
+        UI_PropertyControlCSS,
+        UI_PropertyControlAssets
     }
 }

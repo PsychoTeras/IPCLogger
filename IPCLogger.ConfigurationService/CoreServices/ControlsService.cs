@@ -67,7 +67,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             }
 
             Type basePropertyType = GetBasePropertyType(propertyModel.Converter ?? propertyModel.Type);
-            string controlType = RFactory.Get(ResolverType.CS_UI_PropertyControls).AsString(basePropertyType);
+            string controlType = RFactory.Get(ResolverType.UI_PropertyControls).AsString(basePropertyType);
 
             StringWriter stringWriter = new StringWriter();
             using (HtmlTextWriter html = new HtmlTextWriter(stringWriter))
