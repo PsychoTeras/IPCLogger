@@ -12,9 +12,9 @@
     <input type="hidden" id="is-embedded" value="@ViewBag.isEmbedded" />
     <input type="hidden" id="hide-headers" value="@ViewBag.hideHeaders" />
 
-    <div class="card bg-light">
+    <div class="card bg-light panel-container">
 
-        <div class="card-container">
+        <div class="card-container panel-container-left">
 
             @if (!ViewBag.hideHeaders)
             {
@@ -85,7 +85,9 @@
 
         </div>
 
-        <div class="patterns-container"></div>
+        <div class="panel-container-splitter"></div>
+
+        <div class="div-patterns panel-container-right"></div>
 
     </div>
 

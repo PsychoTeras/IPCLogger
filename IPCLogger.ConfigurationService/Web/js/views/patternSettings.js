@@ -119,6 +119,11 @@
     function initialize() {
         initToolBar();
 
+        $(".manage-settings .panel-container-left").resizable({
+            handleSelector: ".panel-container-splitter",
+            resizeHeight: false
+        });
+
         dictControls = new UI.ControlsFactory("#pattern-settings div.form-control");
         $.each(dictControls,
             function (_, item) {

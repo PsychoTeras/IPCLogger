@@ -207,6 +207,7 @@
     <Content Include="Web\js\controls\Alert.js" />
     <Content Include="Web\js\controls\TableSelect.js" />
     <Content Include="Web\js\libraries\bootstrap\bootbox.min.js" />
+    <Content Include="Web\js\libraries\jquery\jquery-resizable.js" />
     <Content Include="Web\js\libraries\jquery\jquery-ui.min.js" />
     <Content Include="Web\js\views\patternSettings.js" />
     <Content Include="Web\js\views\popups\popupSnippetsInfo.js" />

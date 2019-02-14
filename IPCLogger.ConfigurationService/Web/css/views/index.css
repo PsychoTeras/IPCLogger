@@ -432,3 +432,27 @@ img.icon-info {
 div.group-param-info {
     display: flex;
 }
+
+.panel-container {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    xtouch-action: none;
+}
+
+    .panel-container .panel-container-left {
+        flex: 0 0 auto;
+    }
+
+    .panel-container .panel-container-splitter {
+        flex: 0 0 auto;
+        width: 8px;
+        height: auto;
+        border-left: 8px solid rgba(0, 0, 0, .125);
+        cursor: col-resize;
+    }
+
+    .panel-container .panel-container-right {
+        flex: 1 1 auto;
+        white-space: nowrap;
+    }

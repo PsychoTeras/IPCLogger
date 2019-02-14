@@ -3,7 +3,9 @@
 }
 
     .manage-settings .card-container {
+        min-width: 500px;
         max-height: calc(100vh - 180px);
+        width: 100%;
         overflow: auto;
     }
 
