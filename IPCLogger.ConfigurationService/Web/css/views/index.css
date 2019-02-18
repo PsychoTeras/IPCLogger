@@ -6,6 +6,9 @@
     --sc-selection-back-color: steelblue;
     --sc-tab-color: var(--sc-selection-back-color);
     --sc-tooltip-color: var(--sc-navbar-color);
+    --sc-border-style: 1px solid rgba(0, 0, 0, .125);
+    --sc-border-style-light: 1px solid #dee2e6;
+    --sc-caption-color: var(--sc-navbar-color);
     /* btn-action */
     --sc-btn-action-color: steelblue;
     --sc-btn-action-color-hover: #3f75a2;
@@ -27,7 +30,6 @@ body,
 
 a, img {
     -webkit-user-drag: none;
-    user-drag: none;
 }
 
 [role="main"] {
@@ -108,7 +110,7 @@ a, img {
     }
 
     .btn-toolbar .page-caption {
-        color: var(--sc-navbar-color);
+        color: var(--sc-caption-color);
     }
 
 .main-table-wrap {
@@ -164,7 +166,7 @@ hr {
     }
 
 table thead .th-actions {
-    max-width: 0px;
+    max-width: 0;
     direction: rtl;
 }
 
@@ -212,7 +214,6 @@ input, select, textarea, .custom-checkbox > label:before {
     font-weight: 500;
     min-width: 250px;
     max-width: 250px;
-    background-color: #000000;
     background-color: rgba(0, 0, 0, .15);
     padding: 0.55rem 0.3rem 0.55rem 0.3rem;
 }
@@ -242,7 +243,6 @@ input, select, textarea, .custom-checkbox > label:before {
 
 .breadcrumb-item a,
 .breadcrumb-item + .breadcrumb-item::before {
-    color: #ffffff;
     color: rgba(255, 255, 255, .5);
 }
 
@@ -260,7 +260,6 @@ input, select, textarea, .custom-checkbox > label:before {
     max-width: 250px;
     z-index: 100;
     padding: 48px 0 0;
-    box-shadow: inset -1px 0 0 #000000;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
@@ -332,7 +331,7 @@ button.disabled {
 
 .card-header {
     font-weight: 500;
-    padding: .2rem .4rem .2rem .4rem;
+    padding: .2rem .5rem .2rem .5rem;
 }
 
 input {
@@ -392,11 +391,6 @@ body.locked .page-lock {
     cursor: wait !important;
 }
 
-.btn-toolbar-left,
-.btn-toolbar-center,
-.btn-toolbar-right {
-}
-
 .btn-toolbar-user-left,
 .btn-toolbar-user-center,
 .btn-toolbar-user-right {
@@ -447,7 +441,8 @@ div.group-param-info {
         flex: 0 0 auto;
         width: 8px;
         height: auto;
-        border-left: 8px solid rgba(0, 0, 0, .125);
+        border-left: var(--sc-border-style);
+        border-left-width: 8px;
         cursor: col-resize;
     }
 

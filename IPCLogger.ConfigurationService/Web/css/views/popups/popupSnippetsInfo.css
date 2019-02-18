@@ -1,15 +1,25 @@
 ﻿#popup-formattable .panel-heading {
-    padding: 5px 5px 0 5px;
-    border-bottom: 1px solid #dee2e6;
+    padding: 0;
+    border-bottom: var(--sc-border-style-light);
+    background-color: rgba(0, 0, 0, .03);
 }
 
     #popup-formattable .panel-heading .nav-tabs {
         border-bottom: none;
+        height: 28px;
     }
 
 #popup-formattable .panel-default .nav-tabs li:last-child {
     margin-left: auto;
-    padding-right: 6px;
+}
+
+#popup-formattable .nav-tabs > li:not(:last-child) > a {
+    padding: 2px .5rem 0 .5rem;
+    height: 29px;
+}
+
+#popup-formattable .nav-tabs > li:last-child > a {
+    margin: 0 5px;
 }
 
 #popup-formattable .panel-body {
@@ -18,11 +28,14 @@
 
 /*** PANEL DEFAULT ***/
 #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
-    color: #777;
+    color: inherit;
+    font-weight: 500;
+    border: none;
+    border-right: var(--sc-border-style-light);
+    border-radius: 0;
 }
 
     #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
-        color: #777;
         background-color: #ddd;
         border-color: transparent;
     }
