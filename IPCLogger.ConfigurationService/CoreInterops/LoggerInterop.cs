@@ -172,7 +172,7 @@ namespace IPCLogger.ConfigurationService.CoreInterops
 
             // Initialize settings
             LFactorySettings settings = new LFactorySettings(typeof(LFactory), null);
-            ((dynamic)settings).ApplyCommonSettings(loggerNode);
+            ((dynamic)settings).ApplyCommonSettings(loggerNode); //!!!
 
             // Save XML settings
             Helpers.SetCfgAttributeValue(loggerNode, "enabled", settings.Enabled);

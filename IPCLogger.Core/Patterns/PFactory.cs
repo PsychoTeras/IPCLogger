@@ -298,7 +298,8 @@ get_generic_pattern:
                         : tmpRawPatterns[eventName];
 
                     SetupContent(rawPattern, contentNodes, tmpCompiledUntypedPatterns, immediateFlush);
-                    if (newPattern && !rawPattern.Empty)
+                    if (newPattern && !rawPattern.Empty) //!!! Doesn't work in case when default Pattern has a content record
+                                                         //whose applicable-for is "IPCLogger.TestService.Common.*"
                     {
                         tmpRawPatterns.Add(eventName, rawPattern);
                     }

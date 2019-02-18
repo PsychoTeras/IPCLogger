@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace IPCLogger.Core.Resolvers
 {
-    public static class RFactory
+    internal static class RFactory
     {
 
 #region Static fields

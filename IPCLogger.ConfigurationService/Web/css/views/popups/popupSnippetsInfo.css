@@ -1,1 +1,28 @@
-﻿
+﻿#popup-formattable .panel-heading {
+    padding: 5px 5px 0 5px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+    #popup-formattable .panel-heading .nav-tabs {
+        border-bottom: none;
+    }
+
+#popup-formattable .panel-default .nav-tabs li:last-child {
+    margin-left: auto;
+    padding-right: 6px;
+}
+
+#popup-formattable .panel-body {
+    background-color: white;
+}
+
+/*** PANEL DEFAULT ***/
+#popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
+    color: #777;
+}
+
+    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
+        color: #777;
+        background-color: #ddd;
+        border-color: transparent;
+    }

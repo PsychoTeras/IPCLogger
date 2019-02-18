@@ -437,7 +437,6 @@ div.group-param-info {
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    xtouch-action: none;
 }
 
     .panel-container .panel-container-left {

@@ -225,7 +225,6 @@
     <Content Include="Resources\show-app.png" />
     <Content Include="Web\css\controls\SizePicker.css" />
     <Content Include="Web\css\controls\TimeSpanPicker.css" />
-    <Content Include="Web\css\libraries\bootstrap\bootstrap-reboot.min.css" />
     <Content Include="Web\css\controls\TableList.css" />
     <Content Include="Web\css\libraries\font-awesome\font-awesome.min.css" />
     <Content Include="Web\css\views\manageSettings.css" />
@@ -268,7 +267,6 @@
     <None Include="Resources\edit-user.png" />
     <None Include="Resources\unblock-user.png" />
     <Content Include="Web\assets\application.png" />
-    <Content Include="Web\css\libraries\bootstrap\bootstrap-grid.min.css" />
     <Content Include="Web\css\libraries\bootstrap\bootstrap.min.css" />
     <Content Include="Web\css\views\index.css" />
     <Content Include="Web\css\views\signin.css" />

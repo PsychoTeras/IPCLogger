@@ -97,7 +97,7 @@ namespace IPCLogger.TestService
             for (int i = 0; i < _recordsCount; i++)
             {
                 LFactory.Instance.Write(LogEvent.Info, _sGuid);
-                //Thread.Sleep(1000);
+                Thread.Sleep(1000);
             }
 
             ((ManualResetEvent) obj).Set();
