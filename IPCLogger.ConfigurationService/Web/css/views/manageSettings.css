@@ -2,11 +2,13 @@
     margin-bottom: 15px;
 }
 
-    .manage-settings .panel-container .panel-container-splitter+.panel-container-right {
+    .manage-settings .panel-container .panel-container-splitter,
+    .manage-settings .panel-container .panel-container-right {
         display: none;
     }
 
-    .manage-settings .panel-container[show-formattable] .panel-container-splitter+.panel-container-right {
+    .manage-settings .panel-container[show-formattable] .panel-container-splitter,
+    .manage-settings .panel-container[show-formattable] .panel-container-right {
         display: block;
     }
 
