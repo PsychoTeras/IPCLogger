@@ -1,8 +1,9 @@
 $.sidebarMenu = function (menu) {
-    var animationSpeed = 150,
+    var animationSpeed = 0,
         subMenuSelector = '.sidebar-submenu';
 
-    $(menu).on('click', 'li a', function (e) {
+    var $menu = $(menu);
+    $menu.on('click', 'li a', function (e) {
         var $this = $(this);
         var checkElement = $this.next();
 
@@ -36,5 +37,9 @@ $.sidebarMenu = function (menu) {
         if (checkElement.is(subMenuSelector)) {
             e.preventDefault();
         }
+
+        $menu.trigger("resized");
     });
-}
+
+    return $menu;
+};

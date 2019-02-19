@@ -4,7 +4,9 @@
 
         var leftScroll = initPerfectScrollBar("#popup-formattable .panel-body");
 
-        $.sidebarMenu($('#popup-formattable .snippets'));
+        $.sidebarMenu($('#popup-formattable .snippets')).on("resized", function () {
+            leftScroll.update();
+        });
 
         leftScroll.update();
         

@@ -48,6 +48,10 @@
             flex: 1 1 auto;
         }
 
+        #popup-formattable .panel-body .snippets {
+            height: auto;
+        }
+
     /*** PANEL DEFAULT ***/
     #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
         color: inherit;

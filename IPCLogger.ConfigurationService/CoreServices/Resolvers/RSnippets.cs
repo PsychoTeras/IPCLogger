@@ -8,7 +8,7 @@ namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 
 #region Properties
 
-        public override ResolverType Type => ResolverType.Snippets;
+        public override ResolverType Type => ResolverType.DOC_Snippet;
 
 #endregion
 
