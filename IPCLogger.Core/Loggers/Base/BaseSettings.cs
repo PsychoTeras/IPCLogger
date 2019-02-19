@@ -228,7 +228,7 @@ namespace IPCLogger.Core.Loggers.Base
             return xmlCfg.SelectSingleNode(loggerXPath);
         }
 
-        public virtual void ApplyCommonSettings(XmlNode cfgNode)
+        protected internal virtual void ApplyCommonSettings(XmlNode cfgNode)
         {
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out var enabled) || enabled;

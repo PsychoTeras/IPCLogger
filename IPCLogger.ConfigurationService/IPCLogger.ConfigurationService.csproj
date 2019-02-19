@@ -201,7 +201,7 @@
     <Content Include="Web\assets\icon-info-16.png" />
     <Content Include="Web\css\controls\Alert.css" />
     <Content Include="Web\css\controls\TableSelect.css" />
-    <Content Include="Web\css\libraries\perfectScrollBar\perfect-scrollbar.css" />
+    <Content Include="Web\css\controls\PerfectScrollBar.css" />
     <Content Include="Web\css\views\popups\popupSnippetsInfo.css" />
     <Content Include="Web\css\views\popups\popupAddLogger.css" />
     <Content Include="Web\js\controllers\patternSettingsController.js" />
@@ -211,7 +211,7 @@
     <Content Include="Web\js\libraries\bootstrap\bootbox.min.js" />
     <Content Include="Web\js\libraries\jquery\jquery-resizable.js" />
     <Content Include="Web\js\libraries\jquery\jquery-ui.min.js" />
-    <Content Include="Web\js\libraries\perfectScrollBar\perfect-scrollbar.min.js" />
+    <Content Include="Web\js\controls\PerfectScrollBar.js" />
     <Content Include="Web\js\views\patternSettings.js" />
     <Content Include="Web\js\views\popups\popupSnippetsInfo.js" />
     <Content Include="Web\js\views\popups\popupAddLogger.js" />

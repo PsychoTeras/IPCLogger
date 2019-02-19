@@ -111,7 +111,7 @@ namespace IPCLogger.Core.Loggers.LFactory
             return Constants.RootAppCfgPath;
         }
 
-        public override void ApplyCommonSettings(XmlNode cfgNode)
+        protected internal override void ApplyCommonSettings(XmlNode cfgNode)
         {
             XmlAttribute aEnabled = cfgNode.Attributes["enabled"];
             Enabled = aEnabled == null || !bool.TryParse(aEnabled.Value, out var enabled) || enabled;
