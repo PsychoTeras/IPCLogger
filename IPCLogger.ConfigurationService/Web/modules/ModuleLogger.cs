@@ -1,8 +1,8 @@
-﻿using IPCLogger.ConfigurationService.CoreServices;
+﻿using IPCLogger.ConfigurationService.CoreInterops;
+using IPCLogger.ConfigurationService.CoreServices;
 using IPCLogger.ConfigurationService.Entities;
 using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Common;
 using Nancy;
 using Nancy.Extensions;
 using Nancy.Responses.Negotiation;
@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IPCLogger.ConfigurationService.CoreInterops;
 
 namespace IPCLogger.ConfigurationService.Web.modules
 {
@@ -67,7 +66,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 }
                 catch
                 {
-                    return null;
+                    return Response.AsJson("Invalid properties object", HttpStatusCode.BadRequest);
                 }
 
                 try

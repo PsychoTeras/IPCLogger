@@ -21,7 +21,7 @@
 
         window.addEventListener("beforeunload", function (e) {
             if (!e.returnValue) {
-                lockPage();
+                window.pageUnloading = true;
                 var apiTrackUrl = getApiUrl("trackurl");
                 var trackedUrl = location.href.replace(location.origin, "");
                 syncQuery(apiTrackUrl, "POST", "text", trackedUrl);
@@ -35,7 +35,9 @@
             lockPage();
         },
         ajaxStop: function () {
-            unlockPage();
+            if (!window.pageUnloading) {
+                unlockPage();
+            }
         },
         mousemove: function (e) {
             if (document.body) {

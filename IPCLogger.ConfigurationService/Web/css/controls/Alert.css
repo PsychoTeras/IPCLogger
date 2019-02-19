@@ -2,7 +2,6 @@
     margin: 0;
     position: fixed;
     z-index: 9999;
-    display: none;
     font-size: 1rem;
     text-align: center;
     border: var(--sc-border-style);
