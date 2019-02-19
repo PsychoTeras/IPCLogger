@@ -32,32 +32,28 @@
     }
 
     #popup-formattable .panel-body {
-        flex-grow: 1;
         margin: 0;
         padding: 1rem;
         max-height: calc(100vh - 208px);
         position: relative;
     }
 
-        #popup-formattable .panel-body .tab-snippets {
-            flex: 0 0 auto;
-            width: 200px;
-            height: auto;
-            padding: 0;
+        #popup-formattable .panel-body .formattable-container {
             display: flex;
-            border-right: none;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+            flex-grow: 1;
+            height: fit-content;
+            min-height: calc(100vh - 240px);
         }
 
-            #popup-formattable .panel-body .tab-snippets #snippets-tree {
-                flex-grow: 1;
+            #popup-formattable .panel-body .formattable-container .tab-snippets {
+                flex: 0 0 auto;
+                width: 200px;
+                height: auto;
+                padding: 0;
+                border-right: none;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
             }
-
-                #popup-formattable .panel-body .tab-snippets #snippets-tree .snippets {
-                    width: 100%;
-                    height: auto;
-                }
 
         #popup-formattable .panel-body .tab-info {
             flex: 1 1 auto;

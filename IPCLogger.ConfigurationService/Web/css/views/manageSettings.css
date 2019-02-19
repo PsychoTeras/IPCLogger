@@ -9,7 +9,7 @@
 
     .manage-settings .panel-container[show-formattable] .panel-container-splitter,
     .manage-settings .panel-container[show-formattable] .panel-container-right {
-        display: flex;
+        display: block;
     }
 
     .manage-settings .panel-container .panel-container-left {

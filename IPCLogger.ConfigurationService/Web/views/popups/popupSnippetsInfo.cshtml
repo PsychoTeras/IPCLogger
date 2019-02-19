@@ -22,13 +22,13 @@
         </ul>
     </div>
 
-    <div class="panel-body row">
+    <div class="panel-body">
 
-        <div class="tab-content tab-snippets column form-control bg-light">
+        <div class="formattable-container">
 
-            <div id="snippets-tree" class="tab-pane show active">
+            <div class="tab-content tab-snippets form-control bg-light">
 
-                <ul class="sidebar-menu snippets">
+                <ul id="snippets-tree" class="sidebar-menu tab-pane show active">
                     @foreach (SnippetType type in Model.Snippets.Keys)
                     {
                         <li>
@@ -50,15 +50,15 @@
                     }
                 </ul>
 
+                <div id="snippets-search" class="tab-pane">
+
+                </div>
+
             </div>
 
-            <div id="snippets-search" class="tab-pane">
+            <div class="tab-content tab-info form-control">
 
             </div>
-
-        </div>
-
-        <div class="tab-content tab-info column form-control">
 
         </div>
 
