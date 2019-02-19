@@ -80,6 +80,12 @@ namespace IPCLogger.Core.Resolvers
                             resolvers = new ResolverList(resolver.Type);
                             _typedResolvers.Add(resolver.Type, resolvers);
                         }
+
+                        string resolverName = resolver.GetType().FullName;
+                        if (!_namedResolvers.ContainsKey(resolverName))
+                        {
+                            _namedResolvers.Add(resolverName, resolver);
+                        }
                         resolvers.Add(resolver);
                     }
                 }

@@ -1,6 +1,6 @@
 [
   {
-    "ObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet",
+    "ObjectIdResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippets",
     "ObjectSubId": "Snippet",
     "DisplayName": "SSnippet",
     "Description": "SSnippet description",
@@ -18,7 +18,7 @@
       {
         "Name": "p3",
         "Description": "param3",
-        "ValueResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippet"
+        "ValueResolver": "IPCLogger.ConfigurationService.CoreServices.Resolvers.RSnippets"
       },
       {
         "Name": "p4",
