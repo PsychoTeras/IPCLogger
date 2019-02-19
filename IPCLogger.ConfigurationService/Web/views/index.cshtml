@@ -72,12 +72,14 @@
     @Html.Partial("partials/_footer.cshtml", Model)
 
     <script>
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="tooltip"]').tooltip();
 
         $(".panel-container-left").resizable({
             handleSelector: ".panel-container-splitter",
             resizeHeight: false
         });
+
+        initPerfectScrollBar(".main-table-wrap");
     </script>
 
 </body>

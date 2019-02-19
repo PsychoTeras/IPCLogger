@@ -132,6 +132,7 @@
 
     function initialize() {
         initToolBar();
+        var leftScroll = initPerfectScrollBar("#logger-settings .panel-container-left");
 
         dictControls = new UI.ControlsFactory("#logger-settings div.form-control");
         $.each(dictControls,
@@ -139,6 +140,8 @@
                 var $control = $(item.control);
                 $control.on("showFormattable", showFormattablePopup);
             });
+
+        leftScroll.update();
 
         $("#logger-settings .div-save-cancel #btn-save").on("click", save);
         $("#logger-settings .div-save-cancel #btn-cancel").on("click", isEmbedded() ? reset : cancel);

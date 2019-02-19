@@ -24,7 +24,7 @@
         width: 100%;
         min-width: 500px;
         max-height: calc(100vh - 180px);
-        overflow: auto;
+        position: relative;
     }
 
     .manage-settings .card-header:not(:first-child) {

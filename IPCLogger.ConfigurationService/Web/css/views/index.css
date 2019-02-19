@@ -115,8 +115,7 @@ a, img {
 
 .main-table-wrap {
     max-height: calc(100vh - 130px);
-    overflow: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+    position: relative;
 }
 
 hr {

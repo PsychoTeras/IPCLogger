@@ -65,6 +65,18 @@
         }
     };
 
+    window.initPerfectScrollBar = function (selector) {
+        var $control = $(selector);
+        if ($control.length) {
+            var sb = new PerfectScrollbar(selector,
+                {
+                    thumbPadding: 2
+                });
+            return sb;
+        }
+        return null;
+    };
+
     window.bindMouseWheelIncrement = function($input, onChange) {
         $input.bind("mousewheel", function (e) {
             if (!$(this).is(":focus")) {

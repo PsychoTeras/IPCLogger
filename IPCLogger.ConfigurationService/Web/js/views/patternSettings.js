@@ -118,6 +118,7 @@
 
     function initialize() {
         initToolBar();
+        var leftScroll = initPerfectScrollBar("#pattern-settings .panel-container-left");
 
         dictControls = new UI.ControlsFactory("#pattern-settings div.form-control");
         $.each(dictControls,
@@ -125,6 +126,8 @@
                 var $control = $(item.control);
                 $control.on("showFormattable", showFormattablePopup);
             });
+
+        leftScroll.update();
 
         $("#pattern-settings .div-save-cancel #btn-save").on("click", save);
         $("#pattern-settings .div-save-cancel #btn-cancel").on("click", cancel);
