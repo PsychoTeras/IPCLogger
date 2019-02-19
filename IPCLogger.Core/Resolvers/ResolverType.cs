@@ -3,8 +3,8 @@
     public enum ResolverType
     {
         Custom,
-        DOC_Snippet,
-        UI_PropertyControl,
+        Snippets,
+        UI_PropertyControls,
         UI_PropertyControlJS,
         UI_PropertyControlCSS,
         UI_PropertyControlAssets

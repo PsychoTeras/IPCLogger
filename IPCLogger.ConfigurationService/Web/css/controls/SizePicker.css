@@ -6,7 +6,7 @@
     display: table;
 }
 
-.bsp-input.disabled {
+    .bsp-input.disabled {
         color: #AAAAAA;
         cursor: default;
     }

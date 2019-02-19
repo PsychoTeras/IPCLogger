@@ -42,14 +42,30 @@
         #popup-formattable .panel-body .tab-snippets {
             flex: 0 0 auto;
             width: 200px;
-        }
-
-        #popup-formattable .panel-body .tab-search {
-            flex: 1 1 auto;
-        }
-
-        #popup-formattable .panel-body .snippets {
             height: auto;
+            padding: 0;
+            display: flex;
+            border-right: none;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+            #popup-formattable .panel-body .tab-snippets #snippets-tree {
+                flex-grow: 1;
+            }
+
+                #popup-formattable .panel-body .tab-snippets #snippets-tree .snippets {
+                    width: 100%;
+                    height: auto;
+                }
+
+        #popup-formattable .panel-body .tab-info {
+            flex: 1 1 auto;
+            width: auto;
+            height: auto;
+            display: flex;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
 
     /*** PANEL DEFAULT ***/

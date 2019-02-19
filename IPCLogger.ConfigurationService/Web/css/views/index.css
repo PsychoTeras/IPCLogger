@@ -2,13 +2,15 @@
     --sc-font-size: .875rem;
     --sc-navbar-color: #495057;
     --sc-link-color: #006be0;
-    --sc-selection-color: white;
-    --sc-selection-back-color: steelblue;
     --sc-tab-color: var(--sc-selection-back-color);
     --sc-tooltip-color: var(--sc-navbar-color);
     --sc-border-style: 1px solid rgba(0, 0, 0, .125);
     --sc-border-style-light: 1px solid #dee2e6;
-    --sc-caption-color: var(--sc-navbar-color);
+    --sc-label-dark-color: #333333;
+    --sc-label-light-color: whitesmoke;
+    --sc-selection-color: var(--sc-label-light-color);
+    --sc-selection-back-color: steelblue;
+    --sc-hover-color: rgba(0, 0, 0, .075);
     /* btn-action */
     --sc-btn-action-color: steelblue;
     --sc-btn-action-color-hover: #3f75a2;
@@ -54,7 +56,7 @@ a, img {
 }
 
 .btn-action {
-    color: white;
+    color: var(--sc-label-light-color);
     background-color: var(--sc-btn-action-color);
     border-color: var(--sc-btn-action-color);
 }
@@ -71,7 +73,7 @@ a, img {
     }
 
 .btn-save {
-    color: white;
+    color: var(--sc-label-light-color);
     background-color: var(--sc-btn-save-color);
     border-color: var(--sc-btn-save-color);
 }
@@ -218,7 +220,7 @@ input, select, textarea, .custom-checkbox > label:before {
 }
 
     .navbar-caption a {
-        color: whitesmoke;
+        color: var(--sc-label-light-color);
         text-decoration: none;
         vertical-align: middle;
         line-height: inherit;
@@ -247,7 +249,7 @@ input, select, textarea, .custom-checkbox > label:before {
 
     .breadcrumb-item a:hover,
     .breadcrumb-item.active {
-        color: whitesmoke;
+        color: var(--sc-label-light-color);
     }
 
 .sidebar {
@@ -269,7 +271,7 @@ input, select, textarea, .custom-checkbox > label:before {
 
 .sidebar .nav-link {
     font-weight: 500;
-    color: #333333;
+    color: var(--sc-label-dark-color);
 }
 
     .sidebar .nav-link.active {
@@ -408,7 +410,7 @@ body.locked .page-lock {
 .tooltip-inner {
     max-width: 380px;
     width: auto;
-    color: white;
+    color: var(--sc-label-light-color);
     text-align: left;
     background-color: var(--sc-tooltip-color);
 }
