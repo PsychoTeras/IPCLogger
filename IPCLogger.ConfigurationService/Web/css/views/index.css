@@ -438,7 +438,6 @@ div.group-param-info {
 
     .panel-container .panel-container-splitter {
         flex: 0 0 auto;
-        width: 8px;
         height: auto;
         border-left: var(--sc-border-style);
         border-left-width: 8px;
