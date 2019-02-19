@@ -27,7 +27,8 @@ namespace IPCLogger.ConfigurationService.Web.modules
                 CoreService coreService = GetCoreService(applicationId);
                 Dictionary<SnippetType, List<BaseSnippet>> snippets = coreService.Snippets;
                 DocsService docsService = DocsService.Instance;
-                return View["popups/popupSnippetsInfo", new SnippetsInfoModel(snippets, docsService)];
+                SnippetsInfoModel model = new SnippetsInfoModel(snippets, docsService);
+                return View["popups/popupSnippetsInfo", model];
             };
         }
     }

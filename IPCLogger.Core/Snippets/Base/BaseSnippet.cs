@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using IPCLogger.Core.Caches;
+﻿using IPCLogger.Core.Caches;
 using IPCLogger.Core.Patterns;
+using System;
+using System.Collections.Generic;
 
 namespace IPCLogger.Core.Snippets.Base
 {
