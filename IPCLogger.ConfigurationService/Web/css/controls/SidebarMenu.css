@@ -19,6 +19,7 @@
 
             .sidebar-menu > li > a > .fa {
                 width: 20px;
+                color: #5a6268;
             }
 
         .sidebar-menu > li:hover > a, .sidebar-menu > li.active > a {
