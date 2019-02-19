@@ -6,13 +6,13 @@
 
     #popup-formattable .panel-heading {
         padding: 0;
-        border-bottom: var(--sc-border-style-light);
+        border-bottom: var(--sc-border-style);
         background-color: rgba(0, 0, 0, .03);
     }
 
         #popup-formattable .panel-heading .nav-tabs {
             border-bottom: none;
-            height: 28px;
+            height: 27px;
         }
 
     #popup-formattable .panel-default .nav-tabs li:last-child {
@@ -21,7 +21,7 @@
 
     #popup-formattable .nav-tabs > li:not(:last-child) > a {
         padding: 3px .6rem 0 .6rem;
-        height: 29px;
+        height: 28px;
     }
 
     #popup-formattable .nav-tabs > li:last-child > a {
@@ -49,7 +49,7 @@
         color: inherit;
         font-weight: 500;
         border: none;
-        border-right: var(--sc-border-style-light);
+        border-right: var(--sc-border-style);
         border-radius: 0;
         transition: background-color .15s;
     }
