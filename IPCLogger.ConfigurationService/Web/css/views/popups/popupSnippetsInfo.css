@@ -1,41 +1,57 @@
-﻿#popup-formattable .panel-heading {
-    padding: 0;
-    border-bottom: var(--sc-border-style-light);
-    background-color: rgba(0, 0, 0, .03);
+﻿#popup-formattable {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
 }
 
-    #popup-formattable .panel-heading .nav-tabs {
-        border-bottom: none;
-        height: 28px;
+    #popup-formattable .panel-heading {
+        padding: 0;
+        border-bottom: var(--sc-border-style-light);
+        background-color: rgba(0, 0, 0, .03);
     }
 
-#popup-formattable .panel-default .nav-tabs li:last-child {
-    margin-left: auto;
-}
+        #popup-formattable .panel-heading .nav-tabs {
+            border-bottom: none;
+            height: 28px;
+        }
 
-#popup-formattable .nav-tabs > li:not(:last-child) > a {
-    padding: 2px .5rem 0 .5rem;
-    height: 29px;
-}
-
-#popup-formattable .nav-tabs > li:last-child > a {
-    margin: 0 5px;
-}
-
-#popup-formattable .panel-body {
-    background-color: white;
-}
-
-/*** PANEL DEFAULT ***/
-#popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
-    color: inherit;
-    font-weight: 500;
-    border: none;
-    border-right: var(--sc-border-style-light);
-    border-radius: 0;
-}
-
-    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
-        background-color: #ddd;
-        border-color: transparent;
+    #popup-formattable .panel-default .nav-tabs li:last-child {
+        margin-left: auto;
     }
+
+    #popup-formattable .nav-tabs > li:not(:last-child) > a {
+        padding: 3px .6rem 0 .6rem;
+        height: 29px;
+    }
+
+    #popup-formattable .nav-tabs > li:last-child > a {
+        margin: 0 5px;
+    }
+
+    #popup-formattable .panel-body {
+        flex-grow: 1;
+        background-color: white;
+        margin: 0;
+    }
+
+        #popup-formattable .panel-body .tab-content {
+            flex: 0 0 auto;
+        }
+
+        #popup-formattable .panel-body .info-content {
+            flex: 1 1 auto;
+        }
+
+    /*** PANEL DEFAULT ***/
+    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
+        color: inherit;
+        font-weight: 500;
+        border: none;
+        border-right: var(--sc-border-style-light);
+        border-radius: 0;
+        transition: background-color .15s;
+    }
+
+        #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
+            background-color: #e3e3e3;
+        }

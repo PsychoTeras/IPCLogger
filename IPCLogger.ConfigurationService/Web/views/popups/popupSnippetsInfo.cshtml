@@ -5,27 +5,31 @@
 
 <div id="popup-formattable">
 
-    <div class="panel panel-default">
+    <div class="panel-heading panel-default">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="snippets-tree-tab" href="#snippets-tree" data-toggle="tab"
+                   role="tab" aria-controls="settings" aria-selected="true">Formattable snippets</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="snippets-search-tab" href="#snippets-search" data-toggle="tab"
+                   role="tab" aria-controls="settings" aria-selected="false">Search...</a>
+            </li>
+            <li>
+                <a class="close" data-dismiss="modal">×</a>
+            </li>
+        </ul>
+    </div>
 
-        <div class="panel-heading">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="snippets-tree-tab" href="#snippets-tree" data-toggle="tab"
-                       role="tab" aria-controls="settings" aria-selected="true">Formattable snippets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="snippets-search-tab" href="#snippets-search" data-toggle="tab"
-                       role="tab" aria-controls="settings" aria-selected="false">Search...</a>
-                </li>
-                <li>
-                    <a class="close" data-dismiss="modal">×</a>
-                </li>
-            </ul>
-        </div>
+    <div class="panel-body row">
 
-        <div class="panel-body tab-content">
+        <div class="tab-content column">
             <div class="tab-pane show active" id="snippets-tree">Default 1</div>
             <div class="tab-pane" id="snippets-search">Default 2</div>
+        </div>
+
+        <div class="info-content column">
+
         </div>
 
     </div>
