@@ -27,6 +27,7 @@
     #popup-formattable .nav-tabs > li:last-child > a {
         margin: 0 6px;
         height: 100%;
+        font-size: 22px;
     }
 
     #popup-formattable .panel-body {
