@@ -47,7 +47,7 @@
 
             #popup-formattable .panel-body .formattable-container .tab-snippets {
                 flex: 0 0 auto;
-                width: 200px;
+                width: 223px;
                 height: auto;
                 padding: 0;
                 border-right: none;
@@ -80,4 +80,8 @@
 
     #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
         background-color: #e3e3e3;
+    }
+
+    #popup-formattable .nav-link {
+        text-align: center;
     }
