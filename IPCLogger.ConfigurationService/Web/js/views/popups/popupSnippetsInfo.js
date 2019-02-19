@@ -1,6 +1,13 @@
 ﻿(function () {
 
     function initialize() {
+
+        var leftScroll = initPerfectScrollBar("#popup-formattable .panel-body");
+
+        $.sidebarMenu($('#popup-formattable .snippets'));
+
+        leftScroll.update();
+        
         $("#popup-formattable a.close").on("click", function () {
             var $panelContainer = $(".panel-container[show-formattable]");
             $panelContainer.removeAttr("show-formattable");

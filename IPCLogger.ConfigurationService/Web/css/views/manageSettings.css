@@ -114,6 +114,7 @@
     }
 
         .manage-settings div.div-formattable button {
+            color: #6c757d !important;
             border: 1px solid #ced4da;
             margin-left: 4px;
             height: 32px;

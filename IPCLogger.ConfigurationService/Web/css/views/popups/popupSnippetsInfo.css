@@ -28,33 +28,40 @@
         margin: 0 6px;
         height: 100%;
         font-size: 22px;
+        opacity: .7;
     }
 
     #popup-formattable .panel-body {
         flex-grow: 1;
-        background-color: white;
         margin: 0;
         padding: 1rem;
+        max-height: calc(100vh - 208px);
+        position: relative;
     }
 
-        #popup-formattable .panel-body .tab-content {
+        #popup-formattable .panel-body .tab-snippets {
             flex: 0 0 auto;
+            width: 200px;
         }
 
-        #popup-formattable .panel-body .info-content {
+        #popup-formattable .panel-body .tab-search {
             flex: 1 1 auto;
         }
 
     /*** PANEL DEFAULT ***/
     #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
         color: inherit;
-        font-weight: 500;
         border: none;
         border-right: var(--sc-border-style);
         border-radius: 0;
         transition: background-color .15s;
     }
 
-        #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
-            background-color: #e3e3e3;
-        }
+    #popup-formattable.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+        font-weight: 500;
+        background-color: #f8f9fa;
+    }
+
+    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
+        background-color: #e3e3e3;
+    }

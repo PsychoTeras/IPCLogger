@@ -146,7 +146,7 @@
                 var $divToInsertAfter = $parentElement.children("div[class='group-param-info']");
                 var $div = $("<div class='div-formattable'>").insertAfter($divToInsertAfter);
                 $target.appendTo($div);
-                var $btnFmtShow = $("<button class='btn btn-sm btn-glyph btn-light fa fa-info-circle'>");
+                var $btnFmtShow = $("<button class='btn btn-sm btn-glyph btn-light fa fa-book'>");
                 $btnFmtShow.click(function () {
                     $(me).trigger("showFormattable", $target);
                 });
