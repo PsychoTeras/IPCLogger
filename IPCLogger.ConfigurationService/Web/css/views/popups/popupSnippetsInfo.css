@@ -25,7 +25,8 @@
     }
 
     #popup-formattable .nav-tabs > li:last-child > a {
-        margin: 0 5px;
+        margin: 0 6px;
+        height: 100%;
     }
 
     #popup-formattable .panel-body {
