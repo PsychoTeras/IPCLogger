@@ -17,7 +17,7 @@
             <li class="nav-item">
                 <a class="nav-link" id="snippets-search-tab" href="#snippets-search" data-toggle="tab"
                    role="tab" aria-controls="settings" aria-selected="false" style="width: 80px">
-                   Search...
+                    Search...
                 </a>
             </li>
             <li>
@@ -28,41 +28,37 @@
 
     <div class="panel-body">
 
-        <div class="formattable-container">
+        <div class="tab-content tab-snippets form-control scrollable-wrap bg-light">
 
-            <div class="tab-content tab-snippets form-control bg-light">
-
-                <ul id="snippets-tree" class="sidebar-menu tab-pane show active">
-                    @foreach (SnippetType type in Model.Snippets.Keys)
-                    {
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-@(Model.SnippetIcon[type])"></i>
-                                <span>@(type.ToString())s</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="sidebar-submenu">
-                                @foreach (BaseSnippet snippet in Model.Snippets[type])
+            <ul id="snippets-tree" class="sidebar-menu tab-pane show active">
+                @foreach (SnippetType type in Model.Snippets.Keys)
+                {
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-@(Model.SnippetIcon[type])"></i>
+                            <span>@(type.ToString())s</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="sidebar-submenu">
+                            @foreach (BaseSnippet snippet in Model.Snippets[type])
+                            {
+                                foreach (string name in snippet.Names ?? new string[0])
                                 {
-                                    foreach (string name in snippet.Names ?? new string[0])
-                                    {
-                                        <li><a href="#"><i class="fa fa-circle-o"></i>@name</a></li>
-                                    }
+                                    <li><a href="#"><i class="fa fa-circle-o"></i>@name</a></li>
                                 }
-                            </ul>
-                        </li>
-                    }
-                </ul>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
 
-                <div id="snippets-search" class="tab-pane">
-
-                </div>
-
-            </div>
-
-            <div class="tab-content tab-info form-control">
+            <div id="snippets-search" class="tab-pane">
 
             </div>
+
+        </div>
+
+        <div class="tab-content tab-info form-control scrollable-wrap">
 
         </div>
 

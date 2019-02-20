@@ -2,9 +2,9 @@
 
     function initialize() {
 
-        var leftScroll = initPerfectScrollBar("#popup-formattable .panel-body");
+        var leftScroll = initPerfectScrollBar("#popup-formattable .tab-snippets");
 
-        $.sidebarMenu($("#popup-formattable #snippets-tree")).on("resized", function () {
+        $.sidebarMenu($("#popup-formattable .tab-snippets")).on("resized", function () {
             leftScroll.update();
         });
 

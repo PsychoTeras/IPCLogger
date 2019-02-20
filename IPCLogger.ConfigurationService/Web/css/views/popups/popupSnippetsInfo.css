@@ -1,87 +1,76 @@
-﻿#popup-formattable {
-    display: flex;
-    flex-grow: 1;
-    flex-flow: column;
+﻿#popup-formattable .scrollable-wrap {
+    height: calc(100vh - 240px) !important;
+    position: relative;
 }
 
-    #popup-formattable .panel-heading {
+#popup-formattable .panel-heading {
+    padding: 0;
+    border-bottom: var(--sc-border-style);
+    background-color: rgba(0, 0, 0, .03);
+}
+
+    #popup-formattable .panel-heading .nav-tabs {
+        border-bottom: none;
+        height: 27px;
+    }
+
+        #popup-formattable .panel-heading .nav-tabs li:last-child {
+            margin-left: auto;
+        }
+
+        #popup-formattable .panel-heading .nav-tabs > li:not(:last-child) > a {
+            padding: 3px .6rem 0 .6rem;
+            height: 28px;
+        }
+
+        #popup-formattable .panel-heading .nav-tabs > li:last-child > a {
+            margin: 0 6px;
+            height: 100%;
+            font-size: 22px;
+            opacity: .7;
+        }
+
+#popup-formattable .panel-body {
+    margin: 0;
+    padding: 1rem;
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+}
+
+    #popup-formattable .panel-body .tab-snippets {
+        width: 223px;
         padding: 0;
-        border-bottom: var(--sc-border-style);
-        background-color: rgba(0, 0, 0, .03);
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
-        #popup-formattable .panel-heading .nav-tabs {
-            border-bottom: none;
-            height: 27px;
-        }
-
-    #popup-formattable .panel-default .nav-tabs li:last-child {
-        margin-left: auto;
+    #popup-formattable .panel-body .tab-info {
+        flex: 1 1 auto;
+        width: auto;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
     }
 
-    #popup-formattable .nav-tabs > li:not(:last-child) > a {
-        padding: 3px .6rem 0 .6rem;
-        height: 28px;
-    }
+/*** PANEL DEFAULT ***/
+#popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
+    color: inherit;
+    border: none;
+    border-right: var(--sc-border-style);
+    border-radius: 0;
+    transition: background-color .15s;
+}
 
-    #popup-formattable .nav-tabs > li:last-child > a {
-        margin: 0 6px;
-        height: 100%;
-        font-size: 22px;
-        opacity: .7;
-    }
+#popup-formattable.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    font-weight: 500;
+    background-color: #f8f9fa;
+}
 
-    #popup-formattable .panel-body {
-        margin: 0;
-        padding: 1rem;
-        max-height: calc(100vh - 208px);
-        position: relative;
-    }
+#popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
+    background-color: #e3e3e3;
+}
 
-        #popup-formattable .panel-body .formattable-container {
-            display: flex;
-            flex-grow: 1;
-            height: fit-content;
-            min-height: calc(100vh - 240px);
-        }
-
-            #popup-formattable .panel-body .formattable-container .tab-snippets {
-                flex: 0 0 auto;
-                width: 223px;
-                height: auto;
-                padding: 0;
-                border-right: none;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-        #popup-formattable .panel-body .tab-info {
-            flex: 1 1 auto;
-            width: auto;
-            height: auto;
-            display: flex;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-    /*** PANEL DEFAULT ***/
-    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a {
-        color: inherit;
-        border: none;
-        border-right: var(--sc-border-style);
-        border-radius: 0;
-        transition: background-color .15s;
-    }
-
-    #popup-formattable.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-        font-weight: 500;
-        background-color: #f8f9fa;
-    }
-
-    #popup-formattable .panel-default .nav-tabs > li:not(:last-child) > a:hover:not(.active) {
-        background-color: #e3e3e3;
-    }
-
-    #popup-formattable .nav-link {
-        text-align: center;
-    }
+#popup-formattable .nav-link {
+    text-align: center;
+}
