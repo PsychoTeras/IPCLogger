@@ -243,7 +243,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
-#region Logger methods
+#region Pattern methods
 
         public DocItemModel GetPatternPropertyDoc(string propertyName)
         {

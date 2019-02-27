@@ -2,7 +2,6 @@
 {
     public enum ResolverType
     {
-        Custom,
         Snippets,
         UI_PropertyControls,
         UI_PropertyControlJS,

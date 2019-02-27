@@ -9,7 +9,7 @@ namespace IPCLogger.Core.Resolvers
     internal static class RFactory
     {
 
-        #region Static fields
+#region Static fields
 
         private static readonly Dictionary<string, IResolver> _namedResolvers =
             new Dictionary<string, IResolver>();
@@ -17,9 +17,9 @@ namespace IPCLogger.Core.Resolvers
         private static readonly Dictionary<Enum, ResolverList> _typedResolvers =
             new Dictionary<Enum, ResolverList>();
 
-        #endregion
+#endregion
 
-        #region Static ctor
+#region Static ctor
 
         static RFactory()
         {
@@ -27,9 +27,9 @@ namespace IPCLogger.Core.Resolvers
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
         }
 
-        #endregion
+#endregion
 
-        #region Private methods
+#region Private methods
 
         private static IEnumerable<Type> GetDeclaredResolvers(Assembly assembly)
         {
@@ -90,9 +90,9 @@ namespace IPCLogger.Core.Resolvers
             }
         }
 
-        #endregion
+#endregion
 
-        #region Public methods
+#region Public methods
 
         public static IResolver Get(string className)
         {
@@ -116,7 +116,7 @@ namespace IPCLogger.Core.Resolvers
             return resolvers?.GetByTag(tag);
         }
 
-        #endregion
+#endregion
 
     }
 }

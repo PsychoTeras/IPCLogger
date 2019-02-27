@@ -25,6 +25,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #endregion
 
+#region Class methods
+
         public static string GetLoggerDescription(string loggerType)
         {
             DocItemModel doc = DocsService.Instance.GetLoggerDoc(loggerType);
@@ -112,5 +114,8 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
             return stringWriter.ToString();
         }
+
+#endregion
+
     }
 }
