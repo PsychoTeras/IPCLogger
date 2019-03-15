@@ -297,11 +297,6 @@ namespace IPCLogger.Core.Snippets
 
 #region Public methods
 
-        internal static Dictionary<SnippetType, List<BaseSnippet>> GetSnippets()
-        {
-            return _snippetsList;
-        }
-
         public static string Process(string pattern, PFactory pFactory)
         {
             return Process(null, null, null, null, pattern, -1, null);

@@ -36,8 +36,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         public List<DeclaredPatternModel> DeclaredPatterns { get; set; }
 
-        public Dictionary<SnippetType, List<BaseSnippet>> Snippets { get; set; }
-
 #endregion
 
 #region Ctor
@@ -243,7 +241,6 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
         private void ReadSnippets()
         {
-            Snippets = SFactory.GetSnippets();
         }
 
 #endregion
