@@ -88,7 +88,7 @@ namespace IPCLogger.ConfigurationService.Web.modules
                     }
 
                     PropertyValidationResult[] validationResult = model.ValidateProperties(propertyObjs);
-                    coreService.ValidateLoggerUniqueness(model, propertyObjs, ref validationResult);
+                    coreService.ValidateLoggerUniqueness(model, ref validationResult);
 
                     IEnumerable<InvalidPropertyValueDTO> invalidProperties = validationResult.
                         Where(r => !r.IsValid).

@@ -18,9 +18,9 @@ namespace IPCLogger.ConfigurationService.CoreServices
 
 #region Constants
 
-        private const string FOLDER_LOGGERS = "loggers";
-        private const string FOLDER_PATTERNS = "patterns";
-        private const string FOLDER_SNIPPETS = "snippets";
+        private const string FOLDER_LOGGERS  = "loggers"  ;
+        private const string FOLDER_PATTERNS = "patterns" ;
+        private const string FOLDER_SNIPPETS = "snippets" ;
 
 #endregion
 

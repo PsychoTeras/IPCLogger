@@ -143,8 +143,7 @@ namespace IPCLogger.ConfigurationService.CoreServices
             return model;
         }
 
-        internal void ValidateLoggerUniqueness(DeclaredLoggerModel loggerModel, PropertyObjectDTO[] propertyObjs,
-            ref PropertyValidationResult[] validationResult)
+        internal void ValidateLoggerUniqueness(DeclaredLoggerModel loggerModel, ref PropertyValidationResult[] validationResult)
         {
             PropertyValidationResult pvrName = validationResult.FirstOrDefault(r => r.Name == "Name" && r.IsCommon);
 
