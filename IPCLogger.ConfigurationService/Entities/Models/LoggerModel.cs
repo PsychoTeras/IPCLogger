@@ -1,7 +1,7 @@
-﻿using IPCLogger.ConfigurationService.CoreInterops;
+﻿using IPCLogger.Common;
+using IPCLogger.ConfigurationService.CoreInterops;
 using IPCLogger.ConfigurationService.Entities.DTO;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
+using IPCLogger.Loggers.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

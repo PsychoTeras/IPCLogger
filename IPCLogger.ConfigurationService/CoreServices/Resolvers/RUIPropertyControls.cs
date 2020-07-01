@@ -1,8 +1,8 @@
-﻿using IPCLogger.ConfigurationService.Common;
-using IPCLogger.Core.Attributes.CustomConversionAttributes;
-using IPCLogger.Core.Loggers.LConsole;
-using IPCLogger.Core.Resolvers;
-using IPCLogger.Core.Resolvers.Base;
+﻿using IPCLogger.Attributes.CustomConversionAttributes;
+using IPCLogger.ConfigurationService.Common;
+using IPCLogger.Loggers.LConsole;
+using IPCLogger.Resolvers;
+using IPCLogger.Resolvers.Base;
 using System;
 using System.Collections.Generic;
 

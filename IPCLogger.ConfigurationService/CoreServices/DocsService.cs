@@ -1,8 +1,8 @@
-﻿using IPCLogger.ConfigurationService.Entities.Models;
+﻿using IPCLogger.Common;
+using IPCLogger.ConfigurationService.Entities.Models;
 using IPCLogger.ConfigurationService.Web.modules.common;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Resolvers;
-using IPCLogger.Core.Resolvers.Base;
+using IPCLogger.Resolvers;
+using IPCLogger.Resolvers.Base;
 using Nancy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>IPCLogger.ConfigurationService</RootNamespace>
     <AssemblyName>IPCLogger.ConfigurationService</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -282,12 +282,6 @@
     <None Include="Web\views\signin.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IPCLogger.Core\IPCLogger.Core.csproj">
-      <Project>{8E5B0F61-C2F0-4829-83D0-A123F614497E}</Project>
-      <Name>IPCLogger.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Nancy">
       <Version>1.4.5</Version>
     </PackageReference>
@@ -310,6 +304,11 @@
       <Version>1.0.109.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IPCLogger\IPCLogger.csproj">
+      <Project>{4ee8c9d8-72b9-4835-ac12-215499006b58}</Project>
+      <Name>IPCLogger</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IPCLogger.View</RootNamespace>
     <AssemblyName>IPCLogger.View</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -69,15 +69,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IPCLogger.Core\IPCLogger.Core.csproj">
-      <Project>{8e5b0f61-c2f0-4829-83d0-a123f614497e}</Project>
-      <Name>IPCLogger.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="frmSelectProcess.resx">
       <DependentUpon>frmSelectProcess.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IPCLogger\IPCLogger.csproj">
+      <Project>{4ee8c9d8-72b9-4835-ac12-215499006b58}</Project>
+      <Name>IPCLogger</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

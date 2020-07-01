@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.Core", "IPCLogger.Core\IPCLogger.Core.csproj", "{8E5B0F61-C2F0-4829-83D0-A123F614497E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.View", "IPCLogger.View\IPCLogger.View.csproj", "{8D37B136-1555-4FF2-8826-197CCA369827}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.TestService", "IPCLogger.TestService\IPCLogger.TestService.csproj", "{7B09EC35-5487-4A1A-ABB6-4416D75E4FB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPCLogger.ConfigurationService", "IPCLogger.ConfigurationService\IPCLogger.ConfigurationService.csproj", "{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IPCLogger", "IPCLogger\IPCLogger.csproj", "{4EE8C9D8-72B9-4835-AC12-215499006B58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Debug|x86.ActiveCfg = Debug|x86
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Debug|x86.Build.0 = Debug|x86
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Release|x86.ActiveCfg = Release|x86
-		{8E5B0F61-C2F0-4829-83D0-A123F614497E}.Release|x86.Build.0 = Release|x86
 		{8D37B136-1555-4FF2-8826-197CCA369827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D37B136-1555-4FF2-8826-197CCA369827}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D37B136-1555-4FF2-8826-197CCA369827}.Debug|x86.ActiveCfg = Debug|x86
@@ -51,6 +43,14 @@ Global
 		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|x86.ActiveCfg = Release|Any CPU
 		{27A0FBD9-157E-4E8A-82C9-7C02603F4B4B}.Release|x86.Build.0 = Release|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Debug|x86.Build.0 = Debug|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Release|x86.ActiveCfg = Release|Any CPU
+		{4EE8C9D8-72B9-4835-AC12-215499006B58}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,11 +1,8 @@
 ﻿using IPCLogger.ConfigurationService.Common.Exceptions;
 using IPCLogger.ConfigurationService.CoreInterops;
-using IPCLogger.ConfigurationService.Entities.DTO;
 using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Loggers.LFactory;
-using IPCLogger.Core.Patterns;
-using IPCLogger.Core.Snippets;
-using IPCLogger.Core.Snippets.Base;
+using IPCLogger.Loggers.LFactory;
+using IPCLogger.Patterns;
 using System;
 using System.Collections.Generic;
 using System.IO;

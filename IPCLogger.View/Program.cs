@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IPCLogger.Loggers.LIPC;
+using IPCLogger.Proto;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using IPCLogger.Core.Loggers.LIPC;
-using IPCLogger.Core.Proto;
 
 namespace IPCLogger.View
 {

@@ -1,8 +1,8 @@
-﻿using IPCLogger.Core.Loggers.LFactory;
+﻿using IPCLogger.ConfigurationService.Common;
+using IPCLogger.Loggers.LFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using IPCLogger.ConfigurationService.Common;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {

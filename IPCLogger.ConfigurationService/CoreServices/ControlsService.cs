@@ -1,5 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Resolvers;
+using IPCLogger.Resolvers;
 using System;
 using System.IO;
 using System.Web.UI;

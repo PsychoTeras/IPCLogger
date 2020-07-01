@@ -1,8 +1,9 @@
-﻿using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Loggers.Base;
-using IPCLogger.Core.Loggers.LFactory;
+﻿using IPCLogger.Attributes.CustomConversionAttributes.Base;
+using IPCLogger.Common;
+using IPCLogger.Loggers.Base;
+using IPCLogger.Loggers.LFactory;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,8 +12,8 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.CoreInterops
 {
-    using Common;
-    using System.Collections;
+
+    using Helpers = Common.Helpers;
 
     // ReSharper disable PossibleNullReferenceException
     internal static class LoggerInterop

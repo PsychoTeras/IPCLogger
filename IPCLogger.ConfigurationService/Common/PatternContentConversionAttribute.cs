@@ -1,9 +1,9 @@
-﻿using IPCLogger.Core.Attributes.CustomConversionAttributes;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
-using IPCLogger.Core.Patterns;
+﻿using IPCLogger.Attributes.CustomConversionAttributes;
+using IPCLogger.Attributes.CustomConversionAttributes.Base;
+using IPCLogger.Patterns;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Common

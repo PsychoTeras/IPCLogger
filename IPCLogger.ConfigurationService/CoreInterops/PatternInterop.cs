@@ -1,18 +1,18 @@
-﻿using IPCLogger.ConfigurationService.Entities.Models;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Patterns;
+﻿using IPCLogger.Attributes.CustomConversionAttributes.Base;
+using IPCLogger.Common;
+using IPCLogger.ConfigurationService.Entities.Models;
+using IPCLogger.Patterns;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
 
 namespace IPCLogger.ConfigurationService.CoreInterops
 {
-    using Common;
-    using System.Collections;
-    using System.Globalization;
+    using Helpers = Common.Helpers;
 
     // ReSharper disable PossibleNullReferenceException
     internal static class PatternInterop

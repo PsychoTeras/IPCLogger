@@ -1,5 +1,5 @@
-﻿using IPCLogger.Core.Resolvers;
-using IPCLogger.Core.Resolvers.Base;
+﻿using IPCLogger.Resolvers;
+using IPCLogger.Resolvers.Base;
 
 namespace IPCLogger.ConfigurationService.CoreServices.Resolvers
 {

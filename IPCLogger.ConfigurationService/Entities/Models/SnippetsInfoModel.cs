@@ -1,5 +1,5 @@
 ﻿using IPCLogger.ConfigurationService.CoreServices;
-using IPCLogger.Core.Snippets.Base;
+using IPCLogger.Snippets.Base;
 using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.Entities.Models

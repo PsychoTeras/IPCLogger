@@ -1,4 +1,4 @@
-﻿using IPCLogger.Core.Resolvers.Base;
+﻿using IPCLogger.Resolvers.Base;
 using System.Collections.Generic;
 
 namespace IPCLogger.ConfigurationService.Entities.Models

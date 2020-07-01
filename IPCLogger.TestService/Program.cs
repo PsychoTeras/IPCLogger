@@ -1,7 +1,7 @@
-﻿using IPCLogger.Core.Loggers;
-using IPCLogger.Core.Loggers.Base;
-using IPCLogger.Core.Loggers.LFactory;
-using IPCLogger.Core.Storages;
+﻿using IPCLogger.Loggers;
+using IPCLogger.Loggers.Base;
+using IPCLogger.Loggers.LFactory;
+using IPCLogger.Storages;
 using IPCLogger.TestService.Common;
 using log4net;
 using log4net.Appender;

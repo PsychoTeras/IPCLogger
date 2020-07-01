@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>D:\Programming\_Sources\IPCLogger\_bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>D:\Programming\_Sources\IPCLogger\_bin\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="_cutted_off\CallerTypesCache.txt" />
+    <None Remove="_cutted_off\EventNamesCache.txt" />
+    <None Remove="_cutted_off\LFile-OptimizedFNGen.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="_cutted_off\CallerTypesCache.txt" />
+    <Content Include="_cutted_off\EventNamesCache.txt" />
+    <Content Include="_cutted_off\LFile-OptimizedFNGen.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="4.7.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>

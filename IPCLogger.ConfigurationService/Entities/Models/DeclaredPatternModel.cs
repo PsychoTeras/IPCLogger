@@ -1,8 +1,10 @@
-﻿using IPCLogger.ConfigurationService.CoreInterops;
+﻿using IPCLogger.Attributes;
+using IPCLogger.Attributes.CustomConversionAttributes.Base;
+using IPCLogger.Common;
+using IPCLogger.ConfigurationService.Common;
+using IPCLogger.ConfigurationService.CoreInterops;
 using IPCLogger.ConfigurationService.Entities.DTO;
-using IPCLogger.Core.Attributes;
-using IPCLogger.Core.Common;
-using IPCLogger.Core.Patterns;
+using IPCLogger.Patterns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +13,7 @@ using System.Xml;
 
 namespace IPCLogger.ConfigurationService.Entities.Models
 {
-    using Common;
-    using Core.Attributes.CustomConversionAttributes.Base;
+    using Helpers = Common.Helpers;
 
     public class DeclaredPatternModel
     {

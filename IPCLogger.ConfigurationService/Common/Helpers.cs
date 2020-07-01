@@ -1,7 +1,7 @@
-﻿using System.Security.Cryptography;
+﻿using IPCLogger.Attributes.CustomConversionAttributes.Base;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
-using IPCLogger.Core.Attributes.CustomConversionAttributes.Base;
 
 namespace IPCLogger.ConfigurationService.Common
 {
