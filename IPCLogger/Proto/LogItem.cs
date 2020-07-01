@@ -49,9 +49,9 @@ namespace IPCLogger.Proto
                 fixed (char* p = message)
                 {
                     int messageLength = message.Length * sizeof(char);
-                    if (messageLength > _maxMessageLength)
+                    if (messageLength > _maxMessageLength - sizeof(char))
                     {
-                        messageLength = _maxMessageLength;
+                        messageLength = _maxMessageLength - sizeof(char);
                     }
                     Win32.Copy(_pMessage, p, messageLength);
                 }
