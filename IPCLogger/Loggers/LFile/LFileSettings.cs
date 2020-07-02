@@ -76,7 +76,7 @@ namespace IPCLogger.Loggers.LFile
             string logDir = LogDir ?? string.Empty;
             if (logDir.StartsWith("~\\"))
             {
-                string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                string path = Path.GetDirectoryName(typeof(LFileSettings).Assembly.Location);
                 logDir = Path.Combine(path, logDir.Remove(0, 2));
             }
 

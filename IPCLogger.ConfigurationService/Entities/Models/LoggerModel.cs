@@ -116,7 +116,7 @@ namespace IPCLogger.ConfigurationService.Entities.Models
             LoggerModel model = new LoggerModel();
             model.Type = loggerType;
             model.TypeName = loggerType.Name;
-            if (loggerType.Module.Name != "IPCLogger.Core.dll")
+            if (loggerType.Module.Name != "IPCLogger.dll")
             {
                 model.Namespace = loggerType.Namespace;
             }
