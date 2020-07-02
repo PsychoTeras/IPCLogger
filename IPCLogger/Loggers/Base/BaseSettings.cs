@@ -42,7 +42,7 @@ namespace IPCLogger.Loggers.Base
 #region Properties
 
         [NonSetting]
-        public bool Enabled { get; protected set; }
+        public bool Enabled { get; set; }
 
         [NonSetting]
         public string Name { get; set; }
@@ -54,14 +54,14 @@ namespace IPCLogger.Loggers.Base
         public HashSet<string> AllowEvents
         {
             get { return _allowEvents; }
-            protected set { _allowEvents = value; }
+            set { _allowEvents = value; }
         }
 
         [NonSetting, StringListConversion(typeof(HashSet<string>))]
         public HashSet<string> DenyEvents
         {
             get { return _denyEvents; }
-            protected set { _denyEvents = value; }
+            set { _denyEvents = value; }
         }
 
         internal Dictionary<string, PropertyData> CommonProperties { get; private set; }

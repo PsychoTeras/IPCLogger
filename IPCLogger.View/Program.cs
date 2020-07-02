@@ -1,18 +1,29 @@
-﻿using IPCLogger.Loggers.LIPC;
+﻿using IPCLogger.Loggers.LConsole;
+using IPCLogger.Loggers.LIPC;
 using IPCLogger.Proto;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 namespace IPCLogger.View
 {
     static class Program
     {
 
+#region Definitions
+
+        enum EventNum { }
+
+#endregion
+
 #region Private fields
 
-        static readonly Dictionary<string, string> _startupParams = 
+        private static readonly Dictionary<string, string> _startupParams = 
             new Dictionary<string, string>();
+
+        private static LConsole _console;
 
 #endregion
 
@@ -24,6 +35,16 @@ namespace IPCLogger.View
             {
                 return _startupParams.ContainsKey("-name")
                     ? _startupParams["-name"]
+                    : null;
+            }
+        }
+
+        private static string CustomConfig
+        {
+            get
+            {
+                return _startupParams.ContainsKey("-config")
+                    ? _startupParams["-config"]
                     : null;
             }
         }
@@ -76,6 +97,26 @@ namespace IPCLogger.View
             return null;
         }
 
+        static void InitializeLogger()
+        {
+            _console = new LConsole(true);
+            _console.Settings = new LConsoleSettings(typeof(LConsole), null)
+            {
+                Enabled = true,
+                Highlights = new LConsoleSettings.HighlightSettings()
+            };
+
+            string customConfig = CustomConfig;
+            if (!string.IsNullOrEmpty(customConfig))
+            {
+                string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                string file = Path.Combine(path, customConfig);
+                _console.Settings.Setup(file);
+            }
+
+            _console.Initialize();
+        }
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -84,6 +125,8 @@ namespace IPCLogger.View
             }
 
             ReadStartupParams(args);
+
+            InitializeLogger();
 
             using (LIPCView logger = new LIPCView())
             {
@@ -114,7 +157,7 @@ namespace IPCLogger.View
 
         private static void OnEvent(LogItem ev)
         {
-            Console.Write(ev.Message);
+            _console.Write((EventNum)ev.Type, ev.Message);
         }
 
 #endregion

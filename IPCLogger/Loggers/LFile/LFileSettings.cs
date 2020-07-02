@@ -3,6 +3,7 @@ using IPCLogger.Attributes.CustomConversionAttributes;
 using IPCLogger.Loggers.Base;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace IPCLogger.Loggers.LFile
 {
@@ -75,7 +76,7 @@ namespace IPCLogger.Loggers.LFile
             string logDir = LogDir ?? string.Empty;
             if (logDir.StartsWith("~\\"))
             {
-                string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 logDir = Path.Combine(path, logDir.Remove(0, 2));
             }
 

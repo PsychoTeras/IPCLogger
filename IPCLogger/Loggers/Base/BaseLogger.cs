@@ -151,7 +151,7 @@ namespace IPCLogger.Loggers.Base
 
 #region Properties
 
-        public TSettings Settings { get; private set; }
+        public TSettings Settings { get; set; }
         public bool ThreadSafetyGuaranteed { get; }
 
 #endregion
